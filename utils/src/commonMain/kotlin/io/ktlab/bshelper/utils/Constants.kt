@@ -1,5 +1,8 @@
 package io.ktlab.bshelper.utils
 
+import app.cash.sqldelight.db.SqlDriver
+import java.io.File
+
 object Constants {
 //     val BASE_URL = listOf(
 //        "https://beatsaver.wgzeyu.vip/api/",
@@ -15,4 +18,23 @@ object Constants {
     const val ONE_DAY = 24 * 60 * 60 * 1000
     const val ONE_WEEK = 7 * 24 * 60 * 60 * 1000
     const val HALF_MONTH = 15 * 24 * 60 * 60 * 1000
+    private var path: String? = ""
+    init {
+        var dbFile = File(System.getProperty("user.home"), ".config/cm-bs-helper/bs-helper.db")
+//        if(debugMode) {
+//            dbFile = File(System.getProperty("user.home"), ".config/cm-bs-helper/bs-helper-debug.db")
+//        }
+//        don't exist
+        try {
+            if (!dbFile.exists()) {
+                dbFile.parentFile.mkdirs()
+                dbFile.createNewFile()
+            }
+            path = dbFile.absolutePath
+        }catch (e: Exception) {
+//            log
+            e.printStackTrace()
+        }
+    }
+    val DesktopSQLitePath = "jdbc:sqlite:$path"
 }

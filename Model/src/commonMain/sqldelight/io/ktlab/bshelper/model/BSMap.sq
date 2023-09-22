@@ -3,7 +3,7 @@ import kotlin.Boolean;
 import kotlin.collections.List;
 import kotlinx.datetime.LocalDateTime;
 
-CREATE TABLE BSMap (
+CREATE TABLE IF NOT EXISTS BSMap (
     mapId TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT,

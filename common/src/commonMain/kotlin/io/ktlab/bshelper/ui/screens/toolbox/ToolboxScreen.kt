@@ -72,7 +72,7 @@ fun ToolboxScreen(
             .padding(innerPadding)
             .nestedScroll(scrollBehavior.nestedScrollConnection)
         Row (contentModifier){
-            var selectedPage by remember { mutableStateOf(if(!showTopAppBar){ToolboxPage.Toolbox}else{ToolboxPage.None}) }
+            var selectedPage by remember { mutableStateOf(if(!showTopAppBar){ToolboxPage.Toolbox}else{ToolboxPage.Toolbox}) }
             ToolboxLeftSide(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -171,7 +171,6 @@ fun ToolboxRightSide(
     ) {
         when (selectedPage) {
             ToolboxPage.Toolbox -> {
-                Developing()
                 ScanScreen(
                     scanState = uiState.scanState,
                     onUIEvent = onUIEvent

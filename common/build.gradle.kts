@@ -42,7 +42,7 @@ kotlin {
                 implementation(compose.components.resources)
 
                 implementation(libs.wsc.multiplatform)
-
+                implementation(libs.mpfilepicker)
 
                 implementation(libs.androidx.paging)
 

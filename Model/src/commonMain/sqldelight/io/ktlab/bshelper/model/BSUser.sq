@@ -14,7 +14,7 @@
 
 import kotlin.Int;
 import kotlin.Boolean;
-CREATE TABLE BSUser (
+CREATE TABLE IF NOT EXISTS BSUser (
     id INTEGER AS Int PRIMARY KEY NOT NULL,
     name TEXT  NOT NULL,
     avatar TEXT NOT NULL,

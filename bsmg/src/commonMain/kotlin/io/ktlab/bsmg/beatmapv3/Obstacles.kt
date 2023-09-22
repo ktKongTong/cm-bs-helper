@@ -18,7 +18,7 @@ data class Obstacles(
     @SerialName("y") val y: Int,
 //  The time, in beats, that the obstacle extends for (duration).
 //  While d can go into negative numbers, be aware that this has some unintended effects.
-    @SerialName("d") val direction: Int,
+    @SerialName("d") val duration: Float,
     // width of the obstacle. negative numbers are allowed but has some unintended effect.
     @SerialName("w") val width: Int,
     // height of the obstacle. negative numbers are allowed but has some unintended effect.

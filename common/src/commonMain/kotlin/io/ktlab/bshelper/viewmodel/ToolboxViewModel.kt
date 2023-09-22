@@ -24,7 +24,7 @@ import java.util.UUID
 
 sealed class ToolboxUIEvent: UIEvent() {
     data class SelectPlaylistTobeScan(val playlistScanState: PlaylistScanState) : UIEvent()
-    data object ScanPlaylistTapped : ToolboxUIEvent()
+    data class ScanPlaylistTapped(val dirPath: String? = null) : ToolboxUIEvent()
     data object ScanSelectedPlaylist : UIEvent()
     data object ClearScanState : ToolboxUIEvent()
     data class UpdateDefaultManageDir(val path:String):ToolboxUIEvent()
@@ -63,8 +63,7 @@ data class ToolboxViewModelState constructor(
 //        downloadTasks = downloadTasks,
     )
 }
-class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewModel()
-{
+class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewModel() {
     private val playlistRepository: PlaylistRepository by inject(PlaylistRepository::class.java)
     private val localViewModelScope = viewModelCoroutineScope ?: viewModelScope
     private val viewModelState = MutableStateFlow(
@@ -116,7 +115,7 @@ class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewMo
 
             }
             is ToolboxUIEvent.ScanPlaylistTapped -> {
-                onScanPlaylist()
+                onScanPlaylist(event.dirPath?:"")
             }
             is ToolboxUIEvent.ClearScanState -> {
                 viewModelState.update { state ->
@@ -187,13 +186,9 @@ class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewMo
 //        }
     }
 
-    private fun onScanPlaylist() {
+    private fun onScanPlaylist(dirPath:String) {
         localViewModelScope.launch {
-//            launch(Dispatchers.IO) {
-//                mapRepository.deleteLocalAll()
-//            }
-            val dir = "D:\\Downloads\\playlist"
-            playlistRepository.scanPlaylist(dir)
+            playlistRepository.scanPlaylist(dirPath)
                 .flowOn(Dispatchers.IO)
                 .collect{
                     viewModelState.update { state ->

@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 data class BasicBeatMapEvents(
     @SerialName("b") val beat: Double,
     @SerialName("et") val eventType: Int,
-    @SerialName("v") val value: Int,
+    @SerialName("i") val value: Int,
     @SerialName("f") val floatValue: Double,
 )

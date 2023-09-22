@@ -1,10 +1,7 @@
 package io.ktlab.bshelper.ui.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -54,9 +51,18 @@ fun AsyncImageWithFallback(
 //        }
         "network" -> {
             KamelImage(
+                modifier = modifier,
                 resource = asyncPainterResource(source),
                 contentDescription = "Profile",
-                onLoading = { progress -> CircularProgressIndicator(progress) },
+                onLoading = { progress -> Box {
+                    CircularProgressIndicator(
+                        progress = progress,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .clip(RoundedCornerShape(50))
+                    )
+                    fallback()
+                } },
                 onFailure = { throwable -> /* Handle failure */ },
             )
         }

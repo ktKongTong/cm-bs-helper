@@ -22,7 +22,7 @@ object AppModule {
             PlaylistRepository(get(),get(),get())
         }
         single {
-            FSMapRepository(get())
+            FSMapRepository(get(),get())
         }
     }
 }

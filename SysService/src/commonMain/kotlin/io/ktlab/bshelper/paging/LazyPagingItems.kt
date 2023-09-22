@@ -50,7 +50,7 @@ public class LazyPagingItems<T : Any> internal constructor(
      */
     private val flow: Flow<PagingData<T>>
 ) {
-    private val mainDispatcher = Dispatchers.Main
+    private val mainDispatcher = Dispatchers.Default
 
     private val differCallback: DifferCallback = object : DifferCallback {
         override fun onChanged(position: Int, count: Int) {
@@ -238,43 +238,46 @@ public class LazyPagingItems<T : Any> internal constructor(
             )
     )
         private set
-    /**
-     * Collects values from this [Flow] of [PagingData] and represents them inside a [LazyPagingItems]
-     * instance. The [LazyPagingItems] instance can be used for lazy foundations such as
-     * [LazyListScope.items] in order to display the data obtained from a [Flow] of [PagingData].
-     *
-     * @sample androidx.paging.compose.samples.PagingBackendSample
-     *
-     * @param context the [CoroutineContext] to perform the collection of [PagingData]
-     * and [CombinedLoadStates].
-     */
-    @Composable
-    public fun <T : Any> Flow<PagingData<T>>.collectAsLazyPagingItems(
-        context: CoroutineContext = EmptyCoroutineContext
-    ): LazyPagingItems<T> {
+}
 
-        val lazyPagingItems = remember(this) { LazyPagingItems(this) }
 
-        LaunchedEffect(lazyPagingItems) {
-            if (context == EmptyCoroutineContext) {
+
+/**
+ * Collects values from this [Flow] of [PagingData] and represents them inside a [LazyPagingItems]
+ * instance. The [LazyPagingItems] instance can be used for lazy foundations such as
+ * [LazyListScope.items] in order to display the data obtained from a [Flow] of [PagingData].
+ *
+ * @sample androidx.paging.compose.samples.PagingBackendSample
+ *
+ * @param context the [CoroutineContext] to perform the collection of [PagingData]
+ * and [CombinedLoadStates].
+ */
+@Composable
+fun <T : Any> Flow<PagingData<T>>.collectAsLazyPagingItems(
+    context: CoroutineContext = EmptyCoroutineContext
+): LazyPagingItems<T> {
+
+    val lazyPagingItems = remember(this) { LazyPagingItems(this) }
+
+    LaunchedEffect(lazyPagingItems) {
+        if (context == EmptyCoroutineContext) {
+            lazyPagingItems.collectPagingData()
+        } else {
+            withContext(context) {
                 lazyPagingItems.collectPagingData()
-            } else {
-                withContext(context) {
-                    lazyPagingItems.collectPagingData()
-                }
             }
         }
-
-        LaunchedEffect(lazyPagingItems) {
-            if (context == EmptyCoroutineContext) {
-                lazyPagingItems.collectLoadState()
-            } else {
-                withContext(context) {
-                    lazyPagingItems.collectLoadState()
-                }
-            }
-        }
-
-        return lazyPagingItems
     }
+
+    LaunchedEffect(lazyPagingItems) {
+        if (context == EmptyCoroutineContext) {
+            lazyPagingItems.collectLoadState()
+        } else {
+            withContext(context) {
+                lazyPagingItems.collectLoadState()
+            }
+        }
+    }
+
+    return lazyPagingItems
 }

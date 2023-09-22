@@ -10,7 +10,6 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,16 +25,7 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ConfirmationNumber
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
 import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
 import io.ktlab.bshelper.model.vo.GlobalScanStateEnum
@@ -60,6 +51,8 @@ import io.ktlab.bshelper.ui.components.ConfirmButton
 import io.ktlab.bshelper.ui.components.NextStepIconButton
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
+import java.awt.FileDialog
+import java.awt.Frame
 
 private fun getStepByCurrentState(state:GlobalScanStateEnum):Int {
     return when(state) {
@@ -79,7 +72,10 @@ fun ScanPlaylistDialog(
     onUIEvent: (UIEvent) -> Unit,
     onCloseDialog : () -> Unit = {}
 ){
-    AlertDialog(onDismissRequest = {}) {
+    AlertDialog(
+        onDismissRequest = {},
+        Modifier.fillMaxWidth()
+    ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -107,10 +103,12 @@ fun ScanPlaylistDialog(
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 StepsProgressBar(numberOfSteps = 4, currentStep = getStepByCurrentState(scanState.state))
+                var targetPath by remember { mutableStateOf("") }
                 Box(modifier = Modifier
                     .fillMaxHeight(0.7f)
-                    .weight(1f, fill = false)) {
-                    StepContent(scanState,onUIEvent)
+                    .weight(1f, fill = false)
+                ) {
+                    StepContent(scanState,targetPath,{targetPath = it},onUIEvent)
                 }
                 Row(
                     modifier = Modifier
@@ -120,7 +118,7 @@ fun ScanPlaylistDialog(
                     when (scanState.state) {
                         GlobalScanStateEnum.NOT_START -> {
                             CancelButton { onCloseDialog() }
-                            NextStepIconButton { onUIEvent(ToolboxUIEvent.ScanPlaylistTapped) }
+                            NextStepIconButton { onUIEvent(ToolboxUIEvent.ScanPlaylistTapped(targetPath)) }
                         }
                         GlobalScanStateEnum.SCAN_PLAYLISTS_COMPLETE -> {
                             CancelButton { onCloseDialog() }
@@ -144,6 +142,8 @@ fun ScanPlaylistDialog(
 @Composable
 fun StepContent(
     scanState: ScanState,
+    targetPath: String,
+    onSelectTargetPath: (String) -> Unit,
     onUIEvent: (UIEvent) -> Unit
 ){
     var visible by remember { mutableStateOf(true) }
@@ -154,8 +154,7 @@ fun StepContent(
     ){
         when(scanState.state) {
             GlobalScanStateEnum.NOT_START -> {
-                var targetPath by remember { mutableStateOf("") }
-                DirectoryChooser(targetPath) { targetPath = it }
+                DirectoryChooser(targetPath,onSelectTargetPath)
             }
             GlobalScanStateEnum.SCANNING_PLAYLISTS -> {
                 Row {
@@ -205,7 +204,24 @@ fun DirectoryChooser(
     targetPath: String,
     onSelectTargetPath: (String) -> Unit = {}
 ) {
-    Text(text = "Directory chooser, not implemented yet")
+    var showDirPicker by remember { mutableStateOf(false) }
+    OutlinedTextField(
+        value = targetPath,
+        onValueChange = { },
+        enabled = false,
+        label = { Text(text = "目标文件夹") },
+        trailingIcon = {
+            TextButton(onClick = { showDirPicker = true }) {
+                Text(text = "选择文件夹")
+            }
+        }
+    )
+    DirectoryPicker(showDirPicker) { path ->
+        showDirPicker = false
+        if (path != null) {
+            onSelectTargetPath(path)
+        }
+    }
 }
 
 @Composable

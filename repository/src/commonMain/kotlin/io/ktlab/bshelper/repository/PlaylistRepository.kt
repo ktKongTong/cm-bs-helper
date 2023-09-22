@@ -61,8 +61,8 @@ class PlaylistRepository(
     private val tickChannel = Channel<Unit>()
     init {
         repositoryScope.collectMapIdOrHashId()
-        repositoryScope.collectBufferedMapIdOrHashId()
         repositoryScope.tick()
+        repositoryScope.collectBufferedMapIdOrHashId()
     }
 
     private fun CoroutineScope.tick(){
@@ -234,7 +234,7 @@ class PlaylistRepository(
         }
         try {
             if (mapFiles!!.isNotEmpty()){
-                mapFiles.forEachIndexed inner@ { idx,mapFile ->
+                mapFiles.forEachIndexed { idx,mapFile ->
                     extractorOneMapInfo(playlistDirFile.absolutePath,
                         playlistScanState.value.playlistId,
                         mapFile,

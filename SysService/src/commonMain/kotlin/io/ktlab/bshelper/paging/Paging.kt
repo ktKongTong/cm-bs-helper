@@ -30,7 +30,7 @@ class BSMapPagingSource(
                 queryParam = mapFilterParam
             )
             if (apiRespResult.isSuccess()){
-                val docs = (apiRespResult as APIRespResult.Success).data.docs
+                val docs = (apiRespResult as APIRespResult.Success).data.docs.map { it.convertToVO() }
                 LoadResult.Page(
                     data = docs,
                     prevKey = null,

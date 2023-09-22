@@ -12,6 +12,8 @@ import io.ktlab.bshelper.model.enums.EMapDifficulty
 import io.ktlab.bshelper.model.vo.MapDiff
 import kotlinx.datetime.LocalDateTime
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 data class BsMapWithUploader(
     val bsMap: BSMap,
@@ -25,59 +27,125 @@ val difficulties: List<MapDifficulty>? = null,
 val bsMapWithUploader: BsMapWithUploader? = null,
 ): IMap {
     override fun getSongName(): String {
-        TODO("Not yet implemented")
+        return bsMapWithUploader?.bsMap?.name ?: fsMap.name
     }
 
     override fun getMusicPreviewURL(): String {
-        TODO("Not yet implemented")
+        return ""
+//        return Uri.parse(bsMapWithUploader?.versionWithDiffList?.version?.previewURL ?: fsMap.getSongPath())
     }
 
     override fun getAuthor(): String {
-        TODO("Not yet implemented")
+        return bsMapWithUploader?.uploader?.name ?: fsMap.author
     }
 
     override fun getAvatar(): String {
-        TODO("Not yet implemented")
+        return ""
+//        return bsMapWithUploader?.versionWithDiffList?.version?.coverURL ?: fsMap.getCoverPath().ifEmpty { "" }
+    }
+
+    fun getAuthorAvatar(): String {
+        return ""
+//        return bsMapWithUploader?.uploader?.avatar ?: fsMap.getCoverPath().ifEmpty { "" }
     }
 
     override fun getMapDescription(): String {
-        TODO("Not yet implemented")
+        return bsMapWithUploader?.bsMap?.description ?: ""
     }
 
     override fun getDuration(): String {
-        TODO("Not yet implemented")
+        try {
+            if (bsMapWithUploader != null) {
+                return bsMapWithUploader.bsMap.duration.toDuration(DurationUnit.MILLISECONDS).toString()
+            }
+
+            return fsMap.duration.toString()
+        }catch (e:Exception) {
+//            Log.e("FSMapView",(e.message?:"") + this.toString())
+            return "0"
+        }
     }
 
     override fun getID(): String {
-        TODO("Not yet implemented")
+        return fsMap.mapId
     }
 
     override fun getDifficulty(): List<MapDifficulty> {
-        TODO("Not yet implemented")
+        if (difficulties != null) {
+            return difficulties
+        }
+        return listOf()
     }
 
     override fun getDiffMatrix(): MapDiff {
-        TODO("Not yet implemented")
+        try {
+            if (difficulties == null) {
+                return MapDiff.build()
+            }
+            return MapDiff.build().addDiff(
+                difficulties.map { it.difficulty }
+            )
+        }catch (e:Exception) {
+//            Log.e("FSMapView",(e.message?:"") + this.toString())
+            return MapDiff.build()
+        }
     }
 
     override fun getBPM(): String {
-        TODO("Not yet implemented")
+        try {
+            if (bsMapWithUploader != null) {
+                return bsMapWithUploader!!.bsMap.bpm.toString()
+            }
+            return "0"
+        }catch (e:Exception) {
+//            Log.e("FSMapView",(e.message?:"") + this.toString())
+            return "0"
+        }
     }
 
     override fun getNotes(): Map<EMapDifficulty, String> {
-        TODO("Not yet implemented")
+        try {
+            if (difficulties == null) {
+                return mapOf()
+            }
+            return difficulties.associate { it.difficulty to it.notes.toString() }
+        }catch (e:Exception) {
+//            Log.e("FSMapView",(e.message?:"") + this.toString())
+            return mapOf()
+        }
     }
 
     override fun getMaxNotes(): Long {
-        TODO("Not yet implemented")
+        try {
+//            if (bsMapWithUploader != null) {
+//                return bsMapWithUploader.version!!.diffs.maxOf { it.notes }
+//            }
+            if (difficulties != null) {
+                return difficulties.maxOf { it.notes!! }
+            }
+            return 0
+        } catch (e:Exception) {
+//            Log.e("FSMapView",(e.message?:"") + this.toString())
+            return 0
+        }
     }
 
     override fun getMaxNPS(): Double {
-        TODO("Not yet implemented")
+        try {
+//            if (bsMapWithUploader != null) {
+//                return bsMapWithUploader!!.versionWithDiffList!!.diffs.maxOf { it.notePerSecond }
+//            }
+            if (difficulties != null) {
+                return difficulties.maxOf { it.nps!! }
+            }
+        }catch (e:Exception) {
+//            Log.e("FSMapView",(e.message?:"") + this.toString())
+        }
+        return 0.0
     }
 
     override fun getMapVersion(): String {
-        TODO("Not yet implemented")
+        return fsMap.version!!
     }
 
 }

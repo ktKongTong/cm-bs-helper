@@ -40,6 +40,7 @@ kotlin {
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.content.negotiation)
                 implementation(project(":Model"))
+                implementation(project(":utils"))
             }
         }
         val androidMain by getting {

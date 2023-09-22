@@ -3,10 +3,13 @@ package io.ktlab.bshelper.model.dto
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import io.ktkt.bshelper.data.model.network.serializer.LocalDateTimeAsStringSerializer
+import io.ktlab.bshelper.model.BSMap
+import io.ktlab.bshelper.model.BSUser
 import io.ktlab.bshelper.model.enums.EMapDifficulty
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.vo.MapDiff
 import io.ktlab.bshelper.model.MapDifficulty
+import io.ktlab.bshelper.model.vo.BSMapVO
 
 //import io.ktkt.lb.data.model.view.BsMapWithUploader
 
@@ -38,8 +41,46 @@ data class BSMapDTO(
 //    fun covertToDBO() {
 //
 //    }
-    fun convertToDVO() {
-
+    fun convertToVO():BSMapVO {
+        return BSMapVO(
+            map = BSMap(
+                mapId = id,
+                name = name,
+                description = description,
+                uploaderId = uploader.id.toLong(),
+                automapper = automapper,
+                ranked = ranked,
+                qualified = qualified,
+                bookmarked = bookmarked,
+                uploaded = uploaded,
+                tags = tags,
+                createdAt = createdAt,
+                updatedAt = updatedAt,
+                lastPublishedAt = lastPublishedAt,
+                plays = stats.plays,
+                downloads = stats.downloads,
+                upVotes = stats.upvotes,
+                downVotes = stats.downvotes,
+                score = stats.score,
+                bpm = metadata.bpm,
+                duration = metadata.duration,
+                songName = metadata.songName,
+                songSubname = metadata.songSubName,
+                songAuthorName = metadata.songAuthorName,
+                levelAuthorName = metadata.levelAuthorName
+            ),
+            uploader = BSUser(
+                id = uploader.id,
+                name = uploader.name,
+                avatar = uploader.avatar,
+                description = uploader.description,
+                type = uploader.type,
+                admin = uploader.admin,
+                curator = uploader.curator,
+                playlistUrl = uploader.playlistUrl
+            ),
+            versions = versions.map { it.convertToVersionWithDiffList(id) }
+        )
     }
 
     override fun getSongName(): String {
