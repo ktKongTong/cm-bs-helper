@@ -1,0 +1,94 @@
+import kotlin.Boolean;
+import kotlin.Int;
+CREATE TABLE IF NOT EXISTS `FSPlaylist` (
+    uuid TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT DEFAULT NULL,
+    mapAmount INTEGER AS Int NOT NULL,
+    totalDuration INTEGER DEFAULT NULL,
+    maxDuration INTEGER DEFAULT NULL,
+    avgDuration INTEGER DEFAULT NULL,
+    maxNote INTEGER DEFAULT NULL,
+    avgNote REAL DEFAULT NULL,
+    avgObstacle REAL DEFAULT NULL,
+    avgBomb REAL DEFAULT NULL,
+    maxNps REAL DEFAULT NULL,
+    avgNps REAL DEFAULT NULL,
+    bsPlaylistId TEXT,
+    basePath TEXT NOT NULL,
+    sync INTEGER AS Boolean NOT NULL,
+    syncTimestamp INTEGER NOT NULL
+);
+
+selectAll:
+SELECT * FROM `FSPlaylist`;
+
+
+insertAll:
+INSERT INTO `FSPlaylist` (
+    uuid,
+    name,
+    description,
+    mapAmount,
+    totalDuration,
+    maxDuration,
+    avgDuration,
+    maxNote,
+    avgNote,
+    avgObstacle,
+    avgBomb,
+    maxNps,
+    avgNps,
+    bsPlaylistId,
+    basePath,
+    sync,
+    syncTimestamp
+) VALUES ?;
+-- (
+-- ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+-- );
+
+insertAnyWay:
+INSERT OR REPLACE INTO `FSPlaylist` (
+    uuid,
+    name,
+    description,
+    mapAmount,
+    totalDuration,
+    maxDuration,
+    avgDuration,
+    maxNote,
+    avgNote,
+    avgObstacle,
+    avgBomb,
+    maxNps,
+    avgNps,
+    bsPlaylistId,
+    basePath,
+    sync,
+    syncTimestamp
+) VALUES ?;
+
+selectByIds:
+SELECT *
+FROM FSPlaylist
+WHERE uuid IN ?;
+-- update:
+-- UPDATE `FSPlaylist` SET
+--     name = ?,
+--     description = ?,
+--     mapAmount = ?,
+--     totalDuration = ?,
+--     maxDuration = ?,
+--     avgDuration = ?,
+--     maxNote = ?,
+--     avgNote = ?,
+--     avgObstacle = ?,
+--     avgBomb = ?,
+--     maxNps = ?,
+--     avgNps = ?,
+--     bsPlaylistId = ?,
+--     basePath = ?,
+--     sync = ?,
+--     syncTimestamp = ?
+-- WHERE uuid = ?;

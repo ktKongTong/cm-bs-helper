@@ -1,0 +1,56 @@
+import io.ktlab.bshelper.model.enums.ECharacteristic;
+import io.ktlab.bshelper.model.enums.EMapDifficulty;
+import kotlin.Boolean;
+
+CREATE TABLE IF NOT EXISTS `MapDifficulty` (
+    `uuid` TEXT NOT NULL,
+    `seconds` REAL NOT NULL,
+    `hash` TEXT NOT NULL,
+    `mapId` TEXT NOT NULL,
+    `difficulty` TEXT AS EMapDifficulty NOT NULL,
+    `characteristic` TEXT AS ECharacteristic NOT NULL,
+    `notes` INTEGER DEFAULT NULL,
+    `nps` REAL DEFAULT NULL,
+    `njs` REAL  DEFAULT NULL,
+    `bombs` INTEGER DEFAULT NULL,
+    `obstacles` INTEGER DEFAULT NULL,
+    `offset` REAL,
+    `events` INTEGER,
+    `chroma` INTEGER AS Boolean DEFAULT NULL,
+    `length` REAL,
+    `me` INTEGER  AS Boolean DEFAULT NULL,
+    `ne` INTEGER AS Boolean DEFAULT NULL,
+    `cinema` INTEGER AS Boolean DEFAULT NULL,
+    `maxScore` INTEGER,
+    `label` TEXT DEFAULT NULL,
+    PRIMARY KEY(`mapId`, `difficulty`, `characteristic`,`hash`)
+);
+
+
+selectAll:
+SELECT * FROM `MapDifficulty`;
+
+insert:
+INSERT OR REPLACE
+INTO `MapDifficulty` (
+    `uuid`,
+    `seconds`,
+    `hash`,
+    `mapId`,
+    `difficulty`,
+    `characteristic`,
+    `notes`,
+    `nps`,
+    `njs`,
+    `bombs`,
+    `obstacles`,
+    `offset`,
+    `events`,
+    `chroma`,
+    `length`,
+    `me`,
+    `ne`,
+    `cinema`,
+    `maxScore`
+)
+VALUES ?;

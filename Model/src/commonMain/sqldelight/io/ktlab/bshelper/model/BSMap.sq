@@ -1,0 +1,63 @@
+import kotlin.String;
+import kotlin.Boolean;
+import kotlin.collections.List;
+import kotlinx.datetime.LocalDateTime;
+
+CREATE TABLE BSMap (
+    mapId TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    uploaderId INTEGER,
+    bpm REAL NOT NULL,
+    duration INTEGER NOT NULL,
+    songName TEXT NOT NULL,
+    songSubname TEXT NOT NULL,
+    songAuthorName TEXT NOT NULL,
+    levelAuthorName TEXT NOT NULL,
+    plays INTEGER NOT NULL,
+    downloads INTEGER NOT NULL,
+    upVotes INTEGER NOT NULL,
+    downVotes INTEGER NOT NULL,
+    score REAL NOT NULL,
+    automapper INTEGER AS Boolean NOT NULL,
+    ranked INTEGER AS Boolean NOT NULL,
+    qualified INTEGER AS Boolean NOT NULL,
+    bookmarked INTEGER AS Boolean NOT NULL,
+    uploaded TEXT AS LocalDateTime NOT NULL,
+    tags TEXT AS List<String> NOT NULL,
+    createdAt TEXT AS LocalDateTime NOT NULL,
+    updatedAt TEXT AS LocalDateTime NOT NULL,
+    lastPublishedAt TEXT AS LocalDateTime NOT NULL
+);
+
+selectAll:
+SELECT * FROM `BSMap`;
+
+insert:
+INSERT OR REPLACE
+INTO `BSMap` (
+    mapId,
+    name,
+    description,
+    uploaderId,
+    bpm,
+    duration,
+    songName,
+    songSubname,
+    songAuthorName,
+    levelAuthorName,
+    plays,
+    downloads,
+    upVotes,
+    downVotes,
+    score,
+    automapper,
+    ranked,
+    qualified,
+    bookmarked,
+    uploaded,
+    tags,
+    createdAt,
+    updatedAt,
+    lastPublishedAt
+) VALUES ?;

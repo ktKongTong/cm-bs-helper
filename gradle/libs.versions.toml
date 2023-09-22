@@ -1,0 +1,146 @@
+#####
+# This file is duplicated to individual samples from the global scripts/libs.versions.toml
+# Do not add a dependency to an individual sample, edit the global version instead.
+#####
+[versions]
+gradle-versions-plugin = "0.47.0"
+version-catalog-update-plugin = "0.8.1"
+androidGradlePlugin = "8.1.1"
+jetbrains-compose-plugin = "1.5.10-beta01"
+
+
+ksp = "1.9.10-1.0.13"
+kotlin = "1.9.10"
+kotlinx-immutable = "0.3.5"
+kotlinx-serialization = "1.6.0"
+kotlinx-datetime = "0.4.0"
+kotlinx-coroutines =  "1.7.3"
+core-ktx = "1.12.0"
+
+
+wsc-multiplatform = "0.3.1"
+
+
+androidx-corektx = "1.12.0"
+androidx-appcompat = "1.6.1"
+androidx-activity-compose = "1.7.2"
+
+precompose = "1.5.1"
+voyager = "1.0.0-rc05"
+moko-resources = "0.23.0"
+moko-mvvm = "0.16.1"
+
+koin-bom = "3.5.1"
+koin-compose = "1.1.0"
+koin-core = "3.5.0"
+koin-android = "3.5.0"
+koin-ktor = "3.5.1"
+
+kamel = "0.7.3"
+kodein = "7.19.0"
+
+ktor = "2.3.4"
+
+androidx-paging = "3.2.1"
+sqldelight = "2.0.0"
+
+beatmap-io = "1.0.+"
+
+okio = "3.5.0"
+
+[libraries]
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutable" }
+
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+#ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
+ktor-client-jvm = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-corektx" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+
+precompose = { module = "moe.tlaster:precompose", version.ref = "precompose" }
+precompose-molecule = { module = "moe.tlaster:precompose-molecule", version.ref = "precompose" }
+precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "precompose" }
+precompose-koin = { module = "moe.tlaster:precompose-koin", version.ref = "precompose" }
+
+moko-flow-compose = { module = "dev.icerock.moko:mvvm-flow-compose", version.ref = "moko-mvvm" }
+moko-mvvm = { module = "dev.icerock.moko:mvvm-compose", version.ref = "moko-mvvm" }
+
+moko-resources = { module = "dev.icerock.moko:resources", version.ref = "moko-resources" }
+moko-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "moko-resources" }
+
+wsc-multiplatform = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "wsc-multiplatform" }
+
+kodein-di = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
+kodein-di-compose = { module = "org.kodein.di:kodein-di-framework-compose", version.ref = "kodein" }
+
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
+koin-core = { module = "io.insert-koin:koin-core",version.ref = "koin-core" }
+koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines",version.ref = "koin-core" }
+koin-android = { module = "io.insert-koin:koin-android",version.ref = "koin-android" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose",version.ref = "koin-android" }
+koin-compose = { module = "io.insert-koin:koin-compose",version.ref = "koin-compose" }
+koin-ktor = { module = "io.insert-koin:koin-ktor",version.ref = "koin-ktor" }
+
+
+
+#cash-paging-common = { module = "app.cash.paging:paging-common", version.ref = "cash-paging" }
+androidx-paging = { module = "androidx.paging:paging-runtime", version.ref = "androidx-paging" }
+#androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging-compose" }
+
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
+sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
+sqldelight-jvm-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-androidx-paging3-extensions = { module = "app.cash.sqldelight:androidx-paging3-extensions", version.ref = "sqldelight" }
+sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
+
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+beatmap-io = { module = "io.beatmaps:BeatMaps-CommonMP", version.ref = "beatmap-io" }
+kamel = { module = "media.kamel:kamel-image", version.ref = "kamel" }
+[plugins]
+# gradle
+gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions-plugin" }
+version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update-plugin" }
+
+# kotlin
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin"}
+
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+# android
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose-plugin" }
+
+moko-multiplatform-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko-resources" }
+moko-resources-generator = { id = "dev.icerock.moko:resources-generator", version.ref = "moko-resources" }
+
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+
+#protobuf-plugin = { id = "com.google.protobuf", version.ref = "protobuf-plugin" }

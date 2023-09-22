@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="app_name">BSHelper</string>
+    <string name="home_title">home</string>
+    <string name="toolbox_title">toolbox</string>
+    <string name="beatsaver_title">beat saver</string>
+    <string name="dev">developing🕊️</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
+    <string name="sort">排序</string>
+    <string name="empty_content">Ops! 什么都没有😲</string>
+    <string name="playlist_bs">bs</string>
+    <string name="filter">筛选</string>
+    <string name="multi_select">多选</string>
+    <string name="cancel_multi_select">取消多选</string>
+    <string name="settings">设置</string>
+    <string name="edit">编辑</string>
+    <string name="clear">清除</string>
+    <string name="load_error">load error</string>
+    <string name="retry">重试</string>
+    <string name="downloader">下载管理</string>
+    <string name="nextStep">下一步</string>
+    <string name="finished">完成</string>
+</resources>

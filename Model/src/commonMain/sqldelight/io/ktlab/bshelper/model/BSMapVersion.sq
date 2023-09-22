@@ -1,0 +1,33 @@
+import kotlinx.datetime.LocalDateTime;
+CREATE TABLE IF NOT EXISTS `BSMapVersion` (
+    `hash` TEXT NOT NULL,
+    `mapId` TEXT NOT NULL,
+    `key` TEXT NOT NULL,
+    `state` TEXT NOT NULL,
+    `createdAt` TEXT AS LocalDateTime DEFAULT NULL,
+    `sageScore` INTEGER NOT NULL,
+    `downloadURL` TEXT NOT NULL,
+    `coverURL` TEXT NOT NULL,
+    `previewURL` TEXT NOT NULL,
+    PRIMARY KEY(`hash`)
+);
+
+
+selectAll:
+SELECT * FROM `BSMapVersion`;
+
+insert:
+INSERT OR REPLACE
+INTO `BSMapVersion`
+(
+`hash`,
+`mapId`,
+`key`,
+`state`,
+`createdAt`,
+`sageScore`,
+`downloadURL`,
+`coverURL`,
+`previewURL`
+)
+VALUES ?;
