@@ -2,7 +2,7 @@ package io.ktlab.bshelper.model.dto
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
-import io.ktkt.bshelper.data.model.network.serializer.LocalDateTimeAsStringSerializer
+import io.ktlab.bshelper.model.dto.serializer.LocalDateTimeAsStringSerializer
 import io.ktlab.bshelper.model.BSMap
 import io.ktlab.bshelper.model.BSUser
 import io.ktlab.bshelper.model.enums.EMapDifficulty

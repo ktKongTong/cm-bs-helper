@@ -1,4 +1,4 @@
-package io.ktkt.bshelper.data.model.network.serializer
+package io.ktlab.bshelper.model.dto.serializer
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDateTime

@@ -59,12 +59,12 @@ fun ToolboxScreen(
     Scaffold(
         snackbarHost = { BSHelperSnackbarHost(hostState = snackbarHostState) },
         topBar = {
-            if (showTopAppBar) {
+//            if (showTopAppBar) {
 //               ToolboxTopAppBar(
 //                    openDrawer = openDrawer,
 //                    topAppBarState = topAppBarState
 //                )
-            }
+//            }
         },
         modifier = modifier
     ) { innerPadding ->

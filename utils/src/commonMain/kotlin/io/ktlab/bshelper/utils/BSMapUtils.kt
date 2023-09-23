@@ -1,24 +1,19 @@
 package io.ktlab.bshelper.utils
 
-import io.beatmaps.common.copyTo
 import io.ktlab.bshelper.model.BSMapVersion
 import io.ktlab.bshelper.model.FSMap
-import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.MapDifficulty
 import io.ktlab.bshelper.model.enums.ECharacteristic
 import io.ktlab.bshelper.model.enums.EMapDifficulty
 import io.ktlab.bsmg.beatmapv2.V2BeatMapObject
 import io.ktlab.bsmg.beatmapv3.V3BeatMapObject
-import io.ktlab.bsmg.io.ktlab.bsmg.FSMapDifficulty
-import io.ktlab.bsmg.io.ktlab.bsmg.FSMapInfo
-import io.ktor.utils.io.jvm.nio.copyTo
+import io.ktlab.bsmg.FSMapDifficulty
+import io.ktlab.bsmg.FSMapInfo
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 //import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
-import kotlinx.serialization.json.internal.decodeStringToJsonTree
-import okio.Okio
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
@@ -29,7 +24,6 @@ import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.UUID
-import kotlin.io.path.Path
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 

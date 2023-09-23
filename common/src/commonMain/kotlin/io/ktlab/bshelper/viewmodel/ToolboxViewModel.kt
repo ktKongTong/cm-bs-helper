@@ -82,7 +82,12 @@ class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewMo
         )
 
     init {
-//        localViewModelScope.launch {
+        localViewModelScope.observeUserPreference()
+        localViewModelScope.observeDownloadTasks()
+    }
+
+    private fun CoroutineScope.observeUserPreference() {
+        launch {
 //            userPreferenceRepository.getUserPreferenceFlow().collect{userPreference->
 //                viewModelState.update { state ->
 //                    state.copy(
@@ -90,8 +95,11 @@ class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewMo
 //                    )
 //                }
 //            }
-//        }
-//        localViewModelScope.launch {
+        }
+    }
+
+    private fun CoroutineScope.observeDownloadTasks(){
+        launch {
 //            downloaderRepository.getDownloadTaskFlow().collect{res->
 //                when(res){
 //                    is Result.Success -> {
@@ -106,7 +114,7 @@ class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewMo
 //                    }
 //                }
 //            }
-//        }
+        }
     }
 
     fun dispatchUiEvents(event: UIEvent){

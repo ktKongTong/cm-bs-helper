@@ -55,12 +55,12 @@ fun BeatSaverScreen(
     Scaffold(
         snackbarHost = { BSHelperSnackbarHost(hostState = snackbarHostState) },
         topBar = {
-            if (showTopAppBar) {
+//            if (showTopAppBar) {
 //                BeatSaverTopAppBar(
 //                    openDrawer = {  },
 //                    topAppBarState = topAppBarState
 //                )
-            }
+//            }
         },
         modifier = modifier
     ) { innerPadding ->

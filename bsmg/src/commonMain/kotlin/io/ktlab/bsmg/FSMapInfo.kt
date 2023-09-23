@@ -1,4 +1,4 @@
-package io.ktlab.bsmg.io.ktlab.bsmg
+package io.ktlab.bsmg
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName

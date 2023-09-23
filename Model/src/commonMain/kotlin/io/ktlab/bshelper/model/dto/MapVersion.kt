@@ -1,6 +1,6 @@
 package io.ktlab.bshelper.model.dto
 
-import io.ktkt.bshelper.data.model.network.serializer.LocalDateTimeAsStringSerializer
+import io.ktlab.bshelper.model.dto.serializer.LocalDateTimeAsStringSerializer
 import io.ktlab.bshelper.model.BSMapVersion
 import io.ktlab.bshelper.model.vo.VersionWithDiffList
 import kotlinx.datetime.LocalDateTime

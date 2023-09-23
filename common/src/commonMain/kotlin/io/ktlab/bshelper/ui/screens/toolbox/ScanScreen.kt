@@ -3,7 +3,6 @@ package io.ktlab.bshelper.ui.screens.toolbox
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.model.vo.ScanState
 import io.ktlab.bshelper.ui.event.UIEvent
@@ -23,12 +22,12 @@ expect fun IsStoragePermissionGranted():Boolean
 
 @Composable
 private fun RequestStoragePermission() {
-    val storagePermission = IsStoragePermissionGranted()
-    LaunchedEffect(key1 = true) {
-        if (!storagePermission) {
+//    val storagePermission = IsStoragePermissionGranted()
+//    LaunchedEffect(key1 = true) {
+//        if (!storagePermission) {
 //            launcher.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE))
-        }
-    }
+//        }
+//    }
 }
 
 @Composable
