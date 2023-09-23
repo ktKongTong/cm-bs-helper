@@ -35,6 +35,11 @@ kotlin {
                 implementation(project(":bsmg"))
                 implementation(project(":SysService"))
                 implementation(project(":utils"))
+
+                implementation(libs.androidx.annotation)
+                implementation(libs.androidx.collection)
+                implementation(libs.androidx.datastore.core.okio)
+                implementation(libs.androidx.datastore.preferences.core)
 //                api(compose.runtime)
 //                implementation(compose.ui)
 //                implementation(compose.foundation)
