@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="bsmg-jvm">
+    <output-path>$PROJECT_DIR$/bsmg/build/libs</output-path>
+    <root id="archive" name="bsmg-jvm.jar">
+      <element id="module-output" name="cm-bs-helper.bsmg.jvmMain" />
+    </root>
+  </artifact>
+</component>

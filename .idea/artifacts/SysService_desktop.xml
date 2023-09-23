@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SysService-desktop">
+    <output-path>$PROJECT_DIR$/SysService/build/libs</output-path>
+    <root id="archive" name="SysService-desktop.jar">
+      <element id="module-output" name="cm-bs-helper.SysService.desktopMain" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Model-jvm">
+    <output-path>$PROJECT_DIR$/Model/build/libs</output-path>
+    <root id="archive" name="Model-jvm.jar">
+      <element id="module-output" name="cm-bs-helper.Model.jvmMain" />
+    </root>
+  </artifact>
+</component>
