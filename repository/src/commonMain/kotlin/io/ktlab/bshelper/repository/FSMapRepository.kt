@@ -10,6 +10,7 @@ import io.ktlab.bshelper.model.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import io.ktlab.bshelper.model.mapper.mapToVO
+import io.ktlab.bshelper.model.vo.FSPlaylistVO
 import io.ktlab.bshelper.paging.BSMapPagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -33,10 +34,11 @@ class FSMapRepository(
         }
     }
 
-//    fun moveFSMapsToPlaylist(targetPlaylist: IPlaylist, fsMaps:List<FSMap>): Flow<Result<String>> = flow {
-//        try {
-//            val playlistPath = (targetPlaylist as FSPlaylistView).fsPlaylist.basePath!!
-////            批量移动
+    fun moveFSMapsToPlaylist(targetPlaylist: IPlaylist, fsMaps:List<FSMap>): Flow<Result<String>> = flow {
+        try {
+            val playlistPath = (targetPlaylist as FSPlaylistVO)._basePath
+//            TODO
+//            批量移动
 //            fsMaps.forEach{
 //                val path = Path(it.playlistBasePath,it.dirFilename)
 //                val tarPath = Path(playlistPath,it.dirFilename)
@@ -44,11 +46,11 @@ class FSMapRepository(
 //            }
 //            val playlistId = fsMaps.first().playlistId
 //            fsMapDao.batchMoveFSMapToPlaylist(targetPlaylist.id, targetPlaylist.fsPlaylist.basePath!!,fsMaps, playlistId)
-//            emit(Result.Success(""))
-//        } catch (e: Exception) {
-//            emit(Result.Error(e))
-//        }
-//    }
+            emit(Result.Success(""))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }
 
     suspend fun deleteAll() {
         bsHelperDAO.transaction {

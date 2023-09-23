@@ -1,12 +1,11 @@
 package io.ktlab.bshelper.viewmodel
 
 import androidx.compose.material3.SnackbarDuration
-import io.ktlab.bshelper.model.BSHelperDatabase
-import io.ktlab.bshelper.model.IMap
-import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.api.BeatSaverAPI
+import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.enums.SortKey
 import io.ktlab.bshelper.model.enums.SortType
+import io.ktlab.bshelper.model.mapper.FSMapVO
 import io.ktlab.bshelper.repository.PlaylistRepository
 import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
@@ -25,13 +24,13 @@ import moe.tlaster.precompose.viewmodel.viewModelScope
 import org.koin.java.KoinJavaComponent.inject
 import java.util.UUID
 
-import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.repository.FSMapRepository
+import io.ktlab.bshelper.repository.UserPreferenceRepository
 
 data class HomeViewModelState(
     val playlists: List<IPlaylist> = emptyList(),
     val selectedPlaylistId: String? = null,
-//    val userPreferenceState: UserPreference,
+    val userPreferenceState: UserPreference,
     val selectedMapId: String? = null,
     val isPlaylistOpen: Boolean = false,
     val mapListState: MapListState,
@@ -121,12 +120,13 @@ class HomeViewModel(
 {
     private val playlistRepository: PlaylistRepository by inject(PlaylistRepository::class.java)
     private val mapRepository: FSMapRepository by inject(FSMapRepository::class.java)
+    private val userPreferenceRepository: UserPreferenceRepository by inject(UserPreferenceRepository::class.java)
     private val localViewModelScope = viewModelCoroutineScope ?: viewModelScope
 
     private val viewModelState = MutableStateFlow(HomeViewModelState(
         isLoading = true,
         isPlaylistOpen = false,
-//        userPreferenceState = UserPreference.getDefaultInstance(),
+        userPreferenceState = UserPreference.getDefaultUserPreference(),
         mapListState = MapListState(
             isMapOpen = false,
             isLoading = false,
@@ -159,13 +159,13 @@ class HomeViewModel(
             is HomeUIEvent.EditPlaylist -> {}
             is HomeUIEvent.PlaylistTapped -> { onPlaylistTapped(event.playlistId) }
             is HomeUIEvent.MapTapped -> {}
-//            is HomeUIEvent.ChangeMapListSortRule -> {onChangeMapListSortRule(event.sortRule) }
-//            is HomeUIEvent.ChangeMultiSelectMode -> { onMapMultiSelectedModeChecked(event.checked) }
-//            is HomeUIEvent.MultiMapFullChecked -> { onMultiMapFullChecked(event.mapMap) }
-//            is HomeUIEvent.MultiMapOppoChecked -> { onMultiMapOppoChecked(event.mapMap) }
-//            is HomeUIEvent.MapMultiSelected -> { onMapMultiSelected(event.map) }
-//            is HomeUIEvent.MultiDeleteAction -> { onMultiDeleteAction(event.mapSet) }
-//            is HomeUIEvent.MultiMoveAction -> { onMultiMoveAction(event.mapSet,event.targetPlaylist) }
+            is HomeUIEvent.ChangeMapListSortRule -> {onChangeMapListSortRule(event.sortRule) }
+            is HomeUIEvent.ChangeMultiSelectMode -> { onMapMultiSelectedModeChecked(event.checked) }
+            is HomeUIEvent.MultiMapFullChecked -> { onMultiMapFullChecked(event.mapMap) }
+            is HomeUIEvent.MultiMapOppoChecked -> { onMultiMapOppoChecked(event.mapMap) }
+            is HomeUIEvent.MapMultiSelected -> { onMapMultiSelected(event.map) }
+            is HomeUIEvent.MultiDeleteAction -> { onMultiDeleteAction(event.mapSet) }
+            is HomeUIEvent.MultiMoveAction -> { onMultiMoveAction(event.mapSet,event.targetPlaylist) }
             is HomeUIEvent.ExportPlaylistAsKey -> {
 //                viewModelScope.launch subroutine@{
 //                    playlistRepository
@@ -195,12 +195,14 @@ class HomeViewModel(
     }
 
     private fun refreshPlayLists(managerDir:String = "") {
-//        val managerPath = managerDir.ifEmpty { viewModelState.value.userPreferenceState.defaultManageDir }
+        val managerPath = managerDir.ifEmpty { viewModelState.value.userPreferenceState.currentManageDir }
         viewModelState.update { it.copy(isLoading = true) }
         localViewModelScope.launch {
             playlistRepository
-                .getAllPlaylist()
-//                .getAllPlaylistByManagerDir(managerPath)
+                .let {
+                    if (managerPath.isEmpty()) it.getAllPlaylist()
+                    else it.getAllPlaylistByManageDir(managerPath)
+                }
                 .flowOn(Dispatchers.IO)
                 .collect {
                     when (it) {
@@ -213,7 +215,7 @@ class HomeViewModel(
                             showSnackBar(
                                 msg = "error loading playlists",
                                 actionLabel = "retry",
-                                action = { refreshPlayLists() }
+                                action = { refreshPlayLists(managerPath) }
                             )
                         }
                     }
@@ -247,6 +249,115 @@ class HomeViewModel(
             )
         }
     }
+    private fun onChangeMapListSortRule(sortRule:Pair<SortKey,SortType>) {
+        viewModelState.update {
+            it.copy(
+                mapListState = it.mapListState.copy(sortRule = sortRule)
+            )
+        }
+    }
+
+    private fun deleteFSMap(fsMap: FSMap) {
+        viewModelScope.launch {
+            mapRepository.deleteFSMapsByPath(viewModelState.value.selectedPlaylistId!!,listOf(fsMap))
+        }
+    }
+
+
+    private fun onMultiDeleteAction(mapSet:Set<IMap>){
+        viewModelScope.launch(Dispatchers.IO) {
+            val mapToBeDelete = mapSet.map { (it as FSMapVO).fsMap }
+            viewModelState.update {
+                it.copy(
+                    mapListState = it.mapListState.copy(
+                        multiSelectedMapHashMap = emptyMap(),
+                        isMapMultiSelectMode = false
+                    )
+                )
+            }
+            mapRepository.deleteFSMapsByPath(viewModelState.value.selectedPlaylistId!!,mapToBeDelete)
+        }
+    }
+
+    private fun onMultiMoveAction(mapSet: Set<IMap>, targetPlaylist: IPlaylist){
+        viewModelScope.launch {
+            val mapToBeMoved = mapSet.toList().map { (it as FSMapVO).fsMap }
+            viewModelState.update {
+                it.copy(
+                    mapListState = it.mapListState.copy(
+                        multiSelectedMapHashMap = emptyMap(),
+                        isMapMultiSelectMode = false
+                    )
+                )
+            }
+            launch subroutine@{
+                mapRepository
+                    .moveFSMapsToPlaylist(targetPlaylist,mapToBeMoved)
+                    .flowOn(Dispatchers.IO)
+                    .collect{
+                        if (it is Result.Success) {
+                            showSnackBar(
+                                msg = "move ${mapToBeMoved.size} maps to ${targetPlaylist.title} succeed",
+                            )
+                        }else {
+                            showSnackBar(
+                                msg = "move ${mapToBeMoved.size} maps to ${targetPlaylist.title} failed",
+                            )
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun onMapMultiSelectedModeChecked(isChecked: Boolean) {
+        viewModelState.update {
+            it.copy(
+                mapListState = it.mapListState.copy(
+                    isMapMultiSelectMode = isChecked,
+                    multiSelectedMapHashMap = emptyMap()
+                )
+            )
+        }
+    }
+    private fun onMultiMapOppoChecked(multiSelectedMapHashMap: Map<String,IMap>){
+        viewModelState.update {state->
+            state.copy(
+                mapListState = state.mapListState.copy(
+                    multiSelectedMapHashMap = multiSelectedMapHashMap
+                )
+            )
+        }
+
+    }
+    private fun onMultiMapFullChecked(multiSelectedMapHashMap: Map<String,IMap>){
+        viewModelState.update {state->
+            state.copy(
+                mapListState = state.mapListState.copy(
+                    multiSelectedMapHashMap = multiSelectedMapHashMap
+                )
+            )
+        }
+    }
+    /*
+    * TODO:
+    * problem: if first view the local map list,
+    * the map list is getting online data.
+    *
+    * */
+    private fun onMapMultiSelected(fsMap: IMap){
+        viewModelState.update {
+            it.copy(
+                mapListState = it.mapListState.copy(
+                    multiSelectedMapHashMap = if(it.mapListState.multiSelectedMapHashMap.containsKey(fsMap.getID())){
+                        it.mapListState.multiSelectedMapHashMap - fsMap.getID()
+                    }else{
+                        it.mapListState.multiSelectedMapHashMap + Pair(fsMap.getID(),fsMap)
+                    },
+                )
+            )
+        }
+    }
+
     private fun showSnackBar(
         msg: String,
         actionLabel: String? = null,

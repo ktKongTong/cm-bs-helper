@@ -36,6 +36,10 @@ kotlin {
                 implementation(libs.koin.core.coroutines)
                 implementation(libs.koin.compose)
 
+                implementation(libs.androidx.annotation)
+                implementation(libs.androidx.collection)
+                implementation(libs.androidx.datastore.core.okio)
+                implementation(libs.androidx.datastore.preferences.core)
                 implementation(libs.ktor.serialization.kotlinx.json)
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.content.negotiation)

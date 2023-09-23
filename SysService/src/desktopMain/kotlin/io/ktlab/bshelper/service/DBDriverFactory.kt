@@ -7,7 +7,7 @@ import io.ktlab.bshelper.utils.Constants
 
 actual class DBDriverFactory {
     actual fun createDriver(): SqlDriver {
-        val driver: SqlDriver = JdbcSqliteDriver(Constants.DesktopSQLitePath)
+        val driver: SqlDriver = JdbcSqliteDriver(DesktopConfig.DB_URL)
         BSHelperDatabase.Schema.create(driver)
         return driver
     }

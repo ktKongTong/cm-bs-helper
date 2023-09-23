@@ -4,6 +4,7 @@ import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.api.ToolAPI
 import io.ktlab.bshelper.repository.FSMapRepository
 import io.ktlab.bshelper.repository.PlaylistRepository
+import io.ktlab.bshelper.repository.UserPreferenceRepository
 import io.ktlab.bshelper.service.HttpClientModuleProviderBase
 import org.koin.dsl.module
 
@@ -23,6 +24,9 @@ object AppModule {
         }
         single {
             FSMapRepository(get(),get())
+        }
+        single {
+            UserPreferenceRepository(get())
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.paging.cachedIn
 import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.repository.FSMapRepository
 import io.ktlab.bshelper.repository.PlaylistRepository
+import io.ktlab.bshelper.repository.UserPreferenceRepository
 import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineScope
@@ -169,6 +170,8 @@ class BeatSaverViewModel constructor(
 
     private val playlistRepository: PlaylistRepository by KoinJavaComponent.inject(PlaylistRepository::class.java)
     private val mapRepository: FSMapRepository by KoinJavaComponent.inject(FSMapRepository::class.java)
+    private val userPreferenceRepository: UserPreferenceRepository by KoinJavaComponent.inject(UserPreferenceRepository::class.java)
+
     private val localViewModelScope = viewModelCoroutineScope ?: viewModelScope
 
     private val viewModelState = MutableStateFlow(

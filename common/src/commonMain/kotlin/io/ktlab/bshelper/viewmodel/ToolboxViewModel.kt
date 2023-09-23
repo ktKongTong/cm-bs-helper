@@ -1,6 +1,7 @@
 package io.ktlab.bshelper.viewmodel
 
 import androidx.compose.material3.SnackbarDuration
+import io.ktlab.bshelper.model.UserPreference
 import io.ktlab.bshelper.model.vo.GlobalScanStateEnum
 import io.ktlab.bshelper.model.vo.PlaylistScanState
 import io.ktlab.bshelper.model.vo.PlaylistScanStateEnum
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import io.ktlab.bshelper.repository.PlaylistRepository
+import io.ktlab.bshelper.repository.UserPreferenceRepository
 import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineScope
@@ -43,14 +45,14 @@ data class ToolboxUiState(
     val isLoading: Boolean,
     val snackBarMessages: List<SnackBarMessage>,
     val scanState: ScanState = ScanState.getDefaultInstance(),
-//    val userPreferenceState: UserPreference,
+    val userPreferenceState: UserPreference,
 //    val downloadTasks: List<DownloadTask> = emptyList(),
 )
 
 data class ToolboxViewModelState constructor(
     val isLoading: Boolean = false,
     val snackBarMessages: List<SnackBarMessage> = emptyList(),
-//    val userPreferenceState: UserPreference,
+    val userPreferenceState: UserPreference,
     val scanState: ScanState = ScanState.getDefaultInstance(),
 //    val downloadTasks: List<DownloadTask> = emptyList(),
 ) {
@@ -59,18 +61,21 @@ data class ToolboxViewModelState constructor(
         isLoading = isLoading,
         snackBarMessages = snackBarMessages,
         scanState = scanState,
-//        userPreferenceState = userPreferenceState,
+        userPreferenceState = userPreferenceState,
 //        downloadTasks = downloadTasks,
     )
 }
 class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewModel() {
     private val playlistRepository: PlaylistRepository by inject(PlaylistRepository::class.java)
+    private val userPreferenceRepository: UserPreferenceRepository by inject(UserPreferenceRepository::class.java)
+
+
     private val localViewModelScope = viewModelCoroutineScope ?: viewModelScope
     private val viewModelState = MutableStateFlow(
         ToolboxViewModelState(
             isLoading = true,
             snackBarMessages = emptyList(),
-//            userPreferenceState = UserPreference.getDefaultInstance()
+            userPreferenceState = UserPreference.getDefaultUserPreference()
         )
     )
     val uiState = viewModelState
@@ -88,13 +93,13 @@ class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewMo
 
     private fun CoroutineScope.observeUserPreference() {
         launch {
-//            userPreferenceRepository.getUserPreferenceFlow().collect{userPreference->
-//                viewModelState.update { state ->
-//                    state.copy(
-//                        userPreferenceState = userPreference
-//                    )
-//                }
-//            }
+            userPreferenceRepository.getUserPreference().collect{userPreference->
+                viewModelState.update { state ->
+                    state.copy(
+                        userPreferenceState = userPreference
+                    )
+                }
+            }
         }
     }
 
@@ -110,7 +115,6 @@ class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewMo
 //                        }
 //                    }
 //                    is Result.Error -> {
-//
 //                    }
 //                }
 //            }
