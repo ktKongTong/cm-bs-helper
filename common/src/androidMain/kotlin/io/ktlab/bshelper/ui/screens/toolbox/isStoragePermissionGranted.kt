@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 
 @Composable
-actual fun IsStoragePermissionGranted():Boolean {
+actual fun isStoragePermissionGranted():Boolean {
     val context = LocalContext.current
     return ContextCompat.checkSelfPermission(
         context,

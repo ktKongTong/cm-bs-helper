@@ -115,6 +115,14 @@ class PlaylistRepository(
         }
     }
 
+    fun getAllPlaylistByManageDir(manageDir:String):Flow<Result<List<IPlaylist>>> = bsHelperDAO.fSPlaylistQueries.selectAll()
+        .asFlow()
+        .mapToList(Dispatchers.IO)
+        .map { Result.Success(it.map {dbo-> FSPlaylistVO.convertDBOToVO(dbo) }) }
+        .catch {
+            Result.Error(Exception(it.message))
+        }
+
     fun getAllPlaylist(): Flow<Result<List<IPlaylist>>> = bsHelperDAO.fSPlaylistQueries.selectAll()
         .asFlow()
         .mapToList(Dispatchers.IO)

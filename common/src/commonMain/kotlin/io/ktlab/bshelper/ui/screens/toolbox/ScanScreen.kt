@@ -18,7 +18,7 @@ import androidx.compose.runtime.setValue
 import io.ktlab.bshelper.ui.screens.toolbox.components.ScanPlaylistDialog
 
 @Composable
-expect fun IsStoragePermissionGranted():Boolean
+expect fun isStoragePermissionGranted():Boolean
 
 @Composable
 private fun RequestStoragePermission() {
@@ -49,7 +49,7 @@ fun ScanScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             var dialogOpen by remember { mutableStateOf(false) }
-            val isStoragePermissionGranted = IsStoragePermissionGranted()
+            val isStoragePermissionGranted = isStoragePermissionGranted()
             TextButton(onClick = {
                 if(!isStoragePermissionGranted){
                     requestPermission = true

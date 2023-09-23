@@ -30,3 +30,4 @@ projectJDK: jbr-17 #(Applied in CI/CD pipeline)
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-jvm:2023.2-eap
 #linter: jetbrains/qodana-jvm-community:latest
+fixesStrategy: apply
