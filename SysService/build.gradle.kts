@@ -30,7 +30,7 @@ kotlin {
                 implementation(libs.sqldelight.coroutines.extensions)
                 implementation(libs.sqldelight.primitive.adapters)
 
-
+                implementation(libs.kotlin.reflect)
 
                 api(libs.koin.core)
                 implementation(libs.koin.core.coroutines)

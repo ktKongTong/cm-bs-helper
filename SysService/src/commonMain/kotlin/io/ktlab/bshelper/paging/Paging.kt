@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.model.IMap
-import io.ktlab.bshelper.model.MapFilterParam
+import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.dto.response.errorMsg
 import io.ktlab.bshelper.model.dto.response.isSuccess

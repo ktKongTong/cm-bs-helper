@@ -7,6 +7,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import io.ktlab.bshelper.model.mapper.mapToVO
