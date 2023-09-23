@@ -16,6 +16,8 @@ import io.ktlab.bshelper.paging.BSMapPagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlin.io.path.Path
+import kotlin.io.path.pathString
 
 class FSMapRepository(
     private val bsHelperDAO:BSHelperDatabase,
@@ -37,16 +39,19 @@ class FSMapRepository(
 
     fun moveFSMapsToPlaylist(targetPlaylist: IPlaylist, fsMaps:List<FSMap>): Flow<Result<String>> = flow {
         try {
-            val playlistPath = (targetPlaylist as FSPlaylistVO)._basePath
-//            TODO
-//            批量移动
-//            fsMaps.forEach{
-//                val path = Path(it.playlistBasePath,it.dirFilename)
-//                val tarPath = Path(playlistPath,it.dirFilename)
-//                path.toFile().renameTo(tarPath.toFile())
-//            }
-//            val playlistId = fsMaps.first().playlistId
-//            fsMapDao.batchMoveFSMapToPlaylist(targetPlaylist.id, targetPlaylist.fsPlaylist.basePath!!,fsMaps, playlistId)
+            val playlistPath = (targetPlaylist as FSPlaylistVO).basePath
+//            TODO failure handle
+            fsMaps.forEach{
+                val path = Path(it.playlistBasePath,it.dirFilename)
+                val tarPath = Path(playlistPath,it.dirFilename)
+                path.toFile().renameTo(tarPath.toFile())
+            }
+            bsHelperDAO.transaction {
+                val targetPath = Path(targetPlaylist._name).resolve(targetPlaylist._name).pathString
+                fsMaps.forEach {
+                    bsHelperDAO.fSMapQueries.moveFSMapToPlaylist(targetPlaylist.id,targetPath,it.mapId,it.playlistId)
+                }
+            }
             emit(Result.Success(""))
         } catch (e: Exception) {
             emit(Result.Error(e))
@@ -56,10 +61,10 @@ class FSMapRepository(
     suspend fun deleteAll() {
         bsHelperDAO.transaction {
 //            bsHelperDAO.fSMapQueries.deleteAll()
-//            bsHelperDAO.fSMapQueries.deleteAllDiff()
-//            bsHelperDAO.fSMapQueries.deleteAllVersion()
-//            bsHelperDAO.fSMapQueries.deleteAllBSMap()
-//            bsHelperDAO.fSMapQueries.deleteAllBSUser()
+//            bsHelperDAO.bSMapQueries.deleteAll()
+//            bsHelperDAO.bSMapVersionQueries.deleteAll()
+//            bsHelperDAO.bSUserQueries.deleteAll()
+//            bsHelperDAO.fSPlaylistQueries.deleteAll()
         }
     }
 
@@ -120,16 +125,17 @@ class FSMapRepository(
         ).flow
     }
     suspend fun deleteFSMapsByPath(playlistId: String,fsMaps:List<FSMap>):Result<String>{
-//        try {
-////            批量删除
-//            fsMaps.forEach{
-//                val path = Path(it.playlistBasePath,it.dirFilename)
-//                val res = path.toFile().deleteRecursively()
-//            }
-//            fsMapDao.batchDeleteFSMapsByPath(playlistId,fsMaps)
-//        } catch (e: Exception) {
-//            return Result.Error(e)
-//        }
+        try {
+//            批量删除
+            fsMaps.forEach{
+                val path = Path(it.playlistBasePath,it.dirFilename)
+                val res = path.toFile().deleteRecursively()
+            }
+            val mapIds = fsMaps.map { it.mapId }
+            bsHelperDAO.fSMapQueries.deleteFSMapByMapIdsAndPlaylistId(mapIds,playlistId)
+        } catch (e: Exception) {
+            return Result.Error(e)
+        }
         return Result.Success("")
     }
 //    private suspend fun fsMapProcess(it: FSMapView, playlistId:String? = null):FSMapView {

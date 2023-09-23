@@ -137,3 +137,19 @@ INSERT OR REPLACE INTO `FSMap`
 
 getAllFSMapId:
 SELECT `mapId`,`playlistId` FROM `FSMap`;
+
+moveFSMapToPlaylist:
+UPDATE `FSMap`
+SET `playlistId` = ?,`playlistBasePath` = ?
+WHERE `mapId` = ? AND `playlistId` = ?;
+
+deleteAllFSMap:
+DELETE FROM `FSMap`;
+
+
+
+delteFSMapByPlaylistId:
+DELETE FROM `FSMap` WHERE `playlistId` = ?;
+
+deleteFSMapByMapIdsAndPlaylistId:
+DELETE FROM `FSMap` WHERE mapId IN ? AND playlistId = ?;

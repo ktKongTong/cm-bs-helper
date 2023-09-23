@@ -61,3 +61,10 @@ INTO `BSMap` (
     updatedAt,
     lastPublishedAt
 ) VALUES ?;
+
+deleteByMapId:
+DELETE FROM `BSMap` WHERE mapId = ?;
+deleteByMapIds:
+DELETE FROM `BSMap` WHERE mapId IN ?;
+deleteAll:
+DELETE FROM `BSMap`;

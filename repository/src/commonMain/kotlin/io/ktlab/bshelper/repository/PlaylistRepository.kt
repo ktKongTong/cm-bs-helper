@@ -41,6 +41,10 @@ import java.util.UUID
 import kotlin.random.Random
 import kotlin.random.nextInt
 import io.ktlab.bshelper.model.Result
+import io.ktlab.bshelper.model.dto.ExportPlaylist
+import io.ktlab.bshelper.model.dto.MapItem
+import io.ktlab.bshelper.model.dto.request.KVSetRequest
+import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -214,8 +218,8 @@ class PlaylistRepository(
             .filter { it.value.state == PlaylistScanStateEnum.SELECTED_BUT_NOT_START }
             .pmap {
                 scanDirAsPlaylist(it)
-                playlistToBeScanMap[it.value.playlistId]?.let {
-                    bsHelperDAO.fSPlaylistQueries.insertAnyWay(it.copy(sync = true,syncTimestamp = System.currentTimeMillis()))
+                playlistToBeScanMap[it.value.playlistId]?.let {playlist ->
+                    bsHelperDAO.fSPlaylistQueries.insertAnyway(playlist.copy(sync = true,syncTimestamp = System.currentTimeMillis()))
                 }
             }
         emit(scanState.copy(state = GlobalScanStateEnum.SCAN_COMPLETE))
@@ -302,7 +306,25 @@ class PlaylistRepository(
     private fun collectMapInfoFromWeb(){
 
     }
+      fun exportPlaylistAsKey(playlist: IPlaylist): Flow<Result<String>> = flow {
+         val mapItems = bsHelperDAO
+             .fSMapQueries
+             .getAllByPlaylistId(playlist.id)
+             .executeAsList()
+             .mapToVO()
+             .map { MapItem(it.fsMap.mapId) }
 
+             val exportPlaylist = ExportPlaylist(playlist.title,playlist.id,mapItems)
+             val res = toolAPI.setKV(KVSetRequest(value = exportPlaylist, timeout = 60*60*24*7))
+             if (res is APIRespResult.Error){
+                 emit(Result.Error(res.exception))
+             }
+         (res as APIRespResult.Success).data.key?.let {
+             emit(Result.Success(it))
+         }
+     }.catch {
+            emit(Result.Error(Exception(it.message)))
+     }
 
     private fun <A, B>List<A>.pmap(f: suspend (A) -> B): List<B> = runBlocking {
         map { async(Dispatchers.Default) { f(it) } }.map { it.await() }

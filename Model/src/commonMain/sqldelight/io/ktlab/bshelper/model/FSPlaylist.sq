@@ -44,11 +44,8 @@ INSERT INTO `FSPlaylist` (
     sync,
     syncTimestamp
 ) VALUES ?;
--- (
--- ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
--- );
 
-insertAnyWay:
+insertAnyway:
 INSERT OR REPLACE INTO `FSPlaylist` (
     uuid,
     name,
@@ -73,22 +70,24 @@ selectByIds:
 SELECT *
 FROM FSPlaylist
 WHERE uuid IN ?;
--- update:
--- UPDATE `FSPlaylist` SET
---     name = ?,
---     description = ?,
---     mapAmount = ?,
---     totalDuration = ?,
---     maxDuration = ?,
---     avgDuration = ?,
---     maxNote = ?,
---     avgNote = ?,
---     avgObstacle = ?,
---     avgBomb = ?,
---     maxNps = ?,
---     avgNps = ?,
---     bsPlaylistId = ?,
---     basePath = ?,
---     sync = ?,
---     syncTimestamp = ?
--- WHERE uuid = ?;
+
+selectAllByBasePath:
+SELECT * FROM `FSPlaylist`
+WHERE basePath = ?;
+
+
+deleteByBasePath:
+DELETE FROM `FSPlaylist`
+WHERE basePath = ?;
+
+deleteById:
+DELETE FROM `FSPlaylist`
+WHERE uuid = ?;
+
+deleteAll:
+DELETE FROM `FSPlaylist`;
+-- DELETE FROM `FSMap`;
+
+deleteAllByBasePath:
+DELETE FROM `FSPlaylist`
+WHERE basePath = ?;

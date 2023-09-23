@@ -91,9 +91,8 @@ fun PlaylistCard(
                 PlaylistCardMenu(
                     modifier = Modifier
                         .padding(start = 2.dp),
-                    onExport = {
-                        onUIEvent(HomeUIEvent.ExportPlaylistAsKey(playlist))
-                    },
+                    onExport = { onUIEvent(HomeUIEvent.ExportPlaylistAsKey(playlist)) },
+//                    onExportBpList = {}
                     onDelete = {
                         onUIEvent(HomeUIEvent.DeletePlaylist(playlist))
                     },

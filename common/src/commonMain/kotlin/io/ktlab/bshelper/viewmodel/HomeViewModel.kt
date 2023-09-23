@@ -26,6 +26,7 @@ import java.util.UUID
 
 import io.ktlab.bshelper.repository.FSMapRepository
 import io.ktlab.bshelper.repository.UserPreferenceRepository
+import kotlinx.coroutines.cancel
 
 data class HomeViewModelState(
     val playlists: List<IPlaylist> = emptyList(),
@@ -166,24 +167,7 @@ class HomeViewModel(
             is HomeUIEvent.MapMultiSelected -> { onMapMultiSelected(event.map) }
             is HomeUIEvent.MultiDeleteAction -> { onMultiDeleteAction(event.mapSet) }
             is HomeUIEvent.MultiMoveAction -> { onMultiMoveAction(event.mapSet,event.targetPlaylist) }
-            is HomeUIEvent.ExportPlaylistAsKey -> {
-//                viewModelScope.launch subroutine@{
-//                    playlistRepository
-//                        .exportPlaylistAsKey(event.playlist)
-//                        .collect {res->
-//                            Log.e("HomeViewModel export:",res.successOr(""))
-//                            showSnackBar(
-//                                msg = res.successOr(""),
-//                                actionLabel = "copy",
-//                                action = {
-//                                    copyToClipboard(res.successOr(""))
-//                                },
-//                                duration = SnackbarDuration.Long
-//                            )
-//                            this@subroutine.cancel()
-//                        }
-//                }
-            }
+            is HomeUIEvent.ExportPlaylistAsKey -> { onExportPlaylistAsKey(event.playlist) }
             is HomeUIEvent.PlayPreviewMusicSegment -> {
 //                viewModelScope.launch(Dispatchers.IO) {
 //                    mediaPlayerManager.play(MediaPlayerManager.generateMapID(event.map),event.map.getMusicPreviewURI().toString())
@@ -193,7 +177,9 @@ class HomeViewModel(
 //            is HomeUIEvent.MsgShown -> { snackBarShown(event.msgId) }
         }
     }
-
+    fun copyToClipboard(text: String, label: String = "") {
+//        clipboardManager.setPrimaryClip(ClipData.newPlainText(label,text))
+    }
     private fun refreshPlayLists(managerDir:String = "") {
         val managerPath = managerDir.ifEmpty { viewModelState.value.userPreferenceState.currentManageDir }
         viewModelState.update { it.copy(isLoading = true) }
@@ -249,6 +235,26 @@ class HomeViewModel(
             )
         }
     }
+
+    private fun onExportPlaylistAsKey(playlist: IPlaylist) {
+        localViewModelScope.launch subroutine@{
+                    playlistRepository
+                        .exportPlaylistAsKey(playlist)
+                        .collect {res->
+//                            Log.e("HomeViewModel export:",res.successOr(""))
+                            showSnackBar(
+                                msg = res.successOr(""),
+                                actionLabel = "copy",
+                                action = {
+                                    copyToClipboard(res.successOr(""))
+                                },
+                                duration = SnackbarDuration.Long
+                            )
+                            this@subroutine.cancel()
+                        }
+                }
+    }
+
     private fun onChangeMapListSortRule(sortRule:Pair<SortKey,SortType>) {
         viewModelState.update {
             it.copy(

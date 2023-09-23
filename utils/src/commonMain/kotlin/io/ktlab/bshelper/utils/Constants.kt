@@ -8,7 +8,7 @@ object Constants {
 //        "https://beatsaver.wgzeyu.vip/api/",
 //        "https://beatsaver.com/api/"
 //     )
-    val TOOL_BASE_URL = "https://kv-store-five.vercel.app/"
+    val TOOL_BASE_URL = "https://kv-store-five.vercel.app"
     const val DATABASE_NAME = "bshelper-db"
     const val DEFAULT_ZIP_DOWNLOAD_PATH = "/storage/emulated/0/Download/BSHelper"
     const val DEFAULT_MANAGER_DIR_PATH = "/storage/emulated/0/Android/data/com.StarRiverVR.LightBand/files/CustomMusic"

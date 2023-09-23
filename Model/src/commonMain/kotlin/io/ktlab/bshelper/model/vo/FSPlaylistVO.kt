@@ -9,23 +9,23 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 data class FSPlaylistVO(
-    public val _uuid: String,
-    public val _name: String,
-    public val _description: String?,
-    public val _mapAmount: Int,
-    public val _totalDuration: Long?,
-    public val _maxDuration: Long?,
-    public val _avgDuration: Long?,
-    public val _maxNote: Long?,
-    public val _avgNote: Double?,
-    public val _avgObstacle: Double?,
-    public val _avgBomb: Double?,
-    public val _maxNps: Double?,
-    public val _avgNps: Double?,
-    public val _bsPlaylistId: String?,
-    public val _basePath: String,
-    public val _sync: Boolean,
-    public val _syncTimestamp: Long,
+    val uuid: String,
+    val _name: String,
+    val description: String?,
+    val _mapAmount: Int,
+    val totalDuration: Long?,
+    val maxDuration: Long?,
+    val avgDuration: Long?,
+    val maxNote: Long?,
+    val avgNote: Double?,
+    val avgObstacle: Double?,
+    val avgBomb: Double?,
+    val maxNps: Double?,
+    val avgNps: Double?,
+    val bsPlaylistId: String?,
+    val basePath: String,
+    val sync: Boolean,
+    val syncTimestamp: Long,
     override val id: String,
     override val title: String,
 ): IPlaylist {
@@ -34,7 +34,7 @@ data class FSPlaylistVO(
     }
 
     override fun getTotalDuration(): Duration {
-        return _totalDuration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO
+        return totalDuration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO
     }
 
     override fun getMapAmount(): Int {
@@ -50,27 +50,27 @@ data class FSPlaylistVO(
     }
 
     override fun getMaxDuration(): Duration {
-        return _maxDuration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO
+        return maxDuration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO
     }
 
     override fun getMaxNotes(): Int {
-        return _maxNote?.toInt() ?: 0
+        return maxNote?.toInt() ?: 0
     }
 
     override fun getMaxNPS(): Double {
-        return _maxNps ?: 0.0
+        return maxNps ?: 0.0
     }
 
     override fun getAvgDuration(): Duration {
-        return _avgDuration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO
+        return avgDuration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO
     }
 
     override fun getAvgNPS(): String {
-        return _avgNps?.toString() ?: "0.0"
+        return avgNps?.toString() ?: "0.0"
     }
 
     override fun getAvgNotes(): String {
-        return _avgNote?.toString() ?: "0.0"
+        return avgNote?.toString() ?: "0.0"
     }
 
     override fun getImage(): String {
@@ -86,7 +86,7 @@ data class FSPlaylistVO(
     }
 
     override fun getTargetPath(): String {
-        return _basePath+ File.separator+_name
+        return basePath+ File.separator+_name
     }
 
     companion object {
