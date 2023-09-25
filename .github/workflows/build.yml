@@ -36,7 +36,7 @@ jobs:
         with:
           name: executable
 #          todo retrieve version and packagename from gradle
-          path: desktop/build/compose/binaries/main/${{env.EXT}}/CM-BS-Helper-0.0.1.${{env.EXT}}
+          path: desktop/build/compose/binaries/main-release/${{env.EXT}}/CM-BS-Helper-0.0.1.${{env.EXT}}
       - name: Build APK
         if: runner.os == 'Linux'
         run: bash ./gradlew assembleDebug --stacktrace
