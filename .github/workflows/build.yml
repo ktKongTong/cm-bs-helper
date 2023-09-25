@@ -27,9 +27,9 @@ jobs:
         run: gradle packageReleaseDistributionForCurrentOS
       - run: set EXT msi
         if: runner.os == 'Windows'
-      - run: set EXT dmg
+      - run: export EXT='dmg'
         if: runner.os == 'macOS'
-      - run: set EXT deb
+      - run: export EXT='deb'
         if: runner.os == 'Linux'
       - name: Upload executable
         uses: actions/upload-artifact@v3
