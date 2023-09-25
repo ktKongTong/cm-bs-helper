@@ -6,21 +6,13 @@ plugins {
 }
 
 kotlin {
-    jvm {
-//        compilations.all {
-//            kotlinOptions {
-//                jvmTarget = JavaVersion.VERSION_17.toString()
-//            }
-//        }
-    }
+    jvmToolchain(17)
+    jvm()
     sourceSets {
         val jvmMain by getting  {
             dependencies {
                 implementation(compose.desktop.currentOs)
-                implementation(libs.kotlinx.coroutines.swing)
                 implementation(project(":common"))
-                implementation(project(":Model"))
-                implementation(project(":SysService"))
             }
         }
     }

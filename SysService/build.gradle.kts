@@ -2,11 +2,11 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
+    jvmToolchain(17)
     androidTarget("android")
     jvm("desktop") {
         compilations.all {
@@ -18,24 +18,10 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-
-                api(compose.runtime)
-                implementation(compose.ui)
-                implementation(compose.foundation)
-//                implementation(libs.androidx.paging)
-
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.coroutines.core)
-
                 implementation(libs.sqldelight.coroutines.extensions)
-                implementation(libs.sqldelight.primitive.adapters)
-
                 implementation(libs.kotlin.reflect)
-
-                api(libs.koin.core)
-                implementation(libs.koin.core.coroutines)
-                implementation(libs.koin.compose)
-
                 implementation(libs.androidx.annotation)
                 implementation(libs.androidx.collection)
                 implementation(libs.androidx.datastore.core.okio)
@@ -48,17 +34,15 @@ kotlin {
             }
         }
         val androidMain by getting {
-            dependsOn(commonMain)
+//            dependsOn(commonMain)
             dependencies {
                 implementation(libs.androidx.core.ktx)
-                implementation(libs.androidx.activity.compose)
-                implementation(libs.androidx.appcompat)
                 implementation(libs.sqldelight.android.driver)
                 implementation(libs.ktor.client.okhttp)
             }
         }
         val desktopMain by getting {
-            dependsOn(commonMain)
+//            dependsOn(commonMain)
             dependencies{
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.sqldelight.jvm.driver)
@@ -78,6 +62,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
+    kotlin{
+        jvmToolchain(17)
+    }
     namespace = "io.ktlab.bshelper.service"
 }

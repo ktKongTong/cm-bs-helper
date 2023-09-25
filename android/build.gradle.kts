@@ -28,12 +28,12 @@ android {
             excludes.add("META-INF/gradle/incremental.annotation.processors")
         }
     }
+    kotlin{
+        jvmToolchain(17)
+    }
 }
 
 dependencies {
     implementation(project(":common"))
-    implementation(project(":Model"))
-    implementation(project(":SysService"))
-    implementation(libs.androidx.activity.compose)
     implementation(libs.koin.androidx.compose)
 }

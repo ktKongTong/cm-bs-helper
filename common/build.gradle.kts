@@ -16,14 +16,14 @@ sqldelight {
     }
 }
 kotlin {
+    jvmToolchain(17)
     androidTarget("android")
     jvm {
-
-//        compilations.all {
-//            kotlinOptions {
-//                jvmTarget = JavaVersion.VERSION_17.toString()
-//            }
-//        }
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = JavaVersion.VERSION_17.toString()
+            }
+        }
     }
 
     sourceSets {
@@ -92,6 +92,7 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.koin.android)
+                implementation(libs.koin.androidx.compose)
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.androidx.appcompat)
