@@ -28,11 +28,11 @@ jobs:
       - name: Upload executable
         uses: actions/upload-artifact@v3
         with:
-          name: executable
+          name: cm-bs-helper-${{ runner.os }}
           path: |
-            desktop/build/compose/binaries/main*/msi/*.msi
-            desktop/build/compose/binaries/main*/deb/*.deb
-            desktop/build/compose/binaries/main*/dmg/*.dmg
+            desktop/build/compose/binaries/main-release/msi/*.msi
+            desktop/build/compose/binaries/main-release/deb/*.deb
+            desktop/build/compose/binaries/main-release/dmg/*.dmg
       - name: Build APK
         if: runner.os == 'Linux'
         run: bash ./gradlew assembleDebug --stacktrace
