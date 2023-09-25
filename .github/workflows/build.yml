@@ -25,23 +25,18 @@ jobs:
           gradle-version: 8.2
       - name: Build Target
         run: gradle packageReleaseDistributionForCurrentOS
-      - run: set EXT msi
-        if: runner.os == 'Windows'
-      - run: export EXT='dmg'
-        if: runner.os == 'macOS'
-      - run: export EXT='deb'
-        if: runner.os == 'Linux'
       - name: Upload executable
         uses: actions/upload-artifact@v3
         with:
           name: executable
 #          todo retrieve version and packagename from gradle
-          path: desktop/build/compose/binaries/main-release/${{env.EXT}}/CM-BS-Helper-0.0.1.${{env.EXT}}
+          path: |
+            desktop/build/compose/binaries/main*/[msi|dmg|deb]/*.[msi|dmg|deb]
       - name: Build APK
         if: runner.os == 'Linux'
         run: bash ./gradlew assembleDebug --stacktrace
       - name: Upload Build APK
         uses: actions/upload-artifact@v3
         with:
-         name: apk
-         path: app/build/outputs/apk/debug/app-debug.apk
+         name: cm-bs-helper
+         path: android/build/outputs/apk/debug/android-debug.apk
