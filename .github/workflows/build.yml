@@ -2,10 +2,11 @@ name: build
 on:
   workflow_dispatch:
 #  pull_request:
-#  push:
+  push:
 #    branches:
 #      - master
-
+    tags:
+      - "v*"
 jobs:
   desktop:
     strategy:
@@ -24,8 +25,6 @@ jobs:
           gradle-version: 8.2
       - name: Build Target
         run: gradle packageReleaseDistributionForCurrentOS
-
-      - name: set env for different OS
       - run: if [ ${{ matrix.os }} == 'ubuntu-latest' ]; then export EXT='deb'; fi
       - run: if [ ${{ matrix.os }} == 'macos-latest' ]; then export EXT='dmg'; fi
       - run: if [ ${{ matrix.os }} == 'windows-latest' ]; then export EXT='exe'; fi
