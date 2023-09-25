@@ -17,8 +17,6 @@ fun main() {
     )
     application {
         PreComposeWindow(
-
-//            undecorated = true,
             onCloseRequest = ::exitApplication,
             title = "BSHelper",
             state = WindowState(size = DpSize(1440.dp, 768.dp))

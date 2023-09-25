@@ -43,7 +43,7 @@ kotlin {
 
                 implementation(libs.wsc.multiplatform)
                 implementation(libs.mpfilepicker)
-                implementation(libs.androidx.paging)
+//                implementation(libs.androidx.paging)
 
                 implementation(libs.androidx.annotation)
                 implementation(libs.androidx.collection)

@@ -23,10 +23,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
+//import androidx.paging.LoadState
 import io.ktlab.bshelper.model.IMap
-import io.ktlab.bshelper.paging.LazyPagingItems
-import io.ktlab.bshelper.paging.itemKey
+//import io.ktlab.bshelper.paging.LazyPagingItems
+//import io.ktlab.bshelper.paging.itemKey
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapCard
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
@@ -47,101 +47,101 @@ fun MapCardPagingList(
     localState: LocalState,
     mapMultiSelectedMode: Boolean,
     mapMultiSelected: Set<IMap> = setOf(),
-    mapPagingItems: LazyPagingItems<IMap>,
+//    mapPagingItems: LazyPagingItems<IMap>,
     downloadingTask: Map<String,DownloadTask>,
     onUIEvent: (UIEvent) -> Unit,
     stickyHeader : @Composable () -> Unit = {},
 ) {
-    if (mapPagingItems.loadState.refresh is LoadState.Error) {
-        LaunchedEffect(key1 = snackbarHostState) {
-            snackbarHostState.showSnackbar(
-                (mapPagingItems.loadState.refresh as LoadState.Error).error.message ?: ""
-            )
-        }
-    }
-    Box(modifier = modifier.fillMaxSize()) {
-    if (mapPagingItems.loadState.refresh is LoadState.Loading) {
-        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-    }else {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(48.dp)
-//                .padding(horizontal = 16.dp)
-//        ) {
-//            stickyHeader()
+//    if (mapPagingItems.loadState.refresh is LoadState.Error) {
+//        LaunchedEffect(key1 = snackbarHostState) {
+//            snackbarHostState.showSnackbar(
+//                (mapPagingItems.loadState.refresh as LoadState.Error).error.message ?: ""
+//            )
 //        }
-        LazyColumn(
-            modifier = modifier,
-            contentPadding = contentPadding,
-            state = state,
-        ) {
-            stickyHeader {
-                Surface(Modifier.fillParentMaxWidth()) {
-                    stickyHeader()
-                }
-            }
-            items(
-                count = mapPagingItems.itemCount,
-                key = mapPagingItems.itemKey { it.getID() },
-            ) { index ->
-                val map = mapPagingItems[index]
-                if (map != null) {
-//                    val context = LocalContext.current
-                    BSMapCard(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .combinedClickable(
-                                onLongClick = {
-//                                    Toast
-//                                        .makeText(context, "MapCardList ${map.getID()} LongClick",
-//                                            Toast.LENGTH_SHORT)
-//                                        .show()
-                                },
-                                onClick = {
-//                                    Toast.makeText(context, "MapCardList ${map.getID()}", Toast.LENGTH_SHORT).show()
-//                                    Log.d("MapCardList", "MapCardList ${map.getID()}")
-                                    BeatSaverUIEvent.MapTapped(map)
-                                }),
-                        map = map,
-                        checked = mapMultiSelected.contains(map),
-                        multiSelectedMode = mapMultiSelectedMode,
-                        local = false,
-                        selectableIPlaylists = localState.selectableLocalPlaylists,
-                        downloadInfo = downloadingTask[map.getID()],
-                        onDownloadMap = {it,targetPath,targetPlaylistId-> onUIEvent(BeatSaverUIEvent.DownloadMap(it,targetPath,targetPlaylistId)) },
-                        onPlayPreviewMusicSegment = {
-                            onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map))
-                        },
-                        onUIEvent = onUIEvent,
-                        onMapMultiSelected = { onUIEvent(BeatSaverUIEvent.MapMultiSelected(it)) },
-
-                    )
-                }
-            }
-            item {
-//                if (mapPagingItems.loadState.refresh is LoadState.Loading) {
-//                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+//    }
+//    Box(modifier = modifier.fillMaxSize()) {
+//    if (mapPagingItems.loadState.refresh is LoadState.Loading) {
+//        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+//    }else {
+////        Row(
+////            modifier = Modifier
+////                .fillMaxWidth()
+////                .height(48.dp)
+////                .padding(horizontal = 16.dp)
+////        ) {
+////            stickyHeader()
+////        }
+//        LazyColumn(
+//            modifier = modifier,
+//            contentPadding = contentPadding,
+//            state = state,
+//        ) {
+//            stickyHeader {
+//                Surface(Modifier.fillParentMaxWidth()) {
+//                    stickyHeader()
 //                }
-                if (mapPagingItems.loadState.append is LoadState.Loading) {
-                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
-                }else if(mapPagingItems.loadState.append.endOfPaginationReached){
-                    Row (
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        horizontalArrangement = Arrangement.Center,
-                    ){
-                        Text(text = "😲 no more data", style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
-            }
-//            item {
-//                EmptyContent(modifier = Modifier.fillMaxSize())
 //            }
-        }
-    }
-
-    }
+//            items(
+//                count = mapPagingItems.itemCount,
+//                key = mapPagingItems.itemKey { it.getID() },
+//            ) { index ->
+//                val map = mapPagingItems[index]
+//                if (map != null) {
+////                    val context = LocalContext.current
+//                    BSMapCard(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .combinedClickable(
+//                                onLongClick = {
+////                                    Toast
+////                                        .makeText(context, "MapCardList ${map.getID()} LongClick",
+////                                            Toast.LENGTH_SHORT)
+////                                        .show()
+//                                },
+//                                onClick = {
+////                                    Toast.makeText(context, "MapCardList ${map.getID()}", Toast.LENGTH_SHORT).show()
+////                                    Log.d("MapCardList", "MapCardList ${map.getID()}")
+//                                    BeatSaverUIEvent.MapTapped(map)
+//                                }),
+//                        map = map,
+//                        checked = mapMultiSelected.contains(map),
+//                        multiSelectedMode = mapMultiSelectedMode,
+//                        local = false,
+//                        selectableIPlaylists = localState.selectableLocalPlaylists,
+//                        downloadInfo = downloadingTask[map.getID()],
+//                        onDownloadMap = {it,targetPath,targetPlaylistId-> onUIEvent(BeatSaverUIEvent.DownloadMap(it,targetPath,targetPlaylistId)) },
+//                        onPlayPreviewMusicSegment = {
+//                            onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map))
+//                        },
+//                        onUIEvent = onUIEvent,
+//                        onMapMultiSelected = { onUIEvent(BeatSaverUIEvent.MapMultiSelected(it)) },
+//
+//                    )
+//                }
+//            }
+//            item {
+////                if (mapPagingItems.loadState.refresh is LoadState.Loading) {
+////                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+////                }
+//                if (mapPagingItems.loadState.append is LoadState.Loading) {
+//                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+//                }else if(mapPagingItems.loadState.append.endOfPaginationReached){
+//                    Row (
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(48.dp),
+//                        horizontalArrangement = Arrangement.Center,
+//                    ){
+//                        Text(text = "😲 no more data", style = MaterialTheme.typography.bodyMedium)
+//                    }
+//                }
+//            }
+////            item {
+////                EmptyContent(modifier = Modifier.fillMaxSize())
+////            }
+//        }
+//    }
+//
+//    }
 
 }

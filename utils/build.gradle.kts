@@ -11,7 +11,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(libs.androidx.paging)
+//                implementation(libs.androidx.paging)
                 implementation(libs.sqldelight.coroutines.extensions)
                 implementation(libs.sqldelight.primitive.adapters)
                 implementation(libs.precompose)

@@ -33,7 +33,7 @@ import io.ktlab.bshelper.ui.components.VerticalDivider
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUiState
 
-import io.ktlab.bshelper.paging.collectAsLazyPagingItems
+//import io.ktlab.bshelper.paging.collectAsLazyPagingItems
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,18 +102,18 @@ fun BeatSaverScreen(
 ////                it is DownloadTask.MapDownloadTask
 //                it.taskType == DownloadType.MAP && it.status !=DownloadStatus.FINISHED && it.relateMap != null
 //            }.associateBy { it.relateMap!!.getID() }
-            val mapPagingItems = uiState.mapFlow.collectAsLazyPagingItems()
+//            val mapPagingItems = uiState.mapFlow.collectAsLazyPagingItems()
             MapCardPagingList(
                 Modifier.weight(2f,false),
                 snackbarHostState = snackbarHostState,
-                mapPagingItems = mapPagingItems,
+//                mapPagingItems = mapPagingItems,
                 localState = uiState.localState,
                 mapMultiSelectedMode = uiState.multiSelectMode,
                 mapMultiSelected = uiState.multiSelectedBSMap,
                 onUIEvent = onUIEvent,
                 stickyHeader = {
                     BSMapCardListHeader(
-                        count = mapPagingItems.itemCount,
+                        count = 0,
                         localState = uiState.localState,
                         multiSelectedMode = uiState.multiSelectMode,
                         multiSelectedBSMap = uiState.multiSelectedBSMap,

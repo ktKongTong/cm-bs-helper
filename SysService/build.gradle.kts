@@ -22,7 +22,7 @@ kotlin {
                 api(compose.runtime)
                 implementation(compose.ui)
                 implementation(compose.foundation)
-                implementation(libs.androidx.paging)
+//                implementation(libs.androidx.paging)
 
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.coroutines.core)
