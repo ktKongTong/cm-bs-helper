@@ -29,14 +29,16 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: executable
-#          todo retrieve version and packagename from gradle
           path: |
-            desktop/build/compose/binaries/main*/[msi|dmg|deb]/*.[msi|dmg|deb]
+            desktop/build/compose/binaries/main*/msi/*.msi
+            desktop/build/compose/binaries/main*/deb/*.deb
+            desktop/build/compose/binaries/main*/dmg/*.dmg
       - name: Build APK
         if: runner.os == 'Linux'
         run: bash ./gradlew assembleDebug --stacktrace
       - name: Upload Build APK
         uses: actions/upload-artifact@v3
+        if: runner.os == 'Linux'
         with:
          name: cm-bs-helper
          path: android/build/outputs/apk/debug/android-debug.apk
