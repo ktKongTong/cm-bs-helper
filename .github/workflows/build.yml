@@ -40,5 +40,5 @@ jobs:
         uses: actions/upload-artifact@v3
         if: runner.os == 'Linux'
         with:
-         name: cm-bs-helper
+         name: cm-bs-helper-android
          path: android/build/outputs/apk/debug/android-debug.apk
