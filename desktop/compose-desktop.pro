@@ -12,6 +12,5 @@
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
-
+-ignorewarnings
 -keep class org.ocpsoft.prettytime.i18n**
--keep class kotlinx.coroutines.**
