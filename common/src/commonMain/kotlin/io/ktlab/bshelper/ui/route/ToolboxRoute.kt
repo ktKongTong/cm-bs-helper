@@ -14,11 +14,9 @@ import moe.tlaster.precompose.koin.koinViewModel
 fun ToolboxRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
-//    toolboxViewModel: ToolboxViewModel = koinViewModel<ToolboxViewModel>()
+    toolboxViewModel: ToolboxViewModel = koinViewModel<ToolboxViewModel>()
 ){
 
-    val viewModelCoroutineScope = rememberCoroutineScope()
-    val toolboxViewModel = remember(viewModelCoroutineScope) { ToolboxViewModel(viewModelCoroutineScope) }
     val uiState by toolboxViewModel.uiState.collectAsState()
     ToolboxScreen(
         uiState = uiState,

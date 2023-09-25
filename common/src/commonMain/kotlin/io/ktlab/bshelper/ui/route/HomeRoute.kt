@@ -13,10 +13,8 @@ import moe.tlaster.precompose.koin.koinViewModel
 fun HomeRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
-//     homeViewModel:HomeViewModel = koinViewModel<HomeViewModel>()
+     homeViewModel:HomeViewModel = koinViewModel<HomeViewModel>()
 ){
-    val viewModelCoroutineScope = rememberCoroutineScope()
-    val homeViewModel = remember(viewModelCoroutineScope) { HomeViewModel(viewModelCoroutineScope) }
     val uiState by homeViewModel.uiState.collectAsState()
 //    val uiState = homeViewModel.uiState.collectAsState(homeViewModel.viewModelState.value.toUiState()).value
 //    val homeListLazyListState = rememberLazyListState()

@@ -115,14 +115,13 @@ sealed class HomeUIEvent: UIEvent(){
 
 
 class HomeViewModel(
-    viewModelCoroutineScope: CoroutineScope? = null,
+    private val playlistRepository: PlaylistRepository,
+    private val mapRepository: FSMapRepository,
+    private val userPreferenceRepository: UserPreferenceRepository,
 )
     : ViewModel()
 {
-    private val playlistRepository: PlaylistRepository by inject(PlaylistRepository::class.java)
-    private val mapRepository: FSMapRepository by inject(FSMapRepository::class.java)
-    private val userPreferenceRepository: UserPreferenceRepository by inject(UserPreferenceRepository::class.java)
-    private val localViewModelScope = viewModelCoroutineScope ?: viewModelScope
+    private val localViewModelScope = viewModelScope
 
     private val viewModelState = MutableStateFlow(HomeViewModelState(
         isLoading = true,

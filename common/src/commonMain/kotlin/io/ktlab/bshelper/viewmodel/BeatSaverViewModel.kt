@@ -164,12 +164,11 @@ sealed class BeatSaverUIEvent: UIEvent(){
 
 @OptIn(FlowPreview::class)
 class BeatSaverViewModel constructor(
+    private val playlistRepository: PlaylistRepository,
+    private val mapRepository: FSMapRepository,
+    private val userPreferenceRepository: UserPreferenceRepository,
     private val viewModelCoroutineScope: CoroutineScope? = null,
 ) : ViewModel() {
-
-    private val playlistRepository: PlaylistRepository by KoinJavaComponent.inject(PlaylistRepository::class.java)
-    private val mapRepository: FSMapRepository by KoinJavaComponent.inject(FSMapRepository::class.java)
-    private val userPreferenceRepository: UserPreferenceRepository by KoinJavaComponent.inject(UserPreferenceRepository::class.java)
 
     private val localViewModelScope = viewModelScope
 

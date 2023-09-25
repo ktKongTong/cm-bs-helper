@@ -65,12 +65,13 @@ data class ToolboxViewModelState constructor(
 //        downloadTasks = downloadTasks,
     )
 }
-class ToolboxViewModel(viewModelCoroutineScope: CoroutineScope? = null) : ViewModel() {
-    private val playlistRepository: PlaylistRepository by inject(PlaylistRepository::class.java)
-    private val userPreferenceRepository: UserPreferenceRepository by inject(UserPreferenceRepository::class.java)
+class ToolboxViewModel(
+    private val playlistRepository: PlaylistRepository,
+    private val userPreferenceRepository: UserPreferenceRepository,
+    viewModelCoroutineScope: CoroutineScope? = null
+) : ViewModel() {
 
-
-    private val localViewModelScope = viewModelCoroutineScope ?: viewModelScope
+    private val localViewModelScope = viewModelScope
     private val viewModelState = MutableStateFlow(
         ToolboxViewModelState(
             isLoading = true,
