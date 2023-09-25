@@ -26,6 +26,11 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "CM-BS-Helper"
             packageVersion = "1.0.0"
+            // see https://github.com/cashapp/sqldelight/issues/2151
+            // https://github.com/JetBrains/compose-multiplatform/issues/381
+            // for sqldelight and ktor
+            modules("java.sql","java.naming")
+            modules()
 
             windows {
                 menu = true
