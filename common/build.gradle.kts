@@ -3,18 +3,10 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
-    alias(libs.plugins.sqldelight)
     alias(libs.plugins.kotlin.serialization)
     id("dev.icerock.mobile.multiplatform-resources")
 }
 
-sqldelight {
-    databases {
-        create("BSHelperDatabase") {
-            packageName.set("io.ktlab.bshelper.model")
-        }
-    }
-}
 kotlin {
     jvmToolchain(17)
     androidTarget("android")
@@ -29,10 +21,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-
-
                 api(compose.runtime)
-
                 implementation(compose.ui)
                 implementation(compose.foundation)
                 implementation(compose.material)
@@ -43,7 +32,6 @@ kotlin {
 
                 implementation(libs.wsc.multiplatform)
                 implementation(libs.mpfilepicker)
-//                implementation(libs.androidx.paging)
 
                 implementation(libs.androidx.annotation)
                 implementation(libs.androidx.collection)
@@ -53,12 +41,6 @@ kotlin {
                 api(libs.moko.resources)
                 api(libs.moko.resources.compose)
 
-//                api(libs.moko.mvvm)
-//                api(libs.moko.flow.compose)
-//                implementation(libs.voyager.navigator)
-//                implementation(libs.kodein.di)
-//                implementation(libs.kodein.di.compose)
-
                 api(libs.precompose)
                 api(libs.precompose.koin)
                 api(libs.precompose.viewmodel)
@@ -67,45 +49,36 @@ kotlin {
                 api(libs.koin.core)
                 implementation(libs.koin.core.coroutines)
                 implementation(libs.koin.compose)
-
-
-//                implementation(libs.cash.paging.common)
-//                implementation(libs.androidx.paging.compose)
-//                implementation(libs.sqldelight.paging3.extensions)
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.coroutines.core)
 
                 implementation(libs.kamel)
-//                implementation(libs.ktor.serialization.kotlinx.json)
                 implementation(libs.ktor.client.core)
-//                implementation(libs.ktor.client.content.negotiation)
 
-                implementation(project(":Model"))
+                implementation(project(":model"))
                 implementation(project(":utils"))
                 implementation(project(":repository"))
-                implementation(project(":SysService"))
+                implementation(project(":platformService"))
             }
         }
         val androidMain by getting {
-            dependsOn(commonMain)
             dependencies {
                 implementation(libs.koin.android)
                 implementation(libs.koin.androidx.compose)
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.androidx.appcompat)
-                implementation(libs.sqldelight.android.driver)
-//                implementation(libs.ktor.client.okhttp)
             }
         }
         val jvmMain by getting {
+            // see https://github.com/icerockdev/moko-resources/issues/477
             dependsOn(commonMain)
             dependencies {
-//                implementation(libs.ktor.client.okhttp)
+                api(libs.moko.resources)
+                api(libs.moko.resources.compose)
                 implementation(compose.desktop.common)
-//                implementation(libs.sqldelight.jvm.driver)
                 implementation(libs.kotlinx.coroutines.swing)
             }
         }

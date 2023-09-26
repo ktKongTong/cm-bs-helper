@@ -8,8 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/Model" />
-            <option value="$PROJECT_DIR$/SysService" />
+            <option value="$PROJECT_DIR$/model" />
+            <option value="$PROJECT_DIR$/platformService" />
             <option value="$PROJECT_DIR$/androidApp" />
             <option value="$PROJECT_DIR$/bsmg" />
             <option value="$PROJECT_DIR$/common" />

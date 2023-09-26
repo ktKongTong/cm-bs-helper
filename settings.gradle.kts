@@ -19,8 +19,8 @@ include(
     ":androidApp",
     ":desktopApp",
     ":bsmg",
-    ":SysService",
-    ":Model",
+    ":platformService",
+    ":model",
     ":repository",
     ":utils"
 )

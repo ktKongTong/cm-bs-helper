@@ -30,7 +30,6 @@ compose.desktop {
             // https://github.com/JetBrains/compose-multiplatform/issues/381
             // for sqldelight and ktor
             modules("java.sql","java.naming")
-            modules()
 
             windows {
                 menu = true

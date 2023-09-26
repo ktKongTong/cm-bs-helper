@@ -21,9 +21,9 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.okio)
                 implementation(libs.beatmap.io)
-                implementation(project(":Model"))
+                implementation(project(":model"))
                 implementation(project(":bsmg"))
-                implementation(project(":SysService"))
+                implementation(project(":platformService"))
                 implementation(project(":utils"))
 
                 implementation(libs.androidx.annotation)
