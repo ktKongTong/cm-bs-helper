@@ -1,8 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="platformService-desktop">
     <output-path>$PROJECT_DIR$/platformService/build/libs</output-path>
-    <root id="archive" name="platformService-desktop.jar">
-      <element id="module-output" name="cm-bs-helper.platformService.desktopMain" />
-    </root>
+    <root id="archive" name="platformService-desktop.jar" />
   </artifact>
 </component>
