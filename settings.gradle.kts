@@ -16,19 +16,11 @@ rootProject.name = "cm-bs-helper"
 
 include(
     ":common",
-    ":android",
-    ":desktop",
+    ":androidApp",
+    ":desktopApp",
     ":bsmg",
     ":SysService",
     ":Model",
     ":repository",
     ":utils"
 )
-include("common")
-include("android")
-include("desktop")
-include(":SysService")
-include(":Model")
-include(":repository")
-include(":utils")
-include(":bsmg")
