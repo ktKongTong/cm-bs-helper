@@ -21,64 +21,65 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(project(":model"))
+                implementation(project(":utils"))
+                implementation(project(":repository"))
+                implementation(project(":platformService"))
+
+                // kotlin & kotlinx
+                implementation(libs.kotlin.stdlib)
+                implementation(libs.kotlinx.serialization)
+                implementation(libs.kotlinx.datetime)
+
+                // coroutines
+                implementation(libs.kotlinx.coroutines.core)
+
+                // compose
                 api(compose.runtime)
+                api(compose.preview)
                 implementation(compose.ui)
                 implementation(compose.foundation)
-                implementation(compose.material)
                 implementation(compose.materialIconsExtended)
                 implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
 
+                // third party compose
                 implementation(libs.wsc.multiplatform)
                 implementation(libs.mpfilepicker)
-
-                implementation(libs.androidx.annotation)
-                implementation(libs.androidx.collection)
-                implementation(libs.androidx.datastore.core.okio)
-                implementation(libs.androidx.datastore.preferences.core)
-
-                api(libs.moko.resources)
-                api(libs.moko.resources.compose)
-
+                implementation(libs.kamel)
                 api(libs.precompose)
                 api(libs.precompose.koin)
                 api(libs.precompose.viewmodel)
                 api(libs.precompose.molecule)
 
+                // resources
+                api(libs.moko.resources)
+                api(libs.moko.resources.compose)
+
+                // ktor
+                implementation(libs.ktor.client.core)
+
+                // di
                 api(libs.koin.core)
                 implementation(libs.koin.core.coroutines)
                 implementation(libs.koin.compose)
-                implementation(libs.kotlin.stdlib)
-                implementation(libs.kotlinx.serialization)
-                implementation(libs.kotlinx.datetime)
-                implementation(libs.kotlinx.coroutines.core)
 
-                implementation(libs.kamel)
-                implementation(libs.ktor.client.core)
-
-                implementation(project(":model"))
-                implementation(project(":utils"))
-                implementation(project(":repository"))
-                implementation(project(":platformService"))
+                // dataStore
+                implementation(libs.androidx.datastore.preferences.core)
             }
         }
         val androidMain by getting {
             dependencies {
-                implementation(libs.koin.android)
                 implementation(libs.koin.androidx.compose)
-                implementation(libs.androidx.core.ktx)
-                implementation(libs.androidx.activity.compose)
-                implementation(libs.androidx.appcompat)
             }
         }
         val jvmMain by getting {
             // see https://github.com/icerockdev/moko-resources/issues/477
             dependsOn(commonMain)
             dependencies {
-                api(libs.moko.resources)
-                api(libs.moko.resources.compose)
                 implementation(compose.desktop.common)
+                // see https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.1.1
                 implementation(libs.kotlinx.coroutines.swing)
             }
         }

@@ -18,23 +18,25 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+
+                implementation(project(":model"))
+                implementation(project(":utils"))
+
+                // kotlin & kotlinx
+                implementation(libs.kotlin.reflect)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.sqldelight.coroutines.extensions)
-                implementation(libs.kotlin.reflect)
+
+                // dataStore
                 implementation(libs.androidx.annotation)
-                implementation(libs.androidx.collection)
-                implementation(libs.androidx.datastore.core.okio)
                 implementation(libs.androidx.datastore.preferences.core)
+                // ktor
                 implementation(libs.ktor.serialization.kotlinx.json)
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.content.negotiation)
-                implementation(project(":model"))
-                implementation(project(":utils"))
             }
         }
         val androidMain by getting {
-//            dependsOn(commonMain)
             dependencies {
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.sqldelight.android.driver)
@@ -42,7 +44,6 @@ kotlin {
             }
         }
         val desktopMain by getting {
-//            dependsOn(commonMain)
             dependencies{
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.sqldelight.jvm.driver)

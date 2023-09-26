@@ -16,22 +16,23 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(libs.kotlinx.datetime)
-                implementation(libs.kotlinx.serialization)
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.okio)
-                implementation(libs.beatmap.io)
                 implementation(project(":model"))
                 implementation(project(":bsmg"))
                 implementation(project(":platformService"))
                 implementation(project(":utils"))
 
+                implementation(libs.kotlinx.datetime)
+                implementation(libs.kotlinx.serialization)
+                implementation(libs.kotlinx.coroutines.core)
+
+                implementation(libs.okio)
+
+                implementation(libs.beatmap.io)
+
                 implementation(libs.androidx.annotation)
-                implementation(libs.androidx.collection)
-                implementation(libs.androidx.datastore.core.okio)
                 implementation(libs.androidx.datastore.preferences.core)
+
                 implementation(libs.sqldelight.coroutines.extensions)
-                implementation(libs.sqldelight.primitive.adapters)
             }
         }
     }
