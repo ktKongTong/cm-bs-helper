@@ -24,7 +24,8 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.kotlinx.coroutines.core)
-
+                implementation(libs.cash.paging.common)
+                implementation(libs.cash.paging.compose.common)
                 implementation(libs.okio)
 
                 implementation(libs.beatmap.io)

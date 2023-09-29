@@ -59,6 +59,9 @@ kotlin {
 
                 // ktor
                 implementation(libs.ktor.client.core)
+                // paging
+                implementation(libs.cash.paging.common)
+                implementation(libs.cash.paging.compose.common)
 
                 // di
                 api(libs.koin.core)

@@ -3,6 +3,9 @@ package io.ktlab.bshelper.repository
 //import androidx.paging.Pager
 //import androidx.paging.PagingConfig
 //import androidx.paging.PagingData
+import app.cash.paging.Pager
+import app.cash.paging.PagingConfig
+import app.cash.paging.PagingData
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import io.ktlab.bshelper.api.BeatSaverAPI
@@ -12,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
+import io.ktlab.bshelper.paging.BSMapPagingSource
 //import io.ktlab.bshelper.paging.BSMapPagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -116,14 +120,14 @@ class FSMapRepository(
 //        fsMapDao.insertDiffAll(bsMaps.flatMap { it.versions.first().diffs })
     }
 
-//    fun getPagingBSMap(mapFilterParam: MapFilterParam): Flow<PagingData<IMap>> {
-//        return Pager(
-//            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-//            pagingSourceFactory = {
-//                BSMapPagingSource(bsAPI,mapFilterParam)
-//            }
-//        ).flow
-//    }
+    fun getPagingBSMap(mapFilterParam: MapFilterParam): Flow<PagingData<IMap>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = {
+                BSMapPagingSource(bsAPI,mapFilterParam)
+            }
+        ).flow
+    }
     suspend fun deleteFSMapsByPath(playlistId: String,fsMaps:List<FSMap>):Result<String>{
         try {
 //            批量删除

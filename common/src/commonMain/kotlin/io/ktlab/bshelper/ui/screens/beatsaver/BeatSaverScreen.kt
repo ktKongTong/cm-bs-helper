@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import app.cash.paging.compose.collectAsLazyPagingItems
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapCardListHeader
 import io.ktlab.bshelper.ui.screens.beatsaver.components.MapCardPagingList
 import io.ktlab.bshelper.ui.screens.beatsaver.components.MapFilterPanel
@@ -102,11 +103,11 @@ fun BeatSaverScreen(
 ////                it is DownloadTask.MapDownloadTask
 //                it.taskType == DownloadType.MAP && it.status !=DownloadStatus.FINISHED && it.relateMap != null
 //            }.associateBy { it.relateMap!!.getID() }
-//            val mapPagingItems = uiState.mapFlow.collectAsLazyPagingItems()
+            val mapPagingItems = uiState.mapFlow.collectAsLazyPagingItems()
             MapCardPagingList(
                 Modifier.weight(2f,false),
                 snackbarHostState = snackbarHostState,
-//                mapPagingItems = mapPagingItems,
+                mapPagingItems = mapPagingItems,
                 localState = uiState.localState,
                 mapMultiSelectedMode = uiState.multiSelectMode,
                 mapMultiSelected = uiState.multiSelectedBSMap,

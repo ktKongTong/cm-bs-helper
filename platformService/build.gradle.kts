@@ -26,6 +26,9 @@ kotlin {
                 implementation(libs.kotlin.reflect)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.coroutines.core)
+                // paging
+                implementation(libs.cash.paging.common)
+                implementation(libs.cash.paging.compose.common)
 
                 // dataStore
                 implementation(libs.androidx.annotation)

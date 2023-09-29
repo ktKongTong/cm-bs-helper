@@ -1,6 +1,8 @@
 package io.ktlab.bshelper.viewmodel
 
 import androidx.compose.material3.SnackbarDuration
+import app.cash.paging.PagingData
+import app.cash.paging.cachedIn
 //import androidx.paging.PagingData
 //import androidx.paging.cachedIn
 import io.ktlab.bshelper.model.*
@@ -42,7 +44,7 @@ sealed interface BeatSaverUiState {
         override val snackBarMessages: List<SnackBarMessage> = emptyList(),
         val localState: LocalState = LocalState(),
         val mapFilterPanelState: MapQueryState = MapQueryState(),
-//        val mapFlow: Flow<PagingData<IMap>> = emptyFlow(),
+        val mapFlow: Flow<PagingData<IMap>> = emptyFlow(),
 //        val downloadTaskFlow: Flow<List<DownloadTask>> =  emptyFlow(),
         val multiSelectMode: Boolean = false,
         val multiSelectedBSMap: Set<IMap> = emptySet(),
@@ -112,7 +114,7 @@ data class BeatSaverViewModelState(
     //
     val mapFilterPanelState: MapQueryState = MapQueryState(),
     // 在线分页数据
-//    val mapFlow: Flow<PagingData<IMap>>? = null,
+    val mapFlow: Flow<PagingData<IMap>>? = null,
 //
 //    val playlistFlow: Flow<PagingData<IPlaylist>>? = null,
 
@@ -131,7 +133,7 @@ data class BeatSaverViewModelState(
             isLoading = isLoading,
             snackBarMessages = snackBarMessages,
             mapFilterPanelState = mapFilterPanelState,
-//            mapFlow = mapFlow ?: emptyFlow(),
+            mapFlow = mapFlow ?: emptyFlow(),
             localState = LocalState(
                 localMapIdSet = localMapIdSet,
                 selectableLocalPlaylists = selectableLocalPlaylists,
@@ -175,7 +177,7 @@ class BeatSaverViewModel constructor(
     private val viewModelState = MutableStateFlow(
         BeatSaverViewModelState(
             isLoading = false,
-//            mapFlow = mapRepository.getPagingBSMap(MapFilterParam()).cachedIn(localViewModelScope),
+            mapFlow = mapRepository.getPagingBSMap(MapFilterParam()).cachedIn(localViewModelScope),
             localMapIdSet = emptySet(),
             selectableLocalPlaylists = emptyList()
         )

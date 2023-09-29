@@ -44,7 +44,9 @@ kodein = "7.19.0"
 
 ktor = "2.3.4"
 
+cash-paging = "3.3.0-alpha02-0.4.0"
 androidx-paging = "3.2.1"
+
 sqldelight = "2.0.0"
 
 beatmap-io = "1.0.+"
@@ -76,6 +78,11 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 # data store
 androidx-datastore-core-okio = { module = "androidx.datastore:datastore-core-okio", version.ref = "androidx-datastore-core-okio" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "androidx-datastore-preferences-core" }
+
+# paging
+cash-paging-common = { module = "app.cash.paging:paging-common", version.ref = "cash-paging" }
+cash-paging-compose-common = { module = "app.cash.paging:paging-compose-common", version.ref = "cash-paging" }
+cash-paging-testing = { module = "app.cash.paging:paging-testing", version.ref = "cash-paging" }
 
 # db
 sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
