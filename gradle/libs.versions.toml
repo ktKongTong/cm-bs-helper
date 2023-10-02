@@ -51,7 +51,7 @@ sqldelight = "2.0.0"
 
 beatmap-io = "1.0.+"
 
-okio = "3.5.0"
+okio = "3.6.0"
 mpfilepicker = "2.1.0"
 [libraries]
 # kotlin & kotlinx
