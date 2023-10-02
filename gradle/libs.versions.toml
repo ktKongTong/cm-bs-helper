@@ -5,7 +5,7 @@
 [versions]
 gradle-versions-plugin = "0.48.0"
 version-catalog-update-plugin = "0.8.1"
-androidGradlePlugin = "8.1.1"
+androidGradlePlugin = "8.1.2"
 jetbrains-compose-plugin = "1.5.10-beta01"
 
 
