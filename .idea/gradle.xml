@@ -5,7 +5,6 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="#JAVA_HOME" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -13,6 +12,7 @@
             <option value="$PROJECT_DIR$/bsmg" />
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/desktopApp" />
+            <option value="$PROJECT_DIR$/kown-downloader" />
             <option value="$PROJECT_DIR$/model" />
             <option value="$PROJECT_DIR$/platformService" />
             <option value="$PROJECT_DIR$/repository" />

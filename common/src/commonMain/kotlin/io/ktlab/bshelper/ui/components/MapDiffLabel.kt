@@ -20,23 +20,23 @@ fun MapDiffLabel(diff: MapDiff) {
     ) {
         Spacer(modifier = Modifier.padding(2.dp))
         if (diff.hasEasy()) {
-            Text(text="E", color= Color(0xFF009f73),fontWeight = FontWeight.Bold)
+            Text(text="E", color= Color(0xFF009f73),fontWeight = FontWeight.Bold, softWrap = false)
             Spacer(modifier = Modifier.padding(2.dp))
         }
         if (diff.hasNormal()) {
-            Text(text="N", color= Color(0xFF1268A1),fontWeight = FontWeight.Bold)
+            Text(text="N", color= Color(0xFF1268A1),fontWeight = FontWeight.Bold, softWrap = false)
             Spacer(modifier = Modifier.padding(2.dp))
         }
         if (diff.hasHard()) {
-            Text(text="H", color= Color(0xFFFFA500),fontWeight = FontWeight.Bold)
+            Text(text="H", color= Color(0xFFFFA500),fontWeight = FontWeight.Bold, softWrap = false)
             Spacer(modifier = Modifier.padding(2.dp))
         }
         if (diff.hasExpert()) {
-            Text(text="EX", color= Color(0xFFBB86FC),fontWeight = FontWeight.Bold)
+            Text(text="EX", color= Color(0xFFBB86FC),fontWeight = FontWeight.Bold, softWrap = false)
             Spacer(modifier = Modifier.padding(2.dp))
         }
         if (diff.hasExpertPlus()) {
-            Text(text="EX+", color= Color(0xFFB52A1C),fontWeight = FontWeight.Bold)
+            Text(text="EX+", color= Color(0xFFB52A1C),fontWeight = FontWeight.Bold, softWrap = false)
             Spacer(modifier = Modifier.padding(2.dp))
         }
     }

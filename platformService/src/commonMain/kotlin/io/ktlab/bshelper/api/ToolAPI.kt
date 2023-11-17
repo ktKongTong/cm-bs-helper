@@ -21,7 +21,6 @@ class ToolAPI(private val httpClient: HttpClient) {
     }
 
     private val BASE_PATH = Constants.TOOL_BASE_URL
-    @OptIn(InternalAPI::class)
     suspend fun setKV(setRequest: KVSetRequest<ExportPlaylist>): APIRespResult<KVSetResponse> {
         return try {
             val response = httpClient.post("$BASE_PATH/api") {
@@ -29,6 +28,9 @@ class ToolAPI(private val httpClient: HttpClient) {
                 setBody(setRequest)
             }
             val resp = response.body<KVSetResponse>()
+            if (resp.key == null) {
+                return APIRespResult.Error(Exception(resp.message))
+            }
             APIRespResult.Success(resp)
         }catch (e: Exception){
             APIRespResult.Error(e)

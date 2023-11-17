@@ -1,6 +1,7 @@
 package io.ktlab.bshelper.service
 
 import app.cash.sqldelight.ColumnAdapter
+import app.cash.sqldelight.db.SqlDriver
 import io.ktlab.bshelper.model.BSHelperDatabase
 import io.ktlab.bshelper.model.BSMap
 import io.ktlab.bshelper.model.BSMapVersion
@@ -15,19 +16,21 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import java.text.SimpleDateFormat
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 
 
 object DBAdapter {
-
+    private lateinit var driver: SqlDriver
+    fun getDriver(): SqlDriver {
+        return driver
+    }
     fun createDatabase(driverFactory: DBDriverFactory): BSHelperDatabase {
-        val driver = driverFactory.createDriver()
-        val database = BSHelperDatabase(
+        driver = driverFactory.createDriver()
+        return BSHelperDatabase(
             driver = driver,
-            MapDifficultyAdapter  = MapDifficulty.Adapter(
+            MapDifficultyAdapter = MapDifficulty.Adapter(
                 characteristicAdapter = stringOfECharacteristicAdapter,
                 difficultyAdapter = stringOfEMapDifficultyAdapter
             ),
@@ -53,7 +56,6 @@ object DBAdapter {
                 mapAmountAdapter = longOfIntAdapter,
             ),
         )
-        return database
     }
 
     private val datetimeOfLongAdapter = object : ColumnAdapter<LocalDateTime, Long> {
@@ -110,13 +112,12 @@ object DBAdapter {
     }
 
     private val stringOfLocalDateTimeAdapter = object : ColumnAdapter<LocalDateTime, String> {
-        private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         override fun decode(databaseValue: String): LocalDateTime {
             return LocalDateTime.parse(databaseValue)
         }
 
         override fun encode(value: LocalDateTime): String {
-            return formatter.format(value)
+            return value.toString()
         }
     }
 }

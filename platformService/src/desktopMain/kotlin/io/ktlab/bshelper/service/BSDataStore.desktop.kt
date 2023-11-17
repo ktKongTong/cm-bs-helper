@@ -3,6 +3,8 @@ package io.ktlab.bshelper.service
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 
-fun createDataStore(): DataStore<Preferences> = getDataStore(
-    producePath = { DesktopConfig.getConfigPath().toString()+"/"+dataStoreFileName }
+fun createDataStore(
+    storageService: StorageService
+): DataStore<Preferences> = getDataStore(
+    producePath = { storageService.getConfigDir().resolve(dataStoreFileName).absolutePath }
 )

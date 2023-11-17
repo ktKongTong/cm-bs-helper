@@ -1,13 +1,6 @@
 package io.ktlab.bshelper.ui.screens.toolbox
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Home
@@ -34,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
@@ -51,7 +45,7 @@ fun ToolboxScreen(
     snackbarHostState: SnackbarHostState,
     openDrawer: () -> Unit,
     onUIEvent: (UIEvent) -> Unit,
-    onSnackBarShown: (Long) -> Unit,
+//    onSnackBarShown: (Long) -> Unit,
     modifier: Modifier = Modifier
 ){
     val topAppBarState = rememberTopAppBarState()
@@ -75,8 +69,7 @@ fun ToolboxScreen(
             var selectedPage by remember { mutableStateOf(if(!showTopAppBar){ToolboxPage.Toolbox}else{ToolboxPage.Toolbox}) }
             ToolboxLeftSide(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f,fill = false),
+                    .widthIn(Dp.Unspecified, 300.dp),
                 selectedPage = selectedPage,
                 onSelectedPage = { selectedPage = it }
             )
@@ -91,8 +84,7 @@ fun ToolboxScreen(
                 )
                 ToolboxRightSide(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(2f),
+                        .fillMaxWidth(),
                     selectedPage = selectedPage,
                     uiState = uiState,
                     onUIEvent = onUIEvent
@@ -101,11 +93,11 @@ fun ToolboxScreen(
         }
     }
 
-    SnackBarShown(
-        snackbarHostState = snackbarHostState,
-        snackBarMessages = uiState.snackBarMessages,
-        onSnackBarShown = onSnackBarShown,
-    )
+//    SnackBarShown(
+//        snackbarHostState = snackbarHostState,
+//        snackBarMessages = uiState.snackBarMessages,
+//        onSnackBarShown = onSnackBarShown,
+//    )
 
 }
 enum class ToolboxPage {
@@ -187,11 +179,10 @@ fun ToolboxRightSide(
 //                )
             }
             ToolboxPage.Downloader -> {
-                Developing()
-//                DownloadTaskScreen(
-//                    onUIEvent = onUIEvent,
-//                    downloadTasks = uiState.downloadTasks
-//                )
+                DownloadTaskScreen(
+                    onUIEvent = onUIEvent,
+                    downloadTasks = uiState.downloadTasks
+                )
             }
             else -> {
                 Developing()

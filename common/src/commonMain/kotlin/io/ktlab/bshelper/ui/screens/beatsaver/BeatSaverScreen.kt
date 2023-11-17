@@ -1,9 +1,6 @@
 package io.ktlab.bshelper.ui.screens.beatsaver
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -20,19 +17,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
-import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapCardListHeader
-import io.ktlab.bshelper.ui.screens.beatsaver.components.MapCardPagingList
-import io.ktlab.bshelper.ui.screens.beatsaver.components.MapFilterPanel
 import io.ktlab.bshelper.rememberContentPaddingForScreen
+import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.ui.components.BSHelperSnackbarHost
 import io.ktlab.bshelper.ui.components.Developing
 import io.ktlab.bshelper.ui.components.SnackBarShown
 import io.ktlab.bshelper.ui.components.VerticalDivider
 import io.ktlab.bshelper.ui.event.UIEvent
+import io.ktlab.bshelper.ui.screens.beatsaver.components.*
+import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUiState
+import io.ktlab.bshelper.viewmodel.TabType
+import kotlinx.coroutines.flow.toCollection
 
 //import io.ktlab.bshelper.paging.collectAsLazyPagingItems
 
@@ -44,7 +45,7 @@ fun BeatSaverScreen(
     snackbarHostState: SnackbarHostState,
     openDrawer: () -> Unit,
     onUIEvent: (UIEvent) -> Unit,
-    onSnackBarShown: (Long) -> Unit,
+//    onSnackBarShown: (Long) -> Unit,
     modifier: Modifier = Modifier
 ){
     val contentPadding = rememberContentPaddingForScreen(
@@ -73,79 +74,104 @@ fun BeatSaverScreen(
             excludeTop = showTopAppBar
         )
         var tabState by remember { mutableStateOf(0) }
-        Row(contentModifier) {
+        Row(
+            contentModifier.fillMaxWidth()
+        ) {
             Column(
-                modifier = Modifier.fillMaxWidth().weight(1f)
+                modifier = Modifier
+                    .widthIn(Dp.Unspecified,300.dp)
+                    .fillMaxWidth()
             ) {
                 TextTabs(
-                    selectedIndex = tabState,
-                    onClickTab = { tabState = it }
+                    selectedTab = uiState.tabType,
+                    onClickTab = { onUIEvent(BeatSaverUIEvent.SwitchTab(it)) }
                 )
-                when(tabState) {
-                    0 -> {
+                when(uiState.tabType) {
+                    TabType.Map -> {
                         MapFilterPanel(
-//                            modifier = Modifier.weight(1f),
                             mapFilterPanelState = (uiState as BeatSaverUiState.MapQuery).mapFilterPanelState,
                             onUIEvent = onUIEvent,
                         )
                     }
-                    1 -> {
-                        Developing()
-                    }
-                    2 -> {
-                        Developing()
+                    TabType.Playlist -> {
+                        PlaylistFilterPanel(
+                            playlistFilterPanelState = (uiState as BeatSaverUiState.PlaylistQuery).playlistFilterPanelState,
+                            onUIEvent = onUIEvent
+                        )
                     }
                 }
             }
             VerticalDivider()
-            uiState as BeatSaverUiState.MapQuery
-//            val downloadingTasks= uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value.filter {
-////                it is DownloadTask.MapDownloadTask
-//                it.taskType == DownloadType.MAP && it.status !=DownloadStatus.FINISHED && it.relateMap != null
-//            }.associateBy { it.relateMap!!.getID() }
-            val mapPagingItems = uiState.mapFlow.collectAsLazyPagingItems()
-            MapCardPagingList(
-                Modifier.weight(2f,false),
-                snackbarHostState = snackbarHostState,
-                mapPagingItems = mapPagingItems,
-                localState = uiState.localState,
-                mapMultiSelectedMode = uiState.multiSelectMode,
-                mapMultiSelected = uiState.multiSelectedBSMap,
-                onUIEvent = onUIEvent,
-                stickyHeader = {
-                    BSMapCardListHeader(
-                        count = 0,
+            when(uiState.tabType) {
+                TabType.Map -> {
+                    uiState as BeatSaverUiState.MapQuery
+                    val downloadingTasks= uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value.flatMap {
+                        when(it) {
+                            is IDownloadTask.MapDownloadTask -> listOf(it)
+                            is IDownloadTask.BatchDownloadTask -> it.taskList
+                            is IDownloadTask.PlaylistDownloadTask -> it.taskList
+                        }
+                    }.associateBy { it.downloadTaskModel.relateEntityId!! }
+                    val mapPagingItems = uiState.mapFlow.collectAsLazyPagingItems()
+                    MapCardPagingList(
+                        Modifier.weight(2f,false),
+                        snackbarHostState = snackbarHostState,
+                        mapPagingItems = mapPagingItems,
                         localState = uiState.localState,
-                        multiSelectedMode = uiState.multiSelectMode,
-                        multiSelectedBSMap = uiState.multiSelectedBSMap,
+                        mapMultiSelectedMode = uiState.multiSelectMode,
+                        mapMultiSelected = uiState.multiSelectedBSMap,
                         onUIEvent = onUIEvent,
+                        stickyHeader = {
+                            BSMapCardListHeader(
+                                count = 0,
+                                localState = uiState.localState,
+                                multiSelectedMode = uiState.multiSelectMode,
+                                multiSelectedBSMap = uiState.multiSelectedBSMap,
+                                onUIEvent = onUIEvent,
+                            )
+                        },
+                        downloadingTask = downloadingTasks,
                     )
-                },
-                downloadingTask = mapOf(),
-            )
+                }
+                TabType.Playlist -> {
+                    uiState as BeatSaverUiState.PlaylistQuery
+                    val playlistPagingItems = uiState.playlistFlow.collectAsLazyPagingItems()
+                    PlaylistPagingList(
+                        Modifier.weight(2f,false),
+                        snackbarHostState = snackbarHostState,
+                        playlistPagingItems = playlistPagingItems,
+                        localState = uiState.localState,
+                        mapMultiSelectedMode = uiState.multiSelectMode,
+                        mapMultiSelected = uiState.multiSelectedBSMap,
+                        onUIEvent = onUIEvent,
+                        stickyHeader = {
+                        },
+                        downloadingTask = emptyMap(),
+                    )
+                }
+            }
         }
-
     }
-    SnackBarShown(
-        snackbarHostState = snackbarHostState,
-        snackBarMessages = uiState.snackBarMessages,
-        onSnackBarShown = onSnackBarShown,
-    )
+//    SnackBarShown(
+//        snackbarHostState = snackbarHostState,
+//        snackBarMessages = uiState.snackBarMessages,
+//        onSnackBarShown = onSnackBarShown,
+//    )
 }
 
 @Composable
 fun TextTabs(
-    selectedIndex : Int,
-    onClickTab: (Int) -> Unit
+    selectedTab : TabType,
+    onClickTab: (TabType) -> Unit
 ) {
-    val titles = listOf("Default", "Playlist", "Mapper")
     Column {
-        TabRow(selectedTabIndex = selectedIndex) {
-            titles.forEachIndexed { index, title ->
+
+        TabRow(selectedTabIndex = TabType.getIndexOf(selectedTab)) {
+            TabType.tabs.forEachIndexed { index, tabType ->
                 Tab(
-                    selected = selectedIndex == index,
-                    onClick = { onClickTab(index) },
-                    text = { Text(text = title, overflow = TextOverflow.Ellipsis) }
+                    selected = selectedTab == TabType.fromIndex(index),
+                    onClick = { onClickTab(tabType) },
+                    text = { Text(text = tabType.human, overflow = TextOverflow.Ellipsis) }
                 )
             }
         }

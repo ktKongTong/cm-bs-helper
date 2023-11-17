@@ -1,0 +1,24 @@
+import kotlin.Int;
+import kotlinx.datetime.LocalDateTime;
+
+CREATE TABLE IF NOT EXISTS BSPlaylist (
+    id INTEGER AS Int NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    ownerId INTEGER AS Int NOT NULL,
+    curatorId INTEGER AS Int,
+    downloadURL TEXT NOT NULL,
+    playlistImage TEXT NOT NULL,
+    playlistImage512 TEXT NOT NULL,
+    songsChangedAt TEXT AS LocalDateTime,
+    updatedAt TEXT AS LocalDateTime,
+    createdAt TEXT AS LocalDateTime NOT NULL,
+    type TEXT NOT NULL,
+    avgScore REAL NOT NULL,
+    upVotes INTEGER NOT NULL,
+    downVotes INTEGER NOT NULL,
+    mapperCount INTEGER NOT NULL,
+    maxNps REAL NOT NULL,
+    minNps REAL NOT NULL,
+    totalDuration INTEGER NOT NULL
+);

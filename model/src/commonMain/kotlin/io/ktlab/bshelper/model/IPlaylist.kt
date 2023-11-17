@@ -8,6 +8,7 @@ import kotlin.time.toDuration
 interface IPlaylist {
     val id: String
     val title: String
+    fun getAvatar(): String
     fun getName(): String
     fun getTotalDuration(): Duration
     fun getMapAmount(): Int

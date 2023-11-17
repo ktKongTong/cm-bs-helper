@@ -24,6 +24,6 @@ fun ToolboxRoute(
         openDrawer = openDrawer,
         onUIEvent = toolboxViewModel::dispatchUiEvents,
         snackbarHostState = remember { SnackbarHostState() },
-        onSnackBarShown = toolboxViewModel::snackBarShown,
+//        onSnackBarShown = toolboxViewModel::snackBarShown,
     )
 }

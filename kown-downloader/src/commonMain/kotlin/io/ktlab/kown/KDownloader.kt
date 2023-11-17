@@ -1,0 +1,318 @@
+package io.ktlab.kown
+
+import io.ktlab.kown.model.DownloadListener
+import io.ktlab.kown.model.DownloadTaskBO
+import io.ktlab.kown.model.TaskStatus
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlin.concurrent.timer
+
+
+class Kownloader(private val config: KownConfig) {
+
+    private val dbScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { coroutineContext, throwable ->  throwable.printStackTrace() })
+
+    private val dbHelper = config.dbHelper
+    private lateinit var  taskQueueFlow: MutableStateFlow<List<DownloadTaskBO>>
+    private val dispatcher = DownloadTaskDispatcher(config)
+
+    private var downloadingCnt = 0
+
+    private val mutex = Mutex()
+    fun genGuardTask():DownloadTaskBO {
+        return DownloadTaskBO.Builder("", "", "")
+            .setTag("kown.guard")
+            .build()
+    }
+    init {
+        runBlocking {
+            dbScope.async{
+                dbHelper.getAllDownloadTask().let {tasks ->
+                    taskQueueFlow = MutableStateFlow(tasks)
+                }
+            }.await()
+            val job = scope.launch {
+                taskQueueFlow
+//                    .map { it.filter { it.tag != "kown.guard" } }
+                    .collect {
+                        mutex.lock()
+                        if (downloadingCnt > config.concurrentDownloads) {
+                            // pause task when downloadingCnt > max
+                            it.firstOrNull { it.status == TaskStatus.Running }?.let {
+                                pauseTasks(listOf(it))
+                            }
+                        }else if (downloadingCnt < config.concurrentDownloads && it.any { it.status is TaskStatus.Queued }) {
+                            val task = it.first { it.status is TaskStatus.Queued }
+                            task.status = TaskStatus.Running
+                            downloadingCnt++
+
+                            dispatcher.download(task){
+                                downloadingCnt--
+                            }
+                        }
+                        mutex.unlock()
+                    }
+            }
+            timer("syncTask", false, 0L, 1000L) {
+                syncTask(taskQueueFlow.value)
+//                val old = taskQueueFlow.value
+//                val obj = taskQueueFlow.value.filter { it.tag != "kown.guard" } + genGuardTask()
+//                val res = taskQueueFlow.update { obj }
+                updateTaskFlow { taskQueueFlow.value.reversed() }
+//                taskQueueFlow.update { it.reversed().reversed() }
+            }
+        }
+    }
+
+    fun  getStatus(taskId: String) :TaskStatus {
+        return taskQueueFlow.value.firstOrNull { it.taskId == taskId }?.status ?: TaskStatus.Unknown
+    }
+    fun setMaxConcurrentDownloads(max: Int) {
+        assert(max > 0) { "max must be greater than 0" }
+        config.concurrentDownloads = max
+//        taskQueueFlow.update { it.reversed() }
+    }
+
+    private fun runBlockingWithLock(block: () -> Unit) = runBlocking {
+        mutex.lock()
+        block()
+        mutex.unlock()
+    }
+    private fun blockingOpsById(taskId: String, block : (DownloadTaskBO) -> Unit) = runBlockingWithLock {
+        taskQueueFlow.value.firstOrNull { it.taskId == taskId }?.let { block(it) }
+    }
+    private fun blockingOpsByTag(tag: String, block : (List<DownloadTaskBO>) -> Unit) = runBlockingWithLock { block(taskQueueFlow.value.filter { it.tag == tag }) }
+    private fun blockingOpsAll(block : (List<DownloadTaskBO>) -> Unit) = runBlockingWithLock { block(taskQueueFlow.value) }
+
+
+    fun enqueue(task: DownloadTaskBO, listener: DownloadListener? = null) {
+        task.downloadListener = listener
+//        if (task.downloadListener == null) {
+//            task.downloadListener = DownloadListener(onProgress = {
+//                taskQueueFlow.update { it.reversed() }
+//            })
+//        }else {
+//            val progressCallback = task.downloadListener!!.onProgress
+//            task.downloadListener!!.onProgress = {
+//                taskQueueFlow.update { it.reversed() }
+//                progressCallback.invoke(it)
+//            }
+//        }
+        dbScope.launch {
+            dbHelper.insert(task)
+        }
+        runBlocking {
+            mutex.lock()
+            task.status = TaskStatus.Queued(task.status)
+            updateTaskFlow {
+                it.filter { it.taskId != task.taskId } + task
+            }
+//            taskQueueFlow.update { it.filter { it.taskId != task.taskId } + task }
+            mutex.unlock()
+        }
+    }
+    fun enqueue(tasks: List<DownloadTaskBO>, listener: DownloadListener? = null) {
+        val mappedTasks = tasks.map {
+            it.downloadListener = listener
+            it.status = TaskStatus.Queued(it.status)
+            it
+        }
+        dbScope.launch {
+            dbHelper.batchInsert(mappedTasks)
+        }
+        runBlockingWithLock {
+            updateTaskFlow {
+                it + mappedTasks
+            }
+//            taskQueueFlow.update { it + mappedTasks }
+        }
+    }
+
+    private fun retry(task: DownloadTaskBO, listener: DownloadListener? = null) {
+        if (task.status !is TaskStatus.Failed) {
+            return
+        }
+        val newTask = task.regenTask()
+        dbScope.launch {
+            dbHelper.insert(newTask)
+        }
+        newTask.downloadListener = listener
+        updateTaskFlow {
+            val filtered = it.filter { it.taskId != task.taskId }
+            filtered + newTask
+        }
+//        taskQueueFlow.update {
+//            val filtered = it.filter { it.taskId != task.taskId }
+//            filtered + task
+//        }
+    }
+
+    fun retryById(taskId: String, listener: DownloadListener? = null) = blockingOpsById(taskId) { retry(it, listener) }
+    fun retryByTag(tag: String, listener: DownloadListener? = null) {
+        val it = taskQueueFlow.value.filter { it.tag == tag }
+        val tasks = it.filter { it.status is TaskStatus.Failed }.map { it.regenTask() }.map { it.downloadListener = listener; it }
+        dbScope.launch {
+            dbHelper.batchUpdate(tasks)
+        }
+        updateTaskFlow {
+            val filtered = it.filter { it.taskId !in tasks.map { it.taskId }}
+            filtered + tasks
+        }
+//        taskQueueFlow.update {
+//            val filtered = it.filter { it.taskId !in tasks.map { it.taskId }}
+//            filtered + tasks
+//        }
+    }
+
+    fun cancelById(taskId: String) = blockingOpsById(taskId) { cancelTasks(listOf(it)) }
+    fun cancelByTag(tag: String)  = blockingOpsByTag(tag) { cancelTasks(it) }
+    fun cancelAll() = blockingOpsAll { cancelTasks(it) }
+
+    private fun cancelTasks(tasks: List<DownloadTaskBO>) {
+        val filteredTask = tasks
+            .map {
+                when (it.status) {
+                    is TaskStatus.Queued -> {
+                        it.status = TaskStatus.Failed("task cancelled", (it.status as TaskStatus.Queued).lastStatus)
+                        it
+                    }
+                    is TaskStatus.Running, is TaskStatus.PostProcessing -> {
+                        dispatcher.cancel(it)
+                        it
+                    }
+                    is TaskStatus.Paused -> {
+                        it.status = TaskStatus.Failed("task cancelled", (it.status as TaskStatus.Paused).lastStatus)
+                        it
+                    }
+                    else -> { it }
+                }
+            }
+        syncTask(filteredTask)
+        updateTaskFlow {
+            it.filter { task -> filteredTask.none { it.taskId == task.taskId } } + filteredTask
+        }
+//        taskQueueFlow.update {
+//            it.filter { task -> filteredTask.none { it.taskId == task.taskId } } + filteredTask
+//        }
+    }
+
+    private fun updateTaskFlow(block: (List<DownloadTaskBO>) -> List<DownloadTaskBO>) {
+        taskQueueFlow.update {
+            block(it
+//                .filter { it.tag != "kown.guard" }
+            )
+//            + genGuardTask()
+        }
+    }
+
+    fun pauseById(taskId: String) = blockingOpsById(taskId) { pauseTasks(listOf(it)) }
+    fun pauseByTag(tag: String) = blockingOpsByTag (tag) { pauseTasks(it) }
+    fun pauseAll()  = blockingOpsAll { pauseTasks(it) }
+
+    private fun pauseTasks(tasks: List<DownloadTaskBO>) {
+        val filteredTask = tasks
+            .filter { it.status is TaskStatus.Queued || it.status is TaskStatus.Running || it.status is TaskStatus.PostProcessing }
+            .map {
+                when (it.status) {
+                    is TaskStatus.Queued -> {
+                        it.status = TaskStatus.Paused((it.status as TaskStatus.Queued).lastStatus)
+                        it
+                    }
+                    is TaskStatus.Running, is TaskStatus.PostProcessing -> {
+                        dispatcher.pause(it)
+                        it
+                    }
+                    else -> { it }
+                }
+            }
+        syncTask(filteredTask)
+    }
+
+    fun resumeById(taskId: String, listener: DownloadListener? = null) = blockingOpsById(taskId) { resumeTasks(listOf(it), listener) }
+    fun resumeByTag(tag: String, listener: DownloadListener? = null) = blockingOpsByTag(tag) { resumeTasks(it, listener) }
+    fun resumeAll(listener: DownloadListener? = null) = blockingOpsAll { resumeTasks(it, listener) }
+
+    private fun resumeTasks(tasks: List<DownloadTaskBO>, listener: DownloadListener? = null) {
+        val mappedTasks = tasks.filter { it.status is TaskStatus.Paused }.map {
+            if (listener != null) {
+                it.downloadListener = listener
+            }
+            it.status = TaskStatus.Queued(it.status)
+            it
+        }
+        dbScope.launch {
+            dbHelper.batchUpdate(mappedTasks)
+        }
+        try {
+            scope.launch {
+                updateTaskFlow {
+                    val notUpdate = it.filter { it.taskId !in mappedTasks.map { it.taskId } }
+                    val res = notUpdate + mappedTasks
+                    return@updateTaskFlow res
+                }
+//                taskQueueFlow.update {
+//                    val notUpdate = it.filter { it.tag == "kown.guard" }.filter { it.taskId !in mappedTasks.map { it.taskId } } + genGuardTask()
+//                    val res = notUpdate + mappedTasks
+//                    return@update res
+//                }
+            }
+        }catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    private fun syncTask(tasks: List<DownloadTaskBO>) {
+        dbScope.launch{
+            dbHelper.batchUpdate(tasks)
+        }
+    }
+
+    fun removeById(taskId: String) = blockingOpsById(taskId) { removeTasks(listOf(it)) }
+    fun removeByTag(tag: String) = blockingOpsByTag(tag) { removeTasks(it) }
+    fun removeAll() = blockingOpsAll { removeTasks(it) }
+
+    fun removeTasks(tasks: List<DownloadTaskBO>) {
+        val filteredTask = tasks
+            .filter { it.status !is TaskStatus.Running && it.status !is TaskStatus.PostProcessing }
+        syncTask(filteredTask)
+        updateTaskFlow {
+            it.filter { task -> filteredTask.none { it.taskId == task.taskId } }
+        }
+    }
+
+    fun clear() {
+        runBlocking {
+            cancelAll()
+            mutex.lock()
+            dbScope.async {
+                dbHelper.removeAll()
+            }.await()
+            dbScope.async {
+                dbHelper.getAllDownloadTask()
+            }.await()
+            updateTaskFlow { emptyList() }
+//            taskQueueFlow.update { listOf(genGuardTask()) }
+            mutex.unlock()
+        }
+    }
+
+    fun getAllDownloadTaskFlow(): Flow<List<DownloadTaskBO>> = taskQueueFlow
+//        .map { it.filter { it.tag != "kown.guard" } }
+
+
+    fun newRequestBuilder(url: String, dirPath: String, filename: String): DownloadTaskBO.Builder {
+        return DownloadTaskBO.Builder(url, dirPath, filename)
+            .readTimeout(Constants.DEFAULT_READ_TIMEOUT)
+            .connectTimeout(Constants.DEFAULT_CONNECT_TIMEOUT)
+    }
+
+    companion object {
+        fun new(): KownloaderBuilder {
+            return KownloaderBuilder()
+        }
+    }
+}
+

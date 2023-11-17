@@ -1,6 +1,7 @@
 package io.ktlab.bshelper.model.dto
 
 //import io.ktkt.bshelper.data.model.room.BSUser
+import io.ktlab.bshelper.model.BSUser
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,19 +14,21 @@ data class BSUserDTO(
     val type: String,
     val admin: Boolean,
     val curator: Boolean,
-    val playlistUrl: String
+    val playlistUrl: String,
+    val verifiedMapper: Boolean? = null,
 ){
-//    fun convertToEntity(): BSUser {
-//        return BSUser(
-//            id = id,
-//            name = name,
-//            avatar = avatar,
+    fun convertToEntity(): BSUser {
+        return BSUser(
+            id = id,
+            name = name,
+            avatar = avatar,
 //            hash = hash,
-//            description = description,
-//            type = type,
-//            admin = admin,
-//            curator = curator,
-//            playlistUrl = playlistUrl
-//        )
-//    }
+            description = description,
+            type = type,
+            admin = admin,
+            curator = curator,
+            playlistUrl = playlistUrl,
+            verifiedMapper = verifiedMapper
+        )
+    }
 }

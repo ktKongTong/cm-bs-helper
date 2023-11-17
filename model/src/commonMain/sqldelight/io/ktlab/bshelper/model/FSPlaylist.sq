@@ -66,6 +66,11 @@ INSERT OR REPLACE INTO `FSPlaylist` (
     syncTimestamp
 ) VALUES ?;
 
+adjustPlaylistMapCntByPlaylistId:
+UPDATE `FSPlaylist`
+SET mapAmount = mapAmount + ?
+WHERE uuid = ?;
+
 selectByIds:
 SELECT *
 FROM FSPlaylist

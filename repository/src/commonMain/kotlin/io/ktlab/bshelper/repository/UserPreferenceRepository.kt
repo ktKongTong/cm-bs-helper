@@ -4,7 +4,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import io.ktlab.bshelper.model.UserPreference
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
 class UserPreferenceRepository (
     private val dataStore: DataStore<Preferences>
@@ -26,11 +28,23 @@ class UserPreferenceRepository (
 
     fun getUserPreference(): Flow<UserPreference> = preferenceFlow
 
+
+//    fun getCurrentManageDir(): String {
+//        var res = ""
+//        runBlocking {
+//            preferenceFlow.map { it.currentManageDir }.collectLatest {
+//                res = it
+//            }
+//        }
+//        return res
+//    }
+
     suspend fun changeCurrentManageDir(currentManageDir: String) {
         dataStore.edit {
             it[currentManageDirKey] = currentManageDir
         }
     }
+
 
 //    suspend fun changeCurrentPlaylistId(currentPlaylistId: String) {
 //        dataStore.edit {

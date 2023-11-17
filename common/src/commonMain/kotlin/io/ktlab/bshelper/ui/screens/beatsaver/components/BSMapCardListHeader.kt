@@ -73,8 +73,6 @@ fun BSMapCardListHeader(
                         if (localState.targetPlaylist != null) {
                             onUIEvent(BeatSaverUIEvent.MultiDownload(localState.targetPlaylist))
                             onUIEvent(BeatSaverUIEvent.ChangeMultiSelectMode(false))
-                        }else {
-//                            Toast.makeText(context, "please select a target playlist😉", Toast.LENGTH_SHORT).show()
                         }
                     }) {
                         Text(text = "Download")

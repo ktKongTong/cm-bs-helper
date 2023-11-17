@@ -4,6 +4,8 @@ import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
 import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -29,6 +31,10 @@ data class FSPlaylistVO(
     override val id: String,
     override val title: String,
 ): IPlaylist {
+    override fun getAvatar(): String {
+        TODO("Not yet implemented")
+    }
+
     override fun getName(): String {
         return _name
     }
@@ -86,7 +92,7 @@ data class FSPlaylistVO(
     }
 
     override fun getTargetPath(): String {
-        return basePath+ File.separator+_name
+        return Path(basePath, _name).absolutePathString()
     }
 
     companion object {

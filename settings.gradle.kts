@@ -22,5 +22,6 @@ include(
     ":platformService",
     ":model",
     ":repository",
-    ":utils"
+    ":utils",
+    ":kown-downloader"
 )

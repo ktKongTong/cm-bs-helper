@@ -12,6 +12,9 @@ kotlin {
             dependencies {
                 implementation(project(":model"))
                 implementation(project(":bsmg"))
+                implementation("net.lingala.zip4j:zip4j:2.11.5")
+                // logger
+                implementation(libs.kotlin.logging)
                 implementation(libs.okio)
                 implementation(libs.beatmap.io)
                 implementation(libs.kotlinx.serialization)

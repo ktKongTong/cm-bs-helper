@@ -49,6 +49,7 @@ fun BSMapDTO.convertToBSUserDBO():BSUser{
         admin = this.uploader.admin,
         curator = this.uploader.curator,
         playlistUrl = this.uploader.playlistUrl,
+        verifiedMapper = this.uploader.verifiedMapper,
     )
 }
 

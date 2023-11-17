@@ -6,18 +6,15 @@ import io.ktlab.bshelper.model.vo.GlobalScanStateEnum
 import io.ktlab.bshelper.model.vo.PlaylistScanState
 import io.ktlab.bshelper.model.vo.PlaylistScanStateEnum
 import io.ktlab.bshelper.model.vo.ScanState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import io.ktlab.bshelper.repository.DownloaderRepository
+import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.repository.PlaylistRepository
 import io.ktlab.bshelper.repository.UserPreferenceRepository
 import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
@@ -29,13 +26,20 @@ sealed class ToolboxUIEvent: UIEvent() {
     data class ScanPlaylistTapped(val dirPath: String? = null) : ToolboxUIEvent()
     data object ScanSelectedPlaylist : UIEvent()
     data object ClearScanState : ToolboxUIEvent()
+    data object ClearLocalData : ToolboxUIEvent()
     data class UpdateDefaultManageDir(val path:String):ToolboxUIEvent()
     //    data class MapMultiSelectTapped : ToolboxUIEvent()
 
-    data object DeleteAllDownloadTasks : ToolboxUIEvent()
-//    data class PauseOrStartDownloadTask(val downloadTask: DownloadTask): ToolboxUIEvent()
     data class MsgShown(val msgId: Long): ToolboxUIEvent()
     data class ShowSnackBar(val message:String): ToolboxUIEvent()
+
+    data object DeleteAllDownloadTasks : ToolboxUIEvent()
+    data class RemoveDownloadTask(val downloadTask: IDownloadTask): ToolboxUIEvent()
+    data class ResumeDownloadTask(val downloadTask: IDownloadTask): ToolboxUIEvent()
+    data class PauseDownloadTask(val downloadTask: IDownloadTask): ToolboxUIEvent()
+    data class CancelDownloadTask(val downloadTask: IDownloadTask): ToolboxUIEvent()
+    data class RetryDownloadMap(val downloadTask: IDownloadTask): ToolboxUIEvent()
+    data class UpdateManageDir(val path:String): ToolboxUIEvent()
 }
 
 
@@ -46,7 +50,7 @@ data class ToolboxUiState(
     val snackBarMessages: List<SnackBarMessage>,
     val scanState: ScanState = ScanState.getDefaultInstance(),
     val userPreferenceState: UserPreference,
-//    val downloadTasks: List<DownloadTask> = emptyList(),
+    val downloadTasks: List<IDownloadTask> = emptyList(),
 )
 
 data class ToolboxViewModelState constructor(
@@ -54,7 +58,7 @@ data class ToolboxViewModelState constructor(
     val snackBarMessages: List<SnackBarMessage> = emptyList(),
     val userPreferenceState: UserPreference,
     val scanState: ScanState = ScanState.getDefaultInstance(),
-//    val downloadTasks: List<DownloadTask> = emptyList(),
+    val downloadTasks: List<IDownloadTask> = emptyList(),
 ) {
 
     fun toUiState(): ToolboxUiState = ToolboxUiState(
@@ -62,13 +66,14 @@ data class ToolboxViewModelState constructor(
         snackBarMessages = snackBarMessages,
         scanState = scanState,
         userPreferenceState = userPreferenceState,
-//        downloadTasks = downloadTasks,
+        downloadTasks = downloadTasks,
     )
 }
 class ToolboxViewModel(
+    private val globalViewModel: GlobalViewModel,
     private val playlistRepository: PlaylistRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
-    viewModelCoroutineScope: CoroutineScope? = null
+    private val downloaderRepository: DownloaderRepository
 ) : ViewModel() {
 
     private val localViewModelScope = viewModelScope
@@ -106,19 +111,13 @@ class ToolboxViewModel(
 
     private fun CoroutineScope.observeDownloadTasks(){
         launch {
-//            downloaderRepository.getDownloadTaskFlow().collect{res->
-//                when(res){
-//                    is Result.Success -> {
-//                        viewModelState.update { state ->
-//                            state.copy(
-//                                downloadTasks = res.data
-//                            )
-//                        }
-//                    }
-//                    is Result.Error -> {
-//                    }
-//                }
-//            }
+            downloaderRepository.getDownloadTaskFlow().collect{res->
+                viewModelState.update { state ->
+                    state.copy(
+                        downloadTasks = res
+                    )
+                }
+            }
         }
     }
 
@@ -132,8 +131,12 @@ class ToolboxViewModel(
             }
             is ToolboxUIEvent.ClearScanState -> {
                 viewModelState.update { state ->
-                    //  cancelScanJob()
                     state.copy(scanState = ScanState.getDefaultInstance())
+                }
+            }
+            is ToolboxUIEvent.ClearLocalData -> {
+                localViewModelScope.launch(Dispatchers.IO) {
+                    playlistRepository.clear()
                 }
             }
             is ToolboxUIEvent.SelectPlaylistTobeScan -> {
@@ -142,23 +145,41 @@ class ToolboxViewModel(
             is ToolboxUIEvent.ScanSelectedPlaylist -> {
                 onScanSelectedPlaylist()
             }
+
             is ToolboxUIEvent.DeleteAllDownloadTasks -> {
-//                localViewModelScope.launch(Dispatchers.IO) {
-//                    downloaderRepository.clearDownloadDB()
-//                }
+                localViewModelScope.launch(Dispatchers.IO) {
+                    downloaderRepository.clearHistory()
+                }
             }
-//            is ToolboxUIEvent.PauseOrStartDownloadTask -> {
-//                localViewModelScope.launch(Dispatchers.IO) {
-//                    if (event.downloadTask.status == DownloadStatus.PAUSED)
-//                        downloaderRepository.resumeDownload(event.downloadTask.taskId)
-//                    else if (event.downloadTask.status == DownloadStatus.DOWNLOADING)
-//                        downloaderRepository.pauseDownload(event.downloadTask.taskId)
-//                }
-//            }
+            is ToolboxUIEvent.RetryDownloadMap -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    downloaderRepository.retry(event.downloadTask)
+                }
+            }
+            is ToolboxUIEvent.CancelDownloadTask -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    downloaderRepository.cancel(event.downloadTask)
+                }
+            }
+            is ToolboxUIEvent.RemoveDownloadTask -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    downloaderRepository.remove(event.downloadTask)
+                }
+            }
+            is ToolboxUIEvent.PauseDownloadTask -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    downloaderRepository.pause(event.downloadTask)
+                }
+            }
+            is ToolboxUIEvent.ResumeDownloadTask -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    downloaderRepository.resume(event.downloadTask)
+                }
+            }
             is ToolboxUIEvent.UpdateDefaultManageDir -> {
-//                localViewModelScope.launch {
-//                    userPreferenceRepository.updateDefaultManagePath(event.path)
-//                }
+                localViewModelScope.launch {
+                    userPreferenceRepository.updateUserPreference(viewModelState.value.userPreferenceState.copy(event.path))
+                }
             }
             is ToolboxUIEvent.MsgShown -> {
                 snackBarShown(event.msgId)

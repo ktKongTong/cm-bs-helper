@@ -115,6 +115,7 @@ sealed class HomeUIEvent: UIEvent(){
 
 
 class HomeViewModel(
+    private val globalViewModel: GlobalViewModel,
     private val playlistRepository: PlaylistRepository,
     private val mapRepository: FSMapRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
@@ -152,10 +153,14 @@ class HomeViewModel(
         when(event){
             is HomeUIEvent.ShowSnackBar -> {}
             is HomeUIEvent.SnackBarShown -> {
-
+                snackBarShown(event.msgId)
             }
-//            is HomeUIEvent.ImportPlaylist ->{ importPlaylist(event.key,event.targetPlaylist) }
-            is HomeUIEvent.DeletePlaylist -> {}
+            is HomeUIEvent.ImportPlaylist ->{
+//                importPlaylist(event.key,event.targetPlaylist)
+            }
+            is HomeUIEvent.DeletePlaylist -> {
+                deletePlaylist(event.targetPlaylist)
+            }
             is HomeUIEvent.EditPlaylist -> {}
             is HomeUIEvent.PlaylistTapped -> { onPlaylistTapped(event.playlistId) }
             is HomeUIEvent.MapTapped -> {}
@@ -172,8 +177,9 @@ class HomeViewModel(
 //                    mediaPlayerManager.play(MediaPlayerManager.generateMapID(event.map),event.map.getMusicPreviewURI().toString())
 //                }
             }
-//            is HomeUIEvent.CreateNewPlaylist -> { onCreateNewPlaylist(event.name) }
-//            is HomeUIEvent.MsgShown -> { snackBarShown(event.msgId) }
+            is HomeUIEvent.CreateNewPlaylist -> {
+                onCreateNewPlaylist(event.name)
+            }
         }
     }
     fun copyToClipboard(text: String, label: String = "") {
@@ -221,6 +227,7 @@ class HomeViewModel(
     }
     private fun interactedWithPlaylistDetails() = localViewModelScope.launch {
         val playlistId = viewModelState.value.selectedPlaylistId ?: return@launch
+        val flow = mapRepository.getFlowMapsByPlaylistId(playlistId).flowOn(Dispatchers.IO)
         viewModelState.update {
             it.copy(
                 mapListState = it.mapListState.copy(
@@ -229,29 +236,22 @@ class HomeViewModel(
                     isMapOpen = false,
                     isMapMultiSelectMode = false,
                     multiSelectedMapHashMap = emptyMap(),
-                    mapFlow = mapRepository.getFlowMapsByPlaylistId(playlistId).flowOn(Dispatchers.IO)
+                    mapFlow = flow
                 )
             )
         }
     }
 
     private fun onExportPlaylistAsKey(playlist: IPlaylist) {
-        localViewModelScope.launch subroutine@{
-                    playlistRepository
-                        .exportPlaylistAsKey(playlist)
-                        .collect {res->
-//                            Log.e("HomeViewModel export:",res.successOr(""))
-                            showSnackBar(
-                                msg = res.successOr(""),
-                                actionLabel = "copy",
-                                action = {
-                                    copyToClipboard(res.successOr(""))
-                                },
-                                duration = SnackbarDuration.Long
-                            )
-                            this@subroutine.cancel()
-                        }
-                }
+        viewModelScope.launch {
+            val res = playlistRepository.exportPlaylistAsKey(playlist)
+            showSnackBar(
+                msg = res.successOr("export failed"),
+                actionLabel = "copy",
+                action = {copyToClipboard(res.successOr(""))},
+                duration = SnackbarDuration.Long
+            )
+        }
     }
 
     private fun onChangeMapListSortRule(sortRule:Pair<SortKey,SortType>) {
@@ -268,7 +268,16 @@ class HomeViewModel(
         }
     }
 
-
+    private fun deletePlaylist(playlist: IPlaylist) {
+        viewModelScope.launch {
+            playlistRepository.deletePlaylistById(playlist.id)
+        }
+    }
+    private fun onCreateNewPlaylist(name:String) {
+        viewModelScope.launch {
+            playlistRepository.createNewPlaylist(name)
+        }
+    }
     private fun onMultiDeleteAction(mapSet:Set<IMap>){
         viewModelScope.launch(Dispatchers.IO) {
             val mapToBeDelete = mapSet.map { (it as FSMapVO).fsMap }
@@ -387,6 +396,4 @@ class HomeViewModel(
             currentUiState.copy(snackBarMessages = snackBarMessages)
         }
     }
-
-
 }

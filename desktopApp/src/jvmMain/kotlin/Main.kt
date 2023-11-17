@@ -9,7 +9,6 @@ import io.ktlab.bshelper.di.AppModule
 import moe.tlaster.precompose.PreComposeWindow
 import org.koin.core.logger.Level
 import org.koin.mp.KoinPlatform.startKoin
-
 fun main() {
     startKoin(AppModule.getModules(), Level.DEBUG)
     application {

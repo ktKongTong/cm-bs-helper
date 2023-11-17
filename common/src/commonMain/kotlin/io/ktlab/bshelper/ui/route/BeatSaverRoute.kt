@@ -19,6 +19,6 @@ fun BeatSaverRoute(
         openDrawer = openDrawer,
         snackbarHostState = remember { SnackbarHostState() },
         onUIEvent = beatSaverViewModel::dispatchUiEvents,
-        onSnackBarShown = beatSaverViewModel::snackBarShown,
+//        onSnackBarShown = beatSaverViewModel::snackBarShown,
     )
 }

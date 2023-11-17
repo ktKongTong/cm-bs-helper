@@ -62,10 +62,13 @@ enum class MapTag(val type: MapTagType, val human: String, val slug: String) {
         private val map = entries.associateBy(MapTag::slug)
         fun fromSlug(slug: String) = map[slug]
 
+        fun isStyleTag(tag: String) = fromSlug(tag)?.type == MapTagType.Style
+
         val styleMapTags = entries.filter { it.type == MapTagType.Style }
         val genreMapTags = entries.filter { it.type == MapTagType.Genre }
         val allMapTags = entries.filter { it.type != MapTagType.None }
 
+        fun sort(tags:List<String>): List<String> = tags.sortedWith(compareBy({ fromSlug(it)?.type?.ordinal }, { it }))
 
         val maxPerType = mapOf(
             MapTagType.Style to 2,

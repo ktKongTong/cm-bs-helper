@@ -1,58 +1,55 @@
-#####
-# This file is duplicated to individual samples from the global scripts/libs.versions.toml
-# Do not add a dependency to an individual sample, edit the global version instead.
-#####
 [versions]
+# plugins
 gradle-versions-plugin = "0.48.0"
 version-catalog-update-plugin = "0.8.1"
-androidGradlePlugin = "8.1.1"
-jetbrains-compose-plugin = "1.5.10-beta01"
+android-gradle-plugin = "8.1.1"
+jetbrains-compose-plugin = "1.5.10"
 
-
+# kotlin & kotlinx
 ksp = "1.9.10-1.0.13"
 kotlin = "1.9.10"
 kotlinx-immutable = "0.3.5"
 kotlinx-serialization = "1.6.0"
-kotlinx-datetime = "0.4.0"
+kotlinx-datetime = "0.4.1"
 kotlinx-coroutines =  "1.7.3"
-core-ktx = "1.12.0"
-
-
-wsc-multiplatform = "0.3.1"
-
-
-androidx-corektx = "1.12.0"
-androidx-appcompat = "1.6.1"
-androidx-activity-compose = "1.7.2"
-androidx-annotation = "1.7.0"
-androidx-collection = "1.3.0-rc01"
+kotlinx-io = "0.3.0"
+# io support
+okio = "3.6.0"
+# logger
+kotlin-logging = "5.1.0"
+slf4j = "2.0.9"
+# db
+sqldelight = "2.0.0"
+# web client
+ktor = "2.3.6"
+# multiplatform resources access
+moko-resources = "0.23.0"
+# paging
+cash-paging = "3.3.0-alpha02-0.4.0"
+# data store
 androidx-datastore-core-okio = "1.1.0-alpha05"
 androidx-datastore-preferences-core = "1.1.0-alpha05"
-
+# navigation
 precompose = "1.5.4"
-moko-resources = "0.23.0"
-moko-mvvm = "0.16.1"
-
-koin-bom = "3.5.1"
+# di
 koin-compose = "1.1.0"
 koin-core = "3.5.0"
 koin-android = "3.5.0"
 koin-ktor = "3.5.1"
 
+# third party compose
+wsc-multiplatform = "0.3.1"
 kamel = "0.7.3"
-kodein = "7.19.0"
+mpfilepicker = "2.1.0"
 
-ktor = "2.3.4"
-
-cash-paging = "3.3.0-alpha02-0.4.0"
-androidx-paging = "3.2.1"
-
-sqldelight = "2.0.0"
+# androidx
+androidx-corektx = "1.12.0"
+androidx-appcompat = "1.6.1"
+androidx-activity-compose = "1.7.2"
+androidx-annotation = "1.7.0"
+androidx-collection = "1.3.0-rc01"
 
 beatmap-io = "1.0.+"
-
-okio = "3.5.0"
-mpfilepicker = "2.1.0"
 [libraries]
 # kotlin & kotlinx
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -60,6 +57,12 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutable" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
+# logger
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
+kotlin-logging-jvm = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-log4j = { module = "org.slf4j:log4j-over-slf4j", version.ref = "slf4j" }
 
 # coroutines
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -72,6 +75,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
 ktor-client-jvm = { module = "io.ktor:ktor-client-core-jvm", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
@@ -88,6 +92,8 @@ cash-paging-testing = { module = "app.cash.paging:paging-testing", version.ref =
 sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-jvm-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqldelight" }
+
 sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-androidx-paging3-extensions = { module = "app.cash.sqldelight:androidx-paging3-extensions", version.ref = "sqldelight" }
 sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
@@ -142,9 +148,9 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 
 # android
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+android-test = { id = "com.android.test", version.ref = "android-gradle-plugin" }
 
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose-plugin" }
 
@@ -153,4 +159,3 @@ moko-resources-generator = { id = "dev.icerock.moko:resources-generator", versio
 
 
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
-

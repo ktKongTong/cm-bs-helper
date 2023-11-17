@@ -15,10 +15,10 @@ actual class HttpClientModuleProvider actual constructor(
     }
 
     private fun installFeatures(config: HttpClientConfig<*>) = with(config) {
-        install(ResponseObserver) {
-            onResponse { response ->
-                println("HTTP status Desktop: ${response.status}")
-            }
-        }
+//        install(ResponseObserver) {
+//            onResponse { response ->
+//                println("HTTP status Desktop: ${response.status}")
+//            }
+//        }
     }
 }

@@ -21,9 +21,7 @@ class HttpClientModuleProviderBase {
             }
             install(ContentNegotiation) {
                 json(Json {
-                    prettyPrint = true
-//                        isLenient = true
-//                    useAlternativeNames = false
+//                    prettyPrint = true
                     ignoreUnknownKeys = true
                 })
             }

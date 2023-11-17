@@ -1,7 +1,10 @@
 package io.ktlab.bshelper.model.vo
 
 import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.enums.ECharacteristic
 import io.ktlab.bshelper.model.enums.EMapDifficulty
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -9,6 +12,7 @@ data class VersionWithDiffList(
     val version: BSMapVersion,
     val diffs: List<MapDifficulty>
 )
+
 
 data class BSMapVO(
     val map: BSMap,
@@ -23,9 +27,11 @@ data class BSMapVO(
     override fun getMusicPreviewURL(): String {
         return versions.first().version.previewURL
     }
-    //    override fun getDownlaodUri(): Uri {
-//        return Uri.parse(versions.first().version.previewURL)
-//    }
+
+    fun getDownloadURL(): String {
+        return versions.first().version.downloadURL
+    }
+
     override fun getAuthor(): String {
         return uploader.name
     }

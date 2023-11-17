@@ -10,7 +10,7 @@ data class PlaylistStats (
     val mapperCount: Long,
     val maxNps: Double,
     val minNps: Double,
-    val totalDuration: Duration,
+    val totalDuration: Long,
     val totalMaps: Long,
     val upVotes: Long,
 )

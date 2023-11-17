@@ -25,7 +25,7 @@ kotlin {
                 implementation(project(":utils"))
                 implementation(project(":repository"))
                 implementation(project(":platformService"))
-
+                implementation(project(":kown-downloader"))
                 // kotlin & kotlinx
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.serialization)
@@ -67,14 +67,21 @@ kotlin {
                 api(libs.koin.core)
                 implementation(libs.koin.core.coroutines)
                 implementation(libs.koin.compose)
-
+                // logger
+                implementation(libs.kotlin.logging)
+                implementation(libs.slf4j.api)
+                implementation(libs.slf4j.log4j)
                 // dataStore
                 implementation(libs.androidx.datastore.preferences.core)
+                // beatmap-io
+                implementation(libs.beatmap.io)
             }
         }
         val androidMain by getting {
             dependencies {
                 implementation(libs.koin.androidx.compose)
+                implementation(libs.kotlin.logging.jvm)
+                api(compose.preview)
             }
         }
         val jvmMain by getting {
@@ -82,8 +89,10 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(compose.desktop.common)
+                api(compose.preview)
                 // see https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.1.1
                 implementation(libs.kotlinx.coroutines.swing)
+                implementation(libs.kotlin.logging.jvm)
             }
         }
     }

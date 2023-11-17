@@ -1,5 +1,6 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -9,12 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
@@ -44,17 +43,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
+import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.enums.MapFeatureTag
 import io.ktlab.bshelper.model.enums.MapTag
 import io.ktlab.bshelper.model.enums.MapTagType
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
-import io.ktlab.bshelper.viewmodel.MapQueryState
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -86,7 +87,7 @@ fun findMapTagByString(tag: String?,type: MapTagType): MapTag? {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun MapFilterPanel(
-    mapFilterPanelState: MapQueryState,
+    mapFilterPanelState: MapFilterParam,
     onUIEvent: (UIEvent) -> Unit = {},
 ){
     val npsStart = mapFilterPanelState.minNps?.toFloat() ?:0f
@@ -116,7 +117,7 @@ fun MapFilterPanel(
         MapFeatureTag.VerifiedMapper to mapFilterPanelState.verified,
         MapFeatureTag.FullSpread to mapFilterPanelState.fullSpread,
     )) }
-    val (selectedSortOrder, onSortOrderOptionSelected) = remember { mutableStateOf(if (mapFilterPanelState.sortKey.isNullOrEmpty()){"Relevance"}else{mapFilterPanelState.sortKey}) }
+    val (selectedSortOrder, onSortOrderOptionSelected) = remember { mutableStateOf(mapFilterPanelState.sortKey.ifEmpty { "Relevance" }) }
     var searchBarActive by remember { mutableStateOf(false) }
 
     val convertToTagString = fun (): String? {
@@ -130,7 +131,7 @@ fun MapFilterPanel(
         }
     }
 
-    val toMapFilterPanelState = fun (): MapQueryState {
+    val toMapFilterPanelState = fun (): MapFilterParam {
         return mapFilterPanelState.copy(
             queryKey = queryKey,
             sortKey = selectedSortOrder,
@@ -385,44 +386,13 @@ fun MapFilterPanel(
 }
 
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RadioButtons(
     selectedOption: String,
     onOptionSelected: (String) -> Unit = {},
 ) {
     val radioOptions = listOf("Relevance","Latest", "Rating", "Curated")
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        maxItemsInEachRow = 2,
-        horizontalArrangement = Arrangement.SpaceAround,
-    ) {
-        radioOptions.forEach { text ->
-            Row(
-                Modifier
-                    .selectable(
-                        selected = (text == selectedOption),
-                        onClick = {
-                            onOptionSelected(text)
-                        }
-                    )
-                    .padding(horizontal = 2.dp)
-                    .clip(RoundedCornerShape(4.dp)),
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                RadioButton(
-                    selected = (text == selectedOption),
-                    onClick = { onOptionSelected(text) }
-                )
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                )
-            }
-        }
-    }
+    RadioButtons(radioOptions,selectedOption,onOptionSelected)
 }
 
 
@@ -438,12 +408,3 @@ fun DividerWithTitle(title: String){
         )
     }
 }
-
-//@Composable
-//@Preview
-//fun ExampleMapFilterPanel(){
-//    MapFilterPanel(
-//        mapFilterPanelState = MapQueryState(),
-////        onUpdateFilter = {}
-//    )
-//}

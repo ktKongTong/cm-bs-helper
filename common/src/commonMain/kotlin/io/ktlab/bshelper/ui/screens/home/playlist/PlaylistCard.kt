@@ -71,16 +71,16 @@ fun PlaylistCard(
                                 modifier = Modifier
                             )
                     }else {
-                        Text(text = "custom")
+//                        Text(text = "custom")
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    val minNps = String.format("%.2f", playlist.getMinNPS())
-                    val maxNps = String.format("%.2f", playlist.getMaxNPS())
-                    NPSIconWIthText(text = "$minNps - $maxNps")
+//                    val minNps = String.format("%.2f", playlist.getMinNPS())
+//                    val maxNps = String.format("%.2f", playlist.getMaxNPS())
+//                    NPSIconWIthText(text = "$minNps - $maxNps")
                     Spacer(modifier = Modifier.width(8.dp))
 //                    DurationIconWIthText(text = totalDuration)
                     MapAmountIconWIthText(text = playlist.getMapAmount().toString())

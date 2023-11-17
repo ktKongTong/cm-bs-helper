@@ -11,19 +11,18 @@ import io.ktlab.bshelper.model.vo.MapDiff
 import io.ktlab.bshelper.model.MapDifficulty
 import io.ktlab.bshelper.model.vo.BSMapVO
 
-//import io.ktkt.lb.data.model.view.BsMapWithUploader
-
-
 
 @Serializable
 data class BSMapDTO(
     val id: String,
     val name: String,
     val description: String,
-    val bookmarked: Boolean,
+    val bookmarked: Boolean=false,
     val automapper: Boolean,
     val ranked: Boolean,
     val qualified: Boolean,
+    val collaborators: List<BSUserDTO>? = null,
+    val curator: BSUserDTO? = null,
     val uploader: BSUserDTO,
     val metadata: MapMetadataDTO,
     val stats: MapStatsDTO,
@@ -38,9 +37,7 @@ data class BSMapDTO(
     @Serializable(with = LocalDateTimeAsStringSerializer::class)
     val lastPublishedAt: LocalDateTime
 ):IMap {
-//    fun covertToDBO() {
-//
-//    }
+
     fun convertToVO():BSMapVO {
         return BSMapVO(
             map = BSMap(
@@ -48,6 +45,8 @@ data class BSMapDTO(
                 name = name,
                 description = description,
                 uploaderId = uploader.id.toLong(),
+//                curatorId = curator?.id?.toLong(),
+//                collaboratorIds = collaborators?.map { it.id.toLong() },
                 automapper = automapper,
                 ranked = ranked,
                 qualified = qualified,
@@ -69,16 +68,11 @@ data class BSMapDTO(
                 songAuthorName = metadata.songAuthorName,
                 levelAuthorName = metadata.levelAuthorName
             ),
-            uploader = BSUser(
-                id = uploader.id,
-                name = uploader.name,
-                avatar = uploader.avatar,
-                description = uploader.description,
-                type = uploader.type,
-                admin = uploader.admin,
-                curator = uploader.curator,
-                playlistUrl = uploader.playlistUrl
-            ),
+            uploader = uploader.convertToEntity(),
+//            collaborators = collaborators?.map { it.convertToEntity() },
+//            curator = curator?.convertToEntity(),
+
+//            curator
             versions = versions.map { it.convertToVersionWithDiffList(id) }
         )
     }

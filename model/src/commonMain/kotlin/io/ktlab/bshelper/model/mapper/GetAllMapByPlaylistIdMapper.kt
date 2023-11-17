@@ -55,6 +55,7 @@ fun List<GetAllByPlaylistId>.mapToVO():List<FSMapVO> = this
                     curator = first.uploaderCurator!!,
                     description = first.uploaderDescription!!,
                     playlistUrl = first.uploaderPlaylistUrl!!,
+                    verifiedMapper = first.uploaderVerifiedMapper,
                 )
                 BsMapWithUploader(
                     uploader = user,

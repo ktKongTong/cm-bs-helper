@@ -33,6 +33,10 @@ kotlin {
                 // dataStore
                 implementation(libs.androidx.annotation)
                 implementation(libs.androidx.datastore.preferences.core)
+                // logger
+                implementation(libs.kotlin.logging)
+                implementation(libs.slf4j.api)
+                implementation(libs.slf4j.log4j)
                 // ktor
                 implementation(libs.ktor.serialization.kotlinx.json)
                 implementation(libs.ktor.client.core)

@@ -2,30 +2,14 @@ package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Downloading
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.Preview
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,23 +23,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
-import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
-import io.ktlab.bshelper.ui.components.BPMIconWIthText
-import io.ktlab.bshelper.ui.components.DurationIconWIthText
-import io.ktlab.bshelper.ui.components.MapAlertDialog
-import io.ktlab.bshelper.ui.components.MapDiffLabel
-import io.ktlab.bshelper.ui.components.MapOnlinePreview
-import io.ktlab.bshelper.ui.components.MapperIconWIthText
-import io.ktlab.bshelper.ui.components.NPSIconWIthText
+import io.ktlab.bshelper.model.enums.MapTag as MapTagEnum
+import io.ktlab.bshelper.model.vo.BSMapVO
+import io.ktlab.bshelper.repository.IDownloadTask
+import io.ktlab.bshelper.ui.components.*
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistCard
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
+import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
+import io.ktlab.kown.model.DownloadListener
+import io.ktlab.kown.model.DownloadTaskBO
+import io.ktlab.kown.model.RenameStrategy
+import io.ktlab.kown.model.TaskStatus
 
-data class DownloadTask(
-    val id:String,
-)
-
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun BSMapCard(
     map: IMap,
@@ -63,151 +44,112 @@ fun BSMapCard(
     checked: Boolean,
     local: Boolean = false,
     onMapMultiSelected: (IMap) -> Unit,
-    downloadInfo: DownloadTask?,
+    downloadInfo: IDownloadTask.MapDownloadTask?,
     onUIEvent: (UIEvent) -> Unit,
-    onDownloadMap: (IMap,String,String) -> Unit,
+    onDownloadMap: (IMap) -> Unit,
     multiSelectedMode: Boolean = false,
     selectableIPlaylists : List<IPlaylist>,
     onPlayPreviewMusicSegment: (IMap) -> Unit = {},
 ) {
-    Column {
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-        ) {
-            AsyncImageWithFallback(
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp)
-                    .size(64.dp, 64.dp)
-                    .align(Alignment.CenterVertically)
-                    .clip(shape = RoundedCornerShape(10.dp))
-                    .clickable { onPlayPreviewMusicSegment(map) },
-                source = map.getAvatar(),
+    Row(
+        modifier = modifier
+//            .padding(vertical = 8.dp)
+            .widthIn(min = 350.dp)
+            .combinedClickable(
+                onLongClick = {onUIEvent(BeatSaverUIEvent.MapLongTapped(map))},
+                onClick = {onUIEvent(BeatSaverUIEvent.MapTapped(map))}
             )
-            Column (
-                modifier = Modifier
-                    .weight(1f),
-                verticalArrangement = Arrangement.Center
-            ){
-                Text(text = map.getSongName(),
-                    modifier = Modifier.padding(bottom = 4.dp),
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-    //                Text(text = map.getAuthor(), modifier = Modifier.padding(bottom = 4.dp), style = MaterialTheme.typography.bodyMedium)
+            .fillMaxWidth()
+    ) {
+
+        AsyncImageWithFallback(
+            modifier = Modifier
+                .padding(8.dp)
+                .size(128.dp, 128.dp)
+                .align(Alignment.Top)
+                .clip(shape = RoundedCornerShape(10.dp))
+                .clickable { onPlayPreviewMusicSegment(map) },
+            source = map.getAvatar(),
+        )
+        Column(
+            modifier = Modifier
+                .weight(1f),
+            verticalArrangement = Arrangement.Center
+        ){
+            Text(text = map.getSongName(),
+                modifier = Modifier.padding(bottom = 4.dp),
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Row {
+                if ((map as BSMapVO).uploader.verifiedMapper?.let { true } == true) {
+                    Icon(
+                        Icons.Filled.Verified,
+                        modifier = Modifier.size(20.dp),
+                        contentDescription = "Verified Mapper",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
                 MapperIconWIthText(text = map.getAuthor())
-                MapDiffLabel(diff = map.getDiffMatrix())
-            }
-            Column(
-                modifier = Modifier
-                    .width(120.dp)
-                    .padding(end = 8.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
+                Spacer(modifier = Modifier.width(8.dp))
                 DurationIconWIthText(text = map.getDuration())
-                BPMIconWIthText(text = map.getBPM())
+                Spacer(modifier = Modifier.width(8.dp))
                 NPSIconWIthText(text = "%.2f".format(map.getMaxNPS()))
             }
-            if (multiSelectedMode && !local) {
-                Checkbox(
-                    checked = checked,
-                    onCheckedChange = { onMapMultiSelected(map) },
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .align(Alignment.CenterVertically)
-                )
-            }else {
-//                val context = LocalContext.current
-                Column {
-                    if (local){
-                        IconButton(onClick = {
-//                            Toast
-//                                .makeText(
-//                                    context, "already exist!😉",
-//                                    Toast.LENGTH_SHORT
-//                                )
-//                                .show()
-                        }) {
-                            Icon(
-                                Icons.Filled.Check,
-                                contentDescription = "Downloaded Map",
-                                tint = Color.Green
-                            )
-                        }
-                    }else {
-                        if (downloadInfo == null) {
-                            var selectPath by remember { mutableStateOf("") }
-                            var targetPathSelectDialogOpen by remember { mutableStateOf(false) }
-                            IconButton(onClick = { targetPathSelectDialogOpen = true }) {
-                                Icon(
-                                    Icons.Filled.Download,
-                                    contentDescription = "Download Map",
-                                )
-                            }
-                            if (targetPathSelectDialogOpen) {
-                                DownloadSelectPlaylistDialog(
-                                    onDismiss = { targetPathSelectDialogOpen = false },
-                                    onConfirm = { selectPath = it.getTargetPath();onDownloadMap(map,selectPath,it.id) },
-                                    targetPlaylists = selectableIPlaylists
-                                )
-                            }
-                        }else {
-//                            IconButton(
-//                                onClick = {
-////                                    if (downloadInfo.status == DownloadStatus.PAUSED) {
-////                                        onUIEvent(BeatSaverUIEvent.ResumeDownload(downloadInfo))
-////                                    }else {
-////                                        onUIEvent(BeatSaverUIEvent.PauseDownload(downloadInfo))
-////                                    }
-//                                }
-//                                ) {
-//                                when(downloadInfo.status) {
-//                                    DownloadStatus.DOWNLOADING -> {
-//                                        Icon(
-//                                            Icons.Filled.Downloading,
-//                                            contentDescription = "Downloading Map",
-//                                            tint = Color.Blue
-//                                        )
-//                                    }
-//                                    DownloadStatus.PAUSED -> {
-//                                        Icon(
-//                                            Icons.Filled.Pause,
-//                                            contentDescription = "Paused Map",
-//                                            tint = Color.Gray
-//                                        )
-//                                    }
-//                                    DownloadStatus.CANCELED -> {
-//                                        Icon(
-//                                            Icons.Filled.Cancel,
-//                                            contentDescription = "Paused Map",
-//                                            tint = Color.Gray
-//                                        )
-//                                    }
-//                                    else -> {}
-//                                }
-//                            }
-                        }
-
-                    }
-                    var previewDialogOpen by remember { mutableStateOf(false) }
-                    IconButton(onClick = { previewDialogOpen = true }) {
-                        Icon(
-                            Icons.Default.Preview,
-                            contentDescription = "Preview Map"
-                        )
-                    }
-                    if (previewDialogOpen) {
-                        MapOnlinePreview(onDismiss = { previewDialogOpen = false }, mapId = map.getID())
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                FlowRow {
+                    MapTagEnum.sort((map as BSMapVO).map.tags).map {
+                        MapTag(tag = it)
                     }
                 }
             }
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row {
+                    ThumbUpIconWIthText(text = (map as BSMapVO).map.upVotes.toString())
+                    Spacer(modifier = Modifier.width(8.dp))
+                    ThumbDownIconWIthText(text = map.map.downVotes.toString())
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+//                Text(text = "difficulties", modifier = Modifier.padding(end = 4.dp), style = MaterialTheme.typography.bodyMedium)
+                MapDiffLabel(diff = map.getDiffMatrix())
+            }
+
+
+            Row {
+                DownloadIconButton(
+                    onClick = {onUIEvent(BeatSaverUIEvent.DownloadMap(map))},
+                    downloadInfo = downloadInfo,
+                )
+                IconButton(onClick = {
+
+                },modifier=Modifier.size(36.dp)){
+                    Icon(
+                        Icons.Filled.MusicOff,
+                        contentDescription = "Download Map",
+                        tint = MaterialTheme.colorScheme.surfaceTint
+                    )
+                }
+
+                var previewDialogOpen by remember { mutableStateOf(false) }
+                if (previewDialogOpen) {
+                    MapOnlinePreview(onDismiss = { previewDialogOpen = false }, mapId = map.getID())
+                }
+            }
         }
-//        if(downloadInfo != null && (downloadInfo.status != DownloadStatus.FINISHED && downloadInfo.status != DownloadStatus.FAILED)) {
-//            Row {
-//                LinearProgressIndicator(progress = downloadInfo.progress, modifier = Modifier.weight(1f))
-//            }
-//        }
+        if (multiSelectedMode && !local) {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = { onMapMultiSelected(map) },
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .align(Alignment.CenterVertically)
+            )
+        }
     }
 }
 
@@ -268,38 +210,49 @@ fun DownloadSelectPlaylistDialog(
 }
 
 
+
+
+// fake a DownloadTaskBO
+private val downloadTaskBO = DownloadTaskBO(
+    taskId = "fake",
+    title = "fake",
+    tag = "fake",
+    headers = mapOf(),
+    status = TaskStatus.Running,
+    url = "fake",
+    eTag = "fake",
+    dirPath = "fake",
+    renameAble = false,
+    renameStrategy = RenameStrategy.DEFAULT,
+    filename = "fake",
+    readTimeOut = 0,
+    connectTimeOut = 0,
+    totalBytes = 33233,
+    downloadedBytes = 333333,
+    lastModifiedAt = 0,
+    estimatedTime = 0,
+    speed = 0,
+    downloadListener = DownloadListener(),
+    relateEntityId = "3f404"
+)
+
 //@Preview
 //@Composable
 //fun BSMapCardPreview(){
-////    val downloadInfo = DownloadTask.MapDownloadTask(
-////        id = "test",
-////        progress = 0.79f,
-////        startTime = 0L,
-////        endTime = 0L,
-////        status = DownloadStatus.DOWNLOADING,
-////        total = 100,
-////        speed = 100,
-////        mapId = "test",
-////        mapName = "test",
-////        relateRequest = DownloadRequest.MapDownloadRequest(
-////            title = "test",
-////            id = "test",
-////            downloadProgressListener = { _ -> },
-////            onSuccessCallback = { },
-////            url = "",
-////            targetPath = "",
-////            bsMap = bsMapViewExample
-////        )
-////    )
+//    val downloadInfo = IDownloadTask.MapDownloadTask(
+//        downloadTaskModel = downloadTaskBO,
+//        relateMap = bsMapVO,
 //
+//    )
 //    BSHelperTheme {
-////        BSMapCard(
-////            map = bsMapViewExample,
-////            checked = false,
-////            downloadInfo = downloadInfo,
-////            onDownloadMap = {_,_,_->},
-////            onMapMultiSelected = {},
-////            selectableIPlaylists = listOf(),
-////        )
+//        BSMapCard(
+//            map = bsMapVO,
+//            checked = false,
+//            downloadInfo = downloadInfo,
+//            onDownloadMap = {_->},
+//            onMapMultiSelected = {},
+//            selectableIPlaylists = listOf(),
+//            onUIEvent = {}
+//        )
 //    }
 //}

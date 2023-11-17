@@ -1,18 +1,16 @@
 package io.ktlab.bshelper.paging
 
-import app.cash.paging.PagingSource
+import androidx.paging.PagingSource
 import app.cash.paging.PagingState
 import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.model.IMap
-import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.dto.response.errorMsg
 import io.ktlab.bshelper.model.dto.response.isSuccess
 
-//
-class BSMapPagingSource(
+class BSPlaylistDetailPagingSource(
     private val beatSaverApiService: BeatSaverAPI,
-    private val mapFilterParam: MapFilterParam,
+    private val playlistId: String,
 ): PagingSource<Int, IMap>() {
     override fun getRefreshKey(state: PagingState<Int, IMap>): Int? {
 
@@ -25,12 +23,12 @@ class BSMapPagingSource(
         return try {
             val page = params.key ?: 0
 //            Log.d("BSMapPagingSource", "load: ${mapFilterParam.queryKey} page:$page")
-            val apiRespResult = beatSaverApiService.searchMap(
+            val apiRespResult = beatSaverApiService.getPlaylistDetail(
                 page = page,
-                queryParam = mapFilterParam
+                playlistId = playlistId
             )
             if (apiRespResult.isSuccess()){
-                val docs = (apiRespResult as APIRespResult.Success).data.docs.map { it.convertToVO() }
+                val docs = (apiRespResult as APIRespResult.Success).data.maps.map { it.convertToVO() }
                 LoadResult.Page(
                     data = docs,
                     prevKey = null,

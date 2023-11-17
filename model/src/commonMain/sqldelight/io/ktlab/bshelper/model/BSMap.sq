@@ -68,3 +68,72 @@ deleteByMapIds:
 DELETE FROM `BSMap` WHERE mapId IN ?;
 deleteAll:
 DELETE FROM `BSMap`;
+
+selectAllByMapIds:
+
+
+SELECT
+`BSMap`.mapId AS `mapId`,
+`BSMap`.name AS `name`,
+`BSMap`.uploaderId AS `uploaderId`,
+`BSMap`.bpm AS `bsMapbpm`,
+`BSMap`.duration AS `bsMapDuration`,
+`BSMap`.songName AS `bsMapSongName`,
+`BSMap`.songSubname AS `bsMapSongSubName`,
+`BSMap`.songAuthorName AS `bsMapSongAuthorName`,
+`BSMap`.levelAuthorName AS `bsMapLevelAuthorName`,
+`BSMap`.plays AS `bsMapPlays`,
+`BSMap`.downloads AS `bsMapDownloads`,
+`BSMap`.upVotes AS `bsMapUpVotes`,
+`BSMap`.downVotes AS `bsMapDownVotes`,
+`BSMap`.score AS `bsMapScore`,
+`BSMap`.automapper AS `bsMapAutomapper`,
+`BSMap`.ranked AS `bsMapRanked`,
+`BSMap`.qualified AS `bsMapQualified`,
+`BSMap`.bookmarked AS `bsMapBookmarked`,
+`BSMap`.createdAt AS `bsMapCreatedAt`,
+`BSMap`.updatedAt AS `bsMapUpdatedAt`,
+`BSMap`.tags AS `bsMapTags`,
+`BSMap`.lastPublishedAt AS `bsMapLastPublishedAt`,
+`BSMap`.uploaded AS `bsMapUploaded`,
+
+`BSUser`.id AS `uploaderId`,
+`BSUser`.name AS `uploaderName`,
+`BSUser`.avatar AS `uploaderAvatar`,
+`BSUser`.description AS `uploaderDescription`,
+`BSUser`.type AS `uploaderType`,
+`BSUser`.admin AS `uploaderAdmin`,
+`BSUser`.curator AS `uploaderCurator`,
+`BSUser`.playlistUrl AS `uploaderPlaylistUrl`,
+`BSUser`.verifiedMapper AS `uploaderVerifiedMapper`,
+
+`BSMapVersion`.hash AS `bsMapVersionHash`,
+`BSMapVersion`.state AS `bsMapVersionState`,
+`BSMapVersion`.createdAt AS `bsMapVersionCreatedAt`,
+`BSMapVersion`.downloadURL AS `bsMapVersionDownloadURL`,
+`BSMapVersion`.coverURL AS `bsMapVersionCoverURL`,
+`BSMapVersion`.previewURL AS `bsMapVersionPreviewURL`,
+
+`MapDifficulty`.seconds AS `diffSeconds`,
+`MapDifficulty`.njs AS `diffNjs`,
+`MapDifficulty`.offset AS `diffOffset`,
+`MapDifficulty`.notes AS `diffNotes`,
+`MapDifficulty`.bombs AS `diffBombs`,
+`MapDifficulty`.obstacles AS `diffObstacles`,
+`MapDifficulty`.nps AS `diffNps`,
+`MapDifficulty`.events AS `diffEvents`,
+`MapDifficulty`.difficulty AS `diffDifficulty`,
+`MapDifficulty`.characteristic AS `diffCharacteristic`,
+`MapDifficulty`.chroma AS `diffChroma`,
+`MapDifficulty`.me AS `diffMe`,
+`MapDifficulty`.ne AS `diffNe`,
+`MapDifficulty`.cinema AS `diffCinema`,
+`MapDifficulty`.length AS `diffLength`,
+`MapDifficulty`.maxScore AS `diffMaxScore`,
+`MapDifficulty`.label AS `diffLabel`
+
+FROM `BSMap`
+LEFT JOIN `BSUser` ON `BSMap`.`uploaderId` = `BSUser`.`id`
+LEFT JOIN `BSMapVersion` ON `BSMap`.`mapId` = `BSMapVersion`.`mapId`
+LEFT JOIN `MapDifficulty` ON `BSMap`.`mapId` = `MapDifficulty`.`mapId`
+WHERE `BSMap`.`mapId` IN ?;

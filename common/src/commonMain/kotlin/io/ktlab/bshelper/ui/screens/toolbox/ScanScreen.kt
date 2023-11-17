@@ -1,14 +1,11 @@
 package io.ktlab.bshelper.ui.screens.toolbox
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.model.vo.ScanState
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
@@ -45,7 +42,7 @@ fun ScanScreen(
             RequestStoragePermission()
         }
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             var dialogOpen by remember { mutableStateOf(false) }
@@ -65,6 +62,16 @@ fun ScanScreen(
                     onUIEvent = onUIEvent,
                     onCloseDialog = { dialogOpen = false;onUIEvent(ToolboxUIEvent.ClearScanState) }
                 )
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            TextButton(onClick = {
+                onUIEvent(ToolboxUIEvent.ClearLocalData)
+            }) {
+                Text(text = "clear local data")
             }
         }
     }

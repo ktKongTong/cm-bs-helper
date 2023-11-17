@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="kown-downloader-jvm">
+    <output-path>$PROJECT_DIR$/kown-downloader/build/libs</output-path>
+    <root id="archive" name="kown-downloader-jvm.jar">
+      <element id="module-output" name="cm-bs-helper.kown-downloader.jvmMain" />
+    </root>
+  </artifact>
+</component>

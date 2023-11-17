@@ -1,16 +1,3 @@
--- @Entity(tableName = "bs_user")
--- data class BSUser (
---     @PrimaryKey
---     val id: Int,
---     val name: String,
---     val avatar: String,
---     val hash: String? = null,
---     val description: String = "",
---     val type: String,
---     val admin: Boolean,
---     val curator: Boolean,
---     val playlistUrl: String
--- )
 
 import kotlin.Int;
 import kotlin.Boolean;
@@ -22,7 +9,8 @@ CREATE TABLE IF NOT EXISTS BSUser (
     type TEXT NOT NULL,
     admin INTEGER AS Boolean NOT NULL,
     curator INTEGER AS Boolean NOT NULL,
-    playlistUrl TEXT NOT NULL
+    playlistUrl TEXT NOT NULL,
+    verifiedMapper INTEGER AS Boolean
 );
 
 selectAll:
@@ -30,4 +18,4 @@ SELECT * FROM `BSUser`;
 
 insert:
 INSERT OR REPLACE
-INTO BSUser (id, name, avatar, description, type, admin, curator, playlistUrl) VALUES ?;
+INTO BSUser (id, name, avatar, description, type, admin, curator, playlistUrl, verifiedMapper) VALUES ?;

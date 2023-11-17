@@ -20,19 +20,23 @@ kotlin {
                 implementation(project(":bsmg"))
                 implementation(project(":platformService"))
                 implementation(project(":utils"))
+                implementation(project(":kown-downloader"))
 
+                implementation("net.lingala.zip4j:zip4j:2.11.5")
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.cash.paging.common)
                 implementation(libs.cash.paging.compose.common)
                 implementation(libs.okio)
-
+                // logger
+                implementation(libs.kotlin.logging)
+                implementation(libs.slf4j.api)
+                implementation(libs.slf4j.log4j)
                 implementation(libs.beatmap.io)
 
                 implementation(libs.androidx.annotation)
                 implementation(libs.androidx.datastore.preferences.core)
-
                 implementation(libs.sqldelight.coroutines.extensions)
             }
         }

@@ -154,7 +154,7 @@ fun StepContent(
     ){
         when(scanState.state) {
             GlobalScanStateEnum.NOT_START -> {
-                DirectoryChooser(targetPath,onSelectTargetPath)
+                DirectoryChooser(targetPath,onSelectTargetPath,onUIEvent)
             }
             GlobalScanStateEnum.SCANNING_PLAYLISTS -> {
                 Row {
@@ -202,7 +202,8 @@ fun StepContent(
 @Composable
 fun DirectoryChooser(
     targetPath: String,
-    onSelectTargetPath: (String) -> Unit = {}
+    onSelectTargetPath: (String) -> Unit = {},
+    onUIEvent: (UIEvent) -> Unit
 ) {
     var showDirPicker by remember { mutableStateOf(false) }
     OutlinedTextField(
@@ -219,6 +220,7 @@ fun DirectoryChooser(
     DirectoryPicker(showDirPicker) { path ->
         showDirPicker = false
         if (path != null) {
+            onUIEvent(ToolboxUIEvent.UpdateDefaultManageDir(path))
             onSelectTargetPath(path)
         }
     }

@@ -8,30 +8,27 @@ import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.ui.components.AppDrawer
 import io.ktlab.bshelper.ui.components.AppNavRail
+import io.ktlab.bshelper.ui.components.BSHelperSnackbarHost
+import io.ktlab.bshelper.ui.components.SnackBarShown
 import io.ktlab.bshelper.ui.route.BSHelperDestinations
 import io.ktlab.bshelper.ui.route.BSHelperNavGraph
 import io.ktlab.bshelper.ui.route.BSHelperNavigationActions
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
+import io.ktlab.bshelper.viewmodel.GlobalUIEvent
+import io.ktlab.bshelper.viewmodel.GlobalViewModel
 import kotlinx.coroutines.launch
+import moe.tlaster.precompose.koin.koinViewModel
 import moe.tlaster.precompose.navigation.rememberNavigator
 import org.koin.compose.KoinContext
-
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun BSHelperApp(){
@@ -58,31 +55,50 @@ fun BSHelperApp(){
             val isExpandedScreen =
                 (windowSizeClass == WindowWidthSizeClass.Expanded) || (windowSizeClass == WindowWidthSizeClass.Medium)
             val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
-            ModalNavigationDrawer(
-                drawerContent = {
-                    AppDrawer(
-                        currentRoute = currentRoute,
-                        navigateAction = navigateAction,
-                        closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
-                    )
-                },
-                drawerState = sizeAwareDrawerState,
-                // Only enable opening the drawer via gestures if the screen is not expanded
-                gesturesEnabled = !isExpandedScreen
-            ) {
-                Row {
-                    if (isExpandedScreen) {
-                        AppNavRail(
+
+            val globalViewModel = koinViewModel<GlobalViewModel>()
+
+
+                ModalNavigationDrawer(
+                    drawerContent = {
+                        AppDrawer(
                             currentRoute = currentRoute,
                             navigateAction = navigateAction,
+                            closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
                         )
+                    },
+                    drawerState = sizeAwareDrawerState,
+                    // Only enable opening the drawer via gestures if the screen is not expanded
+                    gesturesEnabled = !isExpandedScreen
+                ) {
+                    Scaffold(
+                        snackbarHost = { BSHelperSnackbarHost(hostState = remember { SnackbarHostState() }) },
+                    ) {
+                        Row {
+                            if (isExpandedScreen) {
+                                AppNavRail(
+                                    currentRoute = currentRoute,
+                                    navigateAction = navigateAction,
+                                )
+                            }
+                            val snackbarHostState = remember { SnackbarHostState() }
+
+                            BSHelperNavGraph(
+                                isExpandedScreen = isExpandedScreen,
+                                navigator = navigator,
+                                openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
+                            )
+
+                            val globalUiState by globalViewModel.uiState.collectAsState()
+                            SnackBarShown(
+                                snackbarHostState = snackbarHostState,
+                                snackBarMessages = globalUiState.snackBarMessages,
+                                onSnackBarShown = {
+                                    globalViewModel.dispatchUiEvents(GlobalUIEvent.SnackBarShown(it))
+                                },
+                            )
+                         }
                     }
-                    BSHelperNavGraph(
-                        isExpandedScreen = isExpandedScreen,
-                        navigator = navigator,
-                        openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
-                    )
-                }
             }
         }
     }

@@ -146,31 +146,6 @@ class BSMapUtils {
             )
             return extractedMapInfo
         }
-
-        @OptIn(ExperimentalSerializationApi::class)
-        fun extractHash(
-            basePath: Path,
-        ) {
-            val md = MessageDigest.getInstance("SHA1")
-            val info = basePath.resolve("Info.dat").toFile().inputStream().use {
-//                val byteArrayOutputStream = ByteArrayOutputStream()
-//                it.copyTo(byteArrayOutputStream, sizeLimit = 50 * 1024 * 1024)
-                json.decodeFromStream<io.beatmaps.common.beatsaber.MapInfo>(it)
-            }
-
-            var bytes = basePath.resolve("Info.dat").toFile().readBytes()
-            info._difficultyBeatmapSets.forEach{bms ->
-                bms._difficultyBeatmaps.forEach {df ->
-                    val f = basePath.resolve(df._beatmapFilename).toFile()
-                    f.readBytes().let {
-                        bytes += it
-                    }
-                }
-            }
-            val sha1 = md.digest(bytes)
-            val fx = "%0" + md.digestLength * 2 + "x"
-            val digest = String.format(fx, BigInteger(1, sha1))
-        }
     }
 }
 

@@ -20,5 +20,5 @@ data class MapFilterParam(
     @QueryParam("curated") val curated: Boolean? = null,
     @QueryParam("verified") val verified: Boolean? = null,
     @QueryParam("fullSpread") val fullSpread: Boolean? = null,
-    @QueryParam("sortOrder") val sortKey: String? = "Relevance",
+    @QueryParam("sortOrder") val sortKey: String = "Relevance",
 )

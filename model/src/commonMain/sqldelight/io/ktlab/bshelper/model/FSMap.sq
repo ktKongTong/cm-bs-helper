@@ -83,6 +83,7 @@ SELECT
 `BSUser`.admin AS `uploaderAdmin`,
 `BSUser`.curator AS `uploaderCurator`,
 `BSUser`.playlistUrl AS `uploaderPlaylistUrl`,
+`BSUser`.verifiedMapper AS `uploaderVerifiedMapper`,
 
 `BSMapVersion`.state AS `bsMapVersionState`,
 `BSMapVersion`.createdAt AS `bsMapVersionCreatedAt`,
