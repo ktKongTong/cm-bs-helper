@@ -91,13 +91,7 @@ fun MapCardPagingList(
                         val map = mapPagingItems[index]
                         if (map != null) {
                             BSMapCard(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .combinedClickable(
-                                        onLongClick = {},
-                                        onClick = {
-                                            BeatSaverUIEvent.MapTapped(map)
-                                        }),
+                                modifier = Modifier.fillMaxSize(),
                                 map = map,
                                 checked = mapMultiSelected.contains(map),
                                 multiSelectedMode = mapMultiSelectedMode,

@@ -1,41 +1,39 @@
 package io.ktlab.bshelper.service
 
-import java.io.File
+import okio.FileSystem
+import okio.Path
+import okio.Path.Companion.toPath
 
 actual class StorageService {
 
 //    private
     //
-
-    private var appDir : File
-    private var configDir: File
-    private var tmpDir: File
+    private val homeDir = System.getProperty("user.home") ?: throw IllegalStateException("can't get user home dir")
+    private var appDir : Path = homeDir.toPath().resolve(".bshelper")
+    private var configDir: Path = appDir.resolve("config")
+    private var tmpDir: Path = appDir.resolve("tmp")
     init {
-        val homeDir = System.getProperty("user.home") ?: throw IllegalStateException("can't get user home dir")
-        appDir = File(homeDir, ".bshelper")
-        configDir = File(appDir, "config")
-        tmpDir = appDir.toPath().resolve("tmp").toFile()
+
         synchronized(this){
-            if (!appDir.exists()) {
-                appDir.mkdirs()
-            }
-            if (!configDir.exists()) {
-                configDir.mkdirs()
-            }
-            if (!tmpDir.exists()) {
-                tmpDir.mkdirs()
+            if (!FileSystem.SYSTEM.exists(appDir)) {
+                FileSystem.SYSTEM.createDirectory(appDir,mustCreate = true)
+                if (!FileSystem.SYSTEM.exists(configDir)) {
+                    FileSystem.SYSTEM.createDirectory(configDir,mustCreate = true)
+                }
+                if (!FileSystem.SYSTEM.exists(tmpDir)) {
+                    FileSystem.SYSTEM.createDirectory(tmpDir,mustCreate = true)
+                }
             }
         }
     }
-
-    fun getConfigDir(): File {
+    fun getConfigDir(): Path {
         return configDir
     }
-    fun getTempDir(): File {
+    actual fun getTempDir(): Path {
         return tmpDir
     }
 
-    actual fun getDownloadDir(): File {
+    actual fun getDownloadDir(): Path {
         return tmpDir
     }
 

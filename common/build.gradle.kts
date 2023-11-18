@@ -68,7 +68,7 @@ kotlin {
                 implementation(libs.koin.core.coroutines)
                 implementation(libs.koin.compose)
                 // logger
-                implementation(libs.kotlin.logging)
+//                implementation(libs.kotlin.logging)
                 implementation(libs.slf4j.api)
                 implementation(libs.slf4j.log4j)
                 // dataStore
@@ -80,7 +80,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.koin.androidx.compose)
-                implementation(libs.kotlin.logging.jvm)
+//                implementation(libs.kotlin.logging.jvm)
                 api(compose.preview)
             }
         }
@@ -92,7 +92,7 @@ kotlin {
                 api(compose.preview)
                 // see https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.1.1
                 implementation(libs.kotlinx.coroutines.swing)
-                implementation(libs.kotlin.logging.jvm)
+//                implementation(libs.kotlin.logging.jvm)
             }
         }
     }
@@ -100,9 +100,10 @@ kotlin {
 
 android {
     compileSdk = 34
-
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
+    //see https://github.com/icerockdev/moko-resources/issues/510#issuecomment-1700670810
+    sourceSets["main"].java.srcDirs("build/generated/moko/androidMain/src")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
     defaultConfig {
         minSdk = 29

@@ -78,13 +78,14 @@ class DownloaderRepository(
             val targetPath = targetPlaylist.getTargetPath().toPath().resolve(task.title)
             UnzipUtility.unzip(zipFile.toString(), targetPath.toString())
             playlistRepository.adjustPlaylistMapCntByPlaylistId(targetPlaylist.id)
+//          TODO  mapRepository.insertFSMap()
         }
     }
 
     fun downloadMap(targetPlaylist: IPlaylist, map: BSMapVO) {
         val title = "${map.map.mapId} (${map.map.songName} - ${map.map.songAuthorName})".replace("/", " ")
         val timestamp = System.currentTimeMillis()
-        downloader.newRequestBuilder(map.getDownloadURL(), tmpPath.absolutePath, "$title.zip")
+        downloader.newRequestBuilder(map.getDownloadURL(), tmpPath.toString(), "$title.zip")
             .setTag(map.map.mapId)
             .setTag("single.$timestamp.${targetPlaylist.id}")
             .setRelateEntityId(map.map.mapId)
@@ -98,7 +99,7 @@ class DownloaderRepository(
         val tag = "batch.$timestamp.${targetPlaylist.id}"
         mapList.map {
             val title = "${it.map.mapId} (${it.map.songName} - ${it.map.songAuthorName})".replace("/"," ")
-            downloader.newRequestBuilder(it.getDownloadURL(), tmpPath.absolutePath, "$title.zip")
+            downloader.newRequestBuilder(it.getDownloadURL(), tmpPath.toString(), "$title.zip")
                 .setTag(tag)
                 .setRelateEntityId(it.map.mapId)
                 .setTitle(title)

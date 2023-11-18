@@ -3,7 +3,7 @@ package io.ktlab.bshelper.viewmodel
 import androidx.compose.material3.SnackbarDuration
 import app.cash.paging.PagingData
 import app.cash.paging.cachedIn
-import io.github.oshai.kotlinlogging.KotlinLogging
+//import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
@@ -22,7 +22,7 @@ import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import java.util.UUID
 
-private val logger = KotlinLogging.logger("BeatSaverViewModel")
+//private val logger = KotlinLogging.logger("BeatSaverViewModel")
 
 data class LocalState(
     val localMapIdSet: Set<Pair<String,String>> = emptySet(),
@@ -200,7 +200,7 @@ class BeatSaverViewModel(
         )
 
     init{
-        logger.debug { "init BeatSaverViewModel" }
+//        logger.debug { "init BeatSaverViewModel" }
         viewModelScope.listenLocalMapFlow()
         viewModelScope.listenLocalPlaylistFlow()
 //        viewModelScope.listenDownloadingTaskFlow()
@@ -225,7 +225,7 @@ class BeatSaverViewModel(
             playlistRepository.getAllPlaylist()
                 .flowOn(Dispatchers.IO)
                 .collect {res->
-                    logger.debug { "all playlist update" }
+//                    logger.debug { "all playlist update" }
                     when (res) {
                         is Result.Success -> {
                             viewModelState.update {
@@ -352,7 +352,7 @@ class BeatSaverViewModel(
     }
 
     private fun onMultiSelectChecked(checked: Boolean) {
-        logger.debug { "multiselect switch to $checked" }
+//        logger.debug { "multiselect switch to $checked" }
         viewModelState.update {
             it.copy(
                 multiSelectMode = checked,

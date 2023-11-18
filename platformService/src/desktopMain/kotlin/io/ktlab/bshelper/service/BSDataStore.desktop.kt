@@ -6,5 +6,5 @@ import androidx.datastore.preferences.core.Preferences
 fun createDataStore(
     storageService: StorageService
 ): DataStore<Preferences> = getDataStore(
-    producePath = { storageService.getConfigDir().resolve(dataStoreFileName).absolutePath }
+    producePath = { storageService.getConfigDir().resolve(dataStoreFileName).toString() }
 )

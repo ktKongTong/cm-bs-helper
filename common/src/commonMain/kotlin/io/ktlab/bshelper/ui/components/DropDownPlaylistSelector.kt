@@ -66,10 +66,10 @@ fun DropDownPlaylistSelector(
     onCreateNewPlaylist: () -> Unit = {},
     onSelectedPlaylist: (IPlaylist?) -> Unit = {},
     selectablePlaylists: List<IPlaylist> = emptyList(),
+    selectedIPlaylist: IPlaylist? = null,
 ){
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedIPlaylist by remember { mutableStateOf<IPlaylist?>(null) }
     var searchKey by remember { mutableStateOf("") }
 
     ExposedDropdownMenuBox(
@@ -126,7 +126,7 @@ fun DropDownPlaylistSelector(
                         Icons.Default.Clear,
                         modifier = Modifier
                             .clickable {
-                               selectedIPlaylist = null
+                               onSelectedPlaylist(null)
                                 onClose()
                             },
                         contentDescription = "")
@@ -194,7 +194,6 @@ fun DropDownPlaylistSelector(
                         DropdownMenuItem(
                             text = { Text(playlist.getName()) },
                             onClick = {
-                                selectedIPlaylist = playlist
                                 onSelectedPlaylist(playlist)
                                 onClose()
                             },

@@ -116,7 +116,20 @@ class FSMapRepository(
             }
         }
     }
-
+    suspend fun insertFSMap(
+        bsMap: BSMapVO
+    ) {
+        bsHelperDAO.transaction {
+            bsHelperDAO.bSMapQueries.insert(bsMap.map)
+            bsHelperDAO.bSUserQueries.insert(bsMap.uploader)
+            bsMap.versions.map {
+                bsHelperDAO.bSMapVersionQueries.insert(it.version)
+                it.diffs.map {
+                    bsHelperDAO.mapDifficultyQueries.insert(it)
+                }
+            }
+        }
+    }
     fun batchInsertBSMap(
         bsMaps: List<BSMapVO>
     ) {

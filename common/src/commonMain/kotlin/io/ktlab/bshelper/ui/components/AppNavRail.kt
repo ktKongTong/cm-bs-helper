@@ -9,12 +9,8 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Web
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.rounded.BackHand
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -27,16 +23,19 @@ import io.ktlab.bshelper.MR as R
 fun AppNavRail(
     currentRoute: String,
     navigateAction: (String) -> Unit,
+    backAction: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     NavigationRail(
         header = {
-            Icon(
-                Icons.Default.Menu,
-                null,
-                Modifier.padding(vertical = 12.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
+            IconButton(onClick = { backAction() }){
+                Icon(
+                    Icons.Rounded.BackHand,
+                    null,
+                    Modifier.padding(vertical = 12.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         },
         modifier = modifier
     ) {

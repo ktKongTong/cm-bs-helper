@@ -1,31 +1,21 @@
 package io.ktlab.bshelper.ui.screens.toolbox
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.model.vo.ScanState
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import io.ktlab.bshelper.ui.screens.toolbox.components.ScanPlaylistDialog
 
 @Composable
 expect fun isStoragePermissionGranted():Boolean
 
+
 @Composable
-private fun RequestStoragePermission() {
-//    val storagePermission = IsStoragePermissionGranted()
-//    LaunchedEffect(key1 = true) {
-//        if (!storagePermission) {
-//            launcher.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE))
-//        }
-//    }
-}
+expect fun RequestStoragePermission()
 
 @Composable
 fun ScanScreen(
@@ -48,6 +38,7 @@ fun ScanScreen(
             var dialogOpen by remember { mutableStateOf(false) }
             val isStoragePermissionGranted = isStoragePermissionGranted()
             TextButton(onClick = {
+                // TODO: check if storage permission is granted
                 if(!isStoragePermissionGranted){
                     requestPermission = true
                     return@TextButton

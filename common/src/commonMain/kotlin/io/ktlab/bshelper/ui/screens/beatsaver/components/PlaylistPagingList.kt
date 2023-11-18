@@ -49,6 +49,7 @@ fun PlaylistPagingList(
             )
         }
     }
+
     Box(modifier = modifier.fillMaxSize()) {
         val windowSizeClass = calculateWindowSizeClass().widthSizeClass
         val size = when (windowSizeClass) {
@@ -57,13 +58,13 @@ fun PlaylistPagingList(
         }
         Column {
             stickyHeader()
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .padding(horizontal = 16.dp),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-            )
+//            Divider(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(1.dp)
+//                    .padding(horizontal = 16.dp),
+//                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+//            )
             if (playlistPagingItems.loadState.refresh is LoadState.Loading) {
                 Box(
                     modifier = Modifier

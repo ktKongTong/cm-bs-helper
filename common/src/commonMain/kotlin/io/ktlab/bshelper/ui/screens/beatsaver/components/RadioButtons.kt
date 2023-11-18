@@ -1,8 +1,8 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.onClick
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -28,7 +28,7 @@ fun RadioButtons(
             Row(
                 Modifier
                     .padding(4.dp)
-                    .onClick { onOptionSelected(text) },
+                    .combinedClickable { onOptionSelected(text) },
                 horizontalArrangement = Arrangement.Center,
             ) {
                 RadioButton(

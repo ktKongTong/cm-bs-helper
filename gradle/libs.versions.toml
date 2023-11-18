@@ -30,7 +30,7 @@ cash-paging = "3.3.0-alpha02-0.4.0"
 androidx-datastore-core-okio = "1.1.0-alpha05"
 androidx-datastore-preferences-core = "1.1.0-alpha05"
 # navigation
-precompose = "1.5.4"
+precompose = "1.5.7"
 # di
 koin-compose = "1.1.0"
 koin-core = "3.5.0"
@@ -39,8 +39,8 @@ koin-ktor = "3.5.1"
 
 # third party compose
 wsc-multiplatform = "0.3.1"
-kamel = "0.7.3"
-mpfilepicker = "2.1.0"
+kamel = "0.8.3"
+mpfilepicker = "3.0.0"
 
 # androidx
 androidx-corektx = "1.12.0"

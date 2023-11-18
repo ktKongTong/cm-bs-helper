@@ -51,8 +51,6 @@ import io.ktlab.bshelper.ui.components.ConfirmButton
 import io.ktlab.bshelper.ui.components.NextStepIconButton
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
-import java.awt.FileDialog
-import java.awt.Frame
 
 private fun getStepByCurrentState(state:GlobalScanStateEnum):Int {
     return when(state) {
@@ -217,7 +215,7 @@ fun DirectoryChooser(
             }
         }
     )
-    DirectoryPicker(showDirPicker) { path ->
+    BSDirectoryPicker(showDirPicker){ path ->
         showDirPicker = false
         if (path != null) {
             onUIEvent(ToolboxUIEvent.UpdateDefaultManageDir(path))

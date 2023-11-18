@@ -1,6 +1,7 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
@@ -51,106 +52,112 @@ fun BSMapCard(
     selectableIPlaylists : List<IPlaylist>,
     onPlayPreviewMusicSegment: (IMap) -> Unit = {},
 ) {
-    Row(
+    Box(
         modifier = modifier
-//            .padding(vertical = 8.dp)
+            .clip(shape = RoundedCornerShape(10.dp))
             .widthIn(min = 350.dp)
-            .combinedClickable(
-                onLongClick = {onUIEvent(BeatSaverUIEvent.MapLongTapped(map))},
-                onClick = {onUIEvent(BeatSaverUIEvent.MapTapped(map))}
-            )
             .fillMaxWidth()
     ) {
 
-        AsyncImageWithFallback(
+        Row(
             modifier = Modifier
-                .padding(8.dp)
-                .size(128.dp, 128.dp)
-                .align(Alignment.Top)
-                .clip(shape = RoundedCornerShape(10.dp))
-                .clickable { onPlayPreviewMusicSegment(map) },
-            source = map.getAvatar(),
-        )
-        Column(
-            modifier = Modifier
-                .weight(1f),
-            verticalArrangement = Arrangement.Center
-        ){
-            Text(text = map.getSongName(),
-                modifier = Modifier.padding(bottom = 4.dp),
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                .combinedClickable(
+                    onLongClick = {onUIEvent(BeatSaverUIEvent.MapLongTapped(map))},
+                    onClick = {onUIEvent(BeatSaverUIEvent.MapTapped(map))}
+                )
+        ) {
+
+            AsyncImageWithFallback(
+                modifier = Modifier
+                    .padding(PaddingValues(start = 0.dp, top = 8.dp, end = 8.dp, bottom = 0.dp))
+                    .size(128.dp, 128.dp)
+                    .align(Alignment.Top)
+                    .clip(shape = RoundedCornerShape(10.dp))
+                    .clickable { onPlayPreviewMusicSegment(map) },
+                source = map.getAvatar(),
             )
-            Row {
-                if ((map as BSMapVO).uploader.verifiedMapper?.let { true } == true) {
-                    Icon(
-                        Icons.Filled.Verified,
-                        modifier = Modifier.size(20.dp),
-                        contentDescription = "Verified Mapper",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-                MapperIconWIthText(text = map.getAuthor())
-                Spacer(modifier = Modifier.width(8.dp))
-                DurationIconWIthText(text = map.getDuration())
-                Spacer(modifier = Modifier.width(8.dp))
-                NPSIconWIthText(text = "%.2f".format(map.getMaxNPS()))
-            }
-            Row (
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .weight(1f),
+                verticalArrangement = Arrangement.Center
             ){
-                FlowRow {
-                    MapTagEnum.sort((map as BSMapVO).map.tags).map {
-                        MapTag(tag = it)
+                Text(text = map.getSongName(),
+                    modifier = Modifier.padding(bottom = 4.dp),
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Row {
+                    if ((map as BSMapVO).uploader.verifiedMapper?.let { true } == true) {
+                        Icon(
+                            Icons.Filled.Verified,
+                            modifier = Modifier.size(20.dp),
+                            contentDescription = "Verified Mapper",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    MapperIconWIthText(text = map.getAuthor())
+                    Spacer(modifier = Modifier.width(8.dp))
+                    DurationIconWIthText(text = map.getDuration())
+                    Spacer(modifier = Modifier.width(8.dp))
+                    NPSIconWIthText(text = "%.2f".format(map.getMaxNPS()))
+                }
+                Row (
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    FlowRow {
+                        MapTagEnum.sort((map as BSMapVO).map.tags).map {
+                            MapTag(tag = it)
+                        }
+                    }
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row {
+                        ThumbUpIconWIthText(text = (map as BSMapVO).map.upVotes.toString())
+                        Spacer(modifier = Modifier.width(8.dp))
+                        ThumbDownIconWIthText(text = map.map.downVotes.toString())
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+    //                Text(text = "difficulties", modifier = Modifier.padding(end = 4.dp), style = MaterialTheme.typography.bodyMedium)
+                    MapDiffLabel(diff = map.getDiffMatrix())
+                }
+
+
+                Row {
+                    DownloadIconButton(
+                        onClick = {onUIEvent(BeatSaverUIEvent.DownloadMap(map))},
+                        downloadInfo = downloadInfo,
+                    )
+                    IconButton(onClick = {
+
+                    },modifier=Modifier.size(36.dp)){
+                        Icon(
+                            Icons.Filled.MusicOff,
+                            contentDescription = "Download Map",
+                            tint = MaterialTheme.colorScheme.surfaceTint
+                        )
+                    }
+
+                    var previewDialogOpen by remember { mutableStateOf(false) }
+                    if (previewDialogOpen) {
+                        MapOnlinePreview(onDismiss = { previewDialogOpen = false }, mapId = map.getID())
                     }
                 }
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row {
-                    ThumbUpIconWIthText(text = (map as BSMapVO).map.upVotes.toString())
-                    Spacer(modifier = Modifier.width(8.dp))
-                    ThumbDownIconWIthText(text = map.map.downVotes.toString())
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-//                Text(text = "difficulties", modifier = Modifier.padding(end = 4.dp), style = MaterialTheme.typography.bodyMedium)
-                MapDiffLabel(diff = map.getDiffMatrix())
-            }
-
-
-            Row {
-                DownloadIconButton(
-                    onClick = {onUIEvent(BeatSaverUIEvent.DownloadMap(map))},
-                    downloadInfo = downloadInfo,
+            if (multiSelectedMode && !local) {
+                Checkbox(
+                    checked = checked,
+                    onCheckedChange = { onMapMultiSelected(map) },
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .align(Alignment.CenterVertically)
                 )
-                IconButton(onClick = {
-
-                },modifier=Modifier.size(36.dp)){
-                    Icon(
-                        Icons.Filled.MusicOff,
-                        contentDescription = "Download Map",
-                        tint = MaterialTheme.colorScheme.surfaceTint
-                    )
-                }
-
-                var previewDialogOpen by remember { mutableStateOf(false) }
-                if (previewDialogOpen) {
-                    MapOnlinePreview(onDismiss = { previewDialogOpen = false }, mapId = map.getID())
-                }
             }
-        }
-        if (multiSelectedMode && !local) {
-            Checkbox(
-                checked = checked,
-                onCheckedChange = { onMapMultiSelected(map) },
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .align(Alignment.CenterVertically)
-            )
         }
     }
+
 }
 
 

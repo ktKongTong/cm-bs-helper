@@ -1,5 +1,6 @@
 package io.ktlab.bshelper.ui.route
 
+import androidx.compose.runtime.collectAsState
 import moe.tlaster.precompose.navigation.Navigator
 
 
@@ -24,6 +25,7 @@ class BSHelperNavigationActions(navigator: Navigator) {
     }
 
     val navigateToBeatSaver: () -> Unit = {
+//        navigator.canGoBack.c
         navigator.navigate(BSHelperDestinations.BEAT_SAVER_ROUTE)
 //        navigator.popUntilRoot()
 //        navigator.push(BSNavScreen)

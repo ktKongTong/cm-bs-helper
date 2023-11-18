@@ -1,14 +1,10 @@
 package io.ktlab.bshelper.ui.screens.beatsaver
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,6 +31,7 @@ import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUiState
 import io.ktlab.bshelper.viewmodel.TabType
 import kotlinx.coroutines.flow.toCollection
+import moe.tlaster.precompose.navigation.NavHost
 
 //import io.ktlab.bshelper.paging.collectAsLazyPagingItems
 
@@ -57,6 +55,7 @@ fun BeatSaverScreen(
     Scaffold(
         snackbarHost = { BSHelperSnackbarHost(hostState = snackbarHostState) },
         topBar = {
+
 //            if (showTopAppBar) {
 //                BeatSaverTopAppBar(
 //                    openDrawer = {  },
@@ -69,11 +68,19 @@ fun BeatSaverScreen(
         val contentModifier = Modifier
             .padding(innerPadding)
             .nestedScroll(scrollBehavior.nestedScrollConnection)
+        contentModifier.fillMaxWidth()
+//        Row(
+//            contentModifier.fillMaxWidth()
+//        )
         val contentPadding = rememberContentPaddingForScreen(
             additionalTop = if (showTopAppBar) 0.dp else 8.dp,
             excludeTop = showTopAppBar
         )
-        var tabState by remember { mutableStateOf(0) }
+//        NavHost()
+        TextTabs(
+            selectedTab = uiState.tabType,
+            onClickTab = { onUIEvent(BeatSaverUIEvent.SwitchTab(it)) }
+        )
         Row(
             contentModifier.fillMaxWidth()
         ) {
@@ -82,10 +89,6 @@ fun BeatSaverScreen(
                     .widthIn(Dp.Unspecified,300.dp)
                     .fillMaxWidth()
             ) {
-                TextTabs(
-                    selectedTab = uiState.tabType,
-                    onClickTab = { onUIEvent(BeatSaverUIEvent.SwitchTab(it)) }
-                )
                 when(uiState.tabType) {
                     TabType.Map -> {
                         MapFilterPanel(
@@ -166,7 +169,20 @@ fun TextTabs(
 ) {
     Column {
 
-        TabRow(selectedTabIndex = TabType.getIndexOf(selectedTab)) {
+        TabRow(
+            selectedTabIndex = TabType.getIndexOf(selectedTab),
+            containerColor = MaterialTheme.colorScheme.background,
+            indicator = { tabPositions ->
+                Box(
+                    modifier = Modifier
+                        .tabIndicatorOffset(tabPositions[TabType.getIndexOf(selectedTab)])
+                        .height(4.dp)
+                        .padding(horizontal = 28.dp)
+                        .background(color = MaterialTheme.colorScheme.primary,RoundedCornerShape(8.dp))
+                )
+            },
+            divider = {}
+        ) {
             TabType.tabs.forEachIndexed { index, tabType ->
                 Tab(
                     selected = selectedTab == TabType.fromIndex(index),

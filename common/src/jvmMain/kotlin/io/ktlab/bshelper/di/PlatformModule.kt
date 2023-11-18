@@ -10,9 +10,9 @@ import org.koin.core.module.Module
 internal actual object PlatformModule {
      actual fun getModules(): List<Module> {
         val modules = module {
-            single { DBAdapter.createDatabase(DBDriverFactory()) }
             single { StorageService() }
             single { createDataStore(get()) }
+            single { DBAdapter.createDatabase(DBDriverFactory(get())) }
         }
         return listOf(modules)
     }

@@ -1,31 +1,29 @@
 package io.ktlab.bshelper.service
 
 import android.content.Context
-import android.os.Environment
-import java.io.File
+import okio.Path
+import okio.Path.Companion.toPath
 
 actual class StorageService(
     private val context: Context
 ) {
 
-    fun getTempDir(): File {
+    actual fun getTempDir(): Path {
         val tmpDir = context.filesDir.resolve("tmp").also {
             if (!it.exists()) {
                 it.mkdirs()
             }
         }
-        return tmpDir
+        return tmpDir.absolutePath.toPath()
     }
 
-    actual fun getDownloadDir(): File {
+    actual fun getDownloadDir(): Path {
         val tmpDir = context.filesDir.resolve("tmp").also {
             if (!it.exists()) {
                 it.mkdirs()
             }
         }
-        return tmpDir
-//
-//        return context.cacheDir
+        return tmpDir.absolutePath.toPath()
     }
 
 }

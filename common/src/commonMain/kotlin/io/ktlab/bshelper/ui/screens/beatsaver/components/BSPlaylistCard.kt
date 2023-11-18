@@ -34,67 +34,72 @@ fun BSPlaylistCard(
     playlist: IPlaylist,
     modifier: Modifier = Modifier,
     onUIEvent: (UIEvent) -> Unit,
-){
-    Row(
+) {
+    Box(
         modifier = modifier
             .widthIn(min = 350.dp)
-            .combinedClickable(
-                onLongClick = {},
-                onClick = {}
-            )
-            .fillMaxWidth()
-    ) {
-        AsyncImageWithFallback(
+            .clip(shape = RoundedCornerShape(10.dp))
+    ){
+        Row(
             modifier = Modifier
-                .padding(8.dp)
-                .size(128.dp, 128.dp)
-                .align(Alignment.Top)
-                .clip(shape = RoundedCornerShape(10.dp))
-                .clickable { },
-            source = playlist.getAvatar(),
-        )
-        Column(
-            modifier = Modifier
-                .weight(1f),
-            verticalArrangement = Arrangement.Center
-        ){
-            Text(text = playlist.getName(),
-                modifier = Modifier.padding(bottom = 4.dp),
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                .combinedClickable(
+                    onLongClick = {},
+                    onClick = {}
+                )
+        ) {
+            AsyncImageWithFallback(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(128.dp, 128.dp)
+                    .align(Alignment.Top)
+                    .clip(shape = RoundedCornerShape(10.dp))
+                    .clickable { },
+                source = playlist.getAvatar(),
             )
-            Row {
-                if ((playlist as BSPlaylistVO).owner.verifiedMapper?.let { true } == true) {
-                    Icon(
-                        Icons.Filled.Verified,
-                        modifier = Modifier.size(20.dp),
-                        contentDescription = "Verified Mapper",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-                MapperIconWIthText(text = playlist.getAuthor())
-                Spacer(modifier = Modifier.width(8.dp))
-                DurationIconWIthText(text = playlist.getTotalDuration().toString())
-                Spacer(modifier = Modifier.width(8.dp))
-                NPSIconWIthText(text = "%.2f - %.2f".format(playlist.getMinNPS(),playlist.getMaxNPS()))
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .weight(1f),
+                verticalArrangement = Arrangement.Center
             ) {
+                Text(
+                    text = playlist.getName(),
+                    modifier = Modifier.padding(bottom = 4.dp),
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
                 Row {
-                    ThumbUpIconWIthText(text = (playlist as BSPlaylistVO).playlist.upVotes.toString())
+                    if ((playlist as BSPlaylistVO).owner.verifiedMapper?.let { true } == true) {
+                        Icon(
+                            Icons.Filled.Verified,
+                            modifier = Modifier.size(20.dp),
+                            contentDescription = "Verified Mapper",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    MapperIconWIthText(text = playlist.getAuthor())
                     Spacer(modifier = Modifier.width(8.dp))
-                    ThumbDownIconWIthText(text = playlist.playlist.downVotes.toString())
+                    DurationIconWIthText(text = playlist.getTotalDuration().toString())
+                    Spacer(modifier = Modifier.width(8.dp))
+                    NPSIconWIthText(text = "%.2f - %.2f".format(playlist.getMinNPS(), playlist.getMaxNPS()))
                 }
-            }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row {
+                        ThumbUpIconWIthText(text = (playlist as BSPlaylistVO).playlist.upVotes.toString())
+                        Spacer(modifier = Modifier.width(8.dp))
+                        ThumbDownIconWIthText(text = playlist.playlist.downVotes.toString())
+                    }
+                }
 
-            DownloadIconButton(
-                onClick = {
-//                        onUIEvent(BeatSaverUIEvent.DownloadPlaylist(playlist))
-                },
-                downloadInfo = null,
-            )
+                DownloadIconButton(
+                    onClick = {
+    //                        onUIEvent(BeatSaverUIEvent.DownloadPlaylist(playlist))
+                    },
+                    downloadInfo = null,
+                )
+            }
         }
     }
 }

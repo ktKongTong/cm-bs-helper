@@ -71,9 +71,6 @@ fun BSHelperApp(){
                     // Only enable opening the drawer via gestures if the screen is not expanded
                     gesturesEnabled = !isExpandedScreen
                 ) {
-                    Scaffold(
-                        snackbarHost = { BSHelperSnackbarHost(hostState = remember { SnackbarHostState() }) },
-                    ) {
                         Row {
                             if (isExpandedScreen) {
                                 AppNavRail(
@@ -98,7 +95,7 @@ fun BSHelperApp(){
                                 },
                             )
                          }
-                    }
+
             }
         }
     }
