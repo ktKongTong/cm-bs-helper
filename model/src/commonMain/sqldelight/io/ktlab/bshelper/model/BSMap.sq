@@ -1,5 +1,6 @@
-import kotlin.String;
 import kotlin.Boolean;
+import kotlin.Int;
+import kotlin.String;
 import kotlin.collections.List;
 import kotlinx.datetime.LocalDateTime;
 
@@ -7,7 +8,7 @@ CREATE TABLE IF NOT EXISTS BSMap (
     mapId TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT,
-    uploaderId INTEGER,
+    uploaderId INTEGER AS Int,
     bpm REAL NOT NULL,
     duration INTEGER NOT NULL,
     songName TEXT NOT NULL,

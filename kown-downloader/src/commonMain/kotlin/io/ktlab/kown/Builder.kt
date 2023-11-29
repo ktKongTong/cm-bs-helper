@@ -13,7 +13,6 @@ class KownloaderBuilder {
     }
 
     fun setRetryCount(count: Int = 0) = apply {
-        kownConfig.retryEnabled = count > 0
         kownConfig.retryCount = count
     }
 
@@ -21,7 +20,7 @@ class KownloaderBuilder {
         kownConfig.chunkSize = size
     }
 
-    fun setMaxConcurrentDownloads(count: Int) = apply {
+    fun setMaxConcurrentDownloads(count: Int = 5) = apply {
         kownConfig.concurrentDownloads = count
     }
 

@@ -4,7 +4,7 @@ import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.service.DBAdapter
-import io.ktlab.kown.Kownloader
+import io.ktlab.kown.KownDownloader
 import io.ktlab.kown.model.DownloadTaskBO
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.vo.BSMapVO
@@ -15,6 +15,7 @@ import io.ktlab.kown.model.DownloadListener
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Clock
 import okio.Path.Companion.toPath
 
 sealed interface IDownloadTask {
@@ -61,11 +62,12 @@ class DownloaderRepository(
     private val playlistRepository: PlaylistRepository,
     private val bsAPI: BeatSaverAPI,
     private val mapRepository: FSMapRepository,
+    private val runtimeEventFlow: RuntimeEventFlow
 ) {
 
     private val tmpPath = storageService.getTempDir()
 
-    private val downloader = Kownloader.new()
+    private val downloader = KownDownloader.new()
         .setRetryCount(3)
         .setMaxConcurrentDownloads(5)
         .setDatabaseEnabled(true)
@@ -78,20 +80,21 @@ class DownloaderRepository(
             val targetPath = targetPlaylist.getTargetPath().toPath().resolve(task.title)
             UnzipUtility.unzip(zipFile.toString(), targetPath.toString())
             playlistRepository.adjustPlaylistMapCntByPlaylistId(targetPlaylist.id)
-//          TODO  mapRepository.insertFSMap()
+//            mapRepository.activeFSMapByMapId(task.relateEntityId!!)
         }
     }
 
     fun downloadMap(targetPlaylist: IPlaylist, map: BSMapVO) {
         val title = "${map.map.mapId} (${map.map.songName} - ${map.map.songAuthorName})".replace("/", " ")
-        val timestamp = System.currentTimeMillis()
+        val timestamp = Clock.System.now()
+        val callback = onCompleteAction(targetPlaylist)
         downloader.newRequestBuilder(map.getDownloadURL(), tmpPath.toString(), "$title.zip")
             .setTag(map.map.mapId)
             .setTag("single.$timestamp.${targetPlaylist.id}")
             .setRelateEntityId(map.map.mapId)
             .setTitle(title)
             .build()
-            .let { downloader.enqueue(it, DownloadListener(onCompleted = onCompleteAction(targetPlaylist))) }
+            .let { downloader.enqueue(it, DownloadListener(onCompleted = callback)) }
     }
 
     fun batchDownloadMap(targetPlaylist: IPlaylist, mapList:List<BSMapVO>) {
@@ -103,9 +106,10 @@ class DownloaderRepository(
                 .setTag(tag)
                 .setRelateEntityId(it.map.mapId)
                 .setTitle(title)
+                .setDownloadListener(DownloadListener(onCompleted = onCompleteAction(targetPlaylist)))
                 .build()
         }.let {
-            downloader.enqueue(it, DownloadListener(onCompleted = onCompleteAction(targetPlaylist)))
+            downloader.enqueue(it)
         }
     }
     suspend fun downloadMapByHashes(targetPlaylist: IPlaylist, hashList: List<String>) {
@@ -202,6 +206,7 @@ class DownloaderRepository(
     fun remove(downloadTask: IDownloadTask) {
         when(downloadTask) {
             is IDownloadTask.MapDownloadTask -> {
+
 //                downloader.removeById(downloadTask.downloadTaskModel.taskId)
             }
             is IDownloadTask.BatchDownloadTask -> {
@@ -218,8 +223,8 @@ class DownloaderRepository(
         .map { it.map { it.copyTask()  } }
         .map outer@{
             try {
-                val mapIds = it.map { it.relateEntityId }.filterNotNull()
-                val playlistIds = it.map { it.tag?.split(".")?.lastOrNull() }.filterNotNull().toSet().toList()
+                val mapIds = it.mapNotNull { it.relateEntityId }
+                val playlistIds = it.mapNotNull { it.tag?.split(".")?.lastOrNull() }.toSet().toList()
                 val res = runBlocking {
                     val asyncBsMaps = async { return@async mapRepository.getBSMapByIds(mapIds) }
                     val asyncBsPlaylists = async { return@async playlistRepository.getPlaylistByIds(playlistIds).associateBy { it.id } }
@@ -228,8 +233,9 @@ class DownloaderRepository(
                     val mapDownloadTaskList = it.map {
                         val targetPlaylistId = it.tag!!.split(".").last()
                         val playlist = bsPlaylists[targetPlaylistId]
-                        IDownloadTask.MapDownloadTask(it, bsMaps[it.relateEntityId!!]!!, playlist!!)
-                    }
+                        if (it.relateEntityId == null || playlist == null) return@map null
+                        IDownloadTask.MapDownloadTask(it, bsMaps[it.relateEntityId!!]!!, playlist)
+                    }.filterNotNull()
                     return@runBlocking mapDownloadTaskList.groupBy {
                         it.downloadTaskModel.tag
                     }.flatMap inner@ {
@@ -268,7 +274,7 @@ class DownloaderRepository(
                 }
                 return@outer tmp
             }catch (e: Exception) {
-                e.printStackTrace()
+                runtimeEventFlow.sendEvent(Event(EventType.Exception, e))
             }
             return@outer listOf<IDownloadTask>()
         }

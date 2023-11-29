@@ -42,16 +42,17 @@ import io.ktlab.bshelper.viewmodel.ToolboxUiState
 fun ToolboxScreen(
     uiState: ToolboxUiState,
     showTopAppBar: Boolean,
-    snackbarHostState: SnackbarHostState,
+    snackbarHost: @Composable () -> Unit = {},
     openDrawer: () -> Unit,
     onUIEvent: (UIEvent) -> Unit,
+
 //    onSnackBarShown: (Long) -> Unit,
     modifier: Modifier = Modifier
 ){
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
     Scaffold(
-        snackbarHost = { BSHelperSnackbarHost(hostState = snackbarHostState) },
+        snackbarHost = snackbarHost,
         topBar = {
 //            if (showTopAppBar) {
 //               ToolboxTopAppBar(
@@ -92,12 +93,6 @@ fun ToolboxScreen(
 //            }
         }
     }
-
-//    SnackBarShown(
-//        snackbarHostState = snackbarHostState,
-//        snackBarMessages = uiState.snackBarMessages,
-//        onSnackBarShown = onSnackBarShown,
-//    )
 
 }
 enum class ToolboxPage {

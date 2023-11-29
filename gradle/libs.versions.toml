@@ -134,6 +134,7 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 
+kown = { module = "io.ktlab.mvn:kown", version = "0.0.1-alpha01" }
 
 [plugins]
 # gradle

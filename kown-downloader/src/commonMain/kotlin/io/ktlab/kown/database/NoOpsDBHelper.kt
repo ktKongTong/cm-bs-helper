@@ -11,15 +11,14 @@ object NoOpsDBHelper : DBHelper {
 
     override suspend fun insert(task: DownloadTaskBO) {}
     override suspend fun batchInsert(tasks: List<DownloadTaskBO>) {}
-    override suspend fun update(task: DownloadTaskBO) {}
-    override suspend fun batchUpdate(tasks: List<DownloadTaskBO>) {
-    }
 
+    override suspend fun update(task: DownloadTaskBO) {}
+    override suspend fun batchUpdate(tasks: List<DownloadTaskBO>) {}
     override suspend fun updateProgress(id: String, downloadedBytes: Long, lastModifiedAt: Long) {}
 
-    override suspend fun remove(id: String) {}
     override fun getAllDownloadTaskFlow(): Flow<List<DownloadTaskBO>> = flow {}
     override suspend fun getAllDownloadTask(): List<DownloadTaskBO> { return listOf() }
+    override suspend fun remove(id: String) {}
     override suspend fun removeAll() {}
     override suspend fun removeByDays(days: Int) {}
 

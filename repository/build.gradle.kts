@@ -20,9 +20,9 @@ kotlin {
                 implementation(project(":bsmg"))
                 implementation(project(":platformService"))
                 implementation(project(":utils"))
-                implementation(project(":kown-downloader"))
 
                 implementation("net.lingala.zip4j:zip4j:2.11.5")
+                implementation(libs.kown)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.kotlinx.coroutines.core)

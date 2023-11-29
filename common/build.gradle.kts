@@ -25,7 +25,8 @@ kotlin {
                 implementation(project(":utils"))
                 implementation(project(":repository"))
                 implementation(project(":platformService"))
-                implementation(project(":kown-downloader"))
+                implementation(project(":bsmg"))
+                implementation(libs.kown)
                 // kotlin & kotlinx
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.serialization)

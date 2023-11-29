@@ -14,6 +14,7 @@ import moe.tlaster.precompose.koin.koinViewModel
 fun ToolboxRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
+    snackbarHost : @Composable () -> Unit = {},
     toolboxViewModel: ToolboxViewModel = koinViewModel<ToolboxViewModel>()
 ){
 
@@ -23,7 +24,6 @@ fun ToolboxRoute(
         showTopAppBar = !isExpandedScreen,
         openDrawer = openDrawer,
         onUIEvent = toolboxViewModel::dispatchUiEvents,
-        snackbarHostState = remember { SnackbarHostState() },
-//        onSnackBarShown = toolboxViewModel::snackBarShown,
+        snackbarHost = snackbarHost,
     )
 }

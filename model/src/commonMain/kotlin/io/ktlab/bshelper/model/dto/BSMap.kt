@@ -44,7 +44,7 @@ data class BSMapDTO(
                 mapId = id,
                 name = name,
                 description = description,
-                uploaderId = uploader.id.toLong(),
+                uploaderId = uploader.id,
 //                curatorId = curator?.id?.toLong(),
 //                collaboratorIds = collaborators?.map { it.id.toLong() },
                 automapper = automapper,

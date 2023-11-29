@@ -84,6 +84,11 @@ fun BSHelperApp(){
                                 isExpandedScreen = isExpandedScreen,
                                 navigator = navigator,
                                 openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
+                                snackbarHost = {
+                                    BSHelperSnackbarHost(
+                                        hostState = snackbarHostState,
+                                    )
+                                },
                             )
 
                             val globalUiState by globalViewModel.uiState.collectAsState()

@@ -13,6 +13,7 @@ import moe.tlaster.precompose.koin.koinViewModel
 fun HomeRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
+    snackbarHost : @Composable () -> Unit = {},
      homeViewModel:HomeViewModel = koinViewModel<HomeViewModel>()
 ){
     val uiState by homeViewModel.uiState.collectAsState()
@@ -32,6 +33,7 @@ fun HomeRoute(
                 uiState = uiState,
                 showTopAppBar = isExpandedScreen,
                 onUIEvent = homeViewModel::dispatchUiEvents,
+                snackbarHost = snackbarHost
             )
 //        }
 //        else -> {}

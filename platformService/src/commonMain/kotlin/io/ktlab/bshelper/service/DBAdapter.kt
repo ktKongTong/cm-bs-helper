@@ -47,7 +47,7 @@ object DBAdapter {
                 createdAtAdapter = stringOfLocalDateTimeAdapter,
                 updatedAtAdapter = stringOfLocalDateTimeAdapter,
                 lastPublishedAtAdapter = stringOfLocalDateTimeAdapter,
-
+                uploaderIdAdapter = longOfIntAdapter,
                 ),
             BSUserAdapter = BSUser.Adapter(
                 idAdapter = longOfIntAdapter,

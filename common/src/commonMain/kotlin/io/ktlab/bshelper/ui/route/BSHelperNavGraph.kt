@@ -13,6 +13,7 @@ fun BSHelperNavGraph(
     modifier: Modifier = Modifier,
     navigator:Navigator = rememberNavigator(),
     openDrawer: () -> Unit = {},
+    snackbarHost : @Composable () -> Unit = {},
     startDestination: String = BSHelperDestinations.HOME_ROUTE,
 ){
     NavHost(
@@ -26,18 +27,21 @@ fun BSHelperNavGraph(
             HomeRoute(
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
+                snackbarHost = snackbarHost
             )
         }
         scene(BSHelperDestinations.BEAT_SAVER_ROUTE) {
             BeatSaverRoute(
                 isExpandedScreen = isExpandedScreen,
-                openDrawer = openDrawer
+                openDrawer = openDrawer,
+                snackbarHost = snackbarHost
             )
         }
         scene(BSHelperDestinations.TOOLBOX_ROUTE) {
             ToolboxRoute(
                 isExpandedScreen = isExpandedScreen,
-                openDrawer = openDrawer
+                openDrawer = openDrawer,
+                snackbarHost = snackbarHost
             )
         }
     }

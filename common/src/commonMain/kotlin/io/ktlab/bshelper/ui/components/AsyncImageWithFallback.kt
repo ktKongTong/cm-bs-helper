@@ -17,6 +17,7 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 //import coil.compose.AsyncImage
 import io.ktlab.bshelper.MR
+import io.ktor.http.*
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -38,6 +39,8 @@ fun AsyncImageWithFallback(
         DefaultImage(modifier)
     }
 ){
+    val proxiedSource = source.replace(Url(source).host, "beatsaver.wgzeyu.vip/cdn")
+
     when (type) {
 //        "base64" -> {
 //            val bytes= Base64.decode(source)
@@ -50,29 +53,32 @@ fun AsyncImageWithFallback(
 //            )
 //        }
         "network" -> {
+//            fallback()
             KamelImage(
                 modifier = modifier,
-                resource = asyncPainterResource(source),
+                resource = asyncPainterResource(proxiedSource),
                 contentDescription = "Profile",
-                onLoading = { progress -> Box {
+                onLoading = { progress -> Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
                     CircularProgressIndicator(
                         progress = progress,
                         modifier = Modifier
-                            .padding(16.dp)
-                            .clip(RoundedCornerShape(50))
                     )
-                    fallback()
                 } },
-                onFailure = { throwable -> /* Handle failure */ },
+                onFailure = { throwable -> fallback() },
             )
         }
         "file" -> {
+
+            fallback()
 //            val painter = BitmapPainter(BitmapFactory.decodeFile(source).asImageBitmap())
-            KamelImage(
-                resource = asyncPainterResource(source),
-                contentDescription = contentDescription,
-                modifier = modifier
-            )
+//            KamelImage(
+//                resource = asyncPainterResource(source),
+//                contentDescription = contentDescription,
+//                modifier = modifier
+//            )
         }
         else -> {
             fallback()

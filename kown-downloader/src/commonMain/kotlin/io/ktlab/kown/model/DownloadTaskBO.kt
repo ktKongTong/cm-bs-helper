@@ -22,79 +22,53 @@ data class DownloadTaskBO(
     val title: String,
     val tag: String?,
     val headers: Map<String, String>?,
-    var status: TaskStatus = TaskStatus.Queued(TaskStatus.Initial),
+
+    var status: TaskStatus = TaskStatus.Initial,
     var url: String = "",
-    var eTag: String = "",
     var dirPath: String = "",
     var renameAble: Boolean = false,
     var renameStrategy: RenameStrategy = RenameStrategy.DEFAULT,
     var filename: String = "",
-    internal var readTimeOut: Long = 0,
-    internal var connectTimeOut: Long = 0,
     var totalBytes: Long = 0,
     var downloadedBytes: Long = 0,
     var lastModifiedAt: Long = 0,
     val createdAt: Long = Clock.System.now().toEpochMilliseconds(),
     var estimatedTime: Long = 0,
     var speed: Long = 0,
-    internal var downloadListener: DownloadListener?,
-    val relateEntityId: String? = null
+    val relateEntityId: String? = null,
+    internal var eTag: String = "",
+    internal var readTimeOut: Long = 0,
+    internal var connectTimeOut: Long = 0,
+    internal var downloadListener: DownloadListener,
 ) {
     internal lateinit var job: Job
 
 
+//    private val backupDownloadTaskBO: DownloadTaskBO by lazy { this.copy() }
+
     fun copyTask():DownloadTaskBO {
-        val res = DownloadTaskBO(
-            taskId = taskId,
-            title = title,
-            tag = tag,
-            headers = headers,
+        return this.copy(
             status = status,
-            url = url,
-            eTag = eTag,
-            dirPath = dirPath,
-            renameAble = renameAble,
-            renameStrategy = renameStrategy,
-            filename = filename,
-            readTimeOut = readTimeOut,
-            connectTimeOut = connectTimeOut,
             totalBytes = totalBytes,
             downloadedBytes = downloadedBytes,
             lastModifiedAt = lastModifiedAt,
-            createdAt = createdAt,
             estimatedTime = estimatedTime,
             speed = speed,
-            downloadListener = downloadListener,
-            relateEntityId = relateEntityId
         )
-//        res.job = job
-        return res
     }
 
-    fun regenTask():DownloadTaskBO {
-        return DownloadTaskBO(
-            taskId = taskId,
-            title = title,
-            tag = tag,
-            headers = headers,
+
+    fun regenTask(listener: DownloadListener? = null):DownloadTaskBO {
+        val copied = this.copy(
             status = TaskStatus.Queued(status),
-            url = url,
-            eTag = eTag,
-            dirPath = dirPath,
-            renameAble = renameAble,
-            renameStrategy = renameStrategy,
-            filename = filename,
-            readTimeOut = readTimeOut,
-            connectTimeOut = connectTimeOut,
-            totalBytes = totalBytes,
-            downloadedBytes = 0L,
-            lastModifiedAt = lastModifiedAt,
+            downloadedBytes = 0,
+            lastModifiedAt = 0,
+            estimatedTime = 0,
             createdAt = Clock.System.now().toEpochMilliseconds(),
-            estimatedTime = estimatedTime,
-            speed = speed,
-            downloadListener = downloadListener,
-            relateEntityId = relateEntityId
+            speed = 0,
         )
+        listener?.let { copied.downloadListener = it }
+        return copied
     }
 
     data class Builder(
@@ -113,6 +87,10 @@ data class DownloadTaskBO(
          */
         fun setTag(tag: String) = apply {
             this.tag = tag
+        }
+
+        fun setDownloadListener(downloadListener: DownloadListener) = apply {
+            this.downloadListener = downloadListener
         }
 
         /**
@@ -146,7 +124,7 @@ data class DownloadTaskBO(
             return DownloadTaskBO(
                 url = url,
                 tag = tag,
-                downloadListener = downloadListener,
+                downloadListener = downloadListener?: DownloadListener.DEFAULT,
                 headers = headers,
                 dirPath = dirPath,
                 taskId = getUniqueId(url, dirPath, filename),

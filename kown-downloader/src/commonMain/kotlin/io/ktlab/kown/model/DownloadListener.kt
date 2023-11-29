@@ -1,6 +1,5 @@
 package io.ktlab.kown.model
 
-import io.ktlab.kown.model.DownloadTaskBO
 
 data class DownloadListener(
     var onStart: (DownloadTaskBO) -> Unit = {},
@@ -11,4 +10,8 @@ data class DownloadListener(
     var onFailed: (DownloadTaskBO) -> Unit = {},
     var onCancelled: (DownloadTaskBO) -> Unit = {},
     var onError: (DownloadTaskBO, Exception) -> Unit = { _, _ ->}
-)
+) {
+    companion object {
+        val DEFAULT = DownloadListener()
+    }
+}

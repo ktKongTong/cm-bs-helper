@@ -80,7 +80,7 @@ class DownloadTaskExecutor(
                 tempPath = getTempPath(task.dirPath, task.filename)
                 checkIfFileExistAndRename()
                 task.status = TaskStatus.Running
-                task.downloadListener?.onStart?.invoke(task)
+                task.downloadListener.onStart(task)
                 val req = client.prepareGet(task.url){
                     task.headers?.onEach { (key, value) -> header(key, value) }
                     header(HttpHeaders.IfRange, task.eTag)
@@ -89,6 +89,7 @@ class DownloadTaskExecutor(
                 req.execute { resp ->
                     responseCode = resp.status
                     eTag = resp.headers[HttpHeaders.ETag] ?: ""
+                    task.eTag = eTag
                     checkIfFreshStartRequiredAndStart()
                     if (!resp.status.isSuccess()) { throw IllegalStateException("Unsuccessful response code: $responseCode") }
                     setIfPartialContentAndContentLength(resp)
@@ -113,7 +114,7 @@ class DownloadTaskExecutor(
                 FileSystem.SYSTEM.atomicMove(tempPath, path)
 
                 task.status = TaskStatus.PostProcessing
-                task.downloadListener?.onCompleted?.invoke(task)
+                task.downloadListener.onCompleted(task)
                 task.status = TaskStatus.Completed
                 dbScope.launch { dbHelper.update(task) }
             } catch (e: PauseException) {

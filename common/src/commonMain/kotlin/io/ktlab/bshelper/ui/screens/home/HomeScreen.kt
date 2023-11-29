@@ -5,14 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,25 +34,22 @@ import moe.tlaster.precompose.koin.koinViewModel
 
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.successOr
+import io.ktlab.bshelper.viewmodel.GlobalUIEvent
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
     showTopAppBar: Boolean,
+    snackbarHost: @Composable () -> Unit = {},
     onUIEvent: (UIEvent) -> Unit,
     modifier: Modifier = Modifier
 ){
-    val snackbarHostState = remember { SnackbarHostState() }
-    val contentPadding = rememberContentPaddingForScreen(
-        additionalTop = if (showTopAppBar) 0.dp else 8.dp,
-        excludeTop = showTopAppBar
-    )
 
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
     Scaffold(
-        snackbarHost = { BSHelperSnackbarHost(hostState = snackbarHostState) },
+        snackbarHost = snackbarHost,
         topBar = {},
         modifier = modifier
     ){ innerPadding ->
@@ -75,12 +65,6 @@ fun HomeScreen(
                 )
             }
         }
-
-        SnackBarShown(
-            snackbarHostState = snackbarHostState,
-            snackBarMessages = uiState.snackBarMessages,
-            onSnackBarShown = { onUIEvent(HomeUIEvent.SnackBarShown(it)) },
-        )
     }
 }
 

@@ -177,6 +177,9 @@ class HomeViewModel(
 //                    mediaPlayerManager.play(MediaPlayerManager.generateMapID(event.map),event.map.getMusicPreviewURI().toString())
 //                }
             }
+            is GlobalUIEvent -> {
+                globalViewModel.dispatchUiEvents(event)
+            }
             is HomeUIEvent.CreateNewPlaylist -> {
                 onCreateNewPlaylist(event.name)
             }

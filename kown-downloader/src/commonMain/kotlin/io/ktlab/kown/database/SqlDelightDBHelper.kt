@@ -36,7 +36,7 @@ private fun KownDownloadTaskModel.convertToDownloadTaskBO():DownloadTaskBO {
         createdAt = createAt,
         renameStrategy = RenameStrategy.valueOf(renameStrategy?:"DEFAULT"),
         relateEntityId = relateEntityId,
-        downloadListener = null
+        downloadListener = DownloadListener()
     )
 }
 

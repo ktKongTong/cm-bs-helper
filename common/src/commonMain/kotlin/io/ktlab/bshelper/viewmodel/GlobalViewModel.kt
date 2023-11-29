@@ -3,9 +3,7 @@ package io.ktlab.bshelper.viewmodel
 import androidx.compose.material3.SnackbarDuration
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.UserPreference
-import io.ktlab.bshelper.repository.FSMapRepository
-import io.ktlab.bshelper.repository.PlaylistRepository
-import io.ktlab.bshelper.repository.UserPreferenceRepository
+import io.ktlab.bshelper.repository.*
 import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.flow.*
@@ -35,11 +33,10 @@ data class GlobalUiState (
     val snackBarMessages: List<SnackBarMessage> = emptyList(),
 )
 class GlobalViewModel(
-
+    private val runtimeEventFlow: RuntimeEventFlow
 ) : ViewModel(){
     private val viewModelState = MutableStateFlow(GlobalViewModelState(
         isLoading = true,
-//        isPlaylistOpen = false,
 //        userPreferenceState = UserPreference.getDefaultUserPreference(),
         snackBarMessages = emptyList(),
     ))
@@ -50,6 +47,20 @@ class GlobalViewModel(
             SharingStarted.Eagerly,
             viewModelState.value.toUiState()
         )
+
+    init {
+        runtimeEventFlow.subscribeEvent { event ->
+            when (event.type) {
+                EventType.Exception -> {
+                    dispatchUiEvents(GlobalUIEvent.ShowSnackBar((event.data as Exception).message ?: "Unknown Error"))
+                }
+                EventType.Message -> {
+                    dispatchUiEvents(GlobalUIEvent.ShowSnackBar(event.data as String))
+                }
+            }
+        }
+    }
+
     fun dispatchUiEvents(event: UIEvent){
         when(event){
             is GlobalUIEvent.ShowSnackBar -> {

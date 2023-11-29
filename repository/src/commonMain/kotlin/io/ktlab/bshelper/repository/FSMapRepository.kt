@@ -147,6 +147,32 @@ class FSMapRepository(
             }
         }
     }
+    fun batchInsertBSMapAndFSMap(
+        bsMaps: List<BSMapVO>,
+        targetPlaylist: IPlaylist
+    ) {
+        bsHelperDAO.transaction {
+            bsMaps.map {
+                bsHelperDAO.bSMapQueries.insert(it.map)
+                bsHelperDAO.bSUserQueries.insert(it.uploader)
+                it.versions.map {
+                    bsHelperDAO.bSMapVersionQueries.insert(it.version)
+                    it.diffs.map {
+                        bsHelperDAO.mapDifficultyQueries.insert(it)
+                    }
+                }
+
+//                bsHelperDAO.fSMapQueries.insertFSMap(it.map.mapId,playlistId)
+            }
+        }
+    }
+
+    fun activeFSMapByMapId(mapId: String,playlistId: String) {
+        bsHelperDAO.transaction {
+//            bsHelperDAO.fSMapQueries.activeFSMapByMapId(mapId,playlistId)
+        }
+    }
+
     fun getPagingBSMapByPlaylistId(playlistId: String): Flow<PagingData<IMap>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),

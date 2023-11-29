@@ -21,19 +21,12 @@ import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
 import io.ktlab.bshelper.rememberContentPaddingForScreen
 import io.ktlab.bshelper.repository.IDownloadTask
-import io.ktlab.bshelper.ui.components.BSHelperSnackbarHost
-import io.ktlab.bshelper.ui.components.Developing
-import io.ktlab.bshelper.ui.components.SnackBarShown
 import io.ktlab.bshelper.ui.components.VerticalDivider
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.beatsaver.components.*
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUiState
 import io.ktlab.bshelper.viewmodel.TabType
-import kotlinx.coroutines.flow.toCollection
-import moe.tlaster.precompose.navigation.NavHost
-
-//import io.ktlab.bshelper.paging.collectAsLazyPagingItems
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +36,7 @@ fun BeatSaverScreen(
     snackbarHostState: SnackbarHostState,
     openDrawer: () -> Unit,
     onUIEvent: (UIEvent) -> Unit,
-//    onSnackBarShown: (Long) -> Unit,
+    snackbarHost  : @Composable () -> Unit = {},
     modifier: Modifier = Modifier
 ){
     val contentPadding = rememberContentPaddingForScreen(
@@ -53,7 +46,7 @@ fun BeatSaverScreen(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
     Scaffold(
-        snackbarHost = { BSHelperSnackbarHost(hostState = snackbarHostState) },
+        snackbarHost = snackbarHost,
         topBar = {
 
 //            if (showTopAppBar) {
@@ -69,14 +62,6 @@ fun BeatSaverScreen(
             .padding(innerPadding)
             .nestedScroll(scrollBehavior.nestedScrollConnection)
         contentModifier.fillMaxWidth()
-//        Row(
-//            contentModifier.fillMaxWidth()
-//        )
-        val contentPadding = rememberContentPaddingForScreen(
-            additionalTop = if (showTopAppBar) 0.dp else 8.dp,
-            excludeTop = showTopAppBar
-        )
-//        NavHost()
         TextTabs(
             selectedTab = uiState.tabType,
             onClickTab = { onUIEvent(BeatSaverUIEvent.SwitchTab(it)) }
@@ -155,11 +140,6 @@ fun BeatSaverScreen(
             }
         }
     }
-//    SnackBarShown(
-//        snackbarHostState = snackbarHostState,
-//        snackBarMessages = uiState.snackBarMessages,
-//        onSnackBarShown = onSnackBarShown,
-//    )
 }
 
 @Composable

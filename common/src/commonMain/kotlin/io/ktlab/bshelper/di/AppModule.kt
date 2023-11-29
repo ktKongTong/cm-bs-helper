@@ -2,10 +2,7 @@ package io.ktlab.bshelper.di
 
 import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.api.ToolAPI
-import io.ktlab.bshelper.repository.DownloaderRepository
-import io.ktlab.bshelper.repository.FSMapRepository
-import io.ktlab.bshelper.repository.PlaylistRepository
-import io.ktlab.bshelper.repository.UserPreferenceRepository
+import io.ktlab.bshelper.repository.*
 import io.ktlab.bshelper.service.HttpClientModuleProviderBase
 import io.ktlab.bshelper.viewmodel.BeatSaverViewModel
 import io.ktlab.bshelper.viewmodel.GlobalViewModel
@@ -15,6 +12,7 @@ import org.koin.dsl.module
 
 object AppModule {
     private val sysServiceModule = module {
+        single { RuntimeEventFlow() }
         single {
             HttpClientModuleProviderBase().configureClient()
         }
@@ -34,12 +32,12 @@ object AppModule {
             UserPreferenceRepository(get())
         }
         single {
-            DownloaderRepository(get(),get(),get(),get())
+            DownloaderRepository(get(),get(),get(),get(),get())
         }
     }
 
     private val viewModelModule = module {
-        single<GlobalViewModel> { GlobalViewModel() }
+        single<GlobalViewModel> { GlobalViewModel(get()) }
         single<HomeViewModel> { HomeViewModel(get(),get(),get(),get()) }
         single<ToolboxViewModel> { ToolboxViewModel(get(),get(),get(),get()) }
         single<BeatSaverViewModel> { BeatSaverViewModel(get(),get(),get(),get(),get()) }

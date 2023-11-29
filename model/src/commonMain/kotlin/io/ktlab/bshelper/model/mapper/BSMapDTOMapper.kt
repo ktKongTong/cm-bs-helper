@@ -19,7 +19,7 @@ fun BSMapDTO.convertToBSMapDBO():BSMap{
         automapper = this.automapper,
         ranked = this.ranked,
         qualified = this.qualified,
-        uploaderId = this.uploader.id.toLong(),
+        uploaderId = this.uploader.id,
         bpm = this.metadata.bpm,
         duration = this.metadata.duration,
         songName = this.metadata.songName,

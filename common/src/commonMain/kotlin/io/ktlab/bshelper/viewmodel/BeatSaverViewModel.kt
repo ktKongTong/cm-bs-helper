@@ -54,12 +54,10 @@ enum class TabType(val human:String,val index : Int){
 
 sealed interface BeatSaverUiState {
     val isLoading: Boolean
-    val snackBarMessages: List<SnackBarMessage>
     val tabType: TabType
     data class MapQuery(
         override val tabType: TabType = TabType.Map,
         override val isLoading: Boolean = false,
-        override val snackBarMessages: List<SnackBarMessage> = emptyList(),
         val localState: LocalState = LocalState(),
         val mapFilterPanelState: MapFilterParam = MapFilterParam(),
         val mapFlow: Flow<PagingData<IMap>> = emptyFlow(),
@@ -71,7 +69,6 @@ sealed interface BeatSaverUiState {
     data class PlaylistQuery(
         override val tabType: TabType = TabType.Playlist,
         override val isLoading: Boolean = false,
-        override val snackBarMessages: List<SnackBarMessage>,
         val localState: LocalState = LocalState(),
         val playlistFilterPanelState: PlaylistFilterParam,
         val selectedBSPlaylist: IPlaylist?,
@@ -87,7 +84,6 @@ data class BeatSaverViewModelState(
     //
     val tabType: TabType = TabType.Map,
     val isLoading: Boolean = false,
-    val snackBarMessages: List<SnackBarMessage> = emptyList(),
     // 本地歌单
     val localPlaylists: List<IPlaylist> = emptyList(),
     // 本地MapID
@@ -116,7 +112,6 @@ data class BeatSaverViewModelState(
          TabType.Map -> {
              BeatSaverUiState.MapQuery(
                  isLoading = isLoading,
-                 snackBarMessages = snackBarMessages,
                  mapFilterPanelState = mapFilterPanelState,
                  mapFlow = mapFlow ?: emptyFlow(),
                  localState = LocalState(
@@ -132,7 +127,6 @@ data class BeatSaverViewModelState(
         TabType.Playlist -> {
             BeatSaverUiState.PlaylistQuery(
                 isLoading = isLoading,
-                snackBarMessages = snackBarMessages,
                 playlistFilterPanelState = playlistFilterPanelState,
                 mapFlow = mapFlow ?: emptyFlow(),
                 localState = LocalState(
@@ -273,8 +267,6 @@ class BeatSaverViewModel(
             is BeatSaverUIEvent.ResumeDownload -> { onResumeDownload(event.downloadTask) }
             is BeatSaverUIEvent.MapTapped -> {onMapTapped(event.map)}
             is BeatSaverUIEvent.MapLongTapped -> { onMapLongTapped(event.map) }
-            is BeatSaverUIEvent.MsgShown -> { snackBarShown(event.msgId) }
-            is BeatSaverUIEvent.ShowSnackBar -> { globalViewModel.showSnackBar(event.message) }
             is BeatSaverUIEvent.SwitchTab -> { viewModelState.update { it.copy(tabType = event.tabType) } }
             else -> {}
         }
@@ -384,32 +376,8 @@ class BeatSaverViewModel(
         }
         viewModelScope.launch(Dispatchers.IO) {
             mapRepository.batchInsertBSMap(listOf(bsMap).map { it as BSMapVO })
+//            mapRepository.batchInsertBSMapAsFSMap(listOf(bsMap).map { it as BSMapVO },viewModelState.value.selectedPlaylist!!)
             downloaderRepository.downloadMap(viewModelState.value.selectedPlaylist!!,(bsMap as BSMapVO))
-        }
-    }
-
-    private fun showSnackBar(
-        msg: String,
-        actionLabel: String? = null,
-        duration: SnackbarDuration = SnackbarDuration.Short,
-        action: (() -> Unit)? = null
-    ) {
-        val snackBarMessages = viewModelState.value.snackBarMessages + SnackBarMessage(
-            id = UUID.randomUUID().mostSignificantBits,
-            message = msg,
-            actionLabel = actionLabel,
-            action = action,
-            duration = duration
-        )
-        viewModelState.update { vmState ->
-            vmState.copy(snackBarMessages = snackBarMessages, isLoading = false)
-        }
-    }
-
-    fun snackBarShown(snackBarId: Long) {
-        viewModelState.update { currentUiState ->
-            val snackBarMessages = currentUiState.snackBarMessages.filterNot { it.id == snackBarId }
-            currentUiState.copy(snackBarMessages = snackBarMessages)
         }
     }
 }

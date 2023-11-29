@@ -28,6 +28,7 @@ import moe.tlaster.precompose.navigation.RouteBuilder
 fun BeatSaverRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
+    snackbarHost: @Composable () -> Unit = {},
     beatSaverViewModel: BeatSaverViewModel = koinViewModel()
 ){
     val uiState by beatSaverViewModel.uiState.collectAsState()
@@ -35,7 +36,7 @@ fun BeatSaverRoute(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
     Scaffold(
-        snackbarHost = { BSHelperSnackbarHost(hostState = remember { SnackbarHostState() }) },
+        snackbarHost = snackbarHost,
         topBar = {
             Column(
                 modifier = Modifier

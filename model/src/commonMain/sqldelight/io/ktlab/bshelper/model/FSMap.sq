@@ -1,21 +1,6 @@
 import kotlin.Float;
 import kotlin.Int;
 import kotlin.time.Duration;
--- @Entity(tableName = "fs_map")
--- data class FSMap(
---     @ColumnInfo("map_id") @PrimaryKey val mapId: String,
---     val version: String,
---     val name: String,
---     val author: String,
---     val duration: Long,
---     @ColumnInfo("img_path") val relativeCoverPath: String,
---     @ColumnInfo("song_path") val relativeSongPath: String,
---     @ColumnInfo("info_path") val relativeInfoPath:String,
---     @ColumnInfo("dir_filename") val dirFilename:String,
---     @ColumnInfo("playlist_base_path") val playlistBasePath:String,
---     val hash : String = "",
---     val playlistId: String,
--- )
 
 CREATE TABLE IF NOT EXISTS FSMap (
     `mapId` TEXT NOT NULL,
@@ -30,7 +15,8 @@ CREATE TABLE IF NOT EXISTS FSMap (
     `playlistBasePath` TEXT NOT NULL,
     `hash` TEXT,
     `playlistId` TEXT NOT NULL,
-    PRIMARY KEY(`mapId`,`hash`, `playlistId`)
+--     `active` INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY(`mapId`, `playlistId`)
 );
 
 
@@ -115,6 +101,7 @@ LEFT JOIN `BSUser` ON `BSMap`.`uploaderId` = `BSUser`.`id`
 LEFT JOIN `BSMapVersion` ON `FSMap`.`mapId` = `BSMapVersion`.`mapId` AND `FSMap`.`hash` = `BSMapVersion`.`hash`
 LEFT JOIN `MapDifficulty` ON `FSMap`.`mapId` = `MapDifficulty`.`mapId` AND `FSMap`.`hash` = `MapDifficulty`.`hash`
 WHERE `FSMap`.`playlistId` = ?;
+-- AND `FSMap`.`active` = 1;
 
 -- GROUP BY `FSMap`.`mapId`, `FSMap`.`hash`, `FSMap`.`playlistId`;
 
@@ -136,6 +123,11 @@ INSERT OR REPLACE INTO `FSMap`
 ) VALUES ?;
 
 
+-- acitveFSMap:
+-- UPDATE `FSMap`
+-- SET `active` = 1
+-- WHERE `mapId` = ? AND `playlistId` = ?;
+
 getAllFSMapId:
 SELECT `mapId`,`playlistId` FROM `FSMap`;
 
@@ -143,6 +135,7 @@ moveFSMapToPlaylist:
 UPDATE `FSMap`
 SET `playlistId` = ?,`playlistBasePath` = ?
 WHERE `mapId` = ? AND `playlistId` = ?;
+--  AND `active` = 1;
 
 deleteAllFSMap:
 DELETE FROM `FSMap`;
