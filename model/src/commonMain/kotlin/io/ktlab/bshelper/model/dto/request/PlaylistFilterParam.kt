@@ -10,5 +10,6 @@ data class PlaylistFilterParam(
     @QueryParam("to") val to: String? = null,
     @QueryParam("curated") val curated: Boolean? = null,
     @QueryParam("verified") val verified: Boolean? = null,
+    @QueryParam("includeEmpty") val includeEmpty: Boolean? = null,
     @QueryParam("sortOrder") val sortKey: String = "Relevance",
 )

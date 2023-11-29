@@ -38,7 +38,7 @@ fun BatchMapDownloadTaskCard(
         val succeedCount = map.taskList.count { it.downloadTaskModel.status.isSuccessFinite() }
         val processingCount = map.taskList.count { it.downloadTaskModel.status.isProcessing() || it.downloadTaskModel.status.isWaiting() }
         val waitingCount = map.taskList.count { it.downloadTaskModel.status.isWaiting() }
-        val pausedCount = map.taskList.count { it.downloadTaskModel.status is TaskStatus.Paused }
+        val pausedCount = map.taskList.count { it.downloadTaskModel.status is KownTaskStatus.Paused }
         val totalCount = map.taskList.size
         Row(
             modifier = modifier

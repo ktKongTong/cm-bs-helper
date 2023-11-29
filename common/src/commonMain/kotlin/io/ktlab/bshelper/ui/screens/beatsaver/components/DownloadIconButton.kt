@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.repository.IDownloadTask
-import io.ktlab.kown.model.TaskStatus
+import io.ktlab.kown.model.KownTaskStatus
 
 @Composable
 fun DownloadIconButton(
@@ -21,7 +21,7 @@ fun DownloadIconButton(
 ){
     if (downloadInfo != null) {
         when(downloadInfo.downloadTaskModel.status) {
-            is TaskStatus.Running,is TaskStatus.Queued,is TaskStatus.PostProcessing -> {
+            is KownTaskStatus.Running,is KownTaskStatus.Queued,is KownTaskStatus.PostProcessing -> {
                 val animatedProgress by animateFloatAsState(
                     targetValue = downloadInfo.getProgress(),
                     animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
@@ -33,7 +33,7 @@ fun DownloadIconButton(
                     modifier = modifier
                 )
             }
-            is TaskStatus.Completed -> {
+            is KownTaskStatus.Completed -> {
                 Icon(
                     Icons.Rounded.Check,
                     contentDescription = "Download complete",

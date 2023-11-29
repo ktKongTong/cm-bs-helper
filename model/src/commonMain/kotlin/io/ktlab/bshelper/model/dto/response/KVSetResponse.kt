@@ -10,8 +10,8 @@ data class KVSetResponse(
     val timeout: Int? = null,
 )
 
-@kotlinx.serialization.Serializable
-data class KVGetResponse<T :@Serializable Any>(
+@Serializable
+data class KVGetResponse< T :@Serializable Any>(
     val message: String,
     val content: T? = null,
 )

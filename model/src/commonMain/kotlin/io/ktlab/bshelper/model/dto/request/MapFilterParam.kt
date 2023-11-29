@@ -5,9 +5,16 @@ import io.ktlab.bshelper.model.annotation.QueryParam
 
 data class MapFilterParam(
     @QueryParam("q") val queryKey: String = "",
+    // Tag query, separated by , (and) or | (or). Excluded tags are prefixed with !.
     @QueryParam("tags") val tags: String? = null,
     @QueryParam("maxNps") val maxNps: Double? = null,
     @QueryParam("minNps") val minNps: Double? = null,
+    @QueryParam("maxDuration") val maxDuration: Int? = null,
+    @QueryParam("minDuration") val minDuration: Int? = null,
+    @QueryParam("minBpm") val minBpm: Float? = null,
+    @QueryParam("maxBpm") val maxBpm: Float? = null,
+    @QueryParam("minRating") val minRating: Float? = null,
+    @QueryParam("maxRating") val maxRating: Float? = null,
     @QueryParam("from") val from: String? = null,
     @QueryParam("to") val to: String? = null,
     @QueryParam("tags") val mapper: String? = null,

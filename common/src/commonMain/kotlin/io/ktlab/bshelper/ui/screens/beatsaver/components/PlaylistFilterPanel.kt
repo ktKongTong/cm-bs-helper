@@ -17,7 +17,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
-import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.enums.MapFeatureTag
 import io.ktlab.bshelper.model.enums.MapTag

@@ -2,7 +2,6 @@ package io.ktlab.bshelper.api
 
 import io.ktlab.bshelper.model.dto.ExportPlaylist
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
-import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.dto.response.BSRespDTO
 import io.ktlab.bshelper.model.dto.response.KVSetResponse

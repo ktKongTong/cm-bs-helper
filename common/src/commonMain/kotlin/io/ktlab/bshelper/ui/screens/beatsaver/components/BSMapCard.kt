@@ -35,7 +35,7 @@ import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.kown.model.DownloadListener
 import io.ktlab.kown.model.DownloadTaskBO
 import io.ktlab.kown.model.RenameStrategy
-import io.ktlab.kown.model.TaskStatus
+import io.ktlab.kown.model.KownTaskStatus
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -225,7 +225,7 @@ private val downloadTaskBO = DownloadTaskBO(
     title = "fake",
     tag = "fake",
     headers = mapOf(),
-    status = TaskStatus.Running,
+    status = KownTaskStatus.Running,
     url = "fake",
     eTag = "fake",
     dirPath = "fake",

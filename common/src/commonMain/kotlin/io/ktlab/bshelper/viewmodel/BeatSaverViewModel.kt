@@ -1,28 +1,23 @@
 package io.ktlab.bshelper.viewmodel
 
-import androidx.compose.material3.SnackbarDuration
 import app.cash.paging.PagingData
 import app.cash.paging.cachedIn
-//import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.IMap
+import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
+import io.ktlab.bshelper.model.successOr
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.repository.*
-import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
-import java.util.UUID
 
-//private val logger = KotlinLogging.logger("BeatSaverViewModel")
 
 data class LocalState(
     val localMapIdSet: Set<Pair<String,String>> = emptySet(),
@@ -48,7 +43,6 @@ enum class TabType(val human:String,val index : Int){
         }
         val tabs = listOf(Map,Playlist)
     }
-
 }
 
 

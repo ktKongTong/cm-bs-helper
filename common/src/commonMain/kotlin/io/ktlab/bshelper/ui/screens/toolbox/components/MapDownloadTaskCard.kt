@@ -25,7 +25,7 @@ import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.ui.components.*
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
-import io.ktlab.kown.model.TaskStatus
+import io.ktlab.kown.model.KownTaskStatus
 import kotlinx.datetime.Instant
 
 
@@ -111,21 +111,21 @@ fun MapDownloadTaskCard(
                         .padding(top = 4.dp),
                 ) {
                     when(downloadTask.downloadTaskModel.status) {
-                        is TaskStatus.Queued -> {
+                        is KownTaskStatus.Queued -> {
                             Text(text = "等待中")
                         }
-                        is TaskStatus.Running -> {
+                        is KownTaskStatus.Running -> {
                             Text(text = "${downloadTask.downloadTaskModel.downloadedBytes.toMB()}/${downloadTask.downloadTaskModel.totalBytes.toMB()}")
                         }
-                        is TaskStatus.Completed -> {
+                        is KownTaskStatus.Completed -> {
                             Text(text = "下载完成")
                         }
-                        is TaskStatus.PostProcessing -> {
+                        is KownTaskStatus.PostProcessing -> {
                             Text(text = "解压至歌单")
                         }
-                        is TaskStatus.Failed -> {
+                        is KownTaskStatus.Failed -> {
                             Text(
-                                text = "下载失败：${(downloadTask.downloadTaskModel.status as TaskStatus.Failed).reason}",
+                                text = "下载失败：${(downloadTask.downloadTaskModel.status as KownTaskStatus.Failed).reason}",
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
                                 softWrap = false
@@ -142,7 +142,7 @@ fun MapDownloadTaskCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 when(downloadTask.downloadTaskModel.status) {
-                    is TaskStatus.Queued,is TaskStatus.Running -> {
+                    is KownTaskStatus.Queued,is KownTaskStatus.Running -> {
                         IconButton(onClick = { onUIEvent(ToolboxUIEvent.PauseDownloadTask(downloadTask)) }) {
                             Icon(
                                 Icons.Rounded.Pause,
@@ -157,7 +157,7 @@ fun MapDownloadTaskCard(
                             )
                         }
                     }
-                    is TaskStatus.Paused -> {
+                    is KownTaskStatus.Paused -> {
                         IconButton(onClick = { onUIEvent(ToolboxUIEvent.ResumeDownloadTask(downloadTask)) }) {
                             Icon(
                                 Icons.Rounded.Start,
@@ -165,7 +165,7 @@ fun MapDownloadTaskCard(
                             )
                         }
                     }
-                    is TaskStatus.Failed -> {
+                    is KownTaskStatus.Failed -> {
                         IconButton(onClick = { onUIEvent(ToolboxUIEvent.RetryDownloadMap(downloadTask)) }) {
                             Icon(
                                 Icons.Rounded.Redo,
