@@ -19,6 +19,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
 
+                implementation(kotlin("test"))
                 implementation(project(":model"))
                 implementation(project(":utils"))
 

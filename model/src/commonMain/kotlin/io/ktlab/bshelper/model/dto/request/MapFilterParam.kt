@@ -1,6 +1,7 @@
 package io.ktlab.bshelper.model.dto.request
 
 import io.ktlab.bshelper.model.annotation.QueryParam
+import io.ktlab.bshelper.model.enums.MapFeatureTag
 
 
 data class MapFilterParam(
@@ -28,4 +29,18 @@ data class MapFilterParam(
     @QueryParam("verified") val verified: Boolean? = null,
     @QueryParam("fullSpread") val fullSpread: Boolean? = null,
     @QueryParam("sortOrder") val sortKey: String = "Relevance",
-)
+) {
+    fun mapFeatureTagsMap() : Map<MapFeatureTag,Boolean> {
+        return mapOf(
+            MapFeatureTag.AI to automapper,
+            MapFeatureTag.Chroma to chroma,
+            MapFeatureTag.Noodle to noodle,
+            MapFeatureTag.MappingExtensions to me,
+            MapFeatureTag.Cinema to cinema,
+            MapFeatureTag.Ranked to ranked,
+            MapFeatureTag.Curated to curated,
+            MapFeatureTag.VerifiedMapper to verified,
+            MapFeatureTag.FullSpread to fullSpread,
+        ).filterValues { it != null } as Map<MapFeatureTag, Boolean>
+    }
+}

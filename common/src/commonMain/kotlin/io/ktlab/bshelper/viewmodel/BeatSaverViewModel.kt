@@ -82,6 +82,7 @@ data class BeatSaverViewModelState(
     val localPlaylists: List<IPlaylist> = emptyList(),
     // 本地MapID
     val localMapIdSet: Set<Pair<String,String>> = emptySet(),
+    val localMapIdFlow : Flow<Set<Pair<String,String>>>,
     //
     val mapFilterPanelState: MapFilterParam = MapFilterParam(),
 
@@ -148,6 +149,7 @@ sealed class BeatSaverUIEvent: UIEvent(){
 
 
     data class SearchMapWithFilter(val mapQueryState: MapFilterParam): BeatSaverUIEvent()
+    data class UpdateMapFilterParam(val mapQueryState: MapFilterParam): BeatSaverUIEvent()
     data class SearchPlaylistWithFilter(val playlistQueryState: PlaylistFilterParam): BeatSaverUIEvent()
 
     data class SwitchTab(val tabType: TabType): BeatSaverUIEvent()
@@ -176,6 +178,7 @@ class BeatSaverViewModel(
             playlistFlow = playlistRepository.getPagingBSPlaylist(PlaylistFilterParam()).cachedIn(viewModelScope),
             downloadTaskFlow = downloaderRepository.getDownloadTaskFlow().flowOn(Dispatchers.IO),
             localMapIdSet = emptySet(),
+            localMapIdFlow = emptyFlow(),
             selectableLocalPlaylists = emptyList()
         )
     )
@@ -248,6 +251,7 @@ class BeatSaverViewModel(
     fun dispatchUiEvents(event: UIEvent){
         when(event){
             is BeatSaverUIEvent.SearchMapWithFilter -> { onSearchMapWithFilter(event.mapQueryState) }
+            is BeatSaverUIEvent.UpdateMapFilterParam -> { viewModelState.update { it.copy(mapFilterPanelState = event.mapQueryState) } }
             is BeatSaverUIEvent.ChangeMultiSelectMode -> { onMultiSelectChecked(event.checked) }
             is BeatSaverUIEvent.MapMultiSelected -> { onMapMultiSelected(event.map) }
             is BeatSaverUIEvent.ChangeTargetPlaylist -> { onSelectedPlaylistChanged(event.playlist) }
@@ -321,11 +325,19 @@ class BeatSaverViewModel(
         viewModelState.update {
             it.copy(
                 selectedPlaylist = playlist,
+//                localMapIdFlow = mapRepository.getLocalMapIdSet().flowOn(Dispatchers.IO),
             )
         }
     }
 
     private fun onMapMultiSelected(bsMap: IMap) {
+        if (viewModelState.value.selectedPlaylist == null) {
+            globalViewModel.showSnackBar("请先选择目标歌单")
+            return
+        }else if (viewModelState.value.localMapIdSet.contains(viewModelState.value.selectedPlaylist!!.id to bsMap.getID())) {
+            return
+        }
+
         viewModelState.update {
             it.copy(
                 multiSelectedBSMap = if (viewModelState.value.multiSelectedBSMap.contains(bsMap)) {
@@ -339,6 +351,10 @@ class BeatSaverViewModel(
 
     private fun onMultiSelectChecked(checked: Boolean) {
 //        logger.debug { "multiselect switch to $checked" }
+        if (viewModelState.value.selectedPlaylist == null) {
+            globalViewModel.showSnackBar("请先选择目标歌单")
+            return
+        }
         viewModelState.update {
             it.copy(
                 multiSelectMode = checked,
@@ -356,6 +372,7 @@ class BeatSaverViewModel(
         }
         viewModelScope.launch(Dispatchers.IO) {
             mapRepository.batchInsertBSMap(mapToBeDownload.toList().map { it as BSMapVO })
+            mapRepository.batchInsertBSMapAndFSMap(mapToBeDownload.toList().map { it as BSMapVO },viewModelState.value.selectedPlaylist!!)
             downloaderRepository.batchDownloadMap(targetPlaylist,mapToBeDownload.map { it as BSMapVO }.toList())
         }
     }
@@ -369,8 +386,7 @@ class BeatSaverViewModel(
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
-            mapRepository.batchInsertBSMap(listOf(bsMap).map { it as BSMapVO })
-//            mapRepository.batchInsertBSMapAsFSMap(listOf(bsMap).map { it as BSMapVO },viewModelState.value.selectedPlaylist!!)
+            mapRepository.batchInsertBSMapAndFSMap(listOf(bsMap).map { it as BSMapVO },viewModelState.value.selectedPlaylist!!)
             downloaderRepository.downloadMap(viewModelState.value.selectedPlaylist!!,(bsMap as BSMapVO))
         }
     }

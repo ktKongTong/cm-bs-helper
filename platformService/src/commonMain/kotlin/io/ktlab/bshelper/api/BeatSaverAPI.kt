@@ -58,7 +58,7 @@ class BeatSaverAPI(private val httpClient: HttpClient) {
             val map = json.decodeFromJsonElement<BSMapDTO>(res)
             mapOf(map.id to map)
         }else {
-            json.decodeFromJsonElement<MapQueryByHashesDTO>(res)
+            json.decodeFromJsonElement<MapQueryByIdsDTO>(res)
         }
     }
     suspend fun getMapsByHashes(hashes : List<String>): MapQueryByHashesDTO {

@@ -5,8 +5,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
@@ -17,7 +21,7 @@ import io.ktlab.kown.model.KownTaskStatus
 fun DownloadIconButton(
     downloadInfo: IDownloadTask.MapDownloadTask?,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier.size(36.dp)
+    modifier: Modifier = Modifier.size(24.dp)
 ){
     if (downloadInfo != null) {
         when(downloadInfo.downloadTaskModel.status) {

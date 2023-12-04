@@ -20,6 +20,7 @@ fun List<GetAllByPlaylistId>.mapToVO():List<FSMapVO> = this
                 relativeSongPath = first.relativeSongPath,
                 relativeCoverPath = first.relativeCoverPath,
                 relativeInfoPath = first.relativeInfoPath,
+                active = first.active,
             )
             val difficulties = it.map { diff ->
                 MapDifficulty(
@@ -47,7 +48,7 @@ fun List<GetAllByPlaylistId>.mapToVO():List<FSMapVO> = this
             }
             val bsUserWithUploader = if (first.uploaderId != null) {
                 val user = BSUser(
-                    id = first.uploaderId_!!,
+                    id = first.uploaderId,
                     name = first.uploaderName!!,
                     avatar = first.uploaderAvatar!!,
                     admin = first.uploaderAdmin!!,

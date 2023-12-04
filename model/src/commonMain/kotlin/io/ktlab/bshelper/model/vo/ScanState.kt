@@ -11,6 +11,19 @@ enum class GlobalScanStateEnum(val human:String) {
     SCAN_ERROR("error"),
 }
 
+
+enum class ScanStateMachineStateEnum {
+    INIT,
+    SCANNING_PLAYLISTS,
+    WAITING_TRIGGER_SCAN_MAPS,
+    SCANNING_MAPS,
+    SCAN_COMPLETE,
+    SCAN_ERROR,
+}
+class ScanStateMachine {
+
+}
+
 enum class ScanStateEnum {
     NOT_START,
     SCANNING,

@@ -37,5 +37,6 @@ fun BSMap.toFSMap(targetPlaylist:FSPlaylist):FSMap {
         playlistBasePath = targetPlaylist.basePath,
         hash = null,
         playlistId = targetPlaylist.uuid,
+        active = false,
     )
 }

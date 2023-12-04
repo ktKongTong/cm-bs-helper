@@ -1,5 +1,4 @@
-import kotlin.Float;
-import kotlin.Int;
+import kotlin.Boolean;
 import kotlin.time.Duration;
 
 CREATE TABLE IF NOT EXISTS FSMap (
@@ -15,13 +14,13 @@ CREATE TABLE IF NOT EXISTS FSMap (
     `playlistBasePath` TEXT NOT NULL,
     `hash` TEXT,
     `playlistId` TEXT NOT NULL,
---     `active` INTEGER NOT NULL DEFAULT 0,
+    `active` INTEGER AS Boolean NOT NULL DEFAULT 0,
     PRIMARY KEY(`mapId`, `playlistId`)
 );
 
 
 selectAll:
-SELECT * FROM `FSMap`;
+SELECT * FROM `FSMap` WHERE `active` = 1;
 
 getAllByPlaylistId:
 SELECT
@@ -37,8 +36,9 @@ SELECT
 `FSMap`.playlistBasePath AS `playlistBasePath`,
 `FSMap`.hash AS `hash`,
 `FSMap`.playlistId AS `playlistId`,
+`FSMap`.active AS `active`,
 
-`BSMap`.uploaderId AS `uploaderId`,
+`BSMap`.uploaderId AS `bsUploaderId`,
 `BSMap`.name AS `bsMapName`,
 `BSMap`.bpm AS `bsMapbpm`,
 `BSMap`.duration AS `bsMapDuration`,
@@ -100,8 +100,8 @@ LEFT JOIN `BSMap` ON `FSMap`.`mapId` = `BSMap`.`mapId`
 LEFT JOIN `BSUser` ON `BSMap`.`uploaderId` = `BSUser`.`id`
 LEFT JOIN `BSMapVersion` ON `FSMap`.`mapId` = `BSMapVersion`.`mapId` AND `FSMap`.`hash` = `BSMapVersion`.`hash`
 LEFT JOIN `MapDifficulty` ON `FSMap`.`mapId` = `MapDifficulty`.`mapId` AND `FSMap`.`hash` = `MapDifficulty`.`hash`
-WHERE `FSMap`.`playlistId` = ?;
--- AND `FSMap`.`active` = 1;
+WHERE `FSMap`.`playlistId` = ?
+AND `FSMap`.`active` = 1;
 
 -- GROUP BY `FSMap`.`mapId`, `FSMap`.`hash`, `FSMap`.`playlistId`;
 
@@ -119,23 +119,24 @@ INSERT OR REPLACE INTO `FSMap`
 `dirFilename`,
 `playlistBasePath`,
 `hash`,
-`playlistId`
+`playlistId`,
+`active`
 ) VALUES ?;
 
 
--- acitveFSMap:
--- UPDATE `FSMap`
--- SET `active` = 1
--- WHERE `mapId` = ? AND `playlistId` = ?;
+acitveFSMap:
+UPDATE `FSMap`
+SET `active` = 1
+WHERE `mapId` = ? AND `playlistId` = ?;
 
 getAllFSMapId:
-SELECT `mapId`,`playlistId` FROM `FSMap`;
+SELECT `mapId`,`playlistId` FROM `FSMap` WHERE `active` = 1;
 
 moveFSMapToPlaylist:
 UPDATE `FSMap`
 SET `playlistId` = ?,`playlistBasePath` = ?
-WHERE `mapId` = ? AND `playlistId` = ?;
---  AND `active` = 1;
+WHERE `mapId` = ? AND `playlistId` = ?
+AND `active` = 1;
 
 deleteAllFSMap:
 DELETE FROM `FSMap`;

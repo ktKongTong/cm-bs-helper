@@ -8,20 +8,22 @@ import app.cash.sqldelight.coroutines.mapToList
 import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
 import io.ktlab.bshelper.paging.BSMapPagingSource
 import io.ktlab.bshelper.paging.BSPlaylistDetailPagingSource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class FSMapRepository(
     private val bsHelperDAO:BSHelperDatabase,
@@ -161,7 +163,23 @@ class FSMapRepository(
                         bsHelperDAO.mapDifficultyQueries.insert(it)
                     }
                 }
-
+                bsHelperDAO.fSMapQueries.insert(
+                    FSMap(
+                        mapId = it.getID(),
+                        version = "",
+                        name = it.getSongName(),
+                        author = it.getAuthor(),
+                        duration = it.map.duration.toDuration(DurationUnit.SECONDS),
+                        relativeCoverPath = "",
+                        relativeSongPath = "",
+                        relativeInfoPath = "",
+                        dirFilename = "${it.map.mapId} (${it.map.songName} - ${it.map.songAuthorName})".replace("/", " "),
+                        playlistBasePath = targetPlaylist.getTargetPath(),
+                        hash = it.versions.firstOrNull()?.version?.hash?:"",
+                        playlistId = targetPlaylist.id,
+                        active = false,
+                    )
+                )
 //                bsHelperDAO.fSMapQueries.insertFSMap(it.map.mapId,playlistId)
             }
         }
@@ -169,7 +187,7 @@ class FSMapRepository(
 
     fun activeFSMapByMapId(mapId: String,playlistId: String) {
         bsHelperDAO.transaction {
-//            bsHelperDAO.fSMapQueries.activeFSMapByMapId(mapId,playlistId)
+            bsHelperDAO.fSMapQueries.acitveFSMap(mapId,playlistId)
         }
     }
 
@@ -243,6 +261,17 @@ class FSMapRepository(
 //    }
 
     fun getLocalMapIdSet(): Flow<Set<Pair<String,String>>> = bsHelperDAO.fSMapQueries
+        .getAllFSMapId()
+        .asFlow()
+        .mapToList(Dispatchers.IO)
+        .map {
+            it.map {item-> Pair(item.playlistId,item.mapId) }.toSet()
+        }
+        .catch {
+//            Log()
+            emit(setOf())
+        }
+    fun getLocalMapIdSetByPlaylist(playlistId: String): Flow<Set<Pair<String,String>>> = bsHelperDAO.fSMapQueries
         .getAllFSMapId()
         .asFlow()
         .mapToList(Dispatchers.IO)

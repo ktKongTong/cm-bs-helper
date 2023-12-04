@@ -10,6 +10,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(kotlin("test"))
                 implementation(project(":model"))
                 implementation(project(":bsmg"))
                 implementation("net.lingala.zip4j:zip4j:2.11.5")
@@ -19,6 +20,7 @@ kotlin {
                 implementation(libs.beatmap.io)
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.kotlinx.datetime)
+
             }
         }
     }

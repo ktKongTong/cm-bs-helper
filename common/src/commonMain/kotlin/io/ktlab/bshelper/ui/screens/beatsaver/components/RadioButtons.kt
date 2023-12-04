@@ -1,46 +1,31 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.RadioButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun RadioButtons(
-    radioOptions : List<String>,
+fun FilterChipGroup(
+    options : List<String>,
     selectedOption: String,
     onOptionSelected: (String) -> Unit = {},
 ) {
     FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        maxItemsInEachRow = 2,
-        horizontalArrangement = Arrangement.SpaceAround,
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        radioOptions.forEach { text ->
-            Row(
-                Modifier
-                    .padding(4.dp)
-                    .combinedClickable { onOptionSelected(text) },
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                RadioButton(
-                    modifier = Modifier.clip(RoundedCornerShape(4.dp)),
-                    selected = (text == selectedOption),
-                    onClick = { onOptionSelected(text) },
-                )
-                Text(
-                    text = text,
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                )
-            }
+        options.map { text ->
+            FilterChip(
+                modifier = Modifier,
+                selected = (text == selectedOption),
+                onClick = { onOptionSelected(text) },
+                label = { Text(text) }
+            )
         }
     }
 }

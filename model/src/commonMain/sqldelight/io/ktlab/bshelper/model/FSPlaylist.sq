@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `FSPlaylist` (
 );
 
 selectAll:
-SELECT * FROM `FSPlaylist`;
+SELECT * FROM `FSPlaylist` WHERE sync = 1;
 
 
 insertAll:
@@ -78,7 +78,7 @@ WHERE uuid IN ?;
 
 selectAllByBasePath:
 SELECT * FROM `FSPlaylist`
-WHERE basePath = ?;
+WHERE basePath = ? AND sync = 1;
 
 
 deleteByBasePath:

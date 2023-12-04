@@ -1,24 +1,16 @@
 package io.ktlab.bshelper.ui.components
 
+//import coil.compose.AsyncImage
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-//import coil.compose.AsyncImage
 import io.ktlab.bshelper.MR
-import io.ktor.http.*
-import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 private fun getTypeBySource(source: String): String {
@@ -39,7 +31,8 @@ fun AsyncImageWithFallback(
         DefaultImage(modifier)
     }
 ){
-    val proxiedSource = source.replace(Url(source).host, "beatsaver.wgzeyu.vip/cdn")
+    val proxiedSource = source
+//        .replace(Url(source).host, "beatsaver.wgzeyu.vip/cdn")
 
     when (type) {
 //        "base64" -> {

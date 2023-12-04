@@ -1,54 +1,22 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Web
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.DateRangePicker
-import androidx.compose.material3.DisplayMode
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedFilterChip
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RangeSlider
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDateRangePickerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusProperties
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.stringResource
+import io.beatmaps.common.formatTime
 import io.ktlab.bshelper.MR
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.enums.MapFeatureTag
@@ -57,7 +25,7 @@ import io.ktlab.bshelper.model.enums.MapTagType
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 fun millisToDateFormatString(millis: Long?): String? {
     return if (millis == null) { null } else {
@@ -93,10 +61,24 @@ fun MapFilterPanel(
     val npsStart = mapFilterPanelState.minNps?.toFloat() ?:0f
     val npsEnd = mapFilterPanelState.maxNps?.toFloat() ?:16f
     var npsSliderValues by remember { mutableStateOf((npsStart..npsEnd))}
+
+    val durationStart = mapFilterPanelState.minDuration?.toFloat() ?:0f
+    val durationEnd = mapFilterPanelState.maxDuration?.toFloat() ?: 300f
+    var durationSliderValues by remember { mutableStateOf((durationStart..durationEnd))}
+    val ratingStart = mapFilterPanelState.minRating ?:0f
+    val ratingEnd = mapFilterPanelState.maxRating ?: 1f
+    var ratingSliderValues by remember { mutableStateOf((ratingStart..ratingEnd))}
+    val ratingToText = fun (value: Float?): String {
+        return if (value == null) { "100%" } else {"${value.times(100).toInt()}%" }
+    }
     val npsToText = fun (value: Float?): String {
         return if (value == null||value == 16f) { "∞" } else { String.format("%.2f", value) }
     }
-
+    val durationToText = fun (value: Float?): String {
+        return if (value == null||value == 330f) { "∞" } else {
+            value.formatTime()
+        }
+    }
     var dateRangePickerDialogOpen by remember { mutableStateOf(false) }
     val dateRangePickerState = rememberDateRangePickerState(
         initialSelectedStartDateMillis = dateStringToLong(mapFilterPanelState.from),
@@ -106,19 +88,8 @@ fun MapFilterPanel(
 
     var selectedStyleTagState by remember { mutableStateOf(findMapTagByString(mapFilterPanelState.tags, MapTagType.Style)) }
     var selectedGenreTagState by remember { mutableStateOf(findMapTagByString(mapFilterPanelState.tags, MapTagType.Genre)) }
-    var featureSelectedState by remember { mutableStateOf(mapOf(
-        MapFeatureTag.AI to mapFilterPanelState.automapper,
-        MapFeatureTag.Chroma to mapFilterPanelState.chroma,
-        MapFeatureTag.Noodle to mapFilterPanelState.noodle,
-        MapFeatureTag.MappingExtensions to mapFilterPanelState.me,
-        MapFeatureTag.Cinema to mapFilterPanelState.cinema,
-        MapFeatureTag.Ranked to mapFilterPanelState.ranked,
-        MapFeatureTag.Curated to mapFilterPanelState.curated,
-        MapFeatureTag.VerifiedMapper to mapFilterPanelState.verified,
-        MapFeatureTag.FullSpread to mapFilterPanelState.fullSpread,
-    )) }
+    var featureSelectedState by remember { mutableStateOf(mapFilterPanelState.mapFeatureTagsMap()) }
     val (selectedSortOrder, onSortOrderOptionSelected) = remember { mutableStateOf(mapFilterPanelState.sortKey.ifEmpty { "Relevance" }) }
-    var searchBarActive by remember { mutableStateOf(false) }
 
     val convertToTagString = fun (): String? {
         return when {
@@ -137,6 +108,10 @@ fun MapFilterPanel(
             sortKey = selectedSortOrder,
             minNps = if (npsSliderValues.start == 0f) { null } else { npsSliderValues.start.toDouble() },
             maxNps = if (npsSliderValues.endInclusive == 16f) { null } else { npsSliderValues.endInclusive.toDouble() },
+            minDuration = if (durationSliderValues.start == 0f) { null } else { durationSliderValues.start.toInt() },
+            maxDuration = if (durationSliderValues.endInclusive == 300f) { null } else { durationSliderValues.endInclusive.toInt() },
+            minRating = if (ratingSliderValues.start == 0f) { null } else { ratingSliderValues.start },
+            maxRating = if (ratingSliderValues.endInclusive == 1f) { null } else { ratingSliderValues.endInclusive },
             tags = convertToTagString(),
             from = millisToDateFormatString(dateRangePickerState.selectedStartDateMillis),
             to = millisToDateFormatString(dateRangePickerState.selectedEndDateMillis),
@@ -151,20 +126,26 @@ fun MapFilterPanel(
             fullSpread = featureSelectedState[MapFeatureTag.FullSpread],
         )
     }
-
+    val updateFilter = {
+        onUIEvent(BeatSaverUIEvent.UpdateMapFilterParam(toMapFilterPanelState()))
+    }
+    val submitFilter = {
+        onUIEvent(BeatSaverUIEvent.SearchMapWithFilter(toMapFilterPanelState()))
+    }
 
     val clearFilter = {
         queryKey = ""
         npsSliderValues = (0f..16f)
+        durationSliderValues = (0f..300f)
+
         dateRangePickerState.setSelection(null, null)
         onSortOrderOptionSelected("Relevance")
         featureSelectedState = MapFeatureTag.mapFeatureTags.associateWith { false }
         selectedStyleTagState = null
         selectedGenreTagState = null
+        updateFilter()
     }
-    val submitFilter = {
-        onUIEvent(BeatSaverUIEvent.SearchMapWithFilter(toMapFilterPanelState()))
-    }
+
 
 
 
@@ -178,21 +159,6 @@ fun MapFilterPanel(
                 .verticalScroll(rememberScrollState())
                 .weight(weight = 1f, fill = false)
         ){
-//        SearchBar
-//            SearchBar(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(4.dp),
-//                query = queryKey,
-//                onQueryChange = { queryKey = it },
-//                onSearch = { searchBarActive = false },
-//                active = searchBarActive,
-//                placeholder = { Text("Search") },
-//                onActiveChange = { searchBarActive = it }
-//            ) {
-//                Icon(Icons.Filled.Search, "search")
-//            }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -204,7 +170,7 @@ fun MapFilterPanel(
                 OutlinedTextField(
                     value = queryKey,
                     leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = "search icon") },
-                    onValueChange = { queryKey = it },
+                    onValueChange = { queryKey = it;updateFilter() },
                     label = { Text(text = "Search") },
                     keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
@@ -212,14 +178,23 @@ fun MapFilterPanel(
                 )
             }
             // NPSRangeSelector
-            Divider(modifier = Modifier.padding(4.dp))
+//            Divider(modifier = Modifier.padding(4.dp))
             Row {
-                Text(
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .align(Alignment.CenterVertically),
-                    text ="NPS "
-                )
+                PlainTooltipBox(
+                    tooltip = {
+                        Text(
+                            text = "Notes Per Second. take max NPS of all difficulties"
+                        )
+                    }
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .align(Alignment.CenterVertically)
+                            .tooltipAnchor(),
+                        text ="NPS "
+                    )
+                }
                 val text = npsToText(npsSliderValues.start) + " - " + npsToText(npsSliderValues.endInclusive)
                 Text(text = text, modifier = Modifier
                     .padding(horizontal = 4.dp)
@@ -228,14 +203,71 @@ fun MapFilterPanel(
             RangeSlider(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 value = npsSliderValues,
-                onValueChange = { npsSliderValues = it },
+                onValueChange = { npsSliderValues = it;updateFilter() },
                 valueRange = 0f..16f,
                 onValueChangeFinished = {},
                 steps = 0,
             )
+            // DurationRangeSelector
+//            Divider(modifier = Modifier.padding(4.dp))
+            Row {
+                PlainTooltipBox(
+                    tooltip = { Text("Duration of the song.") }
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .align(Alignment.CenterVertically)
+                            .tooltipAnchor(),
+                        text ="Duration "
+                    )
+                }
+                val text = durationToText(durationSliderValues.start) + " - " + durationToText(durationSliderValues.endInclusive)
+                Text(text = text, modifier = Modifier
+                    .padding(horizontal = 4.dp)
+                    .align(Alignment.CenterVertically),)
+            }
+            RangeSlider(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                value = durationSliderValues,
+                onValueChange = { durationSliderValues = it;updateFilter() },
+                valueRange = 0f..330f,
+                onValueChangeFinished = {},
+                steps = 10,
+            )
+            // RatingRangeSelector
+//            Divider(modifier = Modifier.padding(4.dp))
+            Row {
+                PlainTooltipBox(
+                    tooltip = { Text("score = positive/total, rating = score - (score-0.5)/2^{lg(total+1)}") }
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .align(Alignment.CenterVertically)
+                            .tooltipAnchor(),
+                        text ="Rating "
+                    )
+                }
+                val text = ratingToText(ratingSliderValues.start) + " - " + ratingToText(ratingSliderValues.endInclusive)
+                Text(text = text, modifier = Modifier
+                    .padding(horizontal = 4.dp)
+                    .align(Alignment.CenterVertically),)
+            }
+            RangeSlider(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                value = ratingSliderValues,
+                onValueChange = { ratingSliderValues = it;updateFilter() },
+                valueRange = 0f..1f,
+                onValueChangeFinished = {},
+                steps = 19,
+            )
 //        SortBySelector
             DividerWithTitle("Sort By")
-            RadioButtons(selectedOption= selectedSortOrder,onOptionSelected = onSortOrderOptionSelected)
+            val options = listOf("Relevance","Latest", "Rating", "Curated")
+//            val radioOptions = listOf("Relevance","Latest", "Rating", "Curated")
+            FilterChipGroup(options,selectedSortOrder) { onSortOrderOptionSelected(it);updateFilter() }
+//            RadioButtons(selectedOption= selectedSortOrder,onOptionSelected = { onSortOrderOptionSelected(it);updateFilter() })
 
 //        DateRangePicker
 //            TODO updateState
@@ -285,7 +317,7 @@ fun MapFilterPanel(
                                     text = stringResource(MR.strings.clear)
                                 )
                             }
-                            TextButton(onClick = { dateRangePickerDialogOpen = false }) {
+                            TextButton(onClick = { dateRangePickerDialogOpen = false;updateFilter() }) {
                                 Icon(Icons.Filled.Check, stringResource(MR.strings.confirm))
                                 Text(text = stringResource(MR.strings.confirm))
                             }
@@ -309,6 +341,7 @@ fun MapFilterPanel(
                             } else {
                                 featureSelectedState + (it to true)
                             }
+                            updateFilter()
                         },
                         leadingIcon = if (featureSelectedState[it] == true) { {
                             Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
@@ -323,12 +356,13 @@ fun MapFilterPanel(
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                MapTag.styleMapTags.forEach {
+                MapTag.styleMapTags.map {
                     ElevatedFilterChip(
                         modifier = Modifier.padding(horizontal = 4.dp),
                         selected = it == selectedStyleTagState,
                         onClick = {
                             selectedStyleTagState = if (it == selectedStyleTagState) { null } else { it }
+                            updateFilter()
                         },
                         leadingIcon = if (selectedStyleTagState == it) { {
                             Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
@@ -342,12 +376,13 @@ fun MapFilterPanel(
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                MapTag.genreMapTags.forEach {
+                MapTag.genreMapTags.map {
                     ElevatedFilterChip(
                         modifier = Modifier.padding(horizontal = 4.dp),
                         selected = it == selectedGenreTagState,
                         onClick = {
                             selectedGenreTagState = if (it == selectedGenreTagState) { null } else { it }
+                            updateFilter()
                         },
                         leadingIcon = if (selectedGenreTagState == it) { {
                             Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
@@ -385,21 +420,10 @@ fun MapFilterPanel(
     }
 }
 
-
-@Composable
-fun RadioButtons(
-    selectedOption: String,
-    onOptionSelected: (String) -> Unit = {},
-) {
-    val radioOptions = listOf("Relevance","Latest", "Rating", "Curated")
-    RadioButtons(radioOptions,selectedOption,onOptionSelected)
-}
-
-
 @Composable
 fun DividerWithTitle(title: String){
     Column{
-        Divider(modifier = Modifier.padding(horizontal = 4.dp))
+//        Divider(modifier = Modifier.padding(horizontal = 4.dp))
         Text(
             modifier = Modifier
                 .padding(4.dp),

@@ -1,41 +1,37 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
-import io.ktlab.bshelper.model.enums.MapTag as MapTagEnum
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.ui.components.*
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistCard
-import io.ktlab.bshelper.ui.theme.BSHelperTheme
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.kown.model.DownloadListener
 import io.ktlab.kown.model.DownloadTaskBO
-import io.ktlab.kown.model.RenameStrategy
 import io.ktlab.kown.model.KownTaskStatus
+import io.ktlab.kown.model.RenameStrategy
+import io.ktlab.bshelper.model.enums.MapTag as MapTagEnum
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -87,7 +83,7 @@ fun BSMapCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Row {
+                FlowRow {
                     if ((map as BSMapVO).uploader.verifiedMapper?.let { true } == true) {
                         Icon(
                             Icons.Filled.Verified,
@@ -126,19 +122,27 @@ fun BSMapCard(
 
 
                 Row {
-                    DownloadIconButton(
-                        onClick = {onUIEvent(BeatSaverUIEvent.DownloadMap(map))},
-                        downloadInfo = downloadInfo,
-                    )
-                    IconButton(onClick = {
-
-                    },modifier=Modifier.size(36.dp)){
+                    if (!local) {
+                        DownloadIconButton(
+                            onClick = {onUIEvent(BeatSaverUIEvent.DownloadMap(map))},
+                            downloadInfo = downloadInfo,
+                        )
+                    }else {
                         Icon(
-                            Icons.Filled.MusicOff,
-                            contentDescription = "Download Map",
-                            tint = MaterialTheme.colorScheme.surfaceTint
+                            Icons.Rounded.Check,
+                            contentDescription = "local icon",
+//                            Modifier.size(32.dp)
                         )
                     }
+//                    IconButton(onClick = {
+//
+//                    },modifier=Modifier.size(36.dp)){
+//                        Icon(
+//                            Icons.Filled.MusicOff,
+//                            contentDescription = "Download Map",
+//                            tint = MaterialTheme.colorScheme.surfaceTint
+//                        )
+//                    }
 
                     var previewDialogOpen by remember { mutableStateOf(false) }
                     if (previewDialogOpen) {

@@ -3,19 +3,21 @@ package io.ktlab.bshelper.repository
 import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
-import io.ktlab.bshelper.service.DBAdapter
-import io.ktlab.kown.KownDownloader
-import io.ktlab.kown.model.DownloadTaskBO
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
+import io.ktlab.bshelper.service.DBAdapter
 import io.ktlab.bshelper.service.StorageService
 import io.ktlab.bshelper.utils.UnzipUtility
+import io.ktlab.kown.KownDownloader
 import io.ktlab.kown.model.DownloadListener
+import io.ktlab.kown.model.DownloadTaskBO
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
+import okio.FileSystem
 import okio.Path.Companion.toPath
 
 sealed interface IDownloadTask {
@@ -76,11 +78,14 @@ class DownloaderRepository(
 
     private fun onCompleteAction(targetPlaylist:IPlaylist): (DownloadTaskBO) -> Unit {
         return { task ->
+
             val zipFile = task.dirPath.toPath().resolve(task.filename)
             val targetPath = targetPlaylist.getTargetPath().toPath().resolve(task.title)
             UnzipUtility.unzip(zipFile.toString(), targetPath.toString())
+            FileSystem.SYSTEM.delete(zipFile)
             playlistRepository.adjustPlaylistMapCntByPlaylistId(targetPlaylist.id)
-//            mapRepository.activeFSMapByMapId(task.relateEntityId!!)
+            // add to fs map
+            mapRepository.activeFSMapByMapId(task.relateEntityId!!,targetPlaylist.id)
         }
     }
 

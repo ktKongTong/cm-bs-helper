@@ -75,9 +75,12 @@ class PlaylistScanner (
         launch {
             mapIdOrHashIdBufferChannel.receiveAsFlow().collect {
                 val maps = bsAPI.getMapsByHashes(it)
-                maps.forEach { (_, bsMapDTO) ->
+                maps
+                    .filter { it.value != null }
+                    .forEach { (_, bsMapDTO) ->
                     bsHelperDAO.transaction {
-                        bsHelperDAO.bSMapQueries.insert(bsMapDTO.convertToBSMapDBO())
+                        bsHelperDAO.bSMapQueries.insert(bsMapDTO!!.convertToBSMapDBO())
+                        bsHelperDAO.bSUserQueries.insert(bsMapDTO.uploader.convertToEntity())
                         bsHelperDAO.bSMapVersionQueries.insert(bsMapDTO.convertToBSMapVersionDBO())
                         bsMapDTO.convertToMapDifficulties().forEach {diff->
                             bsHelperDAO.mapDifficultyQueries.insert(diff)
@@ -104,10 +107,10 @@ class PlaylistScanner (
                     if (!it.isDirectory or BSMapUtils.checkIfBSMap(it)){
                         scanPlaylistDirs.add(
                             PlaylistScanState(
-                            state = PlaylistScanStateEnum.SCAN_ERROR,
-                            error = Error("seems not a playlist dir: ${it.name}. Maybe it's a file or a map dir"),
-                            mapScanStates = mutableListOf(),
-                        )
+                                state = PlaylistScanStateEnum.SCAN_ERROR,
+                                error = Error("seems not a playlist dir: ${it.name}. Maybe it's a file or a map dir"),
+                                mapScanStates = mutableListOf(),
+                            )
                         )
                         return@forEach
                     }
@@ -136,13 +139,13 @@ class PlaylistScanner (
                     playlists.add(fsPlaylist)
                     scanPlaylistDirs.add(
                         PlaylistScanState(
-                        state = PlaylistScanStateEnum.UNSELECTED,
-                        playlistName = it.name,
-                        playlistPath = basePath,
-                        playlistId = uuid,
-                        possibleMapAmount = it.list()?.size ?: 0,
-                        mapScanStates = mutableListOf(),
-                    )
+                            state = PlaylistScanStateEnum.UNSELECTED,
+                            playlistName = it.name,
+                            playlistPath = basePath,
+                            playlistId = uuid,
+                            possibleMapAmount = it.list()?.size ?: 0,
+                            mapScanStates = mutableListOf(),
+                        )
                     )
                 }
             scanState = scanState.copy(
@@ -164,6 +167,7 @@ class PlaylistScanner (
 
     suspend fun scanFSMapInPlaylists(scanState: ScanState): Flow<ScanState> = flow {
         val playlistStates = scanState.playlistStates.filter { it.value.state == PlaylistScanStateEnum.SELECTED_BUT_NOT_START }.toMutableList()
+
         emit(scanState.copy(state = GlobalScanStateEnum.SCANNING_MAPS))
         val ids = playlistStates.map { it.value.playlistId }
         val playlistToBeScanMap = bsHelperDAO.fSPlaylistQueries.selectByIds(ids)
@@ -171,8 +175,7 @@ class PlaylistScanner (
             .associateBy { it.uuid }
 
         playlistStates
-            .filter { it.value.state == PlaylistScanStateEnum.SELECTED_BUT_NOT_START }
-            .pmap {
+            .map {
                 scanDirAsPlaylist(it)
                 playlistToBeScanMap[it.value.playlistId]?.let {playlist ->
                     bsHelperDAO.fSPlaylistQueries.insertAnyway(playlist.copy(sync = true,syncTimestamp = System.currentTimeMillis()))
@@ -190,9 +193,9 @@ class PlaylistScanner (
             .map {
                 MutableStateFlow(
                     MapScanState(
-                    state = ScanStateEnum.NOT_START,
-                    mapPath = it.absolutePath,
-                )
+                        state = ScanStateEnum.NOT_START,
+                        mapPath = it.absolutePath,
+                    )
                 )
             }.toMutableList()
         val mapFiles = playlistDirFile.listFiles()
@@ -205,10 +208,13 @@ class PlaylistScanner (
         try {
             if (mapFiles!!.isNotEmpty()){
                 mapFiles.forEachIndexed { idx,mapFile ->
-                    extractorOneMapInfo(playlistDirFile.absolutePath,
-                        playlistScanState.value.playlistId,
-                        mapFile,
-                        mapScanStates[idx])
+                    val j = repositoryScope.async {
+                        extractorOneMapInfo(playlistDirFile.absolutePath,
+                            playlistScanState.value.playlistId,
+                            mapFile,
+                            mapScanStates[idx])
+                    }
+                    j.await()
                     playlistScanState.update {s-> s.copy(mapScanStates = mapScanStates.map { it.value }.toList()) }
                 }
             }
@@ -227,10 +233,10 @@ class PlaylistScanner (
     ){
         try {
             val extractedMapInfo = BSMapUtils.extractMapInfoFromDir(basePath, mapFile, playlistId)
-
             val difficultyDBOList = mutableListOf<MapDifficulty>()
             extractedMapInfo.mapInfo.difficultyBeatmapSets.forEach { bms->
                 bms.difficultyBeatmaps.forEach { bf ->
+                    // todo MapDifficulty
                     extractedMapInfo.v2MapObjectMap?.get(bms.characteristicName+bf.difficulty)?.let {
                         difficultyDBOList += it.generateMapDifficultyInfo(extractedMapInfo, ECharacteristic.from(bms.characteristicName),bf)
                     }
@@ -263,7 +269,7 @@ class PlaylistScanner (
 
 
     private fun <A, B>List<A>.pmap(f: suspend (A) -> B): List<B> = runBlocking {
-        map { async(Dispatchers.Default) { f(it) } }.map { it.await() }
+        map { async(Dispatchers.IO) { f(it) } }.map { it.await() }
     }
 
 

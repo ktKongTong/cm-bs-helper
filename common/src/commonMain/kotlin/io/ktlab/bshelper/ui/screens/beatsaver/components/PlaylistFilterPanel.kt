@@ -19,8 +19,6 @@ import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.enums.MapFeatureTag
-import io.ktlab.bshelper.model.enums.MapTag
-import io.ktlab.bshelper.model.enums.MapTagType
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 
@@ -126,7 +124,7 @@ fun PlaylistFilterPanel(
             )
 //        SortBySelector
             DividerWithTitle("Sort By")
-            RadioButtons(radioOptions = listOf("Relevance","Latest","Curated"),selectedOption= selectedSortOrder,onOptionSelected = onSortOrderOptionSelected)
+            FilterChipGroup(options = listOf("Relevance","Latest","Curated"),selectedOption= selectedSortOrder,onOptionSelected = onSortOrderOptionSelected)
 
 //        DateRangePicker
 //            TODO updateState
