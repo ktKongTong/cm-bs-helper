@@ -1,14 +1,13 @@
 package io.ktlab.bshelper.api
 
-import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.annotation.QueryParam
 import io.ktlab.bshelper.model.dto.BSMapDTO
+import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.*
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.request.request
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -107,7 +106,15 @@ class BeatSaverAPI(private val httpClient: HttpClient) {
             APIRespResult.Error(e)
         }
     }
-
+    // only first page will be returned, cause top maps' reviews count really low
+    suspend fun getMapReview(mapId:String,page: Int = 0): APIRespResult<List<BSMapReviewDTO>> {
+        return try {
+            val res = httpClient.request("$basePath/review/map/$mapId/$page").body<BSMapReviewRespDTO>()
+            APIRespResult.Success(res.docs)
+        }catch (e: Exception){
+            APIRespResult.Error(e)
+        }
+    }
 //    suspend fun getMapperDetail(playlistId:String,page: Int = 0): APIRespResult<BSPlaylistDetailRespDTO> {
 //        return try {
 //            val res = httpClient.request("$basePath/playlists/id/$playlistId/$page").body<BSPlaylistDetailRespDTO>()

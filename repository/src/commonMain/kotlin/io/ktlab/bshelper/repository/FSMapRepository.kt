@@ -8,6 +8,8 @@ import app.cash.sqldelight.coroutines.mapToList
 import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
+import io.ktlab.bshelper.model.dto.response.APIRespResult
+import io.ktlab.bshelper.model.dto.response.BSMapReviewDTO
 import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
@@ -293,6 +295,8 @@ class FSMapRepository(
         batchInsertBSMap(bsMapVOs)
         return bsMapVOs.map { it.map.mapId to it }.toMap() + localMap
     }
-
+    suspend fun getBSMapReviewsById(mapId: String): APIRespResult<List<BSMapReviewDTO>> {
+        return bsAPI.getMapReview(mapId)
+    }
 
 }

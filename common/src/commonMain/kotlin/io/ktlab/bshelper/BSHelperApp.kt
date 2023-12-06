@@ -76,6 +76,7 @@ fun BSHelperApp(){
                                 AppNavRail(
                                     currentRoute = currentRoute,
                                     navigateAction = navigateAction,
+                                    backAction = { },
                                 )
                             }
                             val snackbarHostState = remember { SnackbarHostState() }

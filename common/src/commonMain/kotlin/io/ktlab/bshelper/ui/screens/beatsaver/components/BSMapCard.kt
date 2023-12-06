@@ -1,13 +1,11 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -24,6 +22,7 @@ import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.ui.components.*
+import io.ktlab.bshelper.ui.components.labels.*
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistCard
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
@@ -31,7 +30,6 @@ import io.ktlab.kown.model.DownloadListener
 import io.ktlab.kown.model.DownloadTaskBO
 import io.ktlab.kown.model.KownTaskStatus
 import io.ktlab.kown.model.RenameStrategy
-import io.ktlab.bshelper.model.enums.MapTag as MapTagEnum
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -62,20 +60,20 @@ fun BSMapCard(
                     onClick = {onUIEvent(BeatSaverUIEvent.MapTapped(map))}
                 )
         ) {
-
-            AsyncImageWithFallback(
-                modifier = Modifier
-                    .padding(PaddingValues(start = 0.dp, top = 8.dp, end = 8.dp, bottom = 0.dp))
-                    .size(128.dp, 128.dp)
-                    .align(Alignment.Top)
-                    .clip(shape = RoundedCornerShape(10.dp))
-                    .clickable { onPlayPreviewMusicSegment(map) },
-                source = map.getAvatar(),
-            )
+            Column {
+                AsyncImageWithFallback(
+                    modifier = Modifier
+                        .padding(PaddingValues(start = 0.dp, top = 8.dp, end = 8.dp, bottom = 0.dp))
+                        .size(144.dp, 144.dp)
+                        .align(Alignment.Start)
+                        .clip(shape = RoundedCornerShape(10.dp)),
+                    source = map.getAvatar(),
+                )
+            }
             Column(
                 modifier = Modifier
                     .weight(1f),
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ){
                 Text(text = map.getSongName(),
                     modifier = Modifier.padding(bottom = 4.dp),
@@ -84,44 +82,31 @@ fun BSMapCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 FlowRow {
-                    if ((map as BSMapVO).uploader.verifiedMapper?.let { true } == true) {
-                        Icon(
-                            Icons.Filled.Verified,
-                            modifier = Modifier.size(20.dp),
-                            contentDescription = "Verified Mapper",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    MapperIconWIthText(text = map.getAuthor())
-                    Spacer(modifier = Modifier.width(8.dp))
-                    DurationIconWIthText(text = map.getDuration())
-                    Spacer(modifier = Modifier.width(8.dp))
-                    NPSIconWIthText(text = "%.2f".format(map.getMaxNPS()))
+                    MapperLabel(
+                        mapperName = map.getAuthor(),
+                        onClick = {},
+                        verified = (map as BSMapVO).uploader.verifiedMapper?.let { true } == true,
+                        avatarUrl = map.uploader.avatar
+                    )
+                    DateLabel(date = map.map.createdAt)
                 }
-                Row (
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    FlowRow {
-                        MapTagEnum.sort((map as BSMapVO).map.tags).map {
-                            MapTag(tag = it)
-                        }
-                    }
+                Row {
+                    BSNPSLabel(nps = map.getMaxNPS())
+                    BSDurationLabel(duration = map.getDuration())
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row {
-                        ThumbUpIconWIthText(text = (map as BSMapVO).map.upVotes.toString())
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ThumbDownIconWIthText(text = map.map.downVotes.toString())
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-    //                Text(text = "difficulties", modifier = Modifier.padding(end = 4.dp), style = MaterialTheme.typography.bodyMedium)
-                    MapDiffLabel(diff = map.getDiffMatrix())
+                    BSThumbUpLabel((map as BSMapVO).map.upVotes)
+                    BSThumbDownLabel(map.map.upVotes)
+                    BSRatingLabel(rating = map.map.score)
                 }
+                MapTags(tags = (map as BSMapVO).map.tags)
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
 
-
-                Row {
                     if (!local) {
                         DownloadIconButton(
                             onClick = {onUIEvent(BeatSaverUIEvent.DownloadMap(map))},
@@ -131,23 +116,15 @@ fun BSMapCard(
                         Icon(
                             Icons.Rounded.Check,
                             contentDescription = "local icon",
-//                            Modifier.size(32.dp)
                         )
                     }
-//                    IconButton(onClick = {
-//
-//                    },modifier=Modifier.size(36.dp)){
-//                        Icon(
-//                            Icons.Filled.MusicOff,
-//                            contentDescription = "Download Map",
-//                            tint = MaterialTheme.colorScheme.surfaceTint
-//                        )
-//                    }
-
                     var previewDialogOpen by remember { mutableStateOf(false) }
                     if (previewDialogOpen) {
                         MapOnlinePreview(onDismiss = { previewDialogOpen = false }, mapId = map.getID())
                     }
+                    MapDiffLabel(diff = map.getDiffMatrix())
+
+                    BSMapFeatureLabel(map = map)
                 }
             }
             if (multiSelectedMode && !local) {

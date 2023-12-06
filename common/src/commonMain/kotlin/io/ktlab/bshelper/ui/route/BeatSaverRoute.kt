@@ -15,13 +15,15 @@ import io.ktlab.bshelper.rememberContentPaddingForScreen
 import io.ktlab.bshelper.ui.components.BSHelperSnackbarHost
 import io.ktlab.bshelper.ui.screens.beatsaver.BSMapScreen
 import io.ktlab.bshelper.ui.screens.beatsaver.BSPlaylistScreen
-import io.ktlab.bshelper.ui.screens.beatsaver.BeatSaverScreen
-import io.ktlab.bshelper.ui.screens.beatsaver.TextTabs
+import io.ktlab.bshelper.ui.screens.beatsaver.components.TextTabs
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverViewModel
 import io.ktlab.bshelper.viewmodel.TabType
 import moe.tlaster.precompose.koin.koinViewModel
+import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.RouteBuilder
+import moe.tlaster.precompose.navigation.rememberNavigator
+import moe.tlaster.precompose.navigation.transition.NavTransition
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,8 +31,10 @@ fun BeatSaverRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
     snackbarHost: @Composable () -> Unit = {},
-    beatSaverViewModel: BeatSaverViewModel = koinViewModel()
 ){
+
+
+    val beatSaverViewModel: BeatSaverViewModel = koinViewModel()
     val uiState by beatSaverViewModel.uiState.collectAsState()
     val showTopAppBar = !isExpandedScreen
     val topAppBarState = rememberTopAppBarState()
@@ -61,13 +65,6 @@ fun BeatSaverRoute(
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
                 )
             }
-
-//            if (showTopAppBar) {
-//                BeatSaverTopAppBar(
-//                    openDrawer = {  },
-//                    topAppBarState = topAppBarState
-//                )
-//            }
         },
         modifier = Modifier
     ){innerPadding ->
@@ -75,14 +72,12 @@ fun BeatSaverRoute(
             .padding(innerPadding)
             .nestedScroll(scrollBehavior.nestedScrollConnection)
         Surface(contentModifier) {
-            Row(
-                Modifier
-            ) {
+            Row {
                 when (uiState.tabType) {
                     TabType.Map -> BSMapScreen(
                         uiState = uiState,
                         snackbarHostState = remember { SnackbarHostState() },
-                        onUIEvent = beatSaverViewModel::dispatchUiEvents
+                        onUIEvent = beatSaverViewModel::dispatchUiEvents,
                     )
                     TabType.Playlist -> BSPlaylistScreen(
                         uiState = uiState,
@@ -91,51 +86,7 @@ fun BeatSaverRoute(
                     )
                 }
             }
+
         }
-
     }
-
-
-
-//    BeatSaverScreen(
-//        uiState = uiState,
-//        showTopAppBar = !isExpandedScreen,
-//        openDrawer = openDrawer,
-//        snackbarHostState = remember { SnackbarHostState() },
-//        onUIEvent = beatSaverViewModel::dispatchUiEvents,
-////        onSnackBarShown = beatSaverViewModel::snackBarShown,
-//    )
-}
-
-fun RouteBuilder.beatSaverRouter(
-    isExpandedScreen: Boolean,
-    openDrawer: () -> Unit,
-): Unit {
-
-//    scene("/playlist"){
-//        val uiState by beatSaverViewModel.uiState.collectAsState()
-//        BeatSaverScreen(
-//            uiState = uiState,
-//            showTopAppBar = !isExpandedScreen,
-//            openDrawer = openDrawer,
-//            snackbarHostState = remember { SnackbarHostState() },
-//            onUIEvent = beatSaverViewModel::dispatchUiEvents,
-//            onSnackBarShown = beatSaverViewModel::snackBarShown,
-//        )
-//        scene("d") {
-//
-//        }
-//    }
-//    scene("/playlist/{id:[0-9]+}"){
-//
-//    }
-//    scene("/map/{id:[0-9]+}"){
-//
-//    }
-//    scene("/map"){
-//
-//    }
-//    scene("/mapper"){
-//
-//    }
 }

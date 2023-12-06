@@ -1,15 +1,14 @@
 package io.ktlab.bshelper.model.dto
 
+import io.ktlab.bshelper.model.BSMap
+import io.ktlab.bshelper.model.IMap
+import io.ktlab.bshelper.model.MapDifficulty
+import io.ktlab.bshelper.model.dto.serializer.LocalDateTimeAsStringSerializer
+import io.ktlab.bshelper.model.enums.EMapDifficulty
+import io.ktlab.bshelper.model.vo.BSMapVO
+import io.ktlab.bshelper.model.vo.MapDiff
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
-import io.ktlab.bshelper.model.dto.serializer.LocalDateTimeAsStringSerializer
-import io.ktlab.bshelper.model.BSMap
-import io.ktlab.bshelper.model.BSUser
-import io.ktlab.bshelper.model.enums.EMapDifficulty
-import io.ktlab.bshelper.model.IMap
-import io.ktlab.bshelper.model.vo.MapDiff
-import io.ktlab.bshelper.model.MapDifficulty
-import io.ktlab.bshelper.model.vo.BSMapVO
 
 
 @Serializable
@@ -69,9 +68,8 @@ data class BSMapDTO(
                 levelAuthorName = metadata.levelAuthorName
             ),
             uploader = uploader.convertToEntity(),
-//            collaborators = collaborators?.map { it.convertToEntity() },
-//            curator = curator?.convertToEntity(),
-
+            curator = curator?.convertToEntity(),
+            collaborators = collaborators?.map { it.convertToEntity() },
 //            curator
             versions = versions.map { it.convertToVersionWithDiffList(id) }
         )

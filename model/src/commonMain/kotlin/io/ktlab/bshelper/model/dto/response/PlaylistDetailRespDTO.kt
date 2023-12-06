@@ -6,6 +6,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BSPlaylistDetailRespDTO(
-    val maps: List<BSMapDTO>,
+    val maps: List<PlaylistDetailMapDTO>,
     val playlist: BSPlaylistFullDTO,
+)
+@Serializable
+data class PlaylistDetailMapDTO(
+    val map: BSMapDTO,
+    val order: Double,
 )

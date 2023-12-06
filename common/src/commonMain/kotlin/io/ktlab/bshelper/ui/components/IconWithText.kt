@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.rounded.ThumbDown
-import androidx.compose.material.icons.rounded.ThumbUp
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
@@ -17,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.ktlab.bshelper.ui.components.icons.VerifiedMapperIcon
 
 @Composable
 fun IconWIthText(
@@ -25,7 +24,9 @@ fun IconWIthText(
     description:String ,text: String,
     tint: Color = LocalContentColor.current
 ) {
-    Row {
+    Row(
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+    ) {
         Icon(
             imageVector = icon,
             contentDescription = description,
@@ -70,7 +71,7 @@ fun ThumbDownIconWIthText(
 fun NPSIconWIthText(onClick: () -> Unit = {}, text: String) {
     IconWIthText(
         onClick = onClick,
-        icon = Icons.Filled.Speed,
+        icon = Icons.Rounded.Speed,
         description = "NPS",
         text = text)
 }
@@ -79,7 +80,7 @@ fun NPSIconWIthText(onClick: () -> Unit = {}, text: String) {
 fun MapAmountIconWIthText(onClick: () -> Unit = {}, text: String) {
     IconWIthText(
         onClick = onClick,
-        icon = Icons.Filled.Map,
+        icon = Icons.Rounded.Map,
         description = "Map Amount",
         text = text)
 }
@@ -88,32 +89,36 @@ fun MapAmountIconWIthText(onClick: () -> Unit = {}, text: String) {
 fun DurationIconWIthText(onClick: () -> Unit = {}, text: String) {
     IconWIthText(
         onClick = onClick,
-        icon = Icons.Filled.AccessTime,
+        icon = Icons.Rounded.HourglassBottom,
         description = "Duration",
+        text = text)
+}
+@Composable
+fun MapperIconWIthText(onClick: () -> Unit = {}, verified:Boolean=false,text: String, description: String = "Mapper Icon") {
+    Row {
+        VerifiedMapperIcon(
+            modifier = Modifier.size(20.dp),
+            verified = verified,
+            tint = LocalContentColor.current
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(text = text, textAlign = TextAlign.Center, softWrap = false, maxLines = 1)
+    }
+}
+@Composable
+fun DateTimeIconWIthText(onClick: () -> Unit = {}, text: String) {
+    IconWIthText(
+        onClick = onClick,
+        icon = Icons.Rounded.Schedule,
+        description = "Time Icon",
         text = text)
 }
 
 @Composable
-fun MapperIconWIthText(onClick: () -> Unit = {}, text: String, description: String = "Mapper") {
-    IconWIthText(
-        onClick = onClick,
-        icon = Icons.Filled.Person,
-        description = description,
-        text = text)
-}
-@Composable
-fun VerifiedMapperIconWIthText(onClick: () -> Unit = {}, text: String, description: String = "Mapper") {
-    IconWIthText(
-        onClick = onClick,
-        icon = Icons.Filled.Person,
-        description = description,
-        text = text)
-}
-@Composable
 fun BPMIconWIthText(onClick: () -> Unit = {}, text: String) {
     IconWIthText(
         onClick = onClick,
-        icon = Icons.Filled.PunchClock,
+        icon = Icons.Rounded.PunchClock,
         description = "BPM",
         text = text)
 }
@@ -122,7 +127,7 @@ fun BPMIconWIthText(onClick: () -> Unit = {}, text: String) {
 fun MapIdIconWIthText(onClick: () -> Unit = {}, text: String) {
     IconWIthText(
         onClick = onClick,
-        icon = Icons.Filled.CreditCard,
+        icon = Icons.Rounded.CreditCard,
         description = "BPM",
         text = text)
 }

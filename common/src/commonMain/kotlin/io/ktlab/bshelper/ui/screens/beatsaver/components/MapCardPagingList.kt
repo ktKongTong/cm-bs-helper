@@ -37,6 +37,7 @@ fun MapCardPagingList(
     localState: LocalState,
     mapMultiSelectedMode: Boolean,
     mapMultiSelected: Set<IMap> = setOf(),
+    selectedBSMap: IMap? = null,
     mapPagingItems: LazyPagingItems<IMap>,
     downloadingTask: Map<String, IDownloadTask.MapDownloadTask>,
     onUIEvent: (UIEvent) -> Unit,
@@ -79,50 +80,48 @@ fun MapCardPagingList(
                     contentPadding = contentPadding,
                 ) {
 
-                    items(
-                        count = mapPagingItems.itemCount,
-                        key = mapPagingItems.itemKey { it.getID() },
-                        span = { GridItemSpan(1) }
-                    ) { index ->
-                        val map = mapPagingItems[index]
-                        if (map != null) {
-                            val local = localState.targetPlaylist != null && localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID())
-                            BSMapCard(
-                                modifier = Modifier.fillMaxSize(),
-                                map = map,
-                                checked = mapMultiSelected.contains(map),
-                                multiSelectedMode = mapMultiSelectedMode,
-                                local = local,
-                                selectableIPlaylists = localState.selectableLocalPlaylists,
-                                downloadInfo = downloadingTask[map.getID()],
-                                onDownloadMap = {targetMap-> onUIEvent(BeatSaverUIEvent.DownloadMap(targetMap)) },
-                                onPlayPreviewMusicSegment = {
-                                    onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map))
-                                },
-                                onUIEvent = onUIEvent,
-                                onMapMultiSelected = { onUIEvent(BeatSaverUIEvent.MapMultiSelected(it)) },
-
-                            )
-                        }
+                items(
+                    count = mapPagingItems.itemCount,
+                    key = mapPagingItems.itemKey { it.getID() },
+                    span = { GridItemSpan(1) }
+                ) { index ->
+                    val map = mapPagingItems[index]
+                    if (map != null) {
+                        val local =
+                            localState.targetPlaylist != null && localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID())
+                        BSMapCard(
+                            modifier = Modifier.fillMaxSize(),
+                            map = map,
+                            checked = mapMultiSelected.contains(map),
+                            multiSelectedMode = mapMultiSelectedMode,
+                            local = local,
+                            selectableIPlaylists = localState.selectableLocalPlaylists,
+                            downloadInfo = downloadingTask[map.getID()],
+                            onDownloadMap = { targetMap -> onUIEvent(BeatSaverUIEvent.DownloadMap(targetMap)) },
+                            onPlayPreviewMusicSegment = {
+                                onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map))
+                            },
+                            onUIEvent = onUIEvent,
+                            onMapMultiSelected = { onUIEvent(BeatSaverUIEvent.MapMultiSelected(it)) },
+                        )
                     }
-                    item {
-                        if (mapPagingItems.loadState.append is LoadState.Loading) {
-                            CircularProgressIndicator(modifier = Modifier.padding(16.dp))
-                        }else if(mapPagingItems.loadState.append.endOfPaginationReached){
-                            Row (
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(48.dp),
-                                horizontalArrangement = Arrangement.Center,
-                            ){
-                                Text(text = "😲 no more data", style = MaterialTheme.typography.bodyMedium)
-                            }
+                }
+                item {
+                    if (mapPagingItems.loadState.append is LoadState.Loading) {
+                        CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                    } else if (mapPagingItems.loadState.append.endOfPaginationReached) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            Text(text = "😲 no more data", style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
             }
+            }
         }
-
     }
-
 }

@@ -1,55 +1,32 @@
 package io.ktlab.bshelper.repository
 
-import app.cash.paging.PagingData
 import app.cash.paging.Pager
 import app.cash.paging.PagingConfig
+import app.cash.paging.PagingData
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import io.ktlab.bshelper.model.vo.GlobalScanStateEnum
-import io.ktlab.bshelper.model.vo.MapScanState
-import io.ktlab.bshelper.model.vo.PlaylistScanState
-import io.ktlab.bshelper.model.vo.PlaylistScanStateEnum
-import io.ktlab.bshelper.model.vo.ScanState
-import io.ktlab.bshelper.model.vo.ScanStateEnum
 import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.api.ToolAPI
 import io.ktlab.bshelper.model.*
-import io.ktlab.bshelper.model.enums.ECharacteristic
-import io.ktlab.bshelper.utils.BSMapUtils
-import io.ktlab.bshelper.utils.generateMapDifficultyInfo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import okio.IOException
-import okio.Path.Companion.toPath
-import java.io.File
-import java.util.UUID
 import io.ktlab.bshelper.model.dto.ExportPlaylist
 import io.ktlab.bshelper.model.dto.MapItem
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
+import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.selects.select
-
-import io.ktlab.bshelper.model.mapper.*
+import io.ktlab.bshelper.model.vo.ScanState
 import io.ktlab.bshelper.paging.BSPlaylistDetailPagingSource
 import io.ktlab.bshelper.paging.BSPlaylistPagingSource
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.Clock
 import okio.FileSystem
+import okio.Path.Companion.toPath
+import java.util.*
 
 class PlaylistRepository(
     private val userPreferenceRepository: UserPreferenceRepository,
@@ -190,7 +167,14 @@ class PlaylistRepository(
             bsHelperDAO.fSPlaylistQueries.deleteAll()
         }
     }
-
+    fun getPlaylistDetailPagingMaps(playlistId:String): Flow<PagingData<IMap>> {
+        return Pager(
+            config = PagingConfig(pageSize = 100, enablePlaceholders = false),
+            pagingSourceFactory = {
+                BSPlaylistDetailPagingSource(bsAPI,playlistId)
+            }
+        ).flow
+    }
     private fun <A, B>List<A>.pmap(f: suspend (A) -> B): List<B> = runBlocking {
         map { async(Dispatchers.Default) { f(it) } }.map { it.await() }
     }

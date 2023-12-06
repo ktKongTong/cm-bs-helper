@@ -1,12 +1,15 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -22,7 +25,6 @@ import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.LocalState
 
 
@@ -80,6 +82,7 @@ fun PlaylistPagingList(
                     contentPadding = contentPadding,
                     state = lazyListState,
                 ) {
+                    // recommend playlist
                     items(
                         count = playlistPagingItems.itemCount,
                         key = playlistPagingItems.itemKey { it.id + it.title },

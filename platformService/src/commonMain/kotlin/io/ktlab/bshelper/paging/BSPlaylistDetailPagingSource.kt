@@ -28,11 +28,11 @@ class BSPlaylistDetailPagingSource(
                 playlistId = playlistId
             )
             if (apiRespResult.isSuccess()){
-                val docs = (apiRespResult as APIRespResult.Success).data.maps.map { it.convertToVO() }
+                val docs = (apiRespResult as APIRespResult.Success).data.maps.map { it.map.convertToVO() }
                 LoadResult.Page(
                     data = docs,
                     prevKey = null,
-                    nextKey= if (docs.size < 20) null else page + 1
+                    nextKey= if (docs.size < 100) null else page + 1
                 )
             }else {
                 LoadResult.Error(apiRespResult.errorMsg())

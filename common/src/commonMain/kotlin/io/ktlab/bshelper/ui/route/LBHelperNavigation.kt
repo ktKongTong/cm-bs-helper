@@ -1,6 +1,6 @@
 package io.ktlab.bshelper.ui.route
 
-import androidx.compose.runtime.collectAsState
+import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 
 
@@ -12,7 +12,11 @@ object BSHelperDestinations {
 
 class BSHelperNavigationActions(navigator: Navigator) {
     val navigateToHome: () -> Unit = {
-        navigator.navigate(BSHelperDestinations.HOME_ROUTE)
+        navigator.navigate(BSHelperDestinations.HOME_ROUTE, NavOptions(
+//            popUpTo = navigator.,
+            launchSingleTop = true,
+            includePath = true
+        ))
 //        navigator.popUntilRoot()
 //        navigator.push(HomeNavScreen)
 //        navController.navigate(LBHelperDestinations.HOME_ROUTE) {
@@ -26,7 +30,11 @@ class BSHelperNavigationActions(navigator: Navigator) {
 
     val navigateToBeatSaver: () -> Unit = {
 //        navigator.canGoBack.c
-        navigator.navigate(BSHelperDestinations.BEAT_SAVER_ROUTE)
+        navigator.navigate(BSHelperDestinations.BEAT_SAVER_ROUTE, NavOptions(
+//            popUpTo = navigator.,
+            launchSingleTop = true,
+            includePath = true
+        ))
 //        navigator.popUntilRoot()
 //        navigator.push(BSNavScreen)
 //        navController.navigate(LBHelperDestinations.BS_ONLINE_ROUTE) {
@@ -39,7 +47,11 @@ class BSHelperNavigationActions(navigator: Navigator) {
     }
 
     val navigateToToolbox: () -> Unit = {
-        navigator.navigate(BSHelperDestinations.TOOLBOX_ROUTE)
+        navigator.navigate(BSHelperDestinations.TOOLBOX_ROUTE, NavOptions(
+//            popUpTo = navigator.,
+            launchSingleTop = true,
+            includePath = true
+        ))
 //        navigator.popUntilRoot()
 //        navigator.push(ToolboxNavScreen)
 //        navController.navigate(LBHelperDestinations.TOOLBOX_ROUTE) {

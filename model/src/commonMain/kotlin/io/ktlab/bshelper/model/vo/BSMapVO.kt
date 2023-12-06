@@ -1,10 +1,7 @@
 package io.ktlab.bshelper.model.vo
 
 import io.ktlab.bshelper.model.*
-import io.ktlab.bshelper.model.enums.ECharacteristic
 import io.ktlab.bshelper.model.enums.EMapDifficulty
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -17,6 +14,8 @@ data class VersionWithDiffList(
 data class BSMapVO(
     val map: BSMap,
     val uploader: BSUser,
+    val curator: BSUser? = null,
+    val collaborators: List<BSUser>? = null,
     val versions: List<VersionWithDiffList>
 ):IMap {
 

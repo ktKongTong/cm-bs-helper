@@ -1,11 +1,8 @@
 package io.ktlab.bshelper.model.mapper
 
 import io.ktlab.bshelper.model.*
-import io.ktlab.bshelper.model.enums.ECharacteristic
-import io.ktlab.bshelper.model.enums.EMapDifficulty
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.VersionWithDiffList
-import kotlinx.datetime.LocalDateTime
 
 fun List<SelectAllByMapIds>.mapToVO():List<BSMapVO> = this
     .groupBy { it.mapId }
@@ -89,5 +86,5 @@ fun List<SelectAllByMapIds>.mapToVO():List<BSMapVO> = this
             }
             VersionWithDiffList(version,difficulties)
         }
-        BSMapVO(fsMap, uploader,versionWithDiffList)
+        BSMapVO(fsMap, uploader, versions =versionWithDiffList)
     }

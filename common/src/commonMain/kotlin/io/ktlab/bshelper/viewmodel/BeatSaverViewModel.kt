@@ -7,6 +7,8 @@ import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
+import io.ktlab.bshelper.model.dto.response.BSMapReviewDTO
+import io.ktlab.bshelper.model.dto.response.successOr
 import io.ktlab.bshelper.model.successOr
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.repository.*
@@ -52,6 +54,8 @@ sealed interface BeatSaverUiState {
     data class MapQuery(
         override val tabType: TabType = TabType.Map,
         override val isLoading: Boolean = false,
+        val selectedBSMap: IMap?,
+        val selectedBSMapReview: List<BSMapReviewDTO> = emptyList(),
         val localState: LocalState = LocalState(),
         val mapFilterPanelState: MapFilterParam = MapFilterParam(),
         val mapFlow: Flow<PagingData<IMap>> = emptyFlow(),
@@ -65,12 +69,14 @@ sealed interface BeatSaverUiState {
         override val isLoading: Boolean = false,
         val localState: LocalState = LocalState(),
         val playlistFilterPanelState: PlaylistFilterParam,
-        val selectedBSPlaylist: IPlaylist?,
         val mapFlow: Flow<PagingData<IMap>>,
         val playlistFlow: Flow<PagingData<IPlaylist>>,
         val downloadTaskFlow: Flow<List<IDownloadTask>>,
         val multiSelectMode: Boolean,
         val multiSelectedBSMap: Set<IMap>,
+        val selectedBSPlaylist: IPlaylist?,
+        val selectedBSMap: IMap? = null,
+        val selectedBSMapReview: List<BSMapReviewDTO> = emptyList(),
     ): BeatSaverUiState
 }
 
@@ -98,7 +104,11 @@ data class BeatSaverViewModelState(
     val selectableLocalPlaylists: List<IPlaylist>,
     //    已选择的目标歌单
     val selectedPlaylist: IPlaylist? = null,
+    // 选中的在线歌单
     val selectedBSPlaylist: IPlaylist? = null,
+    // 选中的在线Map
+    val selectedBSMap: IMap? = null,
+    val selectedBSMapReview: List<BSMapReviewDTO> = emptyList(),
     val multiSelectMode: Boolean = false,
     val multiSelectedBSMap: Set<IMap> = emptySet(),
 ) {
@@ -117,6 +127,8 @@ data class BeatSaverViewModelState(
                  downloadTaskFlow = downloadTaskFlow ?: emptyFlow(),
                  multiSelectMode = multiSelectMode,
                  multiSelectedBSMap = multiSelectedBSMap,
+                 selectedBSMap = selectedBSMap,
+                 selectedBSMapReview = selectedBSMapReview,
              )
          }
         TabType.Playlist -> {
@@ -131,9 +143,11 @@ data class BeatSaverViewModelState(
                 ),
                 downloadTaskFlow = downloadTaskFlow ?: emptyFlow(),
                 selectedBSPlaylist = selectedBSPlaylist,
+                selectedBSMap = selectedBSMap,
                 playlistFlow = playlistFlow ?: emptyFlow(),
                 multiSelectMode = multiSelectMode,
                 multiSelectedBSMap = multiSelectedBSMap,
+                selectedBSMapReview =   selectedBSMapReview,
             )
         }
     }
@@ -143,6 +157,7 @@ data class BeatSaverViewModelState(
 sealed class BeatSaverUIEvent: UIEvent(){
     data class MapTapped(val map: IMap): BeatSaverUIEvent()
     data class MapLongTapped(val map: IMap): BeatSaverUIEvent()
+    data class BSPlaylistTapped(val playlist: IPlaylist): BeatSaverUIEvent()
     data class ChangeMultiSelectMode(val checked: Boolean): BeatSaverUIEvent()
     data class MapMultiSelected(val map: IMap): BeatSaverUIEvent()
     data class ChangeTargetPlaylist(val playlist: IPlaylist?): BeatSaverUIEvent()
@@ -162,6 +177,10 @@ sealed class BeatSaverUIEvent: UIEvent(){
     data class PlayPreviewMusicSegment(val map: IMap): BeatSaverUIEvent()
     data class MsgShown(val msgId: Long): BeatSaverUIEvent()
     data class ShowSnackBar(val message:String): BeatSaverUIEvent()
+    data class OnSelectBSPlaylist(val playlist: IPlaylist): BeatSaverUIEvent()
+    data class OnSelectBSMap(val map: IMap): BeatSaverUIEvent()
+    data object OnExitSelectBSMap: BeatSaverUIEvent()
+    data object OnExitSelectBSPlaylist: BeatSaverUIEvent()
 }
 
 class BeatSaverViewModel(
@@ -266,18 +285,43 @@ class BeatSaverViewModel(
             is BeatSaverUIEvent.MapTapped -> {onMapTapped(event.map)}
             is BeatSaverUIEvent.MapLongTapped -> { onMapLongTapped(event.map) }
             is BeatSaverUIEvent.SwitchTab -> { viewModelState.update { it.copy(tabType = event.tabType) } }
+            is BeatSaverUIEvent.OnSelectBSPlaylist -> {
+                viewModelState.update { it.copy(selectedBSPlaylist = event.playlist) }
+                viewModelScope.launch(Dispatchers.IO) {
+                    playlistRepository.getPlaylistDetailPagingMaps(event.playlist.id).cachedIn(viewModelScope)
+                        .let {maps ->  viewModelState.update { it.copy(mapFlow = maps) } }
+                }
+            }
+            is BeatSaverUIEvent.OnSelectBSMap -> { viewModelState.update { it.copy(selectedBSMap = event.map) } }
+            is BeatSaverUIEvent.OnExitSelectBSMap -> { viewModelState.update { it.copy(selectedBSMap = null) } }
+            is BeatSaverUIEvent.OnExitSelectBSPlaylist -> {
+                viewModelState.update { it.copy(selectedBSPlaylist = null, selectedBSMap = null) }
+            }
             else -> {}
         }
     }
     private fun onMapTapped(map: IMap) {
         if (viewModelState.value.multiSelectMode) {
             onMapMultiSelected(map)
+        }else {
+            viewModelState.update {
+                it.copy(
+                    selectedBSMap = map
+                )
+            }
+            viewModelScope.launch(Dispatchers.IO) {
+                mapRepository.getBSMapReviewsById(map.getID()).successOr(emptyList())
+                    .let {comments ->  viewModelState.update { it.copy(selectedBSMapReview = comments) } }
+            }
         }
     }
     private fun onMapLongTapped(map: IMap) {
         if (!viewModelState.value.multiSelectMode) {
             onMultiSelectChecked(true)
             onMapMultiSelected(map)
+        }else {
+            viewModelState.update { it.copy(selectedBSMap = map) }
+
         }
     }
 
@@ -337,7 +381,6 @@ class BeatSaverViewModel(
         }else if (viewModelState.value.localMapIdSet.contains(viewModelState.value.selectedPlaylist!!.id to bsMap.getID())) {
             return
         }
-
         viewModelState.update {
             it.copy(
                 multiSelectedBSMap = if (viewModelState.value.multiSelectedBSMap.contains(bsMap)) {

@@ -1,6 +1,9 @@
 package io.ktlab.bshelper.model.vo
 
-import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.BSPlaylist
+import io.ktlab.bshelper.model.BSUser
+import io.ktlab.bshelper.model.IMap
+import io.ktlab.bshelper.model.IPlaylist
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -11,7 +14,7 @@ data class BSPlaylistVO(
     val curator: BSUser? = null,
 ):IPlaylist {
     override val id: String
-        get() = owner.id.toString()
+        get() = playlist.id.toString()
     override val title: String
         get() = getName()
 
