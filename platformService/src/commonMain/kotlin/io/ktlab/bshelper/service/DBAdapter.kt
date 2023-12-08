@@ -2,20 +2,10 @@ package io.ktlab.bshelper.service
 
 import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
-import io.ktlab.bshelper.model.BSHelperDatabase
-import io.ktlab.bshelper.model.BSMap
-import io.ktlab.bshelper.model.BSMapVersion
-import io.ktlab.bshelper.model.BSUser
+import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.enums.ECharacteristic
 import io.ktlab.bshelper.model.enums.EMapDifficulty
-import io.ktlab.bshelper.model.FSMap
-import io.ktlab.bshelper.model.FSPlaylist
-import io.ktlab.bshelper.model.MapDifficulty
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
@@ -54,6 +44,14 @@ object DBAdapter {
             ),
             FSPlaylistAdapter = FSPlaylist.Adapter(
                 mapAmountAdapter = longOfIntAdapter,
+            ),
+            BSPlaylistAdapter = BSPlaylist.Adapter(
+                createdAtAdapter = stringOfLocalDateTimeAdapter,
+                updatedAtAdapter = stringOfLocalDateTimeAdapter,
+                songsChangedAtAdapter = stringOfLocalDateTimeAdapter,
+                idAdapter = longOfIntAdapter,
+                ownerIdAdapter = longOfIntAdapter,
+                curatorIdAdapter = longOfIntAdapter,
             ),
         )
     }

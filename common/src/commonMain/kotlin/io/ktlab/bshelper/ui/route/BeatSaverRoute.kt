@@ -31,6 +31,7 @@ fun BeatSaverRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
     snackbarHost: @Composable () -> Unit = {},
+    snackbarHostState: SnackbarHostState,
 ){
 
 
@@ -57,13 +58,6 @@ fun BeatSaverRoute(
                         onClickTab = { beatSaverViewModel.dispatchUiEvents(BeatSaverUIEvent.SwitchTab(it)) }
                     )
                 }
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-                )
             }
         },
         modifier = Modifier
@@ -76,12 +70,12 @@ fun BeatSaverRoute(
                 when (uiState.tabType) {
                     TabType.Map -> BSMapScreen(
                         uiState = uiState,
-                        snackbarHostState = remember { SnackbarHostState() },
+                        snackbarHostState = snackbarHostState,
                         onUIEvent = beatSaverViewModel::dispatchUiEvents,
                     )
                     TabType.Playlist -> BSPlaylistScreen(
                         uiState = uiState,
-                        snackbarHostState = remember { SnackbarHostState() },
+                        snackbarHostState = snackbarHostState,
                         onUIEvent = beatSaverViewModel::dispatchUiEvents
                     )
                 }

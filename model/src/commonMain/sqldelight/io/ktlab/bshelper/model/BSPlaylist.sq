@@ -22,3 +22,33 @@ CREATE TABLE IF NOT EXISTS BSPlaylist (
     minNps REAL NOT NULL,
     totalDuration INTEGER NOT NULL
 );
+
+selectByIds:
+SELECT *
+FROM BSPlaylist
+LEFT JOIN BSUser ON BSPlaylist.ownerId = BSUser.id
+LEFT JOIN BSUser AS curator ON BSPlaylist.curatorId = curator.id
+WHERE BSPlaylist.id IN ?;
+
+insert:
+INSERT OR REPLACE INTO BSPlaylist (
+    id,
+    name,
+    description,
+    ownerId,
+    curatorId,
+    downloadURL,
+    playlistImage,
+    playlistImage512,
+    songsChangedAt,
+    updatedAt,
+    createdAt,
+    type,
+    avgScore,
+    upVotes,
+    downVotes,
+    mapperCount,
+    maxNps,
+    minNps,
+    totalDuration
+) VALUES ?;

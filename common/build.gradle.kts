@@ -27,7 +27,6 @@ kotlin {
                 implementation(project(":platformService"))
                 implementation(project(":bsmg"))
                 implementation(libs.kown)
-                // kotlin & kotlinx
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.kotlinx.datetime)
@@ -70,8 +69,8 @@ kotlin {
                 implementation(libs.koin.compose)
                 // logger
 //                implementation(libs.kotlin.logging)
-                implementation(libs.slf4j.api)
-                implementation(libs.slf4j.log4j)
+//                implementation(libs.slf4j.api)
+//                implementation(libs.slf4j.log4j)
                 // dataStore
                 implementation(libs.androidx.datastore.preferences.core)
                 // beatmap-io

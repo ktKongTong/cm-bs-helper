@@ -43,7 +43,7 @@ fun BSMapDetail(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TextButton(
-                onClick = { onUIEvent(BeatSaverUIEvent.OnExitSelectBSMap) },
+                onClick = { onUIEvent(BeatSaverUIEvent.OnExitSelectedBSMap) },
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 Text(text = "Back")

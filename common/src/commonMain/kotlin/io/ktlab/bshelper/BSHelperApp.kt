@@ -15,10 +15,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import io.ktlab.bshelper.ui.components.AppDrawer
-import io.ktlab.bshelper.ui.components.AppNavRail
-import io.ktlab.bshelper.ui.components.BSHelperSnackbarHost
-import io.ktlab.bshelper.ui.components.SnackBarShown
+import io.ktlab.bshelper.ui.components.*
 import io.ktlab.bshelper.ui.route.BSHelperDestinations
 import io.ktlab.bshelper.ui.route.BSHelperNavGraph
 import io.ktlab.bshelper.ui.route.BSHelperNavigationActions
@@ -57,8 +54,7 @@ fun BSHelperApp(){
             val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
 
             val globalViewModel = koinViewModel<GlobalViewModel>()
-
-
+            val globalUiState by globalViewModel.uiState.collectAsState()
                 ModalNavigationDrawer(
                     drawerContent = {
                         AppDrawer(
@@ -71,12 +67,16 @@ fun BSHelperApp(){
                     // Only enable opening the drawer via gestures if the screen is not expanded
                     gesturesEnabled = !isExpandedScreen
                 ) {
+
                         Row {
                             if (isExpandedScreen) {
                                 AppNavRail(
                                     currentRoute = currentRoute,
                                     navigateAction = navigateAction,
                                     backAction = { },
+                                    header = {
+                                        MediaPlayer(globalUiState.currentMedia,globalUiState.currentMediaState,globalViewModel::dispatchUiEvents)
+                                    }
                                 )
                             }
                             val snackbarHostState = remember { SnackbarHostState() }
@@ -90,9 +90,9 @@ fun BSHelperApp(){
                                         hostState = snackbarHostState,
                                     )
                                 },
+                                snackbarHostState = snackbarHostState,
                             )
 
-                            val globalUiState by globalViewModel.uiState.collectAsState()
                             SnackBarShown(
                                 snackbarHostState = snackbarHostState,
                                 snackBarMessages = globalUiState.snackBarMessages,

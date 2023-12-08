@@ -6,21 +6,16 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.QueueMusic
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
 import io.ktlab.bshelper.model.IMap
-import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.ui.components.DropDownPlaylistSelector
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
+import io.ktlab.bshelper.viewmodel.GlobalUIEvent
 import io.ktlab.bshelper.viewmodel.LocalState
 
 @Composable
@@ -59,7 +54,7 @@ fun BSMapCardListHeader(
                         if (localState.targetPlaylist != null) {
                             onUIEvent(BeatSaverUIEvent.MultiDownload(localState.targetPlaylist))
                         }else {
-                            onUIEvent(BeatSaverUIEvent.ShowSnackBar("请选择目标歌单"))
+                            onUIEvent(GlobalUIEvent.ShowSnackBar("请选择目标歌单"))
                         }
                     }) {
                         Text(text = "Download")

@@ -3,6 +3,7 @@ package io.ktlab.bshelper.ui.screens.beatsaver.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -34,16 +35,18 @@ fun PlaylistPagingList(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     state: LazyGridState = rememberLazyGridState(),
+    lazyListState : LazyListState = rememberLazyListState(),
     snackbarHostState: SnackbarHostState,
     localState: LocalState,
     mapMultiSelectedMode: Boolean,
-    mapMultiSelected: Set<IMap> = setOf(),
+    multiSelectedMaps:Set<IMap> = setOf(),
     playlistPagingItems: LazyPagingItems<IPlaylist>,
-    downloadingTask: Map<String, IDownloadTask.MapDownloadTask>,
+    downloadingTask: Map<String, IDownloadTask.PlaylistDownloadTask>,
     onUIEvent: (UIEvent) -> Unit,
+
     stickyHeader : @Composable () -> Unit = {},
 ) {
-    val lazyListState = rememberLazyListState()
+
     if (playlistPagingItems.loadState.refresh is LoadState.Error) {
         LaunchedEffect(key1 = snackbarHostState) {
             snackbarHostState.showSnackbar(
@@ -60,13 +63,6 @@ fun PlaylistPagingList(
         }
         Column {
             stickyHeader()
-//            Divider(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(1.dp)
-//                    .padding(horizontal = 16.dp),
-//                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-//            )
             if (playlistPagingItems.loadState.refresh is LoadState.Loading) {
                 Box(
                     modifier = Modifier
@@ -96,6 +92,7 @@ fun PlaylistPagingList(
                                     .fillMaxWidth()
                                     .wrapContentHeight(),
                                 onUIEvent = onUIEvent,
+                                downloadInfo = downloadingTask[it.id]
                             )
                         }
                     }

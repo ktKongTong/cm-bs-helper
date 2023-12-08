@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.kown.model.KownTaskStatus
+import io.ktlab.kown.model.isProcessing
 
 @Composable
 fun DownloadIconButton(
@@ -47,6 +48,45 @@ fun DownloadIconButton(
 
         }
 
+    }else {
+        IconButton(onClick = onClick,
+            modifier = modifier){
+            Icon(
+                Icons.Rounded.Download,
+                contentDescription = "Download Map",
+            )
+        }
+    }
+
+}
+
+
+@Composable
+fun PlaylistDownloadIconButton(
+    downloadInfo: IDownloadTask.PlaylistDownloadTask?,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier.size(24.dp)
+){
+    if (downloadInfo != null) {
+        val progress = downloadInfo.taskList.count { it.downloadTaskModel.status.isProcessing() }/downloadInfo.taskList.count()*1.0f
+        if(progress != 1f) {
+            val animatedProgress by animateFloatAsState(
+                targetValue = progress,
+                animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
+                label = ""
+            )
+            CircularProgressIndicator(
+                progress = animatedProgress,
+                strokeCap = StrokeCap.Round,
+                modifier = modifier
+            )
+        }else {
+            Icon(
+                Icons.Rounded.Check,
+                contentDescription = "Download complete",
+                modifier = modifier
+            )
+        }
     }else {
         IconButton(onClick = onClick,
             modifier = modifier){

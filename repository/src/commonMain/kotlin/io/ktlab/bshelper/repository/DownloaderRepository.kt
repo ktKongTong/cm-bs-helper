@@ -12,10 +12,12 @@ import io.ktlab.bshelper.utils.UnzipUtility
 import io.ktlab.kown.KownDownloader
 import io.ktlab.kown.model.DownloadListener
 import io.ktlab.kown.model.DownloadTaskBO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import okio.FileSystem
 import okio.Path.Companion.toPath
@@ -91,7 +93,7 @@ class DownloaderRepository(
 
     fun downloadMap(targetPlaylist: IPlaylist, map: BSMapVO) {
         val title = "${map.map.mapId} (${map.map.songName} - ${map.map.songAuthorName})".replace("/", " ")
-        val timestamp = Clock.System.now()
+        val timestamp = Clock.System.now().epochSeconds
         val callback = onCompleteAction(targetPlaylist)
         downloader.newRequestBuilder(map.getDownloadURL(), tmpPath.toString(), "$title.zip")
             .setTag(map.map.mapId)
@@ -138,7 +140,36 @@ class DownloaderRepository(
         }
     }
 
-    fun downloadBSPlaylist(targetPlaylist: IPlaylist, bsPlaylist: BSPlaylistVO){
+    suspend fun downloadBSPlaylist(targetPlaylist: IPlaylist, bsPlaylist: BSPlaylistVO){
+        withContext(Dispatchers.IO) {
+            val localIdsAsync = async { mapRepository.getAllFSMapByPlaylistId(targetPlaylist.id).map { it.getID() } }
+            val maps = async {
+
+                return@async playlistRepository.getPlaylistDetailAllMaps(bsPlaylist.id)
+            }.await()
+            mapRepository.batchInsertBSMap(maps.map { it as BSMapVO })
+            mapRepository.batchInsertBSMapAndFSMap(maps.map { it as BSMapVO },targetPlaylist)
+            playlistRepository.insertBSPlaylist(bsPlaylist)
+            val localIds = localIdsAsync.await()
+            // 1. filter items exist in fs map
+            // 1. filter items exist in download tasks
+            maps.filter { it.getID() !in localIds }
+            .map {
+                it as BSMapVO
+                val title = "${it.getID()} (${it.map.songName} - ${it.map.songAuthorName})".replace("/", " ")
+                val timestamp = Clock.System.now().epochSeconds
+//                val callback = onCompleteAction(targetPlaylist)
+                downloader.newRequestBuilder(it.getDownloadURL(), tmpPath.toString(), "$title.zip")
+                    .setTag(bsPlaylist.id)
+                    .setTag("playlist-${bsPlaylist.id}.$timestamp.${targetPlaylist.id}")
+                    .setRelateEntityId(it.getID())
+                    .setTitle(title)
+                    .setDownloadListener(DownloadListener(onCompleted = onCompleteAction(targetPlaylist)))
+                    .build()
+            }.let {
+                downloader.enqueue(it)
+            }
+        }
 
     }
 
@@ -162,7 +193,12 @@ class DownloaderRepository(
                 }
             }
             is IDownloadTask.PlaylistDownloadTask -> {
-
+                downloadTask.tag.split(".").lastOrNull()?.let {
+                    playlistRepository.getPlaylistById(it).takeIf { it is Result.Success }?.let {
+                        val playlist = (it as Result.Success).data
+                        downloader.retryByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(playlist)))
+                    }
+                }
             }
         }
 
@@ -200,10 +236,10 @@ class DownloaderRepository(
                 downloader.resumeById(downloadTask.downloadTaskModel.taskId, DownloadListener(onCompleted = onCompleteAction(downloadTask.targetPlaylist)))
             }
             is IDownloadTask.BatchDownloadTask -> {
-                downloader.resumeByTag(downloadTask.tag)
+                downloader.resumeByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(downloadTask.targetPlaylist)))
             }
             is IDownloadTask.PlaylistDownloadTask -> {
-                downloader.resumeByTag(downloadTask.tag)
+                downloader.resumeByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(downloadTask.targetPlaylist)))
             }
         }
     }
@@ -230,14 +266,17 @@ class DownloaderRepository(
             try {
                 val mapIds = it.mapNotNull { it.relateEntityId }
                 val playlistIds = it.mapNotNull { it.tag?.split(".")?.lastOrNull() }.toSet().toList()
+                val bsPlaylistIds = it.mapNotNull { it.tag?.split(".")?.firstOrNull()?.split("-")?.lastOrNull()?.toInt() }.toSet().toList()
                 val res = runBlocking {
                     val asyncBsMaps = async { return@async mapRepository.getBSMapByIds(mapIds) }
-                    val asyncBsPlaylists = async { return@async playlistRepository.getPlaylistByIds(playlistIds).associateBy { it.id } }
+                    val asyncFsPlaylists = async { return@async playlistRepository.getFSPlaylistByIds(playlistIds).associateBy { it.id } }
+                    val asyncBsPlaylists = async { return@async playlistRepository.getBSPlaylistByIds(bsPlaylistIds).associateBy { it.id } }
                     val bsMaps = asyncBsMaps.await()
+                    val fsPlaylists = asyncFsPlaylists.await()
                     val bsPlaylists = asyncBsPlaylists.await()
                     val mapDownloadTaskList = it.map {
                         val targetPlaylistId = it.tag!!.split(".").last()
-                        val playlist = bsPlaylists[targetPlaylistId]
+                        val playlist = fsPlaylists[targetPlaylistId]
                         if (it.relateEntityId == null || playlist == null) return@map null
                         IDownloadTask.MapDownloadTask(it, bsMaps[it.relateEntityId!!]!!, playlist)
                     }.filterNotNull()
@@ -245,25 +284,24 @@ class DownloaderRepository(
                         it.downloadTaskModel.tag
                     }.flatMap inner@ {
                         if (it.key?.startsWith("playlist") == true) {
-                            val id = it.key!!.split(".").dropLast(1).last()
-                            val res = playlistRepository.getPlaylistById(id)
-                            when(res){
-                                is Result.Success -> {
-                                    return@inner listOf(IDownloadTask.PlaylistDownloadTask(
-                                        res.data,
-                                        it.key!!,
-                                        it.value.sortedByDescending { it.downloadTaskModel.createdAt },
-                                        bsPlaylists[it.key!!.split(".").last()]!!
-                                    ))
-                                }
-                                else -> {
-                                    return@inner it.value.sortedByDescending { it.downloadTaskModel.createdAt }
-                                }
+                            val fsPlaylistId = it.key!!.split(".").last()
+                            val bsPlaylistId = it.key!!.split(".").first().split("-").last()
+                            // todo: convertodb
+                            val res = bsPlaylists[bsPlaylistId]
+                            if(res != null){
+                                return@inner listOf(IDownloadTask.PlaylistDownloadTask(
+                                    res,
+                                    it.key!!,
+                                    it.value.sortedByDescending { it.downloadTaskModel.createdAt },
+                                    fsPlaylists[fsPlaylistId]!!
+                                ))
+                            }else {
+                                return@inner it.value.sortedByDescending { it.downloadTaskModel.createdAt }
                             }
                         }else if(it.key?.startsWith("batch") == true) {
                             return@inner listOf(IDownloadTask.BatchDownloadTask(
                                 it.key!!,it.value.sortedByDescending { it.downloadTaskModel.title },
-                                bsPlaylists[it.key!!.split(".").last()]!!
+                                fsPlaylists[it.key!!.split(".").last()]!!
                             ))
                         }else {
                             return@inner it.value.sortedByDescending { it.downloadTaskModel.createdAt }

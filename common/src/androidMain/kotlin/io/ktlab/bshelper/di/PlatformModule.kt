@@ -8,7 +8,7 @@ internal actual object PlatformModule {
 
     actual fun getModules(): List<Module> {
         val modules = module {
-            single { AndroidMediaPlayer() }
+            single { createMediaPlayer() }
             single { DBAdapter.createDatabase(DBDriverFactory(get())) }
             single { StorageService(get()) }
             single { createDataStore(get()) }

@@ -1,6 +1,7 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -66,6 +67,7 @@ fun BSMapCard(
                         .padding(PaddingValues(start = 0.dp, top = 8.dp, end = 8.dp, bottom = 0.dp))
                         .size(144.dp, 144.dp)
                         .align(Alignment.Start)
+                        .clickable { onPlayPreviewMusicSegment(map) }
                         .clip(shape = RoundedCornerShape(10.dp)),
                     source = map.getAvatar(),
                 )
@@ -98,7 +100,7 @@ fun BSMapCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     BSThumbUpLabel((map as BSMapVO).map.upVotes)
-                    BSThumbDownLabel(map.map.upVotes)
+                    BSThumbDownLabel(map.map.downVotes)
                     BSRatingLabel(rating = map.map.score)
                 }
                 MapTags(tags = (map as BSMapVO).map.tags)

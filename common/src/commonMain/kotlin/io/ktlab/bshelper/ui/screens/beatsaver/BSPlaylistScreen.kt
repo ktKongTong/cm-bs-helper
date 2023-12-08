@@ -7,10 +7,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
+import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapDetail
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSPlaylistDetail
@@ -57,13 +59,17 @@ fun BSPlaylistScreen(
 
         )
     }else {
+        val downloadingTasks= uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value
+            .filter { it is IDownloadTask.PlaylistDownloadTask }
+            .map { it as IDownloadTask.PlaylistDownloadTask }
+            .associateBy { it.playlist.id }
         PlaylistPagingList(
             Modifier,
             snackbarHostState = snackbarHostState,
             playlistPagingItems = playlistPagingItems,
             localState = uiState.localState,
             mapMultiSelectedMode = uiState.multiSelectMode,
-            mapMultiSelected = uiState.multiSelectedBSMap,
+            multiSelectedMaps = uiState.multiSelectedBSMap,
             onUIEvent = onUIEvent,
             stickyHeader = {
                 Row (
@@ -77,7 +83,7 @@ fun BSPlaylistScreen(
                     )
                 }
             },
-            downloadingTask = emptyMap(),
+            downloadingTask = downloadingTasks,
         )
     }
 

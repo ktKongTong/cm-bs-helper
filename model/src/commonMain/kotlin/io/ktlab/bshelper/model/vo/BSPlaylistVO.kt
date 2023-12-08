@@ -84,3 +84,11 @@ data class BSPlaylistVO(
     }
 
 }
+
+fun BSPlaylistVO.convertDBOToVO():BSPlaylistVO {
+    return BSPlaylistVO(
+        playlist = this.playlist,
+        owner = this.owner,
+        curator = this.curator
+    )
+}

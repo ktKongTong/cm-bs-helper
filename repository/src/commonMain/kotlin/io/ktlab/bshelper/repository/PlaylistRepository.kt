@@ -14,6 +14,7 @@ import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.mapper.mapToVO
+import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
 import io.ktlab.bshelper.model.vo.ScanState
 import io.ktlab.bshelper.paging.BSPlaylistDetailPagingSource
@@ -110,11 +111,34 @@ class PlaylistRepository(
             Result.Success(it)
         }?: Result.Error(Exception("no such playlist with id:$id"))
 
-    fun getPlaylistByIds(ids :List<String>): List<IPlaylist> = bsHelperDAO.fSPlaylistQueries.selectByIds(ids)
+    fun getFSPlaylistByIds(ids :List<String>): List<IPlaylist> = bsHelperDAO.fSPlaylistQueries.selectByIds(ids)
         .executeAsList().map {
             FSPlaylistVO.convertDBOToVO(it)
         }
 
+    fun insertBSPlaylist(bSPlaylist: BSPlaylistVO) {
+        bsHelperDAO.transaction {
+            bsHelperDAO.bSPlaylistQueries.insert(bSPlaylist.playlist)
+            bsHelperDAO.bSUserQueries.insert(bSPlaylist.owner)
+            if (bSPlaylist.curator != null) {
+                bsHelperDAO.bSUserQueries.insert(bSPlaylist.curator!!)
+            }
+        }
+    }
+
+    fun getBSPlaylistByIds(ids :List<Int>): List<IPlaylist> = bsHelperDAO.bSPlaylistQueries.selectByIds(ids)
+        .executeAsList().mapToVO()
+    suspend fun getBSPlaylistById(id :String): Result<IPlaylist> = withContext(Dispatchers.IO){
+        return@withContext try {
+             Result.Success((bsAPI.getPlaylistDetail(id) as APIRespResult.Success).data.playlist.convertToVO())
+        }catch (e:Exception){
+            Result.Error(Exception("no such playlist with id:$id"))
+        }
+    }
+//        bsHelperDAO.fSPlaylistQueries.selectByIds(ids)
+//        .executeAsList().map {
+//            FSPlaylistVO.convertDBOToVO(it)
+//        }
     fun getAllPlaylistByManageDir(manageDir:String):Flow<Result<List<IPlaylist>>> = bsHelperDAO.fSPlaylistQueries.selectAll()
         .asFlow()
         .mapToList(Dispatchers.IO)
@@ -167,6 +191,7 @@ class PlaylistRepository(
             bsHelperDAO.fSPlaylistQueries.deleteAll()
         }
     }
+
     fun getPlaylistDetailPagingMaps(playlistId:String): Flow<PagingData<IMap>> {
         return Pager(
             config = PagingConfig(pageSize = 100, enablePlaceholders = false),
@@ -175,6 +200,26 @@ class PlaylistRepository(
             }
         ).flow
     }
+
+    // most less than 100, todo: need improve
+    suspend fun getPlaylistDetailAllMaps(playlistId:String): List<IMap> {
+        var page = 0
+        val res = listOf<IMap>()
+        val maps = bsAPI.getPlaylistDetail(playlistId, page).let { resp ->
+            resp as APIRespResult.Success
+            resp.data.maps.map { it.map.convertToVO() }
+        }
+        while (maps.size == 100) {
+            page++
+            val newMaps = bsAPI.getPlaylistDetail(playlistId, page).let { resp ->
+                resp as APIRespResult.Success
+                resp.data.maps.map { it.map.convertToVO() }
+            }
+            maps.plus(newMaps)
+        }
+        return maps
+    }
+
     private fun <A, B>List<A>.pmap(f: suspend (A) -> B): List<B> = runBlocking {
         map { async(Dispatchers.Default) { f(it) } }.map { it.await() }
     }

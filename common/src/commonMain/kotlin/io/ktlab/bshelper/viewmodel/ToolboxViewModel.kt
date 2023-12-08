@@ -1,6 +1,5 @@
 package io.ktlab.bshelper.viewmodel
 
-import androidx.compose.material3.SnackbarDuration
 import io.ktlab.bshelper.model.UserPreference
 import io.ktlab.bshelper.model.vo.GlobalScanStateEnum
 import io.ktlab.bshelper.model.vo.PlaylistScanState
@@ -10,7 +9,6 @@ import io.ktlab.bshelper.repository.DownloaderRepository
 import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.repository.PlaylistRepository
 import io.ktlab.bshelper.repository.UserPreferenceRepository
-import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +16,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
-import org.koin.java.KoinJavaComponent.inject
-import java.util.UUID
 
 sealed class ToolboxUIEvent: UIEvent() {
     data class SelectPlaylistTobeScan(val playlistScanState: PlaylistScanState) : UIEvent()
@@ -29,9 +25,6 @@ sealed class ToolboxUIEvent: UIEvent() {
     data object ClearLocalData : ToolboxUIEvent()
     data class UpdateDefaultManageDir(val path:String):ToolboxUIEvent()
     //    data class MapMultiSelectTapped : ToolboxUIEvent()
-
-    data class MsgShown(val msgId: Long): ToolboxUIEvent()
-    data class ShowSnackBar(val message:String): ToolboxUIEvent()
 
     data object DeleteAllDownloadTasks : ToolboxUIEvent()
     data class RemoveDownloadTask(val downloadTask: IDownloadTask): ToolboxUIEvent()
@@ -47,7 +40,6 @@ sealed class ToolboxUIEvent: UIEvent() {
 
 data class ToolboxUiState(
     val isLoading: Boolean,
-    val snackBarMessages: List<SnackBarMessage>,
     val scanState: ScanState = ScanState.getDefaultInstance(),
     val userPreferenceState: UserPreference,
     val downloadTasks: List<IDownloadTask> = emptyList(),
@@ -55,7 +47,6 @@ data class ToolboxUiState(
 
 data class ToolboxViewModelState constructor(
     val isLoading: Boolean = false,
-    val snackBarMessages: List<SnackBarMessage> = emptyList(),
     val userPreferenceState: UserPreference,
     val scanState: ScanState = ScanState.getDefaultInstance(),
     val downloadTasks: List<IDownloadTask> = emptyList(),
@@ -63,7 +54,6 @@ data class ToolboxViewModelState constructor(
 
     fun toUiState(): ToolboxUiState = ToolboxUiState(
         isLoading = isLoading,
-        snackBarMessages = snackBarMessages,
         scanState = scanState,
         userPreferenceState = userPreferenceState,
         downloadTasks = downloadTasks,
@@ -80,7 +70,6 @@ class ToolboxViewModel(
     private val viewModelState = MutableStateFlow(
         ToolboxViewModelState(
             isLoading = true,
-            snackBarMessages = emptyList(),
             userPreferenceState = UserPreference.getDefaultUserPreference()
         )
     )
@@ -123,9 +112,6 @@ class ToolboxViewModel(
 
     fun dispatchUiEvents(event: UIEvent){
         when(event){
-            is ToolboxUIEvent.ShowSnackBar -> {
-
-            }
             is ToolboxUIEvent.ScanPlaylistTapped -> {
                 onScanPlaylist(event.dirPath?:"")
             }
@@ -181,9 +167,6 @@ class ToolboxViewModel(
                     userPreferenceRepository.updateUserPreference(viewModelState.value.userPreferenceState.copy(event.path))
                 }
             }
-            is ToolboxUIEvent.MsgShown -> {
-                snackBarShown(event.msgId)
-            }
             else -> {}
         }
     }
@@ -229,32 +212,6 @@ class ToolboxViewModel(
                         state.copy(scanState = it)
                     }
                 }
-        }
-    }
-
-
-    private fun showSnackBar(
-        msg: String,
-        actionLabel: String? = null,
-        duration: SnackbarDuration = SnackbarDuration.Short,
-        action: (() -> Unit)? = null
-    ) {
-        val snackBarMessages = viewModelState.value.snackBarMessages + SnackBarMessage(
-            id = UUID.randomUUID().mostSignificantBits,
-            message = msg,
-            actionLabel = actionLabel,
-            action = action,
-            duration = duration
-        )
-        viewModelState.update { vmState ->
-            vmState.copy(snackBarMessages = snackBarMessages, isLoading = false)
-        }
-    }
-
-    fun snackBarShown(snackBarId: Long) {
-        viewModelState.update { currentUiState ->
-            val snackBarMessages = currentUiState.snackBarMessages.filterNot { it.id == snackBarId }
-            currentUiState.copy(snackBarMessages = snackBarMessages)
         }
     }
 }

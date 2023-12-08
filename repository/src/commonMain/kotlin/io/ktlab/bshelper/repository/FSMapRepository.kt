@@ -192,7 +192,11 @@ class FSMapRepository(
             bsHelperDAO.fSMapQueries.acitveFSMap(mapId,playlistId)
         }
     }
-
+    fun getAllFSMapByPlaylistId(playlistId: String): List<IMap> {
+        return bsHelperDAO.fSMapQueries.getAllByPlaylistId(playlistId)
+            .executeAsList()
+            .mapToVO()
+    }
     fun getPagingBSMapByPlaylistId(playlistId: String): Flow<PagingData<IMap>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
@@ -217,6 +221,7 @@ class FSMapRepository(
             }
             val mapIds = fsMaps.map { it.mapId }
             bsHelperDAO.fSMapQueries.deleteFSMapByMapIdsAndPlaylistId(mapIds,playlistId)
+            bsHelperDAO.fSPlaylistQueries.adjustPlaylistMapCntByPlaylistId((-mapIds.count()),playlistId)
         } catch (e: Exception) {
             return Result.Error(e)
         }

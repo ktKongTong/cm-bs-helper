@@ -1,16 +1,17 @@
 package io.ktlab.bshelper.ui.components
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Web
-import androidx.compose.material.icons.rounded.BackHand
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.ui.route.BSHelperDestinations
 import io.ktlab.bshelper.MR as R
@@ -20,20 +21,11 @@ fun AppNavRail(
     currentRoute: String,
     navigateAction: (String) -> Unit,
     backAction: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    header: @Composable ColumnScope.() -> Unit = {}
 ) {
     NavigationRail(
-        header = {
-
-            IconButton(onClick = { backAction() }){
-                Icon(
-                    Icons.Rounded.BackHand,
-                    null,
-                    Modifier.padding(vertical = 12.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        },
+        header = header,
         modifier = modifier
     ) {
         Spacer(Modifier.weight(1f))

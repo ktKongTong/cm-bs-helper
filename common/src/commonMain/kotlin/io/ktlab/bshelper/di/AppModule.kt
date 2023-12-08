@@ -37,7 +37,7 @@ object AppModule {
     }
 
     private val viewModelModule = module {
-        single<GlobalViewModel> { GlobalViewModel(get()) }
+        single<GlobalViewModel> { GlobalViewModel(get(),get()) }
         single<HomeViewModel> { HomeViewModel(get(),get(),get(),get()) }
         single<ToolboxViewModel> { ToolboxViewModel(get(),get(),get(),get()) }
         single<BeatSaverViewModel> { BeatSaverViewModel(get(),get(),get(),get(),get()) }
@@ -49,6 +49,6 @@ object AppModule {
     /**
      * Provider all modules includes platform specific modules
      */
-    fun getModules() = PlatformModule.getModules()+ listOf(sysServiceModule, viewModelModule)
+    fun getModules() = PlatformModule.getModules() + listOf(sysServiceModule, viewModelModule)
 }
 

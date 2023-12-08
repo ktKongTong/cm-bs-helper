@@ -1,5 +1,6 @@
 package io.ktlab.bshelper.ui.route
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import moe.tlaster.precompose.navigation.NavHost
@@ -14,10 +15,10 @@ fun BSHelperNavGraph(
     navigator:Navigator = rememberNavigator(),
     openDrawer: () -> Unit = {},
     snackbarHost : @Composable () -> Unit = {},
+    snackbarHostState: SnackbarHostState,
     startDestination: String = BSHelperDestinations.HOME_ROUTE,
 ){
     NavHost(
-        // Assign the navigator to the NavHost
         navigator = navigator,
         initialRoute = startDestination,
         navTransition = NavTransition(),
@@ -34,7 +35,8 @@ fun BSHelperNavGraph(
             BeatSaverRoute(
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
-                snackbarHost = snackbarHost
+                snackbarHost = snackbarHost,
+                snackbarHostState = snackbarHostState
             )
         }
         scene(BSHelperDestinations.TOOLBOX_ROUTE) {

@@ -102,7 +102,7 @@ fun MapCardPagingList(
                                 onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map))
                             },
                             onUIEvent = onUIEvent,
-                            onMapMultiSelected = { onUIEvent(BeatSaverUIEvent.MapMultiSelected(it)) },
+                            onMapMultiSelected = { onUIEvent(BeatSaverUIEvent.OnMultiSelectMap(it)) },
                         )
                     }
                 }

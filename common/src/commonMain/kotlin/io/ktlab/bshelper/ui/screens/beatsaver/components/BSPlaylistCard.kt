@@ -14,11 +14,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
+import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
 import io.ktlab.bshelper.ui.components.MapperLabel
 import io.ktlab.bshelper.ui.components.labels.*
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
+import io.ktlab.kown.model.isProcessing
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -26,6 +28,7 @@ fun BSPlaylistCard(
     playlist: IPlaylist,
     modifier: Modifier = Modifier,
     onUIEvent: (UIEvent) -> Unit,
+    downloadInfo: IDownloadTask.PlaylistDownloadTask?,
 ) {
     Box(
         modifier = modifier
@@ -79,12 +82,22 @@ fun BSPlaylistCard(
                     BSThumbDownLabel(playlist.playlist.downVotes)
                 }
 
-                DownloadIconButton(
-                    onClick = {
-    //                        onUIEvent(BeatSaverUIEvent.DownloadPlaylist(playlist))
-                    },
-                    downloadInfo = null,
-                )
+                if (downloadInfo != null) {
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        val progress = downloadInfo.taskList.count { it.downloadTaskModel.status.isProcessing() } / downloadInfo.taskList.size
+
+                    }
+                }else {
+                    PlaylistDownloadIconButton(
+                        onClick = { onUIEvent(BeatSaverUIEvent.DownloadPlaylist(playlist)) },
+                        downloadInfo = downloadInfo,
+                    )
+                }
             }
         }
     }

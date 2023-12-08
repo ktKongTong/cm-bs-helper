@@ -1,6 +1,6 @@
 package io.ktlab.bshelper.ui.screens.toolbox.components
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.repository.DownloadTaskType
 import io.ktlab.bshelper.repository.IDownloadTask
@@ -22,7 +22,11 @@ fun DownloadTaskCard(
             )
         }
         DownloadTaskType.Playlist->{
-
+            PlaylistDownloadTaskCard(
+                downloadTask = downloadTask,
+                modifier = modifier,
+                onUIEvent = onUIEvent,
+            )
         }
         DownloadTaskType.Map -> {
             MapDownloadTaskCard(

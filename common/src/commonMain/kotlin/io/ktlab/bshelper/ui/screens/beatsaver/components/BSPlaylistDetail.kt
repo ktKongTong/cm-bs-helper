@@ -5,8 +5,9 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.QueueMusic
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Cancel
+import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,6 +34,7 @@ import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.utils.prettyFormat
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUiState
+import io.ktlab.bshelper.viewmodel.GlobalUIEvent
 import io.ktlab.bshelper.viewmodel.LocalState
 import kotlinx.coroutines.flow.Flow
 
@@ -102,17 +104,24 @@ fun BSPlaylistHeader(
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Column {
-            Row {
-                TextButton(
-                    onClick = { onUIEvent(BeatSaverUIEvent.OnExitSelectBSPlaylist) },
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+            ){
+                IconButton(
+                    onClick = { onUIEvent(BeatSaverUIEvent.OnExitSelectedBSPlaylist) },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
-                    Text(text = "Back")
+                    Icon(
+                        Icons.Rounded.ArrowBack,
+                        contentDescription = "back icon"
+                    )
                 }
                 Text(text = playlist.getName(), style = MaterialTheme.typography.titleLarge)
             }
 
-            Row {
+            Row (
+                Modifier.height(IntrinsicSize.Max)
+            ){
                 AsyncImageWithFallback(
                     modifier = Modifier
                         .padding(PaddingValues(start = 0.dp, top = 8.dp, end = 8.dp, bottom = 8.dp))
@@ -151,59 +160,57 @@ fun BSPlaylistHeader(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "Maps: $count",
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
                             text = "Updated: ${playlist.playlist.createdAt.prettyFormat()}",
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 }
-
-            }
-
-            Row {
-                DropDownPlaylistSelector(
-                    onUIEvent = onUIEvent,
-                    modifier = Modifier,
-                    selectablePlaylists = localState.selectableLocalPlaylists,
-                    selectedIPlaylist = localState.targetPlaylist,
-                    onSelectedPlaylist = {
-                        onUIEvent(BeatSaverUIEvent.ChangeTargetPlaylist(it))
-                    },
-                )
-            }
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = if (multiSelectedMode) Arrangement.SpaceBetween else Arrangement.End
-            ){
-                if (multiSelectedMode) {
-                    Text(text = "已选中: ${multiSelectedBSMap.size}", modifier = Modifier.align(Alignment.CenterVertically))
-                    TextButton(onClick = {
-                        if (localState.targetPlaylist != null) {
-                            onUIEvent(BeatSaverUIEvent.MultiDownload(localState.targetPlaylist))
-                        }else {
-                            onUIEvent(BeatSaverUIEvent.ShowSnackBar("请选择目标歌单"))
-                        }
-                    }) {
-                        Text(text = "Download")
-                    }
-                }
-                Box(
+                Column (
+                    Modifier.fillMaxHeight()
                 ){
-                    IconButton(onClick = {
-                        onUIEvent(BeatSaverUIEvent.ChangeMultiSelectMode(!multiSelectedMode))
-                    }, modifier = Modifier) {
-                        if (!multiSelectedMode) {
-                            Icon(Icons.Default.QueueMusic, contentDescription = stringResource(MR.strings.multi_select))
-                        }else {
-                            Icon(Icons.Default.Cancel, contentDescription = stringResource(MR.strings.cancel_multi_select))
+                    DropDownPlaylistSelector(
+                        onUIEvent = onUIEvent,
+                        modifier = Modifier,
+                        selectablePlaylists = localState.selectableLocalPlaylists,
+                        selectedIPlaylist = localState.targetPlaylist,
+                        onSelectedPlaylist = {
+                            onUIEvent(BeatSaverUIEvent.ChangeTargetPlaylist(it))
+                        },
+                    )
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = if (multiSelectedMode) Arrangement.SpaceBetween else Arrangement.End
+                    ){
+                        if (multiSelectedMode) {
+                            Text(text = "已选中: ${multiSelectedBSMap.size}", modifier = Modifier.align(Alignment.CenterVertically))
                         }
+                        Row {
+                            if (multiSelectedMode) {
+                                TextButton(onClick = {
+                                    if (localState.targetPlaylist != null) {
+                                        onUIEvent(BeatSaverUIEvent.MultiDownload(localState.targetPlaylist))
+                                    }else {
+                                        onUIEvent(GlobalUIEvent.ShowSnackBar("请选择目标歌单"))
+                                    }
+                                }) {
+                                    Text(text = "Download")
+                                }
+                            }
+                            IconButton(onClick = {
+                                onUIEvent(BeatSaverUIEvent.ChangeMultiSelectMode(!multiSelectedMode))
+                            }, modifier = Modifier) {
+                                if (!multiSelectedMode) {
+                                    Icon(Icons.Rounded.QueueMusic, contentDescription = stringResource(MR.strings.multi_select))
+                                }else {
+                                    Icon(Icons.Rounded.Cancel, contentDescription = stringResource(MR.strings.cancel_multi_select))
+                                }
+                            }
+                        }
+
+
+
                     }
                 }
-
             }
         }
     }
