@@ -78,7 +78,7 @@ class BSMapUtils {
         }
 
         fun checkIfBSMap(file: File): Boolean {
-            if (file.isDirectory) {
+            if (!file.isDirectory) {
                 return false
             }
             return file.listFiles()?.any {it != null && it.name.lowercase() == "info.dat" } ?: false

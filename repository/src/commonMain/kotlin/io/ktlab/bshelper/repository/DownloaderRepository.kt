@@ -92,7 +92,7 @@ class DownloaderRepository(
     }
 
     fun downloadMap(targetPlaylist: IPlaylist, map: BSMapVO) {
-        val title = "${map.map.mapId} (${map.map.songName} - ${map.map.songAuthorName})".replace("/", " ")
+        val title = "${map.map.mapId} (${map.map.songName})".replace("/", " ")
         val timestamp = Clock.System.now().epochSeconds
         val callback = onCompleteAction(targetPlaylist)
         downloader.newRequestBuilder(map.getDownloadURL(), tmpPath.toString(), "$title.zip")
@@ -108,7 +108,7 @@ class DownloaderRepository(
         val timestamp = System.currentTimeMillis()
         val tag = "batch.$timestamp.${targetPlaylist.id}"
         mapList.map {
-            val title = "${it.map.mapId} (${it.map.songName} - ${it.map.songAuthorName})".replace("/"," ")
+            val title = "${it.map.mapId} (${it.map.songName})".replace("/"," ")
             downloader.newRequestBuilder(it.getDownloadURL(), tmpPath.toString(), "$title.zip")
                 .setTag(tag)
                 .setRelateEntityId(it.map.mapId)
@@ -156,7 +156,7 @@ class DownloaderRepository(
             maps.filter { it.getID() !in localIds }
             .map {
                 it as BSMapVO
-                val title = "${it.getID()} (${it.map.songName} - ${it.map.songAuthorName})".replace("/", " ")
+                val title = "${it.getID()} (${it.map.songName})".replace("/", " ")
                 val timestamp = Clock.System.now().epochSeconds
 //                val callback = onCompleteAction(targetPlaylist)
                 downloader.newRequestBuilder(it.getDownloadURL(), tmpPath.toString(), "$title.zip")

@@ -267,13 +267,4 @@ class PlaylistScanner (
         }
     }
 
-
-    private fun <A, B>List<A>.pmap(f: suspend (A) -> B): List<B> = runBlocking {
-        map { async(Dispatchers.IO) { f(it) } }.map { it.await() }
-    }
-
-
-
-
-
 }
