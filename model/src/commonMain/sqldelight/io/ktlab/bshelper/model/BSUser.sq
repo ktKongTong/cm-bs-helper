@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS BSUser (
     admin INTEGER AS Boolean NOT NULL,
     curator INTEGER AS Boolean NOT NULL,
     playlistUrl TEXT NOT NULL,
-    verifiedMapper INTEGER AS Boolean
+    verifiedMapper INTEGER AS Boolean DEFAULT 0
 );
 
 selectAll:

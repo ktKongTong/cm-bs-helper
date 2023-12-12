@@ -2,20 +2,30 @@ import kotlin.Boolean;
 import kotlin.time.Duration;
 
 CREATE TABLE IF NOT EXISTS FSMap (
-    `mapId` TEXT NOT NULL,
-    `version` TEXT,
-    `name` TEXT NOT NULL,
-    `author` TEXT NOT NULL,
-    `duration` INTEGER AS Duration NOT NULL,
-    `relativeCoverPath` TEXT NOT NULL,
-    `relativeSongPath` TEXT NOT NULL,
-    `relativeInfoPath` TEXT NOT NULL,
-    `dirFilename` TEXT NOT NULL,
-    `playlistBasePath` TEXT NOT NULL,
-    `hash` TEXT,
-    `playlistId` TEXT NOT NULL,
-    `active` INTEGER AS Boolean NOT NULL DEFAULT 0,
-    PRIMARY KEY(`mapId`, `playlistId`)
+--  fs
+    hash TEXT NOT NULL,
+    name TEXT NOT NULL,
+    author TEXT NOT NULL,
+    duration INTEGER AS Duration NOT NULL,
+    previewStartTime REAL NOT NULL,
+    previewDuration INTEGER AS Duration NOT NULL,
+    bpm REAL NOT NULL,
+    songName TEXT NOT NULL,
+    songSubname TEXT NOT NULL,
+    songAuthorName TEXT NOT NULL,
+    levelAuthorName TEXT NOT NULL,
+    relativeCoverFilename TEXT NOT NULL,
+    relativeSongFilename TEXT NOT NULL,
+    relativeInfoFilename TEXT NOT NULL,
+--     fsmap dir name
+    dirName TEXT NOT NULL,
+--     absolute path to playlist
+    playlistBasePath TEXT NOT NULL,
+    playlistId TEXT NOT NULL,
+    active INTEGER AS Boolean NOT NULL DEFAULT 0,
+--     beatsaver
+    mapId TEXT NOT NULL,
+    PRIMARY KEY(mapId, hash, playlistId)
 );
 
 
@@ -25,14 +35,13 @@ SELECT * FROM `FSMap` WHERE `active` = 1;
 getAllByPlaylistId:
 SELECT
 `FSMap`.mapId AS `mapId`,
-`FSMap`.version AS `mapVersion`,
 `FSMap`.name AS `name`,
-`FSMap`.dirFilename AS `dirFilename`,
+`FSMap`.dirName AS `dirFilename`,
 `FSMap`.author AS `author`,
 `FSMap`.duration AS `duration`,
-`FSMap`.relativeCoverPath AS `relativeCoverPath`,
-`FSMap`.relativeSongPath AS `relativeSongPath`,
-`FSMap`.relativeInfoPath AS `relativeInfoPath`,
+`FSMap`.relativeCoverFilename AS `relativeCoverPath`,
+`FSMap`.relativeSongFilename AS `relativeSongPath`,
+`FSMap`.relativeInfoFilename AS `relativeInfoPath`,
 `FSMap`.playlistBasePath AS `playlistBasePath`,
 `FSMap`.hash AS `hash`,
 `FSMap`.playlistId AS `playlistId`,
@@ -109,18 +118,24 @@ insert:
 INSERT OR REPLACE INTO `FSMap`
 (
 `mapId`,
-`version`,
 `name`,
 `author`,
 `duration`,
-`relativeCoverPath`,
-`relativeSongPath`,
-`relativeInfoPath`,
-`dirFilename`,
+`relativeCoverFilename`,
+`relativeSongFilename`,
+`relativeInfoFilename`,
+`dirName`,
 `playlistBasePath`,
 `hash`,
 `playlistId`,
-`active`
+`active`,
+`previewStartTime`,
+`previewDuration`,
+`bpm`,
+`songName`,
+`songSubname`,
+`songAuthorName`,
+`levelAuthorName`
 ) VALUES ?;
 
 

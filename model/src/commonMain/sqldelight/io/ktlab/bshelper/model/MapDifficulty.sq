@@ -3,7 +3,6 @@ import io.ktlab.bshelper.model.enums.EMapDifficulty;
 import kotlin.Boolean;
 
 CREATE TABLE IF NOT EXISTS `MapDifficulty` (
-    `uuid` TEXT NOT NULL,
     `seconds` REAL NOT NULL,
     `hash` TEXT NOT NULL,
     `mapId` TEXT NOT NULL,
@@ -33,7 +32,6 @@ SELECT * FROM `MapDifficulty`;
 insert:
 INSERT OR REPLACE
 INTO `MapDifficulty` (
-    `uuid`,
     `seconds`,
     `hash`,
     `mapId`,

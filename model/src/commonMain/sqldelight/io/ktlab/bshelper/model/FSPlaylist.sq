@@ -1,10 +1,14 @@
 import kotlin.Boolean;
 import kotlin.Int;
 CREATE TABLE IF NOT EXISTS `FSPlaylist` (
-    uuid TEXT NOT NULL PRIMARY KEY,
+    id TEXT NOT NULL,
+    basePath TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT DEFAULT NULL,
-    mapAmount INTEGER AS Int NOT NULL,
+
+    customTags TEXT DEFAULT NULL,
+--     stastistics
+    mapAmount INTEGER AS Int NOT NULL DEFAULT 0,
     totalDuration INTEGER DEFAULT NULL,
     maxDuration INTEGER DEFAULT NULL,
     avgDuration INTEGER DEFAULT NULL,
@@ -14,8 +18,9 @@ CREATE TABLE IF NOT EXISTS `FSPlaylist` (
     avgBomb REAL DEFAULT NULL,
     maxNps REAL DEFAULT NULL,
     avgNps REAL DEFAULT NULL,
+--  beatsaver
     bsPlaylistId TEXT,
-    basePath TEXT NOT NULL,
+
     sync INTEGER AS Boolean NOT NULL,
     syncTimestamp INTEGER NOT NULL
 );
@@ -26,19 +31,9 @@ SELECT * FROM `FSPlaylist` WHERE sync = 1;
 
 insertAll:
 INSERT INTO `FSPlaylist` (
-    uuid,
+    id,
     name,
     description,
-    mapAmount,
-    totalDuration,
-    maxDuration,
-    avgDuration,
-    maxNote,
-    avgNote,
-    avgObstacle,
-    avgBomb,
-    maxNps,
-    avgNps,
     bsPlaylistId,
     basePath,
     sync,
@@ -47,7 +42,7 @@ INSERT INTO `FSPlaylist` (
 
 insertAnyway:
 INSERT OR REPLACE INTO `FSPlaylist` (
-    uuid,
+    id,
     name,
     description,
     mapAmount,
@@ -69,13 +64,13 @@ INSERT OR REPLACE INTO `FSPlaylist` (
 adjustPlaylistMapCntByPlaylistId:
 UPDATE `FSPlaylist`
 SET mapAmount = mapAmount + ?
-WHERE uuid = ?;
+WHERE basePath = ?;
 
 selectByIds:
 SELECT *
 FROM FSPlaylist
-WHERE uuid IN ?;
-
+WHERE id IN ?;
+-- equivalent to selectById
 selectAllByBasePath:
 SELECT * FROM `FSPlaylist`
 WHERE basePath = ? AND sync = 1;
@@ -87,7 +82,7 @@ WHERE basePath = ?;
 
 deleteById:
 DELETE FROM `FSPlaylist`
-WHERE uuid = ?;
+WHERE id = ?;
 
 deleteAll:
 DELETE FROM `FSPlaylist`;
