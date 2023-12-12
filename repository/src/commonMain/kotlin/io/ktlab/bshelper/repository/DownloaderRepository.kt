@@ -266,7 +266,9 @@ class DownloaderRepository(
             try {
                 val mapIds = it.mapNotNull { it.relateEntityId }
                 val playlistIds = it.mapNotNull { it.tag?.split(".")?.lastOrNull() }.toSet().toList()
-                val bsPlaylistIds = it.mapNotNull { it.tag?.split(".")?.firstOrNull()?.split("-")?.lastOrNull()?.toInt() }.toSet().toList()
+                val bsPlaylistIds = it
+                    .filter { it.tag?.startsWith("playlist")?:false }
+                    .mapNotNull { it.tag?.split(".")?.firstOrNull()?.split("-")?.lastOrNull()?.toInt() }.toSet().toList()
                 val res = runBlocking {
                     val asyncBsMaps = async { return@async mapRepository.getBSMapByIds(mapIds) }
                     val asyncFsPlaylists = async { return@async playlistRepository.getFSPlaylistByIds(playlistIds).associateBy { it.id } }
@@ -317,7 +319,8 @@ class DownloaderRepository(
                 }
                 return@outer tmp
             }catch (e: Exception) {
-                runtimeEventFlow.sendEvent(Event(EventType.Exception, e))
+                e.printStackTrace()
+//                runtimeEventFlow.sendEvent(Event(EventType.Exception, e))
             }
             return@outer listOf<IDownloadTask>()
         }
