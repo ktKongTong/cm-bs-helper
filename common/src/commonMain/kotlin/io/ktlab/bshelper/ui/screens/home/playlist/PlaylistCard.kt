@@ -5,12 +5,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.icerock.moko.resources.compose.stringResource
-import io.ktlab.bshelper.MR
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.enums.SyncStateEnum
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
@@ -51,22 +51,19 @@ fun PlaylistCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = playlist.title)
-                    if (!playlist.isCustom()) {
-                            Text(
-                                text = stringResource(MR.strings.playlist_bs),
-                                modifier = Modifier
-                            )
-                    }else {
-//                        Text(text = "custom")
-                    }
+                    Text(
+                        text = playlist.title,
+                        style = MaterialTheme.typography.labelMedium,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis
+                    )
                     if ((playlist as FSPlaylistVO).sync == SyncStateEnum.SYNCING) { Text(text = "同步中") }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Spacer(modifier = Modifier.width(8.dp))
                     MapAmountIconWIthText(text = playlist.getMapAmount().toString())
                 }
             }

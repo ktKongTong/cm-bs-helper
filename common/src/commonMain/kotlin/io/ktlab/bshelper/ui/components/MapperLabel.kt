@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -32,13 +33,13 @@ fun MapperLabel(
                 AsyncImageWithFallback(
                     Modifier
                         .clip(shape = CircleShape)
-                        .size(20.dp),
+                        .size(16.dp),
                     source = avatarUrl,
                     fallback = {
                         Icon(
                             Icons.Rounded.Person,
                             contentDescription = "Avatar",
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(16.dp)
                         )
                     }
                 )
@@ -55,12 +56,14 @@ fun MapperLabel(
                 )
             }
         }
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(2.dp))
         ClickableText(
             text = buildAnnotatedString { append(mapperName) },
-            modifier = Modifier.padding(start = 4.dp),
+            modifier = Modifier.padding(start = 2.dp),
             style = MaterialTheme.typography.labelMedium,
-            onClick = { onClick() }
+            onClick = { onClick() },
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

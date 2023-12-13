@@ -81,7 +81,7 @@ kotlin {
             dependencies {
                 implementation(libs.koin.androidx.compose)
 //                implementation(libs.kotlin.logging.jvm)
-                api(compose.preview)
+                implementation(compose.preview)
             }
         }
         val jvmMain by getting {
@@ -89,7 +89,8 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(compose.desktop.common)
-                api(compose.preview)
+                implementation(compose.preview)
+                implementation(compose.desktop.macos_arm64)
                 // see https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.1.1
                 implementation(libs.kotlinx.coroutines.swing)
 //                implementation(libs.kotlin.logging.jvm)

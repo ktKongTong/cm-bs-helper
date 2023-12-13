@@ -19,4 +19,5 @@ interface IMap {
     fun getMaxNotes(): Long
     fun getMaxNPS(): Double
     fun getMapVersion(): String
+    fun isRelateWithBSMap(): Boolean
 }

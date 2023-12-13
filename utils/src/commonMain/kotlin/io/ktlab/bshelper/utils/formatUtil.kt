@@ -19,3 +19,17 @@ fun LocalDateTime.prettyFormat(): String {
         else -> "${diff} seconds ago"
     }
 }
+
+fun Long.countPrettyFormat(): String {
+    // 14737 -> 1.47w
+    // 1473 -> 1.47k
+    // 147 -> 0.1k
+    // 14 -> 14
+    // 1 -> 1
+    return when {
+        this > 10000 -> "${this / 10000}.${this % 10000 / 1000}w"
+        this > 1000 -> "${this / 1000}.${this % 1000 / 100}k"
+        this > 100 -> "0.${this / 100}k"
+        else -> "$this"
+    }
+}

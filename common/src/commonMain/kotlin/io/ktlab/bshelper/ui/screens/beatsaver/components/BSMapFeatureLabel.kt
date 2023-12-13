@@ -1,45 +1,75 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.vo.BSMapVO
+import io.ktlab.bshelper.model.vo.FSMapVO
 import io.ktlab.bshelper.ui.components.icons.*
 
 
-fun BSMapVO.hasNoodleExtensions(): Boolean {
-    return versions.firstOrNull()?.diffs?.any { it.ne?:false } ?: false
+fun IMap.hasNoodleExtensions(): Boolean {
+    return when(this) {
+            is BSMapVO -> versions.firstOrNull()?.diffs?.any { it.ne?:false } ?: false
+            is FSMapVO -> difficulties?.any { it.ne?:false }?:false
+            else -> false
+        }
 }
 
-fun BSMapVO.hasMappingExtensions(): Boolean {
-    return versions.firstOrNull()?.diffs?.any { it.me?:false } ?: false
+fun IMap.hasMappingExtensions(): Boolean {
+    return when(this) {
+        is BSMapVO -> versions.firstOrNull()?.diffs?.any { it.me?:false } ?: false
+        is FSMapVO -> difficulties?.any { it.me?:false }?:false
+        else -> false
+    }
 }
 
-fun BSMapVO.hasCinema(): Boolean {
-    return versions.firstOrNull()?.diffs?.any { it.cinema?:false } ?: false
+fun IMap.hasCinema(): Boolean {
+    return when(this) {
+        is BSMapVO -> versions.firstOrNull()?.diffs?.any { it.me?:false } ?: false
+        is FSMapVO -> difficulties?.any { it.cinema?:false }?:false
+        else -> false
+    }
 }
 
-fun BSMapVO.hasChroma(): Boolean {
-    return versions.firstOrNull()?.diffs?.any { it.chroma?:false } ?: false
+fun IMap.hasChroma(): Boolean {
+    return when(this) {
+        is BSMapVO -> versions.firstOrNull()?.diffs?.any { it.me?:false } ?: false
+        is FSMapVO -> difficulties?.any { it.chroma?:false }?:false
+        else -> false
+    }
 }
-
+fun IMap.isRanked(): Boolean {
+    return when(this) {
+        is BSMapVO -> map.ranked
+        is FSMapVO -> bsMapWithUploader?.bsMap?.ranked?:false
+        else -> false
+    }
+}
+fun IMap.isAutoMapper(): Boolean {
+    return when(this) {
+        is BSMapVO -> map.automapper
+        is FSMapVO -> bsMapWithUploader?.bsMap?.automapper?:false
+        else -> false
+    }
+}
 @Composable
 fun BSMapFeatureLabel(
-    map: BSMapVO,
+    map: IMap,
     modifier: Modifier = Modifier,
-//    tint: Color = LocalContentColor.current
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        if (map.map.ranked) {
+        if (map.isRanked()) {
             BSRankedIcon()
         }
-        if (map.map.automapper) {
+        if (map.isAutoMapper()) {
             BSAIIcon()
-        }
-        if (map.curator != null) {
-            BSCuratedIcon()
         }
         if (map.hasNoodleExtensions()) {
             BSNEIcon()

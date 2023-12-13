@@ -4,7 +4,7 @@ import androidx.compose.material3.SnackbarDuration
 import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.enums.SortKey
 import io.ktlab.bshelper.model.enums.SortType
-import io.ktlab.bshelper.model.mapper.FSMapVO
+import io.ktlab.bshelper.model.vo.FSMapVO
 import io.ktlab.bshelper.repository.FSMapRepository
 import io.ktlab.bshelper.repository.PlaylistRepository
 import io.ktlab.bshelper.repository.UserPreferenceRepository

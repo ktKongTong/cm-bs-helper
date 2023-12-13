@@ -40,7 +40,7 @@ data class BSMapVO(
     }
 
     override fun getMapDescription(): String {
-        return map.description?:""
+        return map.description ?: ""
     }
 
     override fun getDuration(): String {
@@ -79,5 +79,9 @@ data class BSMapVO(
 
     override fun getMapVersion(): String {
         TODO("Not yet implemented")
+    }
+
+    override fun isRelateWithBSMap(): Boolean {
+        return true
     }
 }

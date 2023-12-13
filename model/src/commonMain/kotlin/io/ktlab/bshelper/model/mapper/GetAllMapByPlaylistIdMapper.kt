@@ -1,6 +1,8 @@
 package io.ktlab.bshelper.model.mapper
 
 import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.vo.BsMapWithUploader
+import io.ktlab.bshelper.model.vo.FSMapVO
 
 fun List<GetAllByPlaylistId>.mapToVO():List<FSMapVO> = this
     .groupBy { it.mapId }

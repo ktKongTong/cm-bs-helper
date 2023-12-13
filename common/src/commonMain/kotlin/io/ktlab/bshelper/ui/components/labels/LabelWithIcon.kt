@@ -9,7 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.beatmaps.common.fixedStr
 import io.ktlab.bshelper.ui.components.icons.*
+import io.ktlab.bshelper.utils.countPrettyFormat
 import io.ktlab.bshelper.utils.prettyFormat
 import kotlinx.datetime.LocalDateTime
 
@@ -21,13 +23,13 @@ fun BSBPMLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSDurationIcon(modifier, tint)
         Text(
             text = bpm,
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -40,13 +42,13 @@ fun BSDurationLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSDurationIcon(modifier, tint)
         Text(
             text =duration,
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -59,13 +61,13 @@ fun BSNPSRangeLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSNPSIcon(modifier, tint)
         Text(
             text = npsRange,
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -78,13 +80,13 @@ fun BSNPSLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSNPSIcon(modifier, tint)
         Text(
             text = String.format("%.2f", nps),
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -97,13 +99,13 @@ fun BSLightEventLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSLightEventIcon(modifier, tint)
         Text(
             text = event.toString(),
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -116,13 +118,13 @@ fun BSNoteLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSNoteIcon(modifier, tint)
         Text(
             text = note.toString(),
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -135,13 +137,13 @@ fun BSObstacleLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSObstacleIcon(modifier, tint)
         Text(
             text = obstacle.toString(),
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -154,13 +156,13 @@ fun BSBombLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSBombIcon(modifier, tint)
         Text(
             text = bomb.toString(),
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -174,13 +176,13 @@ fun BSRatingLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSRatingIcon(modifier, tint)
         Text(
-            text = String.format("%.2f", rating),
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            text = (rating * 100).fixedStr(0)+"%",
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -193,13 +195,13 @@ fun BSThumbUpLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSThumbUpIcon(modifier, tint)
         Text(
-            text = upVote.toString(),
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            text = upVote.countPrettyFormat(),
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -212,13 +214,13 @@ fun BSThumbDownLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSThumbDownIcon(modifier, tint)
         Text(
-            text = downVote.toString(),
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            text = downVote.countPrettyFormat(),
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -231,13 +233,13 @@ fun DateLabel(
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 4.dp)
+        modifier = modifier.padding(horizontal = 2.dp)
     ) {
         BSDateIcon(modifier, tint)
         Text(
             text = date.prettyFormat(),
-            modifier = Modifier.padding(start = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }

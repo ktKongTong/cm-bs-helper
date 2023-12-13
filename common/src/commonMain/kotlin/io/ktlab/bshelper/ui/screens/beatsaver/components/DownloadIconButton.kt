@@ -1,6 +1,7 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
@@ -22,9 +23,14 @@ import io.ktlab.kown.model.isProcessing
 fun DownloadIconButton(
     downloadInfo: IDownloadTask.MapDownloadTask?,
     onClick: () -> Unit,
+    localExist: Boolean = false,
     modifier: Modifier = Modifier.size(24.dp)
 ){
-    if (downloadInfo != null) {
+    if (localExist) {
+        IconButton({}, enabled = false,modifier = Modifier.padding(2.dp)) {
+            Icon(Icons.Rounded.Check, contentDescription = "local icon")
+        }
+    }else if (downloadInfo != null) {
         when(downloadInfo.downloadTaskModel.status) {
             is KownTaskStatus.Running,is KownTaskStatus.Queued,is KownTaskStatus.PostProcessing -> {
                 val animatedProgress by animateFloatAsState(
@@ -39,15 +45,15 @@ fun DownloadIconButton(
                 )
             }
             is KownTaskStatus.Completed -> {
-                Icon(
-                    Icons.Rounded.Check,
-                    contentDescription = "Download complete",
-                    modifier = modifier
-                )
+                IconButton({}, enabled = false,modifier = Modifier.padding(2.dp)) {
+                    Icon(
+                        Icons.Rounded.Check,
+
+                        contentDescription = "local icon",
+                    )
+                }
             }
-
         }
-
     }else {
         IconButton(onClick = onClick,
             modifier = modifier){

@@ -3,8 +3,16 @@ package io.ktlab.bshelper.model
 import io.ktlab.bshelper.model.enums.ECharacteristic
 import io.ktlab.bshelper.model.enums.EMapDifficulty
 import io.ktlab.bshelper.model.vo.BSMapVO
+import io.ktlab.bshelper.model.vo.BsMapWithUploader
+import io.ktlab.bshelper.model.vo.FSMapVO
 import io.ktlab.bshelper.model.vo.VersionWithDiffList
+import io.ktlab.kown.model.DownloadListener
+import io.ktlab.kown.model.DownloadTaskBO
+import io.ktlab.kown.model.KownTaskStatus
+import io.ktlab.kown.model.RenameStrategy
 import kotlinx.datetime.LocalDateTime
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 private val fakeBSMap = BSMap(
     mapId = "Map123",
@@ -21,7 +29,7 @@ private val fakeBSMap = BSMap(
     downloads = 500,
     upVotes = 750,
     downVotes = 250,
-    score = 4.5,
+    score = 0.45,
     automapper = false,
     ranked = true,
     qualified = true,
@@ -43,45 +51,102 @@ private val bsUser = BSUser(
     playlistUrl = "https://example.com/playlist",
     verifiedMapper = true
 )
-private val versions = listOf(
-    VersionWithDiffList(
-    version = BSMapVersion(
-        hash = "abcdef123456",
-        mapId = "Map789",
-        state = "active",
-        createdAt = LocalDateTime(2023, 9, 1, 10, 0, 0), // 设置日期时间
-        sageScore = 5000,
-        downloadURL = "https://example.com/map/download",
-        coverURL = "https://example.com/map/cover",
-        previewURL = "https://example.com/map/preview"
-    ),
-    diffs = listOf(
-        MapDifficulty(
-            seconds = 180.0,
-            hash = "def456",
-            mapId = "4fd0e",
-            difficulty = EMapDifficulty.Expert,
-            characteristic = ECharacteristic.Standard,
-            notes = 1000,
-            nps = 6.5,
-            njs = 12.0,
-            bombs = 20,
-            obstacles = 5,
-            offset = 1.5,
-            events = 200,
-            chroma = true,
-            length = 240.0,
-            me = true,
-            ne = false,
-            cinema = false,
-            maxScore = 100000,
-            label = "Custom Map"
-        )
+private val diffs = listOf(
+    MapDifficulty(
+        seconds = 180.0,
+        hash = "def456",
+        mapId = "4fd0e",
+        difficulty = EMapDifficulty.Expert,
+        characteristic = ECharacteristic.Standard,
+        notes = 1000,
+        nps = 6.5,
+        njs = 12.0,
+        bombs = 20,
+        obstacles = 5,
+        offset = 1.5,
+        events = 200,
+        chroma = true,
+        length = 240.0,
+        me = true,
+        ne = false,
+        cinema = false,
+        maxScore = 100000,
+        label = "Custom Map"
     )
 )
+private val version = BSMapVersion(
+    hash = "abcdef123456",
+    mapId = "Map789",
+    state = "active",
+    createdAt = LocalDateTime(2023, 9, 1, 10, 0, 0), // 设置日期时间
+    sageScore = 5000,
+    downloadURL = "https://eu.cdn.beatsaver.com/a05378aa9e4bb399f354fd3ea3cdf56036518d18.zip",
+    coverURL = "https://eu.cdn.beatsaver.com/a05378aa9e4bb399f354fd3ea3cdf56036518d18.jpg",
+    previewURL = "https://eu.cdn.beatsaver.com/a05378aa9e4bb399f354fd3ea3cdf56036518d18.mp3"
 )
+private val versions = listOf(VersionWithDiffList(version = version,diffs = diffs))
+
 val bsMapVO = BSMapVO(
     map = fakeBSMap,
     uploader = bsUser,
     versions = versions
+)
+
+val fakeFSMap = FSMap(
+    hash = "abcdef123456",
+    name = "Sample Map",
+    duration = 240L.toDuration(DurationUnit.SECONDS),
+    previewStartTime = 0.0,
+    previewDuration = 10L.toDuration(DurationUnit.SECONDS),
+    bpm = 128.0,
+    songName = "Sample Song",
+    songSubname = "Subname",
+    songAuthorName = "Sample Artist",
+    levelAuthorName = "Sample Mapper",
+    relativeCoverFilename = "cover.jpg",
+    relativeSongFilename = "song.mp3",
+    relativeInfoFilename = "info.json",
+    dirName = "Map123",
+    playlistBasePath = "https://example.com/playlist",
+    playlistId = "Playlist123",
+    active = true,
+    mapId = "Map123"
+)
+
+//val difficulties: List<MapDifficulty>? = null,
+//val bsMapWithUploader: BsMapWithUploader? = null,
+val fakeFSMapVO: FSMapVO = FSMapVO(
+    fsMap = fakeFSMap,
+    difficulties = diffs,
+    bsMapWithUploader = BsMapWithUploader(
+        bsMap = fakeBSMap,
+        uploader = bsUser,
+        version = version,
+        difficulties = diffs
+    )
+)
+
+
+// fake a DownloadTaskBO
+private val downloadTaskBO = DownloadTaskBO(
+    taskId = "fake",
+    title = "fake",
+    tag = "fake",
+    headers = mapOf(),
+    status = KownTaskStatus.Running,
+    url = "fake",
+    eTag = "fake",
+    dirPath = "fake",
+    renameAble = false,
+    renameStrategy = RenameStrategy.DEFAULT,
+    filename = "fake",
+    requestTimeout = 0,
+    connectTimeout = 0,
+    totalBytes = 33233,
+    downloadedBytes = 333333,
+    lastModifiedAt = 0,
+    estimatedTime = 0,
+    speed = 0,
+    downloadListener = DownloadListener(),
+    relateEntityId = "3f404"
 )

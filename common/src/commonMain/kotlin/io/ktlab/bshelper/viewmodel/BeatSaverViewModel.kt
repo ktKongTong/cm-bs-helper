@@ -5,6 +5,7 @@ import app.cash.paging.cachedIn
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
+import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.BSMapReviewDTO
@@ -12,7 +13,10 @@ import io.ktlab.bshelper.model.dto.response.successOr
 import io.ktlab.bshelper.model.successOr
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
-import io.ktlab.bshelper.repository.*
+import io.ktlab.bshelper.repository.DownloaderRepository
+import io.ktlab.bshelper.repository.FSMapRepository
+import io.ktlab.bshelper.repository.PlaylistRepository
+import io.ktlab.bshelper.repository.UserPreferenceRepository
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,12 +33,14 @@ data class LocalState(
 )
 enum class TabType(val human:String,val index : Int){
     Map("map",0),
-    Playlist("playlist",1);
+    Playlist("playlist",1),
+    Mapper("mapper",2);
     companion object {
         fun fromIndex(index: Int): TabType {
             return when (index) {
                 0 -> Map
                 1 -> Playlist
+                2 -> Mapper
                 else -> Map
             }
         }
@@ -42,9 +48,10 @@ enum class TabType(val human:String,val index : Int){
             return when (tabType) {
                 Map -> 0
                 Playlist -> 1
+                Mapper -> 2
             }
         }
-        val tabs = listOf(Map,Playlist)
+        val tabs = listOf(Map,Playlist,Mapper)
     }
 }
 
@@ -149,6 +156,23 @@ data class BeatSaverViewModelState(
                 multiSelectMode = multiSelectMode,
                 multiSelectedBSMap = multiSelectedBSMap,
                 selectedBSMapReview =   selectedBSMapReview,
+            )
+        }
+        TabType.Mapper -> {
+            BeatSaverUiState.MapQuery(
+                isLoading = isLoading,
+                mapFilterPanelState = mapFilterPanelState,
+                mapFlow = mapFlow ?: emptyFlow(),
+                localState = LocalState(
+                    localMapIdSet = localMapIdSet,
+                    selectableLocalPlaylists = selectableLocalPlaylists,
+                    targetPlaylist = selectedPlaylist,
+                ),
+                downloadTaskFlow = downloadTaskFlow ?: emptyFlow(),
+                multiSelectMode = multiSelectMode,
+                multiSelectedBSMap = multiSelectedBSMap,
+                selectedBSMap = selectedBSMap,
+                selectedBSMapReview = selectedBSMapReview,
             )
         }
     }

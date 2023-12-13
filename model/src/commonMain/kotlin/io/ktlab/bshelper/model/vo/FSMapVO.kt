@@ -1,14 +1,14 @@
-package io.ktlab.bshelper.model.mapper
+package io.ktlab.bshelper.model.vo
 
 import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.enums.EMapDifficulty
-import io.ktlab.bshelper.model.vo.MapDiff
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 data class BsMapWithUploader(
     val bsMap: BSMap,
     val uploader: BSUser? = null,
+    val curator: BSUser? = null,
     val version: BSMapVersion? = null,
     val difficulties: List<MapDifficulty>? = null,
 )
@@ -38,7 +38,6 @@ class FSMapVO(
 
 
     fun isCurated(): Boolean {
-//        return bsMapWithUploader?.uploader?.curatorMapper ?: false
         return false
     }
     fun isVerified(): Boolean {
@@ -148,6 +147,10 @@ class FSMapVO(
 
     override fun getMapVersion(): String {
         return ""
+    }
+
+    override fun isRelateWithBSMap(): Boolean {
+        return bsMapWithUploader != null
     }
 
 }

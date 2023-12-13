@@ -77,7 +77,9 @@ fun MapCardPagingList(
             }else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(size),
+                    // remember scroll state to scroll to the position when items count changes
                     contentPadding = contentPadding,
+                    state = state,
                 ) {
 
                 items(

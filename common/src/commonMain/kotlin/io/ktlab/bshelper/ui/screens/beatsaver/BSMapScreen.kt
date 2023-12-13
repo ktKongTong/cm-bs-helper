@@ -3,6 +3,7 @@ package io.ktlab.bshelper.ui.screens.beatsaver
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -10,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
-import io.ktlab.bshelper.repository.IDownloadTask
+import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapCardListHeader
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapDetail
 import io.ktlab.bshelper.ui.screens.beatsaver.components.MapCardPagingList
@@ -49,6 +50,7 @@ fun BSMapScreen(
         .fillMaxWidth()
     ) {
 
+        val gridState = rememberLazyGridState()
             if (uiState.selectedBSMap != null) {
                 BSMapDetail(
                     map = uiState.selectedBSMap,
@@ -64,6 +66,7 @@ fun BSMapScreen(
                     mapMultiSelected = uiState.multiSelectedBSMap,
                     selectedBSMap = uiState.selectedBSMap,
                     onUIEvent = onUIEvent,
+                    state = gridState,
                     stickyHeader = {
                         BSMapCardListHeader(
                             count = 0,

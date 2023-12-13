@@ -17,7 +17,7 @@ fun BSBPMIcon(
 ){
     Icon(
         imageVector = Icons.Rounded.HourglassBottom,
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs bpm icon",
         tint = tint
     )
@@ -30,7 +30,7 @@ fun BSDurationIcon(
 ){
     Icon(
         imageVector = Icons.Rounded.HourglassBottom,
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs duration icon",
         tint = tint
     )
@@ -44,7 +44,7 @@ fun BSNPSIcon(
 ){
     Icon(
         painter = painterResource(MR.images.bs_nps_icon),
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs nps icon",
         tint = tint
     )
@@ -57,7 +57,7 @@ fun BSNoteIcon(
 ){
     Icon(
         painter = painterResource(MR.images.bs_notes_icon),
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs notes icon",
         tint = tint
     )
@@ -70,7 +70,7 @@ fun BSObstacleIcon(
 ){
     Icon(
         painter = painterResource(MR.images.bs_walls_icon),
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs obstacle icon",
         tint = tint
     )
@@ -83,7 +83,7 @@ fun BSLightEventIcon(
 ){
     Icon(
         painter = painterResource(MR.images.spotlight_icon),
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs light event icon",
         tint = tint
     )
@@ -97,7 +97,7 @@ fun BSBombIcon(
 ){
     Icon(
         painter = painterResource(MR.images.bs_bomb_icon),
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs bomb icon",
         tint = tint
     )
@@ -110,7 +110,7 @@ fun BSRatingIcon(
 ){
     Icon(
         imageVector = Icons.Rounded.Star,
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs rating icon",
         tint = tint
     )
@@ -123,7 +123,7 @@ fun BSThumbUpIcon(
 ){
     Icon(
         imageVector = Icons.Rounded.ThumbUp,
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs download icon",
         tint = tint
     )
@@ -136,7 +136,7 @@ fun BSThumbDownIcon(
 ){
     Icon(
         imageVector = Icons.Rounded.ThumbDown,
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs download icon",
         tint = tint
     )
@@ -149,7 +149,7 @@ fun BSDateIcon(
 ){
     Icon(
         imageVector = Icons.Rounded.Schedule,
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "date icon",
         tint = tint
     )
@@ -162,7 +162,7 @@ fun BSMEIcon(
 ){
     Icon(
         painter = painterResource(MR.images.bs_me_icon),
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "mapping extension icon",
         tint = tint
     )
@@ -174,8 +174,8 @@ fun BSNEIcon(
     tint: Color = androidx.compose.material3.LocalContentColor.current
 ){
     Icon(
-        imageVector = Icons.Rounded.Schedule,
-        modifier = modifier.size(20.dp),
+        painter = painterResource(MR.images.bs_ne_icon),
+        modifier = modifier.size(16.dp),
         contentDescription = "noodle extension icon",
         tint = tint
     )
@@ -188,7 +188,7 @@ fun BSAIIcon(
 ){
     Icon(
         imageVector = Icons.Rounded.SmartToy,
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "noodle extension icon",
         tint = tint
     )
@@ -201,7 +201,7 @@ fun BSRankedIcon(
 ){
     Icon(
         imageVector = Icons.Rounded.EmojiEvents,
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "ranked icon",
         tint = tint
     )
@@ -213,7 +213,7 @@ fun BSCuratedIcon(
 ){
     Icon(
         imageVector = Icons.Rounded.Verified,
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "curated icon",
         tint = tint
     )
@@ -225,7 +225,7 @@ fun BSCinemaIcon(
 ){
     Icon(
         painter = painterResource(MR.images.cinema_icon),
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs cinema icon",
         tint = tint
     )
@@ -238,7 +238,7 @@ fun BSChromaIcon(
 ){
     Icon(
         painter = painterResource(MR.images.spotlight_icon),
-        modifier = modifier.size(20.dp),
+        modifier = modifier.size(16.dp),
         contentDescription = "bs chroma icon",
         tint = tint
     )

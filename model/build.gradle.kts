@@ -24,6 +24,7 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.serialization)
+                implementation(libs.kown)
             }
         }
     }

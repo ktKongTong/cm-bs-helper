@@ -49,10 +49,10 @@ private fun StyleMapTag(
 ) {
     Row(
         modifier = Modifier
-            .padding(3.dp)
+            .padding(horizontal = 2.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(Color.Red, RoundedCornerShape(4.dp))
-            .padding(3.dp)
+            .padding(2.dp)
     ) {
         Text(text = tag, softWrap = false, maxLines = 1, color = Color.White, style = MaterialTheme.typography.labelSmall)
     }
@@ -64,10 +64,10 @@ private fun GenreMapTag(
 ) {
     Row(
         modifier = Modifier
-            .padding(3.dp)
+            .padding(horizontal = 2.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(Color(0xFF144599), RoundedCornerShape(4.dp))
-            .padding(3.dp)
+            .padding(2.dp)
 
     ) {
         Text(text = tag, softWrap = false, maxLines = 1, color = Color.White,style = MaterialTheme.typography.labelSmall)
