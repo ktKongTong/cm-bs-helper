@@ -51,7 +51,6 @@ fun List<SelectAllByMapIds>.mapToVO():List<BSMapVO> = this
                 BSMapVersion(
                     hash = it.bsMapVersionHash!!,
                     mapId = it.mapId,
-                    key = "",
                     state = it.bsMapVersionState!!,
                     createdAt = it.bsMapVersionCreatedAt,
                     sageScore = 0,
@@ -80,8 +79,7 @@ fun List<SelectAllByMapIds>.mapToVO():List<BSMapVO> = this
                     me = it.diffMe,
                     ne = it.diffNe,
                     cinema = it.diffCinema,
-                    maxScore = it.diffMaxScore,
-                    uuid = ""
+                    maxScore = it.diffMaxScore
                 )
             }
             VersionWithDiffList(version,difficulties)

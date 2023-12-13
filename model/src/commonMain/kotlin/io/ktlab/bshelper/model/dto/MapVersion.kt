@@ -1,7 +1,7 @@
 package io.ktlab.bshelper.model.dto
 
-import io.ktlab.bshelper.model.dto.serializer.LocalDateTimeAsStringSerializer
 import io.ktlab.bshelper.model.BSMapVersion
+import io.ktlab.bshelper.model.dto.serializer.LocalDateTimeAsStringSerializer
 import io.ktlab.bshelper.model.vo.VersionWithDiffList
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
@@ -31,7 +31,6 @@ data class MapVersionDTO (
     fun convertToEntity(mapId:String): BSMapVersion {
         return BSMapVersion(
             hash = hash,
-            key = key?:"none",
             state = state,
             createdAt = createdAt,
             sageScore = sageScore?:0,

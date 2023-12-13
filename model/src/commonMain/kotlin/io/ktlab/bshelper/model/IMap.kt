@@ -2,7 +2,6 @@ package io.ktlab.bshelper.model
 
 import io.ktlab.bshelper.model.enums.EMapDifficulty
 import io.ktlab.bshelper.model.vo.MapDiff
-import kotlin.time.Duration
 
 
 interface IMap {
@@ -20,23 +19,4 @@ interface IMap {
     fun getMaxNotes(): Long
     fun getMaxNPS(): Double
     fun getMapVersion(): String
-}
-
-
-fun BSMap.toFSMap(targetPlaylist:FSPlaylist):FSMap {
-    return FSMap(
-        mapId = mapId,
-        version = null,
-        name = name,
-        author = this.songAuthorName,
-        duration = Duration.ZERO,
-        relativeCoverPath = "",
-        relativeSongPath = "",
-        relativeInfoPath = "",
-        dirFilename = "$mapId ($songName - $songAuthorName)".replace("/", " "),
-        playlistBasePath = targetPlaylist.basePath,
-        hash = null,
-        playlistId = targetPlaylist.uuid,
-        active = false,
-    )
 }

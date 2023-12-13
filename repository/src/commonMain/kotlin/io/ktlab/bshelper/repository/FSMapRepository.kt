@@ -24,6 +24,7 @@ import okio.FileSystem
 import okio.Path.Companion.toPath
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -50,8 +51,8 @@ class FSMapRepository(
             val playlistPath = (targetPlaylist as FSPlaylistVO).basePath
 //            TODO failure handle
             fsMaps.forEach{
-                val path = Path(it.playlistBasePath,it.dirFilename)
-                val tarPath = Path(playlistPath,it.dirFilename)
+                val path = Path(it.playlistBasePath,it.dirName)
+                val tarPath = Path(playlistPath,it.dirName)
                 path.toFile().renameTo(tarPath.toFile())
             }
             bsHelperDAO.transaction {
@@ -75,32 +76,6 @@ class FSMapRepository(
             bsHelperDAO.fSPlaylistQueries.deleteAll()
         }
     }
-
-//    suspend fun getBSMapById(mapId:String):BSMapView {
-//        fsMapDao.geBSMapById(mapId).let {
-//            if (it == null) {
-//                // 获取 bsMap 的详情
-//                val bsMap = beatSaverAPIService.getMapById(mapId)
-//                // 写入 uploader
-//                bsMap.uploader.convertToEntity().let { uploader ->
-//                    fsMapDao.insertBSUser(listOf(uploader))
-//                }
-//                // 写入 diff
-//                bsMap.versions.first().let { versionDto ->
-//                    val version = versionDto.convertToEntity(mapId)
-//                    val diffs = versionDto.diffs.map { diffDto ->
-//                        diffDto.convertToEntity(hash = version.hash, mapId = bsMap.id)
-//                    }
-//                    fsMapDao.insertVersion(version)
-//                    fsMapDao.insertDiffAll(diffs)
-//                }
-//                // 写入 map
-//                fsMapDao.insertBSAll(listOf(bsMap.convertToBSEntity()))
-//                return fsMapDao.geBSMapById(mapId)!!
-//            }
-//            return it
-//        }
-//    }
 
     suspend fun deleteLocalAll() {
 //        fsMapDao.deleteAll()
@@ -168,14 +143,19 @@ class FSMapRepository(
                 bsHelperDAO.fSMapQueries.insert(
                     FSMap(
                         mapId = it.getID(),
-                        version = "",
                         name = it.getSongName(),
-                        author = it.getAuthor(),
                         duration = it.map.duration.toDuration(DurationUnit.SECONDS),
-                        relativeCoverPath = "",
-                        relativeSongPath = "",
-                        relativeInfoPath = "",
-                        dirFilename = "${it.map.mapId} (${it.map.songName} - ${it.map.songAuthorName})".replace("/", " "),
+                        bpm = it.map.bpm,
+                        levelAuthorName = it.map.levelAuthorName,
+                        songAuthorName = it.map.songAuthorName,
+                        songName = it.map.songName,
+                        songSubname = it.map.songSubname,
+                        relativeInfoFilename = "",
+                        relativeSongFilename = "",
+                        relativeCoverFilename = "",
+                        dirName = "${it.map.mapId} (${it.map.songName} - ${it.map.songAuthorName})".replace("/", " "),
+                        previewStartTime = 0.0,
+                        previewDuration = Duration.ZERO,
                         playlistBasePath = targetPlaylist.getTargetPath(),
                         hash = it.versions.firstOrNull()?.version?.hash?:"",
                         playlistId = targetPlaylist.id,
@@ -217,7 +197,7 @@ class FSMapRepository(
         try {
 //            批量删除
             fsMaps.forEach{
-                FileSystem.SYSTEM.deleteRecursively(it.playlistBasePath.toPath().resolve(it.dirFilename))
+                FileSystem.SYSTEM.deleteRecursively(it.playlistBasePath.toPath().resolve(it.dirName))
             }
             val mapIds = fsMaps.map { it.mapId }
             bsHelperDAO.fSMapQueries.deleteFSMapByMapIdsAndPlaylistId(mapIds,playlistId)
@@ -227,45 +207,6 @@ class FSMapRepository(
         }
         return Result.Success("")
     }
-//    private suspend fun fsMapProcess(it: FSMapView, playlistId:String? = null):FSMapView {
-//        try {
-//            if (it.bsMapWithUploader != null) {
-//                return it
-//            }
-//            // 获取 bsMap 的详情
-//            val bsMap = beatSaverAPIService.getMapById(it.fsMap.mapId)
-//            // 写入 uploader
-//            bsMap.uploader.convertToEntity().let { uploader ->
-//                fsMapDao.insertBSUser(listOf(uploader))
-//            }
-//            // 写入 diff
-//            bsMap.versions.first().let { versionDto ->
-//                val version = versionDto.convertToEntity(it.fsMap.mapId)
-//                val diffs = versionDto.diffs.map { diffDto ->
-//                    diffDto.convertToEntity(hash = version.hash, mapId = bsMap.id)
-//                }
-//                fsMapDao.insertVersion(version)
-//                fsMapDao.insertDiffAll(diffs)
-//            }
-//            // 写入 map
-//            fsMapDao.insertBSAll(listOf(bsMap.convertToBSEntity()))
-//            return it.copy(
-//                bsMapWithUploader = bsMap.convertToBSWithUploader()
-//            )
-//        } catch (e: Exception) {
-//            Log.e("MapRepository", e.toString())
-//            return it
-//        }
-//    }
-
-//    override suspend fun getMapByMapId(mapId: String): Flow<Result<IMap>> = flow {
-//        try {
-//            val map = fsMapProcess(fsMapDao.getMapByMapId(mapId))
-//            emit(Result.Success(map))
-//        } catch (e: Exception) {
-//            Log.e("MapRepository", e.toString())
-//        }
-//    }
 
     fun getLocalMapIdSet(): Flow<Set<Pair<String,String>>> = bsHelperDAO.fSMapQueries
         .getAllFSMapId()

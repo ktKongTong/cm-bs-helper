@@ -1,26 +1,23 @@
 package io.ktlab.bshelper.utils
 
+//import io.ktlab.bsmg.FSMapInfo
 import io.beatmaps.common.beatsaber.BSDifficulty
 import io.beatmaps.common.beatsaber.BSDifficultyV3
-import io.ktlab.bshelper.model.BSMapVersion
 import io.ktlab.bshelper.model.FSMap
-import io.ktlab.bshelper.model.MapDifficulty
-import io.ktlab.bshelper.model.enums.ECharacteristic
-import io.ktlab.bshelper.model.enums.EMapDifficulty
-import io.ktlab.bsmg.FSMapDifficulty
+import io.ktlab.bshelper.model.FSPlaylist
+import io.ktlab.bshelper.model.enums.SyncStateEnum
+import io.ktlab.bshelper.model.scanner.IExtractedMapInfo
+import io.ktlab.bshelper.model.scanner.ScannerException
 import io.ktlab.bsmg.FSMapInfo
+import kotlinx.datetime.Clock
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
-import okio.Path
+import okio.*
 import okio.Path.Companion.toPath
-import okio.buffer
-import okio.source
-import okio.use
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
-import java.util.*
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -31,58 +28,124 @@ data class ExtractedMapInfo (
     val mapInfo: FSMapInfo,
     val songDuration: Double = 0.0,
     val basePath: Path,
-    val infoFilename: String? = null,
-    val songFilename: String? = null,
-    val coverFilename: String? = null,
+    val infoFilename: String,
+    val songFilename: String,
+    val coverFilename: String,
     val v2MapObjectMap: Map<String, BSDifficulty>? = null,
     val v3MapObjectMap: Map<String, BSDifficultyV3>? = null,
 ) {
     fun generateFSMapDBO(playlistId: String):FSMap{
         return FSMap(
             mapId = mapId ?: "",
-            version = mapInfo.version,
             name = mapInfo.songName,
-            author = mapInfo.songAuthorName,
             duration = songDuration.toDuration(DurationUnit.SECONDS),
-            relativeCoverPath = coverFilename ?: "",
-            relativeSongPath = songFilename ?: "",
-            relativeInfoPath = infoFilename ?: "",
-            dirFilename = basePath.name,
-            playlistBasePath = basePath.toFile().parentFile?.absolutePath ?: "",
+            relativeInfoFilename = coverFilename,
+            relativeCoverFilename = songFilename,
+            relativeSongFilename = infoFilename,
+            dirName = basePath.name,
+            playlistBasePath = basePath.parent?.toString()?:"",
             hash = hash,
             active = true,
             playlistId = playlistId,
-        )
-    }
-    fun generateVersionDBO():BSMapVersion{
-        return BSMapVersion(
-            mapId = mapId ?: "",
-            hash = hash,
-            state = "UN_SYNCED",
-            key = "",
-            createdAt = null,
-            sageScore = 0,
-            downloadURL = "",
-            coverURL = "",
-            previewURL = "",
+            bpm = mapInfo.bpm,
+            songName = mapInfo.songName,
+            songSubname = mapInfo.songAuthorName,
+            songAuthorName = mapInfo.songAuthorName,
+            levelAuthorName = mapInfo.songAuthorName,
+            previewDuration = mapInfo.previewDuration.toDuration(DurationUnit.SECONDS),
+            previewStartTime = mapInfo.previewStartTime,
         )
     }
 
 }
 
+fun NewFSPlaylist(
+    basePath: String,
+    mapAmount: Int = 0,
+    name:String = "",
+    topPlaylist: Boolean = false,
+):FSPlaylist{
+    return FSPlaylist(
+        id= basePath,
+        name = name,
+        description = "",
+        mapAmount = mapAmount,
+        maxNote = 0,
+        avgNote = 0.0,
+        avgObstacle = 0.0,
+        avgBomb = 0.0,
+        maxNps = 0.0,
+        avgNps = 0.0,
+        totalDuration = 0,
+        maxDuration = 0,
+        avgDuration = 0,
+        sync = SyncStateEnum.SYNCED,
+        bsPlaylistId = "",
+        basePath = basePath,
+        syncTimestamp = Clock.System.now().epochSeconds,
+        customTags = "",
+        topPlaylist = topPlaylist,
+    )
+}
+
+
+
+
 class BSMapUtils {
+
+
     companion object {
         private val json = Json {
             ignoreUnknownKeys = true
             isLenient = true
         }
 
+
+        fun checkIfBSMap(path: Path): Boolean {
+            val metadata = FileSystem.SYSTEM.metadataOrNull(path)
+            if (metadata?.isDirectory != true) {
+                return false
+            }
+           return FileSystem.SYSTEM.listOrNull(path)?.any{ it.name.lowercase() == "info.dat" } ?: false
+        }
         fun checkIfBSMap(file: File): Boolean {
             if (!file.isDirectory) {
                 return false
             }
             return file.listFiles()?.any {it != null && it.name.lowercase() == "info.dat" } ?: false
         }
+
+        private fun mapDigest(path:Path):Pair<String,ScannerException?> {
+//            val path = infoFilePath
+            val files=  FileSystem.SYSTEM.list(path)
+            val infoFile = files.find {it.name.lowercase() == "info.dat" }
+                ?: return "" to ScannerException.FileMissingException("Info.dat or info.dat not found", mapDir = path.toString())
+            HashingSink.sha1(blackholeSink()).use { sink ->
+                val paths = infoFile.toFile().source().buffer().use inner@{ source ->
+                    val copySink = Buffer()
+                    source.readAll(copySink)
+                    val str = copySink.copy().readUtf8()
+                    copySink.readAll(sink)
+                    val infoc = json.decodeFromString<FSMapInfo>(str)
+                    val paths = infoc.difficultyBeatmapSets.flatMap {bms->
+                        bms.difficultyBeatmaps.map { df->
+                            path.resolve(df.beatmapFilename) to bms.characteristicName+df.difficulty
+                        }
+                    }
+                    return@inner paths
+                }
+                var exception:ScannerException? = null
+                paths.map { pathInfo ->
+                    if(!FileSystem.SYSTEM.exists(pathInfo.first)) {
+                        exception = ScannerException.FileMissingException("File missing", mapDir = pathInfo.first.toString())
+                    }else {
+                        pathInfo.first.toFile().source().buffer().readAll(sink)
+                    }
+                }
+                return sink.hash.hex() to exception
+            }
+        }
+
         @OptIn(ExperimentalSerializationApi::class)
         fun extractMapInfoFromDir(playlistAbsolutePath:String, file: File, playlistId:String): ExtractedMapInfo {
             val basePath = file.absolutePath
@@ -101,6 +164,26 @@ class BSMapUtils {
             val v2DifficultyMap = mutableMapOf<String, BSDifficulty>()
             val v3DifficultyMap = mutableMapOf<String, BSDifficultyV3>()
             val infobytes = infoFile.readBytes()
+            val digest = HashingSink.sha1(blackholeSink()).use { sink ->
+                val paths = file.source().buffer().use inner@{ source ->
+                    source.readAll(sink)
+                    source.readUtf8()
+                    val infoc = json.decodeFromString<FSMapInfo>(source.readUtf8())
+                    val paths = infoc.difficultyBeatmapSets.flatMap {bms->
+                        bms.difficultyBeatmaps.map { df->
+                            basePath.toPath().resolve(df.beatmapFilename) to bms.characteristicName+df.difficulty
+                        }
+                    }
+                    return@inner paths
+                }
+                paths.map { pathInfo ->
+                    val f = pathInfo.first.toFile()
+                    f.source().buffer().readAll(sink)
+                }
+                return@use sink.hash.hex()
+            }
+
+            val buffer = infoFile.source().buffer()
             md.update(infobytes)
             val paths = info.difficultyBeatmapSets.flatMap {bms->
                 bms.difficultyBeatmaps.map { df->
@@ -137,7 +220,6 @@ class BSMapUtils {
                     } finally {
                         stream1.close()
                     }
-
                 }catch (e:Exception){
                     e.printStackTrace()
                     throw Exception("${file.absolutePath}: ${pathInfo.second} cannot be decoded")
@@ -151,7 +233,7 @@ class BSMapUtils {
                 hash = hash,
                 mapInfo = info,
                 songDuration = 0.0,
-               basePath = basePath.toPath(),
+                basePath = basePath.toPath(),
                 infoFilename = infoFile.name,
                 songFilename = info.songFilename,
                 coverFilename = info.coverFilename,
@@ -160,70 +242,97 @@ class BSMapUtils {
             )
             return extractedMapInfo
         }
+
+
+
+        @OptIn(ExperimentalSerializationApi::class)
+        fun extractMapInfoFromDirV2(mapPath:Path): IExtractedMapInfo {
+            val pattern = Regex("^[0-9a-f]{1,5} \\(.+\\)$")
+            val mapId = if (pattern.matches(mapPath.name)) {
+                mapPath.name.substring(0, mapPath.name.indexOf(" (")).trim()
+            } else null
+            val (hash,err) = mapDigest(mapPath)
+            if (err != null) {
+                return IExtractedMapInfo.ErrorMapInfo(hash,mapId,mapPath,null,err)
+            }
+            // means hash has been calculated and verified
+            val files = FileSystem.SYSTEM.list(mapPath)
+            val infoFilePath = files.find {it.name.lowercase() == "info.dat" }!!
+            val infoContent = FileSystem.SYSTEM.read(infoFilePath) { this.readUtf8() }
+            val info = json.decodeFromString<FSMapInfo>(infoContent)
+
+            val paths = info.difficultyBeatmapSets.flatMap {bms->
+                bms.difficultyBeatmaps.map { df->
+                    mapPath.resolve(df.beatmapFilename) to bms.characteristicName+df.difficulty
+                }
+            }
+            val v2DifficultyMap = mutableMapOf<String, BSDifficulty>()
+            val v3DifficultyMap = mutableMapOf<String, BSDifficultyV3>()
+
+
+            paths.map {pathInfo ->
+                try {
+                    val size = FileSystem.SYSTEM.metadata(pathInfo.first).size
+                    if (size!! > 5 * 1024 * 1024) {
+                        throw ScannerException.JSONFileTooLargeException("File size is too large", mapId = mapId, mapPath = pathInfo.first)
+                    }
+                    val f = pathInfo.first.toFile()
+                    // will cause oom when json file is too large
+                    // some chroma maps larger than 10MB, even 30MB
+                    // in android, it will cause oom
+                    val stream1 = f.inputStream()
+                    try {
+                        val v2 = json.decodeFromStream<BSDifficulty>(stream1)
+                        v2DifficultyMap[pathInfo.second] = v2
+                    }catch (e: Exception){
+                        val stream2 = f.inputStream()
+                        try {
+                            val v3 = json.decodeFromStream<BSDifficultyV3>(stream2)
+                            v3DifficultyMap[pathInfo.second] = v3
+                        }finally {
+                            stream2.close()
+                        }
+                    } finally {
+                        stream1.close()
+                    }
+                } catch (e : ScannerException.JSONFileTooLargeException) {
+                    return IExtractedMapInfo.ErrorMapInfo(hash, mapId, mapPath,info, e)
+                } catch (e:Exception){
+                    return IExtractedMapInfo.ErrorMapInfo(hash, mapId, mapPath, info,
+                        ScannerException.ParseException(
+                            "${pathInfo} can not parse as beatsaber map",
+                            mapId = mapId,
+                            mapDir = pathInfo.first.toString()
+                        )
+                    )
+                }
+            }
+            return if (mapId!=null) {
+                 IExtractedMapInfo.BSMapInfo(
+                    hash = hash,
+                    mapId = mapId,
+                    mapInfo = info,
+                    mapPath = mapPath,
+                    name = info.songName,
+                    infoFilename = infoFilePath.name,
+                    songFilename = info.songFilename,
+                    coverFilename = info.coverFilename,
+                    v2MapObjectMap = v2DifficultyMap,
+                    v3MapObjectMap = v3DifficultyMap,
+                )
+            } else {
+                 IExtractedMapInfo.LocalMapInfo(
+                    hash = hash,
+                    mapPath = mapPath,
+                    name = info.songName,
+                    infoFilename = infoFilePath.name,
+                    songFilename = info.songFilename,
+                    coverFilename = info.coverFilename,
+                    mapInfo = info,
+                    v2MapObjectMap = v2DifficultyMap,
+                    v3MapObjectMap = v3DifficultyMap,
+                )
+            }
+        }
     }
-}
-
-fun BSDifficulty.generateMapDifficultyInfo(
-    extractedMapInfo: ExtractedMapInfo,
-    characteristic:ECharacteristic,
-    difficulty: FSMapDifficulty
-):MapDifficulty {
-
-    return MapDifficulty(
-        uuid = UUID.randomUUID().toString(),
-        seconds = extractedMapInfo.songDuration,
-        hash = extractedMapInfo.hash,
-        mapId = extractedMapInfo.mapId ?: "",
-        difficulty = EMapDifficulty.from(difficulty.difficulty),
-        characteristic = characteristic,
-        notes = noteCount().toLong(),
-        nps = noteCount() / extractedMapInfo.songDuration,
-        njs = difficulty.noteJumpStartBeatOffset,
-        bombs = bombCount().toLong(),
-        obstacles = obstacleCount().toLong(),
-        offset = difficulty.noteJumpStartBeatOffset,
-        events = eventCount().toLong(),
-        length = 0.0,
-        chroma = null,
-        me = null,
-        ne = null,
-        cinema = null,
-        maxScore = null,
-        label = null,
-    )
-}
-
-fun BSDifficultyV3.generateMapDifficultyInfo(
-    extractedMapInfo: ExtractedMapInfo,
-    characteristic:ECharacteristic,
-    difficulty: FSMapDifficulty
-):MapDifficulty {
-//    val notes = this.burstSliders.count() + this.sliders.count() + this.colorNotes.count()
-    val nps = noteCount() / extractedMapInfo.songDuration
-    val bombs = bombCount()
-    val obstacles = obstacleCount()
-    val offset = difficulty.noteJumpStartBeatOffset
-
-    return MapDifficulty(
-        uuid = UUID.randomUUID().toString(),
-        seconds = extractedMapInfo.songDuration,
-        hash = extractedMapInfo.hash,
-        mapId = extractedMapInfo.mapId ?: "",
-        difficulty = EMapDifficulty.from(difficulty.difficulty),
-        characteristic = characteristic,
-        notes = noteCount().toLong(),
-        nps = nps,
-        njs = difficulty.noteJumpStartBeatOffset,
-        bombs = bombs.toLong(),
-        obstacles = obstacles.toLong(),
-        offset = offset,
-        events = 0,
-        length = 0.0,
-        chroma = null,
-        me = null,
-        ne = null,
-        cinema = null,
-        maxScore = null,
-        label = null,
-    )
 }

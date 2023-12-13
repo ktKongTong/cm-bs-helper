@@ -4,13 +4,12 @@ import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.model.BSHelperDatabase
 import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.MapDifficulty
-import io.ktlab.bshelper.model.enums.ECharacteristic
+import io.ktlab.bshelper.model.enums.SyncStateEnum
 import io.ktlab.bshelper.model.mapper.convertToBSMapDBO
 import io.ktlab.bshelper.model.mapper.convertToBSMapVersionDBO
 import io.ktlab.bshelper.model.mapper.convertToMapDifficulties
 import io.ktlab.bshelper.model.vo.*
 import io.ktlab.bshelper.utils.BSMapUtils
-import io.ktlab.bshelper.utils.generateMapDifficultyInfo
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -71,27 +70,27 @@ class PlaylistScanner (
             }
         }
     }
-    private fun CoroutineScope.collectBufferedMapIdOrHashId(){
-        launch {
-            mapIdOrHashIdBufferChannel.receiveAsFlow().collect {
-                val maps = bsAPI.getMapsByHashes(it)
-                maps
-                    .filter { it.value != null }
-                    .forEach { (_, bsMapDTO) ->
-                    bsHelperDAO.transaction {
-                        bsHelperDAO.bSMapQueries.insert(bsMapDTO!!.convertToBSMapDBO())
-                        bsHelperDAO.bSUserQueries.insert(bsMapDTO.uploader.convertToEntity())
-                        bsHelperDAO.bSMapVersionQueries.insert(bsMapDTO.convertToBSMapVersionDBO())
-                        bsMapDTO.convertToMapDifficulties().forEach {diff->
-                            bsHelperDAO.mapDifficultyQueries.insert(diff)
+        private fun CoroutineScope.collectBufferedMapIdOrHashId(){
+            launch {
+                mapIdOrHashIdBufferChannel.receiveAsFlow().collect {
+                    val maps = bsAPI.getMapsByHashes(it)
+                    maps
+                        .filter { it.value != null }
+                        .forEach { (_, bsMapDTO) ->
+                            bsHelperDAO.transaction {
+                                bsHelperDAO.bSMapQueries.insert(bsMapDTO!!.convertToBSMapDBO())
+                                bsHelperDAO.bSUserQueries.insert(bsMapDTO.uploader.convertToEntity())
+                                bsHelperDAO.bSMapVersionQueries.insert(bsMapDTO.convertToBSMapVersionDBO())
+                                bsMapDTO.convertToMapDifficulties().forEach {diff->
+                                    bsHelperDAO.mapDifficultyQueries.insert(diff)
+                                }
+                            }
                         }
-                    }
                 }
             }
         }
-    }
 
-    suspend fun scanPlaylist(basePath: String): Flow<ScanState> = flow{
+        suspend fun scanPlaylist(basePath: String): Flow<ScanState> = flow{
         var scanState = ScanState.getDefaultInstance()
         try {
             val baseDir  = basePath.toPath().toFile()
@@ -118,7 +117,7 @@ class PlaylistScanner (
                     val mapFiles =it.list()
                     val uuid = UUID.randomUUID().toString()
                     val fsPlaylist = FSPlaylist(
-                        uuid = uuid,
+                        id = uuid,
                         name = it.name,
                         description = "",
                         mapAmount = mapFiles?.size ?: 0,
@@ -131,10 +130,12 @@ class PlaylistScanner (
                         totalDuration = 0,
                         maxDuration = 0,
                         avgDuration = 0,
-                        sync = false,
+                        sync = SyncStateEnum.UN_SYNCED,
                         bsPlaylistId = "",
                         basePath = basePath,
                         syncTimestamp = System.currentTimeMillis(),
+                        customTags = null,
+                        topPlaylist = false,
                     )
                     playlists.add(fsPlaylist)
                     scanPlaylistDirs.add(
@@ -155,7 +156,7 @@ class PlaylistScanner (
             emit(scanState)
             bsHelperDAO.fSPlaylistQueries.transaction {
                 playlists.forEach{
-                    bsHelperDAO.fSPlaylistQueries.insertAll(it)
+                    bsHelperDAO.fSPlaylistQueries.insertAnyway(it)
                 }
             }
         }catch (e:Exception) {
@@ -172,13 +173,13 @@ class PlaylistScanner (
         val ids = playlistStates.map { it.value.playlistId }
         val playlistToBeScanMap = bsHelperDAO.fSPlaylistQueries.selectByIds(ids)
             .executeAsList()
-            .associateBy { it.uuid }
+            .associateBy { it.id }
 
         playlistStates
             .map {
                 scanDirAsPlaylist(it)
                 playlistToBeScanMap[it.value.playlistId]?.let {playlist ->
-                    bsHelperDAO.fSPlaylistQueries.insertAnyway(playlist.copy(sync = true,syncTimestamp = System.currentTimeMillis()))
+                    bsHelperDAO.fSPlaylistQueries.insertAnyway(playlist.copy(sync = SyncStateEnum.SYNCED,syncTimestamp = System.currentTimeMillis()))
                 }
             }
         emit(scanState.copy(state = GlobalScanStateEnum.SCAN_COMPLETE))
@@ -234,21 +235,21 @@ class PlaylistScanner (
         try {
             val extractedMapInfo = BSMapUtils.extractMapInfoFromDir(basePath, mapFile, playlistId)
             val difficultyDBOList = mutableListOf<MapDifficulty>()
-            extractedMapInfo.mapInfo.difficultyBeatmapSets.forEach { bms->
-                bms.difficultyBeatmaps.forEach { bf ->
-                    // todo MapDifficulty
-                    extractedMapInfo.v2MapObjectMap?.get(bms.characteristicName+bf.difficulty)?.let {
-                        difficultyDBOList += it.generateMapDifficultyInfo(extractedMapInfo, ECharacteristic.from(bms.characteristicName),bf)
-                    }
-                    extractedMapInfo.v3MapObjectMap?.get(bms.characteristicName+bf.difficulty)?.let {
-                        difficultyDBOList += it.generateMapDifficultyInfo(extractedMapInfo, ECharacteristic.from(bms.characteristicName),bf)
-                    }
-                }
-            }
+//            extractedMapInfo.mapInfo.difficultyBeatmapSets.forEach { bms->
+//                bms.difficultyBeatmaps.forEach { bf ->
+//                    // todo MapDifficulty
+//                    extractedMapInfo.v2MapObjectMap?.get(bms.characteristicName+bf.difficulty)?.let {
+//                        difficultyDBOList += it.generateMapDifficultyInfo(extractedMapInfo, ECharacteristic.from(bms.characteristicName),bf)
+//                    }
+//                    extractedMapInfo.v3MapObjectMap?.get(bms.characteristicName+bf.difficulty)?.let {
+//                        difficultyDBOList += it.generateMapDifficultyInfo(extractedMapInfo, ECharacteristic.from(bms.characteristicName),bf)
+//                    }
+//                }
+//            }
             bsHelperDAO.transaction {
                 bsHelperDAO.fSMapQueries.insert(extractedMapInfo.generateFSMapDBO(playlistId))
                 difficultyDBOList.forEach { bsHelperDAO.mapDifficultyQueries.insert(it) }
-                bsHelperDAO.bSMapVersionQueries.insert(extractedMapInfo.generateVersionDBO())
+//                bsHelperDAO.bSMapVersionQueries.insert(extractedMapInfo.generateVersionDBO())
             }
             mapIdOrHashIdChannel.send(extractedMapInfo.hash)
             mapScanState.update {

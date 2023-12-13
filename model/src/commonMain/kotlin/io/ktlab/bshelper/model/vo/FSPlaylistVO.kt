@@ -3,15 +3,12 @@ package io.ktlab.bshelper.model.vo
 import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
-import java.io.File
-import kotlin.io.path.Path
-import kotlin.io.path.absolutePathString
+import io.ktlab.bshelper.model.enums.SyncStateEnum
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 data class FSPlaylistVO(
-    val uuid: String,
     val _name: String,
     val description: String?,
     val _mapAmount: Int,
@@ -26,7 +23,7 @@ data class FSPlaylistVO(
     val avgNps: Double?,
     val bsPlaylistId: String?,
     val basePath: String,
-    val sync: Boolean,
+    val sync: SyncStateEnum,
     val syncTimestamp: Long,
     override val id: String,
     override val title: String,
@@ -92,13 +89,12 @@ data class FSPlaylistVO(
     }
 
     override fun getTargetPath(): String {
-        return Path(basePath, _name).absolutePathString()
+        return basePath
     }
 
     companion object {
         fun convertDBOToVO(dbo: FSPlaylist): FSPlaylistVO {
             return FSPlaylistVO(
-                dbo.uuid,
                 dbo.name,
                 dbo.description,
                 dbo.mapAmount,
@@ -115,8 +111,8 @@ data class FSPlaylistVO(
                 dbo.basePath,
                 dbo.sync,
                 dbo.syncTimestamp,
-                dbo.uuid,
-                dbo.name,
+                dbo.basePath,
+                dbo.name
             )
         }
     }

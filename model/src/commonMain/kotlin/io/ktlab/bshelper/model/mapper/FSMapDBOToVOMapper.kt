@@ -1,17 +1,8 @@
 package io.ktlab.bshelper.model.mapper
 
-import io.ktlab.bshelper.model.BSMap
-import io.ktlab.bshelper.model.BSMapVersion
-import io.ktlab.bshelper.model.BSUser
-import io.ktlab.bshelper.model.FSMap
-import io.ktlab.bshelper.model.GetAllByPlaylistId
-import io.ktlab.bshelper.model.IMap
-import io.ktlab.bshelper.model.MapDifficulty
-import io.ktlab.bshelper.model.enums.ECharacteristic
+import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.enums.EMapDifficulty
 import io.ktlab.bshelper.model.vo.MapDiff
-import kotlinx.datetime.LocalDateTime
-import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -21,11 +12,13 @@ data class BsMapWithUploader(
     val version: BSMapVersion? = null,
     val difficulties: List<MapDifficulty>? = null,
 )
+
 class FSMapVO(
-val fsMap: FSMap,
-val difficulties: List<MapDifficulty>? = null,
-val bsMapWithUploader: BsMapWithUploader? = null,
-): IMap {
+    val fsMap: FSMap,
+    val difficulties: List<MapDifficulty>? = null,
+    val bsMapWithUploader: BsMapWithUploader? = null,
+): IMap
+{
     override fun getSongName(): String {
         return bsMapWithUploader?.bsMap?.name ?: fsMap.name
     }
@@ -36,7 +29,7 @@ val bsMapWithUploader: BsMapWithUploader? = null,
     }
 
     override fun getAuthor(): String {
-        return bsMapWithUploader?.uploader?.name ?: fsMap.author
+        return bsMapWithUploader?.uploader?.name ?: fsMap.levelAuthorName
     }
 
     override fun getAvatar(): String {
@@ -154,7 +147,7 @@ val bsMapWithUploader: BsMapWithUploader? = null,
     }
 
     override fun getMapVersion(): String {
-        return fsMap.version!!
+        return ""
     }
 
 }

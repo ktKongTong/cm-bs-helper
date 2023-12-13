@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -21,6 +19,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":bsmg"))
+                implementation(libs.beatmap.io)
+                implementation(libs.okio)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.serialization)

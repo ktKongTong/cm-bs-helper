@@ -26,9 +26,8 @@ data class MapDiffDTO(
     val label: String? = null,
 ){
 
-    fun convertToEntity( hash:String, mapId:String,uuid: String = ""):MapDifficulty{
+    fun convertToEntity( hash:String, mapId:String):MapDifficulty{
         return MapDifficulty(
-            uuid = uuid,
             seconds = seconds,
             hash = hash,
             mapId = mapId,

@@ -48,7 +48,6 @@ private val versions = listOf(
     version = BSMapVersion(
         hash = "abcdef123456",
         mapId = "Map789",
-        key = "map_key",
         state = "active",
         createdAt = LocalDateTime(2023, 9, 1, 10, 0, 0), // 设置日期时间
         sageScore = 5000,
@@ -58,7 +57,6 @@ private val versions = listOf(
     ),
     diffs = listOf(
         MapDifficulty(
-            uuid = "sddsd",
             seconds = 180.0,
             hash = "def456",
             mapId = "4fd0e",

@@ -1,14 +1,14 @@
 package io.ktlab.bshelper.ui.screens.toolbox
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.ui.Modifier
-import io.ktlab.bshelper.model.vo.ScanState
-import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import io.ktlab.bshelper.model.vo.ScanStateV2
+import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.toolbox.components.ScanPlaylistDialog
+import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
 
 @Composable
 expect fun isStoragePermissionGranted():Boolean
@@ -19,7 +19,7 @@ expect fun RequestStoragePermission()
 
 @Composable
 fun ScanScreen(
-    scanState: ScanState,
+    scanState: ScanStateV2,
     onUIEvent: (UIEvent) -> Unit,
 ){
     Column (

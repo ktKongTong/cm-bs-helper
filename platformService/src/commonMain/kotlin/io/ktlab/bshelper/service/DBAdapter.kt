@@ -5,6 +5,7 @@ import app.cash.sqldelight.db.SqlDriver
 import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.enums.ECharacteristic
 import io.ktlab.bshelper.model.enums.EMapDifficulty
+import io.ktlab.bshelper.model.enums.SyncStateEnum
 import kotlinx.datetime.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -26,6 +27,7 @@ object DBAdapter {
             ),
             FSMapAdapter = FSMap.Adapter(
                 durationAdapter = longOfDurationAdapter,
+                previewDurationAdapter = longOfDurationAdapter,
             ),
             BSMapVersionAdapter = BSMapVersion.Adapter(
                 createdAtAdapter = stringOfLocalDateTimeAdapter,
@@ -44,6 +46,7 @@ object DBAdapter {
             ),
             FSPlaylistAdapter = FSPlaylist.Adapter(
                 mapAmountAdapter = longOfIntAdapter,
+                syncAdapter = stringOfSyncStateEnumAdapter
             ),
             BSPlaylistAdapter = BSPlaylist.Adapter(
                 createdAtAdapter = stringOfLocalDateTimeAdapter,
@@ -59,6 +62,11 @@ object DBAdapter {
     private val datetimeOfLongAdapter = object : ColumnAdapter<LocalDateTime, Long> {
         override fun decode(databaseValue: Long) = Instant.fromEpochMilliseconds(databaseValue).toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
         override fun encode(value: LocalDateTime) = value.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+    }
+
+    private val stringOfSyncStateEnumAdapter = object : ColumnAdapter<SyncStateEnum, String> {
+        override fun decode(databaseValue: String) = SyncStateEnum.from(databaseValue)
+        override fun encode(value: SyncStateEnum) = value.value
     }
 
     private val listOfStringsAdapter = object : ColumnAdapter<List<String>, String> {

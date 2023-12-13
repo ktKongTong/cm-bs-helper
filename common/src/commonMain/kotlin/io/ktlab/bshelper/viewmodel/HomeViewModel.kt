@@ -1,32 +1,21 @@
 package io.ktlab.bshelper.viewmodel
 
 import androidx.compose.material3.SnackbarDuration
-import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.enums.SortKey
 import io.ktlab.bshelper.model.enums.SortType
 import io.ktlab.bshelper.model.mapper.FSMapVO
+import io.ktlab.bshelper.repository.FSMapRepository
 import io.ktlab.bshelper.repository.PlaylistRepository
+import io.ktlab.bshelper.repository.UserPreferenceRepository
 import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
-import org.koin.java.KoinJavaComponent.inject
-import java.util.UUID
-
-import io.ktlab.bshelper.repository.FSMapRepository
-import io.ktlab.bshelper.repository.UserPreferenceRepository
-import kotlinx.coroutines.cancel
+import java.util.*
 
 data class HomeViewModelState(
     val playlists: List<IPlaylist> = emptyList(),
@@ -108,6 +97,7 @@ sealed class HomeUIEvent: UIEvent(){
     data class ExportPlaylistAsKey(val playlist:IPlaylist):HomeUIEvent()
     data class DeletePlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class EditPlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
+    data class SyncPlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class ImportPlaylist(val key:String,val targetPlaylist:IPlaylist):HomeUIEvent()
     data class SnackBarShown(val msgId:Long):HomeUIEvent()
 //    data class DividePlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
@@ -162,6 +152,11 @@ class HomeViewModel(
                 deletePlaylist(event.targetPlaylist)
             }
             is HomeUIEvent.EditPlaylist -> {}
+            is HomeUIEvent.SyncPlaylist -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    playlistRepository.scanSinglePlaylist(event.targetPlaylist.getTargetPath())
+                }
+            }
             is HomeUIEvent.PlaylistTapped -> { onPlaylistTapped(event.playlistId) }
             is HomeUIEvent.MapTapped -> {}
             is HomeUIEvent.ChangeMapListSortRule -> {onChangeMapListSortRule(event.sortRule) }

@@ -1,10 +1,8 @@
 package io.ktlab.bshelper.viewmodel
 
 import io.ktlab.bshelper.model.UserPreference
-import io.ktlab.bshelper.model.vo.GlobalScanStateEnum
 import io.ktlab.bshelper.model.vo.PlaylistScanState
-import io.ktlab.bshelper.model.vo.PlaylistScanStateEnum
-import io.ktlab.bshelper.model.vo.ScanState
+import io.ktlab.bshelper.model.vo.ScanStateV2
 import io.ktlab.bshelper.repository.DownloaderRepository
 import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.repository.PlaylistRepository
@@ -18,9 +16,10 @@ import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 
 sealed class ToolboxUIEvent: UIEvent() {
-    data class SelectPlaylistTobeScan(val playlistScanState: PlaylistScanState) : UIEvent()
-    data class ScanPlaylistTapped(val dirPath: String? = null) : ToolboxUIEvent()
+//    data class SelectPlaylistTobeScan(val playlistScanState: PlaylistScanState) : UIEvent()
+//    data class ScanPlaylistTapped(val dirPath: String? = null) : ToolboxUIEvent()
     data object ScanSelectedPlaylist : UIEvent()
+    data class ScanPlaylist(val dirPath: String? = null) : ToolboxUIEvent()
     data object ClearScanState : ToolboxUIEvent()
     data object ClearLocalData : ToolboxUIEvent()
     data class UpdateDefaultManageDir(val path:String):ToolboxUIEvent()
@@ -40,7 +39,7 @@ sealed class ToolboxUIEvent: UIEvent() {
 
 data class ToolboxUiState(
     val isLoading: Boolean,
-    val scanState: ScanState = ScanState.getDefaultInstance(),
+    val scanState: ScanStateV2,
     val userPreferenceState: UserPreference,
     val downloadTasks: List<IDownloadTask> = emptyList(),
 )
@@ -48,7 +47,7 @@ data class ToolboxUiState(
 data class ToolboxViewModelState constructor(
     val isLoading: Boolean = false,
     val userPreferenceState: UserPreference,
-    val scanState: ScanState = ScanState.getDefaultInstance(),
+    val scanState: ScanStateV2 = ScanStateV2(),
     val downloadTasks: List<IDownloadTask> = emptyList(),
 ) {
 
@@ -112,12 +111,9 @@ class ToolboxViewModel(
 
     fun dispatchUiEvents(event: UIEvent){
         when(event){
-            is ToolboxUIEvent.ScanPlaylistTapped -> {
-                onScanPlaylist(event.dirPath?:"")
-            }
             is ToolboxUIEvent.ClearScanState -> {
                 viewModelState.update { state ->
-                    state.copy(scanState = ScanState.getDefaultInstance())
+                    state.copy(scanState = ScanStateV2.getDefaultInstance())
                 }
             }
             is ToolboxUIEvent.ClearLocalData -> {
@@ -125,13 +121,12 @@ class ToolboxViewModel(
                     playlistRepository.clear()
                 }
             }
-            is ToolboxUIEvent.SelectPlaylistTobeScan -> {
-                onSelectPlaylistToBeScan(event.playlistScanState)
-            }
             is ToolboxUIEvent.ScanSelectedPlaylist -> {
                 onScanSelectedPlaylist()
             }
-
+            is ToolboxUIEvent.ScanPlaylist -> {
+                onScanPlaylist()
+            }
             is ToolboxUIEvent.DeleteAllDownloadTasks -> {
                 localViewModelScope.launch(Dispatchers.IO) {
                     downloaderRepository.clearHistory()
@@ -171,27 +166,27 @@ class ToolboxViewModel(
         }
     }
     private fun onScanSelectedPlaylist(){
-        localViewModelScope.launch {
-            playlistRepository.scanFSMapInPlaylists(viewModelState.value.scanState)
-                .flowOn(Dispatchers.IO)
-                .collect{
-                    viewModelState.update { state ->
-                        state.copy(scanState = state.scanState.copy(
-                            state = if (it.state == GlobalScanStateEnum.SCAN_COMPLETE) GlobalScanStateEnum.SCAN_COMPLETE else GlobalScanStateEnum.SCANNING_MAPS,
-                            playlistStates = it.playlistStates,
-                        ))
-                    }
-                }
-        }
+//        localViewModelScope.launch {
+//            playlistRepository.scanFSMapInPlaylists(viewModelState.value.scanState)
+//                .flowOn(Dispatchers.IO)
+//                .collect{
+//                    viewModelState.update { state ->
+//                        state.copy(scanState = state.scanState.copy(
+//                            state = if (it.state == GlobalScanStateEnum.SCAN_COMPLETE) GlobalScanStateEnum.SCAN_COMPLETE else GlobalScanStateEnum.SCANNING_MAPS,
+//                            playlistStates = it.playlistStates,
+//                        ))
+//                    }
+//                }
+//        }
     }
     private fun onSelectPlaylistToBeScan(playlistScanState: PlaylistScanState){
-        viewModelState.value.scanState.playlistStates.find {
-            it.value.playlistId == playlistScanState.playlistId
-        }?.update { state ->
-            state.copy(state = if (state.state== PlaylistScanStateEnum.SELECTED_BUT_NOT_START)
-                PlaylistScanStateEnum.UNSELECTED
-            else PlaylistScanStateEnum.SELECTED_BUT_NOT_START)
-        }
+//        viewModelState.value.scanState.playlistStates.find {
+//            it.value.playlistId == playlistScanState.playlistId
+//        }?.update { state ->
+//            state.copy(state = if (state.state== PlaylistScanStateEnum.SELECTED_BUT_NOT_START)
+//                PlaylistScanStateEnum.UNSELECTED
+//            else PlaylistScanStateEnum.SELECTED_BUT_NOT_START)
+//        }
 //        }
 //        viewModelState.update { state ->
 //
@@ -203,7 +198,8 @@ class ToolboxViewModel(
 //        }
     }
 
-    private fun onScanPlaylist(dirPath:String) {
+    private fun onScanPlaylist() {
+        val dirPath = viewModelState.value.userPreferenceState.currentManageDir
         localViewModelScope.launch {
             playlistRepository.scanPlaylist(dirPath)
                 .flowOn(Dispatchers.IO)

@@ -2,22 +2,9 @@ package io.ktlab.bshelper.ui.screens.home.playlist
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.ImportExport
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.MoveDown
-import androidx.compose.material.icons.filled.Preview
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.ui.components.AppAlertDialog
 
@@ -27,6 +14,7 @@ fun PlaylistCardMenu(
     onExport: ()->Unit,
     onDelete: ()->Unit,
     onEdit: ()->Unit,
+    onSync: ()->Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 //    val context = LocalContext.current
@@ -40,7 +28,15 @@ fun PlaylistCardMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-
+            DropdownMenuItem(
+            text = { Text(text = "同步") },
+            onClick = {onSync();expanded = false },
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Sync,
+                    contentDescription = "Sync Playlist info"
+                )
+            })
             DropdownMenuItem(
             text = { Text(text = "编辑") },
             onClick = {onEdit();expanded = false },

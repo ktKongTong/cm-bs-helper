@@ -13,10 +13,11 @@ import io.ktlab.bshelper.model.dto.MapItem
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
+import io.ktlab.bshelper.model.enums.SyncStateEnum
 import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
-import io.ktlab.bshelper.model.vo.ScanState
+import io.ktlab.bshelper.model.vo.ScanStateV2
 import io.ktlab.bshelper.paging.BSPlaylistDetailPagingSource
 import io.ktlab.bshelper.paging.BSPlaylistPagingSource
 import kotlinx.coroutines.*
@@ -27,7 +28,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.Clock
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import java.util.*
 
 class PlaylistRepository(
     private val userPreferenceRepository: UserPreferenceRepository,
@@ -39,7 +39,7 @@ class PlaylistRepository(
     private val playlistJob = Job()
     private val repositoryScope = CoroutineScope(Dispatchers.IO + playlistJob)
 
-    private val playlistScanner = PlaylistScanner(bsHelperDAO,bsAPI)
+    private val playlistScanner = PlaylistScannerV2(bsHelperDAO,bsAPI)
 
     private lateinit var preference: UserPreference
     private val  mutex = Mutex()
@@ -63,9 +63,9 @@ class PlaylistRepository(
         }catch (e:Exception){
             return Result.Error(Exception("create playlist dir failed, playlist name already exist"))
         }
-        val uuid = UUID.randomUUID().toString()
+        val basePath = manageDir.resolve(playlistName).toString()
         val fSPlaylist = FSPlaylist(
-            uuid = UUID.randomUUID().toString(),
+            id = basePath,
             name = playlistName,
             description = "custom create playlist",
             mapAmount = 0,
@@ -79,12 +79,14 @@ class PlaylistRepository(
             maxDuration = 0,
             avgDuration = 0,
             bsPlaylistId = "",
-            basePath = manageDir.toString(),
-            sync = true,
-            syncTimestamp = Clock.System.now().toEpochMilliseconds()
+            basePath = basePath,
+            sync = SyncStateEnum.SYNCED,
+            syncTimestamp = Clock.System.now().toEpochMilliseconds(),
+            customTags = "",
+            topPlaylist = false,
         )
-        bsHelperDAO.fSPlaylistQueries.insertAll(fSPlaylist)
-        return Result.Success(uuid)
+        bsHelperDAO.fSPlaylistQueries.insertAnyway(fSPlaylist)
+        return Result.Success(basePath)
     }
 
     fun deletePlaylistById(id:String) {
@@ -164,10 +166,10 @@ class PlaylistRepository(
         ).flow
     }
 
+    suspend fun scanSinglePlaylist(basePath: String) = playlistScanner.scanSinglePlaylist(basePath)
+     fun scanPlaylist(basePath: String): Flow<ScanStateV2> = playlistScanner.scanPlaylist(basePath)
 
-    suspend fun scanPlaylist(basePath: String): Flow<ScanState> = playlistScanner.scanPlaylist(basePath)
-
-    suspend fun scanFSMapInPlaylists(scanState:ScanState): Flow<ScanState> = playlistScanner.scanFSMapInPlaylists(scanState)
+//    suspend fun scanFSMapInPlaylists(scanState:ScanState): Flow<ScanState> = playlistScanner.scanFSMapInPlaylists(scanState)
 
 
     suspend fun exportPlaylistAsKey(playlist: IPlaylist): Result<String> {

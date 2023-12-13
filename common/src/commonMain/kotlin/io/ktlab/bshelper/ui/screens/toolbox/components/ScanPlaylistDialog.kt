@@ -2,71 +2,43 @@ package io.ktlab.bshelper.ui.screens.toolbox.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AllInclusive
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.ConfirmationNumber
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
-import dev.icerock.moko.resources.compose.stringResource
-import io.ktlab.bshelper.MR
-import io.ktlab.bshelper.model.vo.GlobalScanStateEnum
-import io.ktlab.bshelper.model.vo.PlaylistScanState
-import io.ktlab.bshelper.model.vo.PlaylistScanStateEnum
-import io.ktlab.bshelper.model.vo.ScanState
-import io.ktlab.bshelper.model.vo.ScanStateEnum
+import io.ktlab.bshelper.model.vo.*
 import io.ktlab.bshelper.ui.components.CancelButton
 import io.ktlab.bshelper.ui.components.ConfirmButton
 import io.ktlab.bshelper.ui.components.NextStepIconButton
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
 
-private fun getStepByCurrentState(state:GlobalScanStateEnum):Int {
+private fun getStepByCurrentState(state:ScanStateEventEnum):Int {
     return when(state) {
-        GlobalScanStateEnum.NOT_START -> 0
-        GlobalScanStateEnum.SCANNING_PLAYLISTS -> 1
-        GlobalScanStateEnum.SCAN_PLAYLISTS_COMPLETE -> 2
-        GlobalScanStateEnum.SCANNING_MAPS -> 3
-        GlobalScanStateEnum.SCAN_COMPLETE -> 4
-        GlobalScanStateEnum.SCAN_ERROR -> 4
+        ScanStateEventEnum.NOT_START -> 0
+        ScanStateEventEnum.SCANNING -> 1
+        ScanStateEventEnum.SCAN_COMPLETE -> 2
+        ScanStateEventEnum.SCAN_ERROR -> 3
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScanPlaylistDialog(
-    scanState: ScanState,
+    scanState: ScanStateV2,
     onUIEvent: (UIEvent) -> Unit,
     onCloseDialog : () -> Unit = {}
 ){
@@ -77,8 +49,7 @@ fun ScanPlaylistDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                ,
+                .padding(16.dp),
             shape = RoundedCornerShape(10)
         ) {
             Row(
@@ -100,7 +71,7 @@ fun ScanPlaylistDialog(
                     .weight(1f, fill = false),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                StepsProgressBar(numberOfSteps = 4, currentStep = getStepByCurrentState(scanState.state))
+//                StepsProgressBar(numberOfSteps = 4, currentStep = getStepByCurrentState(scanState.state))
                 var targetPath by remember { mutableStateOf("") }
                 Box(modifier = Modifier
                     .fillMaxHeight(0.7f)
@@ -114,18 +85,15 @@ fun ScanPlaylistDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     when (scanState.state) {
-                        GlobalScanStateEnum.NOT_START -> {
+                        ScanStateEventEnum.NOT_START -> {
                             CancelButton { onCloseDialog() }
-                            NextStepIconButton { onUIEvent(ToolboxUIEvent.ScanPlaylistTapped(targetPath)) }
+                            NextStepIconButton { onUIEvent(ToolboxUIEvent.ScanPlaylist(targetPath)) }
                         }
-                        GlobalScanStateEnum.SCAN_PLAYLISTS_COMPLETE -> {
-                            CancelButton { onCloseDialog() }
-                            ConfirmButton { onUIEvent(ToolboxUIEvent.ScanSelectedPlaylist) }
+                        ScanStateEventEnum.SCANNING -> {
+//                            CancelButton { onCloseDialog() }
+//                            ConfirmButton { onUIEvent(ToolboxUIEvent.ScanSelectedPlaylist) }
                         }
-                        GlobalScanStateEnum.SCANNING_MAPS,GlobalScanStateEnum.SCANNING_PLAYLISTS -> {
-                            CancelButton {  }
-                        }
-                        GlobalScanStateEnum.SCAN_COMPLETE,GlobalScanStateEnum.SCAN_ERROR -> {
+                        ScanStateEventEnum.SCAN_COMPLETE,ScanStateEventEnum.SCAN_ERROR -> {
                             ConfirmButton { onCloseDialog() }
                         }
                     }
@@ -139,62 +107,74 @@ fun ScanPlaylistDialog(
 
 @Composable
 fun StepContent(
-    scanState: ScanState,
+    scanState: ScanStateV2,
     targetPath: String,
     onSelectTargetPath: (String) -> Unit,
     onUIEvent: (UIEvent) -> Unit
 ){
-    var visible by remember { mutableStateOf(true) }
-    AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ){
-        when(scanState.state) {
-            GlobalScanStateEnum.NOT_START -> {
+    when(scanState.state) {
+            ScanStateEventEnum.NOT_START -> {
                 DirectoryChooser(targetPath,onSelectTargetPath,onUIEvent)
             }
-            GlobalScanStateEnum.SCANNING_PLAYLISTS -> {
-                Row {
-                    Icon(Icons.Filled.AllInclusive, contentDescription = null)
-                    Text(text = "扫描中，请稍后")
-                }
-            }
-            GlobalScanStateEnum.SCAN_PLAYLISTS_COMPLETE -> {
-                LazyColumn {
-                    items(scanState.playlistStates.size) { index ->
-                        val item = scanState.playlistStates[index].collectAsState()
-                        ScanPlaylistCard(
-                            globalScanStateEnum = scanState.state,
-                            playlistScanState = item.value,
-                            onUIEvent = onUIEvent,
-                        )
+            ScanStateEventEnum.SCANNING,ScanStateEventEnum.SCAN_COMPLETE,ScanStateEventEnum.SCAN_ERROR -> {
+                Column {
+                    Text(text = "文件夹：${targetPath}")
+                    if (scanState.state == ScanStateEventEnum.SCAN_COMPLETE || scanState.state == ScanStateEventEnum.SCAN_ERROR){
+                        Text(text = "扫描完成")
+                    }else {
+                        Text(text = "扫描中，请稍后 ${scanState.scannedDirCount}/${scanState.totalDirCount}")
+                        Text(text = "当前歌单：${scanState.currentPlaylistDir},已扫描${scanState.scannedMapCount}", maxLines = 1)
+                        Text(text = "当前谱面：${scanState.currentMapDir}", maxLines = 1)
                     }
-                }
-            }
-            GlobalScanStateEnum.SCANNING_MAPS -> {
-                LazyColumn {
-                    items(scanState.playlistStates.size) { index ->
-                        val item = scanState.playlistStates[index].collectAsState()
-                        ScanPlaylistCard(
-                            globalScanStateEnum = scanState.state,
-                            playlistScanState = item.value,
-                            onUIEvent = onUIEvent,
-                        )
+
+                    LazyColumn {
+                        items(scanState.playlistScanList.size) { index ->
+                            val item = scanState.playlistScanList.reversed()[index]
+
+                            item.value.let { playlistScanState ->
+                                var animatedVisibility by remember { mutableStateOf(false) }
+                                Row {
+                                    Text(text = playlistScanState.playlistName)
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Text(text = "${playlistScanState.scannedFileAmount}/${playlistScanState.fileAmount}")
+
+                                    if (playlistScanState.errorStates.isNotEmpty()) {
+                                        IconButton(
+                                            onClick = { animatedVisibility = !animatedVisibility }
+                                        ) {
+                                            Icon(Icons.Filled.Error, contentDescription = null)
+                                        }
+                                    }
+                                }
+                                    AnimatedVisibility(animatedVisibility) {
+                                        if (playlistScanState.errorStates.isNotEmpty()){
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .weight(1f, fill = false),
+                                                horizontalArrangement = Arrangement.End,
+                                            ){
+                                                Column {
+                                                        playlistScanState.errorStates.map {
+                                                            Row (
+                                                                Modifier.horizontalScroll(rememberScrollState())
+                                                            ){
+                                                                Text(
+                                                                    text = it.toString(),
+                                                                    maxLines = 1,
+                                                                )
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
-            }
-            GlobalScanStateEnum.SCAN_COMPLETE -> {
-                Text(
-    //                modifier = Modifier.align(Alignment.Center),
-                    text = "扫描完成"
-                )
-            }
-            GlobalScanStateEnum.SCAN_ERROR -> {
-                Text(text = "Error: ${scanState.error?.message}")
-            }
         }
-    }
 }
 
 @Composable
@@ -237,7 +217,7 @@ fun ScanPlaylistCard(
                 if (globalScanStateEnum != GlobalScanStateEnum.SCAN_PLAYLISTS_COMPLETE) {
                     return@clickable
                 }
-                onUIEvent(ToolboxUIEvent.SelectPlaylistTobeScan(playlistScanState))
+//                onUIEvent(ToolboxUIEvent.SelectPlaylistTobeScan(playlistScanState))
             },
         colors = CardDefaults.cardColors(containerColor = if (playlistScanState.state!= PlaylistScanStateEnum.UNSELECTED) { Color.LightGray } else { Color.Transparent })
     ) {

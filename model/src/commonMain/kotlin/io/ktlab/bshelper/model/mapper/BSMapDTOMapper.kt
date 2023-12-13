@@ -5,10 +5,6 @@ import io.ktlab.bshelper.model.BSMapVersion
 import io.ktlab.bshelper.model.BSUser
 import io.ktlab.bshelper.model.MapDifficulty
 import io.ktlab.bshelper.model.dto.BSMapDTO
-import io.ktlab.bshelper.model.enums.ECharacteristic
-import io.ktlab.bshelper.model.enums.EMapDifficulty
-import kotlinx.datetime.LocalDateTime
-import java.util.UUID
 
 fun BSMapDTO.convertToBSMapDBO():BSMap{
     return BSMap(
@@ -57,7 +53,6 @@ fun BSMapDTO.convertToBSMapVersionDBO(): BSMapVersion {
     return BSMapVersion(
         hash = this.versions[0].hash,
         mapId = this.id,
-        key = this.versions[0].key?:"",
         state = this.versions[0].state,
         createdAt = this.versions[0].createdAt,
         sageScore = this.versions[0].sageScore ?:0,
@@ -70,7 +65,6 @@ fun BSMapDTO.convertToBSMapVersionDBO(): BSMapVersion {
 fun BSMapDTO.convertToMapDifficulties(): List<MapDifficulty> {
     return this.versions[0].diffs.map {
         MapDifficulty(
-            uuid = UUID.randomUUID().toString(),
             seconds = it.seconds,
             hash = this.versions[0].hash,
             mapId = this.id,

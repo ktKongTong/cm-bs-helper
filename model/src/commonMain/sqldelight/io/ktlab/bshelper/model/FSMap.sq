@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS FSMap (
 --  fs
     hash TEXT NOT NULL,
     name TEXT NOT NULL,
-    author TEXT NOT NULL,
     duration INTEGER AS Duration NOT NULL,
     previewStartTime REAL NOT NULL,
     previewDuration INTEGER AS Duration NOT NULL,
@@ -31,13 +30,14 @@ CREATE TABLE IF NOT EXISTS FSMap (
 
 selectAll:
 SELECT * FROM `FSMap` WHERE `active` = 1;
+getAllFSMapByPlaylistId:
+SELECT * FROM `FSMap` WHERE `playlistId` = ? AND `active` = 1;
 
 getAllByPlaylistId:
 SELECT
 `FSMap`.mapId AS `mapId`,
 `FSMap`.name AS `name`,
 `FSMap`.dirName AS `dirFilename`,
-`FSMap`.author AS `author`,
 `FSMap`.duration AS `duration`,
 `FSMap`.relativeCoverFilename AS `relativeCoverPath`,
 `FSMap`.relativeSongFilename AS `relativeSongPath`,
@@ -46,6 +46,13 @@ SELECT
 `FSMap`.hash AS `hash`,
 `FSMap`.playlistId AS `playlistId`,
 `FSMap`.active AS `active`,
+`FSMap`.previewStartTime AS `previewStartTime`,
+`FSMap`.previewDuration AS `previewDuration`,
+`FSMap`.bpm AS `bpm`,
+`FSMap`.songName AS `songName`,
+`FSMap`.songSubname AS `songSubname`,
+`FSMap`.songAuthorName AS `songAuthorName`,
+`FSMap`.levelAuthorName AS `levelAuthorName`,
 
 `BSMap`.uploaderId AS `bsUploaderId`,
 `BSMap`.name AS `bsMapName`,
@@ -119,7 +126,6 @@ INSERT OR REPLACE INTO `FSMap`
 (
 `mapId`,
 `name`,
-`author`,
 `duration`,
 `relativeCoverFilename`,
 `relativeSongFilename`,

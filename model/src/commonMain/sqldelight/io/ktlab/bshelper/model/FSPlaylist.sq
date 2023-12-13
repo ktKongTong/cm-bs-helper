@@ -1,3 +1,4 @@
+import io.ktlab.bshelper.model.enums.SyncStateEnum;
 import kotlin.Boolean;
 import kotlin.Int;
 CREATE TABLE IF NOT EXISTS `FSPlaylist` (
@@ -6,6 +7,9 @@ CREATE TABLE IF NOT EXISTS `FSPlaylist` (
     name TEXT NOT NULL,
     description TEXT DEFAULT NULL,
 
+-- if the playlist is a sub playlist, really bad design
+-- means that the playlist is the first level dir
+    topPlaylist INTEGER AS Boolean NOT NULL DEFAULT 0,
     customTags TEXT DEFAULT NULL,
 --     stastistics
     mapAmount INTEGER AS Int NOT NULL DEFAULT 0,
@@ -18,15 +22,15 @@ CREATE TABLE IF NOT EXISTS `FSPlaylist` (
     avgBomb REAL DEFAULT NULL,
     maxNps REAL DEFAULT NULL,
     avgNps REAL DEFAULT NULL,
---  beatsaver
+    --  beatsaver
     bsPlaylistId TEXT,
-
-    sync INTEGER AS Boolean NOT NULL,
+    -- state scanning, synced, unsynced
+    sync TEXT AS SyncStateEnum NOT NULL,
     syncTimestamp INTEGER NOT NULL
 );
 
 selectAll:
-SELECT * FROM `FSPlaylist` WHERE sync = 1;
+SELECT * FROM `FSPlaylist` WHERE sync = "SYNCED" OR sync = "SYNCING";
 
 
 insertAll:
@@ -73,7 +77,7 @@ WHERE id IN ?;
 -- equivalent to selectById
 selectAllByBasePath:
 SELECT * FROM `FSPlaylist`
-WHERE basePath = ? AND sync = 1;
+WHERE basePath = ? AND (sync = "SYNCED" OR sync = "SYNCING");
 
 
 deleteByBasePath:
@@ -90,4 +94,15 @@ DELETE FROM `FSPlaylist`;
 
 deleteAllByBasePath:
 DELETE FROM `FSPlaylist`
+WHERE basePath = ?;
+
+updateMapAmount:
+UPDATE `FSPlaylist`
+SET mapAmount = ?
+WHERE basePath = ?;
+
+updateSyncState:
+UPDATE `FSPlaylist`
+SET sync = ?,
+syncTimestamp = ?
 WHERE basePath = ?;
