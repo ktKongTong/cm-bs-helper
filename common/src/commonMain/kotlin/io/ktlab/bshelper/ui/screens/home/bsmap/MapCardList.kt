@@ -90,7 +90,7 @@ fun MapCardList(
             }
         }else {
             item {
-                EmptyContent()
+                EmptyContent(Modifier.padding(top = 32.dp))
             }
         }
     }
