@@ -68,17 +68,7 @@ class PlaylistRepository(
             id = basePath,
             name = playlistName,
             description = "custom create playlist",
-            mapAmount = 0,
-            maxNote = 0,
-            avgNote = 0.0,
-            avgObstacle = 0.0,
-            avgBomb = 0.0,
-            maxNps = 0.0,
-            avgNps = 0.0,
-            totalDuration = 0,
-            maxDuration = 0,
-            avgDuration = 0,
-            bsPlaylistId = "",
+            bsPlaylistId = null,
             basePath = basePath,
             sync = SyncStateEnum.SYNCED,
             syncTimestamp = Clock.System.now().toEpochMilliseconds(),
@@ -96,24 +86,24 @@ class PlaylistRepository(
         }
     }
 
-    fun adjustPlaylistMapCntByPlaylistId(playlistId:String,amount:Int = 1){
-        runBlocking {
-            mutex.lock()
-            bsHelperDAO.fSPlaylistQueries.transaction {
-                bsHelperDAO.fSPlaylistQueries.adjustPlaylistMapCntByPlaylistId(amount,playlistId)
-            }
-            mutex.unlock()
-        }
-    }
+//    fun adjustPlaylistMapCntByPlaylistId(playlistId:String,amount:Int = 1){
+//        runBlocking {
+//            mutex.lock()
+//            bsHelperDAO.fSPlaylistQueries.transaction {
+//                bsHelperDAO.fSPlaylistQueries.adjustPlaylistMapCntByPlaylistId(amount,playlistId)
+//            }
+//            mutex.unlock()
+//        }
+//    }
 
-    fun getPlaylistById(id:String): Result<IPlaylist> = bsHelperDAO.fSPlaylistQueries.selectByIds(listOf(id))
+    fun getPlaylistById(id:String): Result<IPlaylist> = bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectByIds(listOf(id))
         .executeAsList().map {
             FSPlaylistVO.convertDBOToVO(it)
         }.firstOrNull()?.let {
             Result.Success(it)
         }?: Result.Error(Exception("no such playlist with id:$id"))
 
-    fun getFSPlaylistByIds(ids :List<String>): List<IPlaylist> = bsHelperDAO.fSPlaylistQueries.selectByIds(ids)
+    fun getFSPlaylistByIds(ids :List<String>): List<IPlaylist> = bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectByIds(ids)
         .executeAsList().map {
             FSPlaylistVO.convertDBOToVO(it)
         }
@@ -141,18 +131,23 @@ class PlaylistRepository(
 //        .executeAsList().map {
 //            FSPlaylistVO.convertDBOToVO(it)
 //        }
-    fun getAllPlaylistByManageDir(manageDir:String):Flow<Result<List<IPlaylist>>> = bsHelperDAO.fSPlaylistQueries.selectAll()
+    fun getAllPlaylistByManageDir(manageDir:String):Flow<Result<List<IPlaylist>>> = bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectAllPlaylist()
         .asFlow()
         .mapToList(Dispatchers.IO)
-        .map { Result.Success(it.map {dbo-> FSPlaylistVO.convertDBOToVO(dbo) }) }
+        .map {
+            Result.Success(it.map {dbo-> FSPlaylistVO.convertDBOToVO(dbo) })
+        }
         .catch {
             Result.Error(Exception(it.message))
         }
 
-    fun getAllPlaylist(): Flow<Result<List<IPlaylist>>> = bsHelperDAO.fSPlaylistQueries.selectAll()
+    fun getAllPlaylist(): Flow<Result<List<IPlaylist>>> = bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectAllPlaylist()
         .asFlow()
         .mapToList(Dispatchers.IO)
-        .map { Result.Success(it.map {dbo-> FSPlaylistVO.convertDBOToVO(dbo) }) }
+
+        .map {
+            Result.Success(it.map {dbo-> FSPlaylistVO.convertDBOToVO(dbo) })
+        }
         .catch {
             Result.Error(Exception(it.message))
         }

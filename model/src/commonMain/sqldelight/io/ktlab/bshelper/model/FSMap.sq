@@ -29,143 +29,81 @@ CREATE TABLE IF NOT EXISTS FSMap (
 
 
 selectAll:
-SELECT * FROM `FSMap` WHERE `active` = 1;
+SELECT * FROM FSMap WHERE active = 1;
 getAllFSMapByPlaylistId:
-SELECT * FROM `FSMap` WHERE `playlistId` = ? AND `active` = 1;
+SELECT * FROM FSMap WHERE playlistId = ? AND active = 1;
 
 getAllByPlaylistId:
 SELECT
-`FSMap`.mapId AS `mapId`,
-`FSMap`.name AS `name`,
-`FSMap`.dirName AS `dirFilename`,
-`FSMap`.duration AS `duration`,
-`FSMap`.relativeCoverFilename AS `relativeCoverPath`,
-`FSMap`.relativeSongFilename AS `relativeSongPath`,
-`FSMap`.relativeInfoFilename AS `relativeInfoPath`,
-`FSMap`.playlistBasePath AS `playlistBasePath`,
-`FSMap`.hash AS `hash`,
-`FSMap`.playlistId AS `playlistId`,
-`FSMap`.active AS `active`,
-`FSMap`.previewStartTime AS `previewStartTime`,
-`FSMap`.previewDuration AS `previewDuration`,
-`FSMap`.bpm AS `bpm`,
-`FSMap`.songName AS `songName`,
-`FSMap`.songSubname AS `songSubname`,
-`FSMap`.songAuthorName AS `songAuthorName`,
-`FSMap`.levelAuthorName AS `levelAuthorName`,
-
-`BSMap`.uploaderId AS `bsUploaderId`,
-`BSMap`.name AS `bsMapName`,
-`BSMap`.bpm AS `bsMapbpm`,
-`BSMap`.duration AS `bsMapDuration`,
-`BSMap`.songName AS `bsMapSongName`,
-`BSMap`.songSubname AS `bsMapSongSubName`,
-`BSMap`.songAuthorName AS `bsMapSongAuthorName`,
-`BSMap`.levelAuthorName AS `bsMapLevelAuthorName`,
-`BSMap`.plays AS `bsMapPlays`,
-`BSMap`.downloads AS `bsMapDownloads`,
-`BSMap`.upVotes AS `bsMapUpVotes`,
-`BSMap`.downVotes AS `bsMapDownVotes`,
-`BSMap`.score AS `bsMapScore`,
-`BSMap`.automapper AS `bsMapAutomapper`,
-`BSMap`.ranked AS `bsMapRanked`,
-`BSMap`.qualified AS `bsMapQualified`,
-`BSMap`.bookmarked AS `bsMapBookmarked`,
-`BSMap`.createdAt AS `bsMapCreatedAt`,
-`BSMap`.updatedAt AS `bsMapUpdatedAt`,
-`BSMap`.tags AS `bsMapTags`,
-`BSMap`.lastPublishedAt AS `bsMapLastPublishedAt`,
-`BSMap`.uploaded AS `bsMapUploaded`,
-
-`BSUser`.id AS `uploaderId`,
-`BSUser`.name AS `uploaderName`,
-`BSUser`.avatar AS `uploaderAvatar`,
-`BSUser`.description AS `uploaderDescription`,
-`BSUser`.type AS `uploaderType`,
-`BSUser`.admin AS `uploaderAdmin`,
-`BSUser`.curator AS `uploaderCurator`,
-`BSUser`.playlistUrl AS `uploaderPlaylistUrl`,
-`BSUser`.verifiedMapper AS `uploaderVerifiedMapper`,
-
-`BSMapVersion`.state AS `bsMapVersionState`,
-`BSMapVersion`.createdAt AS `bsMapVersionCreatedAt`,
-`BSMapVersion`.downloadURL AS `bsMapVersionDownloadURL`,
-`BSMapVersion`.coverURL AS `bsMapVersionCoverURL`,
-`BSMapVersion`.previewURL AS `bsMapVersionPreviewURL`,
-
-`MapDifficulty`.seconds AS `diffSeconds`,
-`MapDifficulty`.njs AS `diffNjs`,
-`MapDifficulty`.offset AS `diffOffset`,
-`MapDifficulty`.notes AS `diffNotes`,
-`MapDifficulty`.bombs AS `diffBombs`,
-`MapDifficulty`.obstacles AS `diffObstacles`,
-`MapDifficulty`.nps AS `diffNps`,
-`MapDifficulty`.events AS `diffEvents`,
-`MapDifficulty`.difficulty AS `diffDifficulty`,
-`MapDifficulty`.characteristic AS `diffCharacteristic`,
-`MapDifficulty`.chroma AS `diffChroma`,
-`MapDifficulty`.me AS `diffMe`,
-`MapDifficulty`.ne AS `diffNe`,
-`MapDifficulty`.cinema AS `diffCinema`,
-`MapDifficulty`.length AS `diffLength`,
-`MapDifficulty`.maxScore AS `diffMaxScore`,
-`MapDifficulty`.label AS `diffLabel`
-
-FROM `FSMap`
-LEFT JOIN `BSMap` ON `FSMap`.`mapId` = `BSMap`.`mapId`
-LEFT JOIN `BSUser` ON `BSMap`.`uploaderId` = `BSUser`.`id`
-LEFT JOIN `BSMapVersion` ON `FSMap`.`mapId` = `BSMapVersion`.`mapId` AND `FSMap`.`hash` = `BSMapVersion`.`hash`
-LEFT JOIN `MapDifficulty` ON `FSMap`.`mapId` = `MapDifficulty`.`mapId` AND `FSMap`.`hash` = `MapDifficulty`.`hash`
-WHERE `FSMap`.`playlistId` = ?
-AND `FSMap`.`active` = 1;
-
--- GROUP BY `FSMap`.`mapId`, `FSMap`.`hash`, `FSMap`.`playlistId`;
+FSMap.mapId AS mapId,
+FSMap.name AS name,
+FSMap.dirName AS dirFilename,
+FSMap.duration AS duration,
+FSMap.relativeCoverFilename AS relativeCoverPath,
+FSMap.relativeSongFilename AS relativeSongPath,
+FSMap.relativeInfoFilename AS relativeInfoPath,
+FSMap.playlistBasePath AS playlistBasePath,
+FSMap.hash AS hash,
+FSMap.playlistId AS playlistId,
+FSMap.active AS active,
+FSMap.previewStartTime AS previewStartTime,
+FSMap.previewDuration AS previewDuration,
+FSMap.bpm AS bpm,
+FSMap.songName AS songName,
+FSMap.songSubname AS songSubname,
+FSMap.songAuthorName AS songAuthorName,
+FSMap.levelAuthorName AS levelAuthorName,
+BSMapView.*
+FROM FSMap
+LEFT JOIN BSMapView ON FSMap.mapId = BSMapView.mapId
+WHERE FSMap.playlistId = ?
+AND FSMap.active = 1;
 
 insert:
-INSERT OR REPLACE INTO `FSMap`
+INSERT OR REPLACE INTO FSMap
 (
-`mapId`,
-`name`,
-`duration`,
-`relativeCoverFilename`,
-`relativeSongFilename`,
-`relativeInfoFilename`,
-`dirName`,
-`playlistBasePath`,
-`hash`,
-`playlistId`,
-`active`,
-`previewStartTime`,
-`previewDuration`,
-`bpm`,
-`songName`,
-`songSubname`,
-`songAuthorName`,
-`levelAuthorName`
+mapId,
+name,
+duration,
+relativeCoverFilename,
+relativeSongFilename,
+relativeInfoFilename,
+dirName,
+playlistBasePath,
+hash,
+playlistId,
+active,
+previewStartTime,
+previewDuration,
+bpm,
+songName,
+songSubname,
+songAuthorName,
+levelAuthorName
 ) VALUES ?;
 
 
 acitveFSMap:
-UPDATE `FSMap`
-SET `active` = 1
-WHERE `mapId` = ? AND `playlistId` = ?;
+UPDATE FSMap
+SET active = 1
+WHERE mapId = ? AND playlistId = ?;
 
 getAllFSMapId:
-SELECT `mapId`,`playlistId` FROM `FSMap` WHERE `active` = 1;
+SELECT mapId,playlistId FROM FSMap WHERE active = 1;
 
 moveFSMapToPlaylist:
-UPDATE `FSMap`
-SET `playlistId` = ?,`playlistBasePath` = ?
-WHERE `mapId` = ? AND `playlistId` = ?
-AND `active` = 1;
+UPDATE FSMap
+SET playlistId = ?,playlistBasePath = ?
+WHERE mapId = ? AND playlistId = ?
+AND active = 1;
 
 deleteAllFSMap:
-DELETE FROM `FSMap`;
+DELETE FROM FSMap;
 
 
 
 delteFSMapByPlaylistId:
-DELETE FROM `FSMap` WHERE `playlistId` = ?;
+DELETE FROM FSMap WHERE playlistId = ?;
 
 deleteFSMapByMapIdsAndPlaylistId:
-DELETE FROM `FSMap` WHERE mapId IN ? AND playlistId = ?;
+DELETE FROM FSMap WHERE mapId IN ? AND playlistId = ?;

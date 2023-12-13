@@ -61,7 +61,8 @@ data class BSMapDTO(
                 songName = metadata.songName,
                 songSubname = metadata.songSubName,
                 songAuthorName = metadata.songAuthorName,
-                levelAuthorName = metadata.levelAuthorName
+                levelAuthorName = metadata.levelAuthorName,
+                curatorId = curator?.id,
             ),
             uploader = uploader.convertToEntity(),
             curator = curator?.convertToEntity(),

@@ -19,7 +19,7 @@ import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.itemKey
 import io.ktlab.bshelper.model.IMap
-import io.ktlab.bshelper.repository.IDownloadTask
+import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.LocalState

@@ -105,12 +105,12 @@ class PlaylistScannerV2(
     suspend fun scanSinglePlaylist(basePath: String)
 //    : Flow<ScanStateV2> = flow
     {
-        val playlist = bsHelperDAO.fSPlaylistQueries.selectByIds(listOf(basePath)).executeAsOneOrNull()
+        val playlist = bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectByIds(listOf(basePath)).executeAsOneOrNull()
         if (playlist == null) {
             scanStateV2.update { it.copy(state = ScanStateEventEnum.SCAN_ERROR, totalDirCount = 1, message = "No Such Playlist") }
 //            emit(scanStateV2.value)
         }
-        val syncTimestamp = playlist!!.syncTimestamp
+        val syncTimestamp = playlist!!.playlist_syncTimestamp
 
         bsHelperDAO.fSPlaylistQueries.updateSyncState(SyncStateEnum.SYNCING,Clock.System.now().epochSeconds,basePath)
         val oldMaps = bsHelperDAO.fSMapQueries.getAllFSMapByPlaylistId(basePath).executeAsList()
@@ -161,12 +161,11 @@ class PlaylistScannerV2(
             }else {
                 val fsMap = oldMaps.firstOrNull { it.playlistBasePath.toPath().resolve(it.dirName) == mapDir }
                 if (fsMap != null) {
-                    fsPlaylist.update { it.copy(mapAmount = it.mapAmount + 1) }
                     bsHelperDAO.fSMapQueries.insert(fsMap.copy(playlistId = fsPlaylist.value.id))
                 }
 //                emit(scanStateV2.value)
             }
-            bsHelperDAO.fSPlaylistQueries.updateMapAmount(fsPlaylist.value.mapAmount,fsPlaylist.value.id)
+//            bsHelperDAO.fSPlaylistQueries.updateMapAmount(fsPlaylist.value.mapAmount,fsPlaylist.value.id)
             bsHelperDAO.fSPlaylistQueries.updateSyncState(SyncStateEnum.SYNCED, Clock.System.now().epochSeconds,basePath)
         }
     }
@@ -249,7 +248,6 @@ class PlaylistScannerV2(
                     bsHelperDAO.fSMapQueries.insert(extractedMapInfo.generateFSMapDBO(fsPlaylist.value.id))
                     diffDBOList.forEach { bsHelperDAO.mapDifficultyQueries.insert(it) }
                 }
-                fsPlaylist.update { it.copy(mapAmount = it.mapAmount+1) }
             }
             is IExtractedMapInfo.BSMapInfo -> {
                 val diffDBOList = extractedMapInfo.generateMapDifficultyInfo()
@@ -259,7 +257,6 @@ class PlaylistScannerV2(
                 }
                 // send to server to get map info
                 mapIdOrHashIdChannel.send(extractedMapInfo.hash)
-                fsPlaylist.update { it.copy(mapAmount = it.mapAmount+1) }
             }
             is IExtractedMapInfo.ErrorMapInfo -> {
                 when(extractedMapInfo.exception){
@@ -268,7 +265,6 @@ class PlaylistScannerV2(
                             bsHelperDAO.fSMapQueries.insert(extractedMapInfo.generateFSMapDBO(fsPlaylist.value.id))
                         }
                         mapIdOrHashIdChannel.send(extractedMapInfo.hash)
-                        fsPlaylist.update { it.copy(mapAmount = it.mapAmount+1) }
                     }
                     is ScannerException.FileMissingException,is ScannerException.ParseException -> {
                             scanStateV2.update { it.copy(errorStates = it.errorStates + extractedMapInfo.exception) }

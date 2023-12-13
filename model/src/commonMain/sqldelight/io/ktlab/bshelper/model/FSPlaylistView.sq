@@ -1,0 +1,109 @@
+
+-- create a view named FSPlaylistView  has such columns
+-- 1. count the number of map in each playlist, which count from FSMap table
+-- 2. average nps of each playlist, which count from FSMap,MapDifficulty table
+-- 3. max and min nps of each playlist, which count from FSMap,MapDifficulty table
+-- now lets create the view
+
+CREATE VIEW FSPlaylistView AS
+SELECT
+    p.id AS playlist_id,
+    p.basePath AS playlist_basePath,
+    p.name AS playlist_name,
+    p.description AS playlist_description,
+    p.topPlaylist AS playlist_topPlaylist,
+    p.customTags AS playlist_customTags,
+    p.bsPlaylistId AS playlist_bsPlaylistId,
+    p.sync,
+    p.syncTimestamp AS playlist_syncTimestamp,
+    AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,
+    MAX(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS max_nps,
+    MIN(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS min_nps,
+    AVG(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS avg_njs,
+    MAX(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS max_njs,
+    MIN(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS min_njs,
+    AVG(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS avg_notes,
+    MAX(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS max_notes,
+    MIN(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS min_notes,
+    AVG(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS avg_bombs,
+    MAX(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS max_bombs,
+    MIN(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS min_bombs,
+    AVG(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS avg_obstacles,
+    MAX(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS max_obstacles,
+    MIN(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS min_obstacles,
+    map_summary.map_count AS map_count,
+    map_summary.avg_duration AS avg_duration,
+    map_summary.max_duration AS max_duration,
+    map_summary.min_duration AS min_duration,
+    map_summary.sum_duration AS sum_duration,
+    BSPlaylist.id AS bsPlaylist_id,
+    BSPlaylist.name AS bsPlaylist_name,
+    BSPlaylist.description AS bsPlaylist_description,
+    BSPlaylist.ownerId  AS bsPlaylist_ownerId,
+    BSPlaylist.curatorId AS bsPlaylist_curatorId,
+    BSPlaylist.downloadURL AS bsPlaylist_downloadURL,
+    BSPlaylist.playlistImage AS bsPlaylist_playlistImage,
+    BSPlaylist.playlistImage512 AS bsPlaylist_playlistImage512,
+    BSPlaylist.songsChangedAt AS bsPlaylist_songsChangedAt,
+    BSPlaylist.updatedAt AS bsPlaylist_updatedAt,
+    BSPlaylist.createdAt AS bsPlaylist_createdAt,
+    BSPlaylist.type AS bsPlaylist_type,
+    BSPlaylist.avgScore AS bsPlaylist_avgScore,
+    BSPlaylist.upVotes AS bsPlaylist_upVotes,
+    BSPlaylist.downVotes AS bsPlaylist_downVotes,
+    BSPlaylist.mapperCount AS bsPlaylist_mapperCount,
+    BSPlaylist.maxNps AS bsPlaylist_maxNps,
+    BSPlaylist.minNps AS bsPlaylist_minNps,
+    BSPlaylist.totalDuration AS bsPlaylist_totalDuratio,
+    Owner.id AS owner_id,
+    Owner.name AS owner_name,
+    Owner.avatar AS owner_avatar,
+    Owner.description AS owner_description,
+    Owner.type AS owner_type,
+    Owner.admin AS owner_admin,
+    Owner.curator AS owner_curator,
+    Owner.playlistUrl AS owner_playlistUrl,
+    Owner.verifiedMapper AS owner_verifiedMapper,
+    Curator.id AS curator_id,
+    Curator.name AS curator_name,
+    Curator.avatar AS curator_avatar,
+    Curator.description AS curator_description,
+    Curator.type AS curator_type,
+    Curator.admin AS curator_admin,
+    Curator.curator AS curator_curator,
+    Curator.playlistUrl AS curator_playlistUrl,
+    Curator.verifiedMapper AS curator_verifiedMapper
+FROM FSPlaylist p
+
+LEFT JOIN (
+    SELECT
+        m.playlistBasePath,
+        m.playlistId,
+        COUNT(m.hash) AS map_count,
+        AVG(m.duration) AS avg_duration,
+        MAX(m.duration) AS max_duration,
+        MIN(m.duration) AS min_duration,
+        SUM(m.duration) AS sum_duration
+    FROM FSMap m
+    GROUP BY m.playlistBasePath, m.playlistId
+) map_summary ON p.basePath = map_summary.playlistBasePath AND p.id = map_summary.playlistId
+
+LEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId
+LEFT JOIN MapDifficulty md ON m.hash = md.hash AND m.mapId = md.mapId
+LEFT JOIN BSPlaylist ON p.bsPlaylistId = BSPlaylist.id
+LEFT JOIN BSUser AS Owner ON BSPlaylist.ownerId = Owner.id
+LEFT JOIN BSUser AS Curator ON BSPlaylist.curatorId = Curator.id
+GROUP BY p.id;
+
+
+fSMapViewSelectAllPlaylist:
+SELECT
+FSPlaylistView.*
+FROM FSPlaylistView
+WHERE sync = "SYNCED" OR sync = "SYNCING";
+
+fSMapViewSelectByIds:
+SELECT
+FSPlaylistView.*
+FROM FSPlaylistView
+WHERE playlist_id IN ?;

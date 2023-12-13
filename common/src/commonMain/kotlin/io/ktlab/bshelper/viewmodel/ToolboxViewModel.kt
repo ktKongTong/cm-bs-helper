@@ -1,10 +1,10 @@
 package io.ktlab.bshelper.viewmodel
 
 import io.ktlab.bshelper.model.UserPreference
+import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.PlaylistScanState
 import io.ktlab.bshelper.model.vo.ScanStateV2
 import io.ktlab.bshelper.repository.DownloaderRepository
-import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.repository.PlaylistRepository
 import io.ktlab.bshelper.repository.UserPreferenceRepository
 import io.ktlab.bshelper.ui.event.UIEvent

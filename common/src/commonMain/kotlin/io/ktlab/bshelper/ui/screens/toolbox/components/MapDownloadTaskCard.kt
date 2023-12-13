@@ -1,6 +1,5 @@
 package io.ktlab.bshelper.ui.screens.toolbox.components
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -9,19 +8,19 @@ import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.Redo
 import androidx.compose.material.icons.rounded.Start
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import io.ktlab.bshelper.model.IMap
+import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.enums.MapTag
 import io.ktlab.bshelper.model.vo.BSMapVO
-import io.ktlab.bshelper.repository.DownloadTaskType
-import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.ui.components.*
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent

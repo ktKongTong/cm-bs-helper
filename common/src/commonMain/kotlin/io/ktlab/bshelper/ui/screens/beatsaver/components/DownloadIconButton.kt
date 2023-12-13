@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
-import io.ktlab.bshelper.repository.IDownloadTask
+import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.kown.model.KownTaskStatus
 import io.ktlab.kown.model.isProcessing
 

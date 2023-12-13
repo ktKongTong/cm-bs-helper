@@ -2,8 +2,8 @@ package io.ktlab.bshelper.ui.screens.toolbox.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import io.ktlab.bshelper.repository.DownloadTaskType
-import io.ktlab.bshelper.repository.IDownloadTask
+import io.ktlab.bshelper.model.download.DownloadTaskType
+import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.event.UIEvent
 
 

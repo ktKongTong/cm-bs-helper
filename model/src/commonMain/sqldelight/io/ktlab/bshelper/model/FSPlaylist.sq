@@ -6,32 +6,15 @@ CREATE TABLE IF NOT EXISTS `FSPlaylist` (
     basePath TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT DEFAULT NULL,
-
--- if the playlist is a sub playlist, really bad design
--- means that the playlist is the first level dir
     topPlaylist INTEGER AS Boolean NOT NULL DEFAULT 0,
     customTags TEXT DEFAULT NULL,
---     stastistics
-    mapAmount INTEGER AS Int NOT NULL DEFAULT 0,
-    totalDuration INTEGER DEFAULT NULL,
-    maxDuration INTEGER DEFAULT NULL,
-    avgDuration INTEGER DEFAULT NULL,
-    maxNote INTEGER DEFAULT NULL,
-    avgNote REAL DEFAULT NULL,
-    avgObstacle REAL DEFAULT NULL,
-    avgBomb REAL DEFAULT NULL,
-    maxNps REAL DEFAULT NULL,
-    avgNps REAL DEFAULT NULL,
-    --  beatsaver
-    bsPlaylistId TEXT,
-    -- state scanning, synced, unsynced
+    bsPlaylistId Integer AS Int DEFAULT NULL,
     sync TEXT AS SyncStateEnum NOT NULL,
     syncTimestamp INTEGER NOT NULL
 );
 
 selectAll:
 SELECT * FROM `FSPlaylist` WHERE sync = "SYNCED" OR sync = "SYNCING";
-
 
 insertAll:
 INSERT INTO `FSPlaylist` (
@@ -49,26 +32,11 @@ INSERT OR REPLACE INTO `FSPlaylist` (
     id,
     name,
     description,
-    mapAmount,
-    totalDuration,
-    maxDuration,
-    avgDuration,
-    maxNote,
-    avgNote,
-    avgObstacle,
-    avgBomb,
-    maxNps,
-    avgNps,
     bsPlaylistId,
     basePath,
     sync,
     syncTimestamp
 ) VALUES ?;
-
-adjustPlaylistMapCntByPlaylistId:
-UPDATE `FSPlaylist`
-SET mapAmount = mapAmount + ?
-WHERE basePath = ?;
 
 selectByIds:
 SELECT *
@@ -94,11 +62,6 @@ DELETE FROM `FSPlaylist`;
 
 deleteAllByBasePath:
 DELETE FROM `FSPlaylist`
-WHERE basePath = ?;
-
-updateMapAmount:
-UPDATE `FSPlaylist`
-SET mapAmount = ?
 WHERE basePath = ?;
 
 updateSyncState:

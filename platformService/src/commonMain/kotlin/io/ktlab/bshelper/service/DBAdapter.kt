@@ -40,13 +40,14 @@ object DBAdapter {
                 updatedAtAdapter = stringOfLocalDateTimeAdapter,
                 lastPublishedAtAdapter = stringOfLocalDateTimeAdapter,
                 uploaderIdAdapter = longOfIntAdapter,
+                curatorIdAdapter = longOfIntAdapter,
                 ),
             BSUserAdapter = BSUser.Adapter(
                 idAdapter = longOfIntAdapter,
             ),
             FSPlaylistAdapter = FSPlaylist.Adapter(
-                mapAmountAdapter = longOfIntAdapter,
-                syncAdapter = stringOfSyncStateEnumAdapter
+                syncAdapter = stringOfSyncStateEnumAdapter,
+                bsPlaylistIdAdapter = longOfIntAdapter,
             ),
             BSPlaylistAdapter = BSPlaylist.Adapter(
                 createdAtAdapter = stringOfLocalDateTimeAdapter,

@@ -21,8 +21,8 @@ import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
+import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
-import io.ktlab.bshelper.repository.IDownloadTask
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
 import io.ktlab.bshelper.ui.components.DropDownPlaylistSelector
 import io.ktlab.bshelper.ui.components.MapperLabel

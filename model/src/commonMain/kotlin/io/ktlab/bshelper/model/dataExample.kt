@@ -38,6 +38,7 @@ private val fakeBSMap = BSMap(
     tags = listOf("Rhythm", "Music", "Gaming"),
     createdAt = LocalDateTime(2023, 4, 15, 12, 0, 0),
     updatedAt = LocalDateTime(2023, 4, 16, 8, 30, 0),
+    curatorId = null,
     lastPublishedAt = LocalDateTime(2023, 4, 16, 8, 30, 0)
 )
 private val bsUser = BSUser(

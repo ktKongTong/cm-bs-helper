@@ -201,7 +201,7 @@ class FSMapRepository(
             }
             val mapIds = fsMaps.map { it.mapId }
             bsHelperDAO.fSMapQueries.deleteFSMapByMapIdsAndPlaylistId(mapIds,playlistId)
-            bsHelperDAO.fSPlaylistQueries.adjustPlaylistMapCntByPlaylistId((-mapIds.count()),playlistId)
+//            bsHelperDAO.fSPlaylistQueries.adjustPlaylistMapCntByPlaylistId((-mapIds.count()),playlistId)
         } catch (e: Exception) {
             return Result.Error(e)
         }

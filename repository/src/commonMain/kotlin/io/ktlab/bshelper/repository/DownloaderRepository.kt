@@ -47,7 +47,7 @@ class DownloaderRepository(
             val targetPath = targetPlaylist.getTargetPath().toPath().resolve(task.title)
             UnzipUtility.unzip(zipFile.toString(), targetPath.toString())
             FileSystem.SYSTEM.delete(zipFile)
-            playlistRepository.adjustPlaylistMapCntByPlaylistId(targetPlaylist.id)
+//            playlistRepository.adjustPlaylistMapCntByPlaylistId(targetPlaylist.id)
             // add to fs map
             mapRepository.activeFSMapByMapId(task.relateEntityId!!,targetPlaylist.id)
         }

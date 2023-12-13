@@ -69,13 +69,28 @@ fun List<GetAllByPlaylistId>.mapToVO():List<FSMapVO> = this
                         playlistUrl = first.uploaderPlaylistUrl!!,
                         verifiedMapper = first.uploaderVerifiedMapper,
                     )
+                    val curator = if (first.curatorId != null) {
+                        BSUser(
+                            id = first.curatorId,
+                            name = first.curatorName!!,
+                            avatar = first.curatorAvatar!!,
+                            admin = first.curatorAdmin!!,
+                            type = first.curatorType!!,
+                            curator = first.curatorCurator!!,
+                            description = first.curatorDescription!!,
+                            playlistUrl = first.curatorPlaylistUrl!!,
+                            verifiedMapper = first.curatorVerifiedMapper,
+                        )
+                    } else null
                     BsMapWithUploader(
                         uploader = user,
+                        curator = curator,
                         bsMap = BSMap(
                             mapId = first.mapId,
-                            name = first.bsMapName!!,
+                            name = first.name,
                             description = "",
                             uploaderId = first.uploaderId,
+                            curatorId = first.curatorId,
                             bpm = first.bsMapbpm!!,
                             duration = first.bsMapDuration!!,
                             songName = first.bsMapSongName!!,

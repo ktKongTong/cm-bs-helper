@@ -4,7 +4,7 @@ import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.VersionWithDiffList
 
-fun List<SelectAllByMapIds>.mapToVO():List<BSMapVO> = this
+fun List<BSMapView>.mapToVO():List<BSMapVO> = this
     .groupBy { it.mapId }
     .values
     .map {
@@ -34,6 +34,7 @@ fun List<SelectAllByMapIds>.mapToVO():List<BSMapVO> = this
             createdAt = first.bsMapCreatedAt,
             updatedAt = first.bsMapUpdatedAt,
             lastPublishedAt = first.bsMapLastPublishedAt,
+            curatorId = first.curatorId,
         )
         val uploader = BSUser(
             id = first.uploaderId_!!,

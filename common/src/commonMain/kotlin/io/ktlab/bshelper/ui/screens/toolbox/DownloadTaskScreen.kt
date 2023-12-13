@@ -10,8 +10,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
-import io.ktlab.bshelper.model.IMap
-import io.ktlab.bshelper.repository.IDownloadTask
+import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.toolbox.components.DownloadTaskCard
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
