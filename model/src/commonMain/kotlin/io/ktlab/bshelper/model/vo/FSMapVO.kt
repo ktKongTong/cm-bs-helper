@@ -70,7 +70,7 @@ class FSMapVO(
     override fun getDuration(): String {
         try {
             if (bsMapWithUploader != null) {
-                return bsMapWithUploader.bsMap.duration.toDuration(DurationUnit.MILLISECONDS).toString()
+                return bsMapWithUploader.bsMap.duration.toDuration(DurationUnit.SECONDS).toString()
             }
 
             return fsMap.duration.toString()

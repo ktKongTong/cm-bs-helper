@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.vo.BSMapVO
@@ -29,6 +30,7 @@ fun MapItemV2(
     onLongClick: (IMap) -> Unit = {},
     onClick: (IMap) -> Unit = {},
     onAuthorClick: (IMap) -> Unit = {},
+    imageMaxWidth: Dp = 200.dp,
     menuArea: @Composable BoxScope.() -> Unit = {},
 ) {
     Box (
@@ -47,7 +49,7 @@ fun MapItemV2(
         Box(
             Modifier
                 .align(Alignment.CenterEnd)
-                .widthIn(max = 200.dp)
+                .widthIn(max = imageMaxWidth)
                 .fillMaxHeight()
         ) {
             AsyncImageWithFallback(

@@ -83,6 +83,9 @@ fun PlaylistCard(
                     onSync = {
                         onUIEvent(HomeUIEvent.SyncPlaylist(playlist))
                     },
+                    onExportAsBPList = {
+                        onUIEvent(HomeUIEvent.ExportPlaylistAsBPList(playlist))
+                    }
                 )
             }
 

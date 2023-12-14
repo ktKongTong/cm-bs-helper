@@ -8,6 +8,9 @@ internal actual object PlatformModule {
 
     actual fun getModules(): List<Module> {
         val modules = module {
+            single {
+                createClipboardManager(BSHelperClipboardFactory(get()))
+            }
             single { createMediaPlayer() }
             single { DBAdapter.createDatabase(DBDriverFactory(get())) }
             single { StorageService(get()) }

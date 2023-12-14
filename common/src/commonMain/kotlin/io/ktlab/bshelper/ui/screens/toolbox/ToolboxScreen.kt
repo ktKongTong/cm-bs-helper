@@ -16,6 +16,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
 import io.ktlab.bshelper.ui.components.Developing
 import io.ktlab.bshelper.ui.event.UIEvent
+import io.ktlab.bshelper.viewmodel.GlobalUiState
 import io.ktlab.bshelper.viewmodel.ToolboxUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,7 +27,7 @@ fun ToolboxScreen(
     snackbarHost: @Composable () -> Unit = {},
     openDrawer: () -> Unit,
     onUIEvent: (UIEvent) -> Unit,
-
+    globalUiState: GlobalUiState,
 //    onSnackBarShown: (Long) -> Unit,
     modifier: Modifier = Modifier
 ){

@@ -61,7 +61,6 @@ data class ExtractedMapInfo (
 
 fun NewFSPlaylist(
     basePath: String,
-    mapAmount: Int = 0,
     name:String = "",
     topPlaylist: Boolean = false,
 ):FSPlaylist{
@@ -92,11 +91,20 @@ class BSMapUtils {
 
 
         fun checkIfBSMap(path: Path): Boolean {
-            val metadata = FileSystem.SYSTEM.metadataOrNull(path)
-            if (metadata?.isDirectory != true) {
-                return false
+            return try {
+                val metadata = FileSystem.SYSTEM.metadataOrNull(path)
+                if (metadata?.isDirectory != true) {
+                    return false
+                }
+                val files = FileSystem.SYSTEM.list(path)
+                if (files.size > 20) {
+                    return false
+                }
+                return files.any{ it.name.lowercase() == "info.dat" }
+            }catch (e:Exception){
+                false
             }
-           return FileSystem.SYSTEM.listOrNull(path)?.any{ it.name.lowercase() == "info.dat" } ?: false
+
         }
         fun checkIfBSMap(file: File): Boolean {
             if (!file.isDirectory) {

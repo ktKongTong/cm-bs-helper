@@ -6,9 +6,11 @@ import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.download.IDownloadTask
+import io.ktlab.bshelper.model.dto.BSUserWithStatsDTO
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.BSMapReviewDTO
+import io.ktlab.bshelper.model.dto.response.BSMapperDetailDTO
 import io.ktlab.bshelper.model.dto.response.successOr
 import io.ktlab.bshelper.model.successOr
 import io.ktlab.bshelper.model.vo.BSMapVO
@@ -86,6 +88,23 @@ sealed interface BeatSaverUiState {
         val selectedBSMap: IMap? = null,
         val selectedBSMapReview: List<BSMapReviewDTO> = emptyList(),
     ): BeatSaverUiState
+    data class MapperQuery(
+        override val tabType: TabType = TabType.Mapper,
+        override val isLoading: Boolean = false,
+        val localState: LocalState = LocalState(),
+        val mapFlow: Flow<PagingData<IMap>>,
+        val playlistFlow: Flow<PagingData<IPlaylist>>,
+        val mapperFlow: Flow<PagingData<BSUserWithStatsDTO>>,
+
+        val downloadTaskFlow: Flow<List<IDownloadTask>>,
+        val multiSelectMode: Boolean,
+        val multiSelectedBSMap: Set<IMap>,
+        val selectedBSPlaylist: IPlaylist?,
+        val selectedBSMap: IMap? = null,
+        val selectedBSMapReview: List<BSMapReviewDTO> = emptyList(),
+        val selectedBSMapper: BSMapperDetailDTO? = null,
+    ): BeatSaverUiState
+
 }
 
 data class BeatSaverViewModelState(
@@ -104,7 +123,7 @@ data class BeatSaverViewModelState(
     val mapFlow: Flow<PagingData<IMap>>? = null,
 //
     val playlistFlow: Flow<PagingData<IPlaylist>>? = null,
-
+    val mapperFlow: Flow<PagingData<BSUserWithStatsDTO>>,
     val playlistDetailMapFlow: Flow<PagingData<IMap>>? = null,
     val downloadTaskFlow: Flow<List<IDownloadTask>>? = null,
 
@@ -119,6 +138,7 @@ data class BeatSaverViewModelState(
     val selectedBSMapReview: List<BSMapReviewDTO> = emptyList(),
     val multiSelectMode: Boolean = false,
     val multiSelectedBSMap: Set<IMap> = emptySet(),
+    val selectedBSMapper: BSMapperDetailDTO? = null,
 ) {
 
     fun toUiState(): BeatSaverUiState = when (tabType) {
@@ -159,20 +179,23 @@ data class BeatSaverViewModelState(
             )
         }
         TabType.Mapper -> {
-            BeatSaverUiState.MapQuery(
+            BeatSaverUiState.MapperQuery(
                 isLoading = isLoading,
-                mapFilterPanelState = mapFilterPanelState,
                 mapFlow = mapFlow ?: emptyFlow(),
+                downloadTaskFlow = downloadTaskFlow ?: emptyFlow(),
+                playlistFlow = playlistFlow ?: emptyFlow(),
+                mapperFlow = mapperFlow,
                 localState = LocalState(
                     localMapIdSet = localMapIdSet,
                     selectableLocalPlaylists = selectableLocalPlaylists,
                     targetPlaylist = selectedPlaylist,
                 ),
-                downloadTaskFlow = downloadTaskFlow ?: emptyFlow(),
                 multiSelectMode = multiSelectMode,
                 multiSelectedBSMap = multiSelectedBSMap,
                 selectedBSMap = selectedBSMap,
+                selectedBSPlaylist = selectedBSPlaylist,
                 selectedBSMapReview = selectedBSMapReview,
+                selectedBSMapper = selectedBSMapper,
             )
         }
     }
@@ -186,11 +209,12 @@ sealed class BeatSaverUIEvent: UIEvent(){
     data class ChangeTargetPlaylist(val playlist: IPlaylist?): BeatSaverUIEvent()
     data class OnSelectBSPlaylist(val playlist: IPlaylist): BeatSaverUIEvent()
     data class OnSelectBSMap(val map: IMap): BeatSaverUIEvent()
+    data class OnSelectedBSMapper(val mapper: BSUserWithStatsDTO): BeatSaverUIEvent()
+    data object OnExitBSMapper: BeatSaverUIEvent()
     data class MapTapped(val map: IMap): BeatSaverUIEvent()
     data class MapLongTapped(val map: IMap): BeatSaverUIEvent()
     data object OnExitSelectedBSMap: BeatSaverUIEvent()
     data object OnExitSelectedBSPlaylist: BeatSaverUIEvent()
-
     data class SearchMapWithFilter(val mapQueryState: MapFilterParam): BeatSaverUIEvent()
     data class UpdateMapFilterParam(val mapQueryState: MapFilterParam): BeatSaverUIEvent()
 
@@ -219,6 +243,7 @@ class BeatSaverViewModel(
             isLoading = false,
             mapFlow = mapRepository.getPagingBSMap(MapFilterParam()).cachedIn(viewModelScope),
             playlistFlow = playlistRepository.getPagingBSPlaylist(PlaylistFilterParam()).cachedIn(viewModelScope),
+            mapperFlow = playlistRepository.getPagingBSUser().cachedIn(viewModelScope),
             downloadTaskFlow = downloaderRepository.getDownloadTaskFlow().flowOn(Dispatchers.IO),
             localMapIdSet = emptySet(),
             localMapIdFlow = emptyFlow(),
@@ -302,6 +327,20 @@ class BeatSaverViewModel(
                     )
                 }
             }
+            is BeatSaverUIEvent.OnSelectedBSMapper -> {
+                viewModelScope.launch {
+                    val res = playlistRepository.getBSUserDetail(event.mapper.id)
+                    when (res) {
+                        is Result.Success -> {
+                            viewModelState.update { it.copy(
+                                mapFlow = mapRepository.getPagingBSMapByBSUserId(event.mapper.id).cachedIn(viewModelScope),
+                                selectedBSMapper = res.data)
+                            }
+                        }
+                        is Result.Error -> { globalViewModel.showSnackBar("获取mapper失败,${res.exception.message}") }
+                    }
+                }
+            }
             is BeatSaverUIEvent.SearchMapWithFilter -> { onSearchMapWithFilter(event.mapQueryState) }
             is BeatSaverUIEvent.UpdateMapFilterParam -> { viewModelState.update { it.copy(mapFilterPanelState = event.mapQueryState) } }
             is BeatSaverUIEvent.SearchPlaylistWithFilter -> { onSearchPlaylistWithFilter(event.playlistQueryState) }
@@ -339,6 +378,11 @@ class BeatSaverViewModel(
             is BeatSaverUIEvent.OnExitSelectedBSMap -> { viewModelState.update { it.copy(selectedBSMap = null) } }
             is BeatSaverUIEvent.OnExitSelectedBSPlaylist -> {
                 viewModelState.update { it.copy(selectedBSPlaylist = null, selectedBSMap = null) }
+            }
+                is BeatSaverUIEvent.OnExitBSMapper -> { viewModelState.update { it.copy(
+                    selectedBSMapper = null,
+                    mapFlow = mapRepository.getPagingBSMap(it.mapFilterPanelState).cachedIn(viewModelScope))
+                }
             }
         }
     }
@@ -443,12 +487,16 @@ class BeatSaverViewModel(
     private fun onDownloadPlaylist(playlist: IPlaylist) {
         val targetPlaylist = viewModelState.value.selectedPlaylist
         if (targetPlaylist == null) {
-            globalViewModel.showSnackBar("请先选择目标歌单")
+            globalViewModel.showSnackBar("将自动创建歌单 ${playlist.title} 作为目标歌单, 要这样做吗？",
+                actionLabel = "确定",
+                action = {
+                viewModelScope.launch(Dispatchers.IO) {
+                    downloaderRepository.createPlaylistAndDownloadBSPlaylist(playlist as BSPlaylistVO)
+                }
+            })
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
-//            playlistRepository.getPlaylistDetailPagingMaps(playlist.id).cachedIn(viewModelScope)
-//                .let {maps ->  viewModelState.update { it.copy(playlistDetailMapFlow = maps) } }
             downloaderRepository.downloadBSPlaylist(targetPlaylist,playlist as BSPlaylistVO)
         }
     }

@@ -9,6 +9,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -48,6 +49,25 @@ class BeatSaverAPI(private val httpClient: HttpClient) {
             APIRespResult.Error(e)
         }
     }
+//    2023-12-07T04:18:23Z 2023-10-29T14:50:55.841935
+    suspend fun getCollaborationMapById(id:Int,before:LocalDateTime? = null): APIRespResult<BSRespDTO> {
+        return try {
+            val url = URLBuilder("$basePath/maps/collaborations/$id").apply {
+                before?.let {
+                    // format  2018-07-16T03:24:30Z 2023-10-29T14:50:55.841935
+//                    before.
+                    val p = it.toString().split(".").first()+"Z"
+                    parameters.append("before",p)
+                }
+            }.build()
+            val response = httpClient.get(url)
+            val resp = response.body<BSRespDTO>()
+            APIRespResult.Success(resp)
+        }catch (e: Exception){
+            APIRespResult.Error(e)
+        }
+    }
+
     suspend fun getMapsByIds(ids : List<String>): MapQueryByIdsDTO {
         val idstr = ids.joinToString(",")
         val res = httpClient.request("$basePath/maps/ids/$idstr").body<JsonElement>()
@@ -111,6 +131,24 @@ class BeatSaverAPI(private val httpClient: HttpClient) {
         return try {
             val res = httpClient.request("$basePath/review/map/$mapId/$page").body<BSMapReviewRespDTO>()
             APIRespResult.Success(res.docs)
+        }catch (e: Exception){
+            APIRespResult.Error(e)
+        }
+    }
+
+    suspend fun getMappers(page: Int = 0): APIRespResult<BSMapperListDTO> {
+        return try {
+            val res = httpClient.request("$basePath/users/list/$page").body<BSMapperListDTO>()
+            APIRespResult.Success(res)
+        }catch (e: Exception){
+            APIRespResult.Error(e)
+        }
+    }
+
+    suspend fun getMapperDetail(id: Int): APIRespResult<BSMapperDetailDTO> {
+        return try {
+            val res = httpClient.request("$basePath/users/id/$id").body<BSMapperDetailDTO>()
+            APIRespResult.Success(res)
         }catch (e: Exception){
             APIRespResult.Error(e)
         }

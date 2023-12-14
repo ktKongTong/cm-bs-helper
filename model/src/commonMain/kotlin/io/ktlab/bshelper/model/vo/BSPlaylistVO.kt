@@ -78,6 +78,10 @@ data class BSPlaylistVO(
         return playlist.minNps
     }
 
+    override fun getPlaylistDescription(): String {
+        return playlist.description?:""
+    }
+
     override fun getTargetPath(): String {
         return ""
     }

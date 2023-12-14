@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
@@ -22,7 +23,8 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation(project(":model"))
                 implementation(project(":utils"))
-
+                api(compose.runtime)
+                api(compose.ui)
                 // kotlin & kotlinx
                 implementation(libs.kotlin.reflect)
                 implementation(libs.kotlinx.datetime)

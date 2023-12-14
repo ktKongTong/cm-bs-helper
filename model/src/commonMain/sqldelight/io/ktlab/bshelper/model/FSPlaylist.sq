@@ -55,7 +55,9 @@ WHERE basePath = ?;
 deleteById:
 DELETE FROM `FSPlaylist`
 WHERE id = ?;
-
+deleteByIds:
+DELETE FROM `FSPlaylist`
+WHERE id IN ?;
 deleteAll:
 DELETE FROM `FSPlaylist`;
 -- DELETE FROM `FSMap`;

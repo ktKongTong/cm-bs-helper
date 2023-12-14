@@ -40,6 +40,7 @@ fun MapCard(
         onAvatarClick = {},
         modifier = modifier
             .fillMaxWidth(),
+        imageMaxWidth = 350.dp,
         onAuthorClick = {},
         menuArea = {
             if (multiSelectedMode) {

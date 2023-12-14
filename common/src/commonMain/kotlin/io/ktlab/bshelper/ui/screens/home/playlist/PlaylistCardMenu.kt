@@ -12,6 +12,7 @@ import io.ktlab.bshelper.ui.components.AppAlertDialog
 fun PlaylistCardMenu(
     modifier: Modifier,
     onExport: ()->Unit,
+    onExportAsBPList: ()->Unit,
     onDelete: ()->Unit,
     onEdit: ()->Unit,
     onSync: ()->Unit,
@@ -54,30 +55,29 @@ fun PlaylistCardMenu(
                 openDialog = deleteAlertDialog,
                 onConfirm = {
                     onDelete()
-//                    Toast.makeText(context, "删除歌单", Toast.LENGTH_SHORT).show()
                 },
                 onClose = { deleteAlertDialog = false },
                 triggerBy = {
                     DropdownMenuItem(
-                    text = { Text(text = "删除") },
-                    onClick = {expanded = false; deleteAlertDialog= true },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Delete,
-                            contentDescription = "Delete Playlist"
-                        )
-                    })
+                        text = { Text(text = "删除") },
+                        onClick = {expanded = false; deleteAlertDialog = true },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = "Delete Playlist"
+                            )
+                        })
                 }
             )
-//            DropdownMenuItem(
-//                text = { Text(text = "导出 bplist") },
-//                onClick = {onExport();expanded = false },
-//                leadingIcon = {
-//                Icon(
-//                    Icons.Default.ImportExport,
-//                    contentDescription = "Export Playlist"
-//                )
-//            })
+            DropdownMenuItem(
+                text = { Text(text = "导出 bplist") },
+                onClick = {onExportAsBPList();expanded = false },
+                leadingIcon = {
+                Icon(
+                    Icons.Default.ImportExport,
+                    contentDescription = "Export Playlist"
+                )
+            })
             DropdownMenuItem(
                 text = { Text(text = "导出为 key") },
                 onClick = {

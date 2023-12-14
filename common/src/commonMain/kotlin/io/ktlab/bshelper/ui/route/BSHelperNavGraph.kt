@@ -3,6 +3,7 @@ package io.ktlab.bshelper.ui.route
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import io.ktlab.bshelper.viewmodel.GlobalUiState
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.rememberNavigator
@@ -16,6 +17,7 @@ fun BSHelperNavGraph(
     openDrawer: () -> Unit = {},
     snackbarHost : @Composable () -> Unit = {},
     snackbarHostState: SnackbarHostState,
+    globalUiState: GlobalUiState,
     startDestination: String = BSHelperDestinations.HOME_ROUTE,
 ){
     NavHost(
@@ -28,7 +30,9 @@ fun BSHelperNavGraph(
             HomeRoute(
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
-                snackbarHost = snackbarHost
+                snackbarHost = snackbarHost,
+                globalUiState= globalUiState,
+                snackbarHostState = snackbarHostState
             )
         }
         scene(BSHelperDestinations.BEAT_SAVER_ROUTE) {
@@ -36,6 +40,7 @@ fun BSHelperNavGraph(
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
                 snackbarHost = snackbarHost,
+                globalUiState= globalUiState,
                 snackbarHostState = snackbarHostState
             )
         }
@@ -43,7 +48,9 @@ fun BSHelperNavGraph(
             ToolboxRoute(
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
-                snackbarHost = snackbarHost
+                snackbarHost = snackbarHost,
+                globalUiState= globalUiState,
+                snackbarHostState = snackbarHostState
             )
         }
     }

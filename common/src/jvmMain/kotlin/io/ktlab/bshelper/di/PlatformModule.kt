@@ -1,11 +1,8 @@
 package io.ktlab.bshelper.di
 
-import io.ktlab.bshelper.service.DBAdapter
-import io.ktlab.bshelper.service.DBDriverFactory
-import io.ktlab.bshelper.service.StorageService
-import io.ktlab.bshelper.service.createDataStore
-import org.koin.dsl.module
+import io.ktlab.bshelper.service.*
 import org.koin.core.module.Module
+import org.koin.dsl.module
 
 internal actual object PlatformModule {
      actual fun getModules(): List<Module> {
@@ -13,6 +10,7 @@ internal actual object PlatformModule {
             single { StorageService() }
             single { createDataStore(get()) }
             single { DBAdapter.createDatabase(DBDriverFactory(get())) }
+            single { createClipboardManager(BSHelperClipboardFactory()) }
         }
         return listOf(modules)
     }

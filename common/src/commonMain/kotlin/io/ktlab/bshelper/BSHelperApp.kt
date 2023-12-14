@@ -1,13 +1,7 @@
 package io.ktlab.bshelper
 
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.add
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -26,7 +20,8 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.koin.koinViewModel
 import moe.tlaster.precompose.navigation.rememberNavigator
 import org.koin.compose.KoinContext
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BSHelperApp(){
     KoinContext {
@@ -85,14 +80,35 @@ fun BSHelperApp(){
                                 isExpandedScreen = isExpandedScreen,
                                 navigator = navigator,
                                 openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
-                                snackbarHost = {
-                                    BSHelperSnackbarHost(
-                                        hostState = snackbarHostState,
-                                    )
-                                },
+                                snackbarHost = { BSHelperSnackbarHost(hostState = snackbarHostState) },
                                 snackbarHostState = snackbarHostState,
+                                globalUiState = globalUiState,
                             )
-
+                            if(globalUiState.errorDialogState != null) {
+                                AlertDialog(
+                                    onDismissRequest = {
+                                        globalUiState.errorDialogState!!.onCancel?.let { it() }
+                                    },
+                                    title = { Text(text = globalUiState.errorDialogState!!.title) },
+                                    text = {
+                                        Text(text = globalUiState.errorDialogState!!.message, maxLines = 10, softWrap = false)
+                                    },
+                                    confirmButton = {
+                                        TextButton(
+                                            onClick = { globalUiState.errorDialogState!!.onConfirm?.let { it() } }
+                                        ) { Text(globalUiState.errorDialogState!!.confirmLabel!!) }
+                                    },
+                                    dismissButton = {
+                                        if(globalUiState.errorDialogState!!.onCancel != null) {
+                                            TextButton(
+                                                onClick = {
+                                                    globalUiState.errorDialogState!!.onCancel?.let { it() }
+                                                }
+                                            ) { Text(globalUiState.errorDialogState!!.cancelLabel!!) }
+                                        }
+                                    }
+                                )
+                            }
                             SnackBarShown(
                                 snackbarHostState = snackbarHostState,
                                 snackBarMessages = globalUiState.snackBarMessages,

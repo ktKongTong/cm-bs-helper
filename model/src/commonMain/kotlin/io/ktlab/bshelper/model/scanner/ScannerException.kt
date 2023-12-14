@@ -15,7 +15,11 @@ sealed interface ScannerException {
         override val cause: Throwable? = null,
         val mapId: String? = null,
         val mapPath: Path,
-    ): ScannerException, Exception(message, cause)
+    ): ScannerException, Exception(message, cause) {
+        override fun toString(): String {
+            return "JSONFileTooLargeException: $message, mapId: $mapId, mapPath: $mapPath"
+        }
+    }
 
     // 文件缺失异常
 // 1. Info.dat/info.dat 不存在
@@ -27,12 +31,20 @@ sealed interface ScannerException {
         val lackInfo: Boolean = false,
         val mapId: String? = null,
         val mapDir: String? = null,
-    ): ScannerException, Exception(message, cause)
+    ): ScannerException, Exception(message, cause) {
+        override fun toString(): String {
+            return "FileMissingException: $message, mapId: $mapId, mapPath: $mapDir"
+        }
+    }
     class ParseException(
         override val message: String,
         override val cause: Throwable? = null,
         val lackInfo: Boolean = false,
         val mapId: String? = null,
         val mapDir: String? = null,
-    ): ScannerException, Exception(message, cause)
+    ): ScannerException, Exception(message, cause) {
+        override fun toString(): String {
+            return "ParseException: $message, mapId: $mapId, mapPath: $mapDir"
+        }
+    }
 }

@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import io.beatmaps.common.fixedStr
 import io.ktlab.bshelper.ui.components.icons.*
@@ -19,7 +20,8 @@ import kotlinx.datetime.LocalDateTime
 fun BSBPMLabel(
     bpm: String,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -29,7 +31,7 @@ fun BSBPMLabel(
         Text(
             text = bpm,
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -38,7 +40,8 @@ fun BSBPMLabel(
 fun BSDurationLabel(
     duration: String,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -48,7 +51,7 @@ fun BSDurationLabel(
         Text(
             text =duration,
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -57,7 +60,8 @@ fun BSDurationLabel(
 fun BSNPSRangeLabel(
     npsRange: String,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -67,7 +71,7 @@ fun BSNPSRangeLabel(
         Text(
             text = npsRange,
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -76,7 +80,8 @@ fun BSNPSRangeLabel(
 fun BSNPSLabel(
     nps: Double,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -86,7 +91,7 @@ fun BSNPSLabel(
         Text(
             text = nps.fixedStr(2),
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -95,7 +100,8 @@ fun BSNPSLabel(
 fun BSLightEventLabel(
     event: Long,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -105,7 +111,7 @@ fun BSLightEventLabel(
         Text(
             text = event.toString(),
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -114,7 +120,8 @@ fun BSLightEventLabel(
 fun BSNoteLabel(
     note: Long,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -124,7 +131,7 @@ fun BSNoteLabel(
         Text(
             text = note.toString(),
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -133,7 +140,8 @@ fun BSNoteLabel(
 fun BSObstacleLabel(
     obstacle: Long,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -143,7 +151,7 @@ fun BSObstacleLabel(
         Text(
             text = obstacle.toString(),
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -152,7 +160,8 @@ fun BSObstacleLabel(
 fun BSBombLabel(
     bomb: Long,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -162,7 +171,7 @@ fun BSBombLabel(
         Text(
             text = bomb.toString(),
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -172,7 +181,8 @@ fun BSBombLabel(
 fun BSRatingLabel(
     rating: Double,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -182,7 +192,7 @@ fun BSRatingLabel(
         Text(
             text = (rating * 100).fixedStr(0)+"%",
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -191,7 +201,8 @@ fun BSRatingLabel(
 fun BSThumbUpLabel(
     upVote: Long,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -200,8 +211,8 @@ fun BSThumbUpLabel(
         BSThumbUpIcon(modifier, tint)
         Text(
             text = upVote.countPrettyFormat(),
-            modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            modifier = modifier.padding(2.dp),
+            style = textStyle
         )
     }
 }
@@ -210,7 +221,8 @@ fun BSThumbUpLabel(
 fun BSThumbDownLabel(
     downVote: Long,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -220,7 +232,7 @@ fun BSThumbDownLabel(
         Text(
             text = downVote.countPrettyFormat(),
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -229,7 +241,8 @@ fun BSThumbDownLabel(
 fun DateLabel(
     date: LocalDateTime,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -239,7 +252,7 @@ fun DateLabel(
         Text(
             text = date.prettyFormat(),
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
@@ -249,7 +262,8 @@ fun DateLabel(
 fun MapAmountLabel(
     count: Int,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -259,7 +273,8 @@ fun MapAmountLabel(
         Text(
             text = count.toString(),
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium
+            style = textStyle
         )
     }
 }
+

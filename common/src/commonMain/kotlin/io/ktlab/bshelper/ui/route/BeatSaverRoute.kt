@@ -11,10 +11,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.ui.screens.beatsaver.BSMapScreen
+import io.ktlab.bshelper.ui.screens.beatsaver.BSMapperScreen
 import io.ktlab.bshelper.ui.screens.beatsaver.BSPlaylistScreen
 import io.ktlab.bshelper.ui.screens.beatsaver.components.TextTabs
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverViewModel
+import io.ktlab.bshelper.viewmodel.GlobalUiState
 import io.ktlab.bshelper.viewmodel.TabType
 import moe.tlaster.precompose.koin.koinViewModel
 
@@ -24,6 +26,7 @@ fun BeatSaverRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
     snackbarHost: @Composable () -> Unit = {},
+    globalUiState: GlobalUiState,
     snackbarHostState: SnackbarHostState,
 ){
 
@@ -71,8 +74,11 @@ fun BeatSaverRoute(
                         snackbarHostState = snackbarHostState,
                         onUIEvent = beatSaverViewModel::dispatchUiEvents
                     )
-                    TabType.Mapper -> {
-                        Text(text = "Mapper")
+                    TabType.Mapper -> { BSMapperScreen(
+                            uiState = uiState,
+                            snackbarHostState = snackbarHostState,
+                            onUIEvent = beatSaverViewModel::dispatchUiEvents
+                        )
                     }
                 }
             }

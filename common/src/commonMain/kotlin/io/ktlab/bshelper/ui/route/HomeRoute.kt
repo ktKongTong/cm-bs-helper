@@ -1,11 +1,11 @@
 package io.ktlab.bshelper.ui.route
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import io.ktlab.bshelper.ui.screens.home.HomeScreen
+import io.ktlab.bshelper.viewmodel.GlobalUiState
 import io.ktlab.bshelper.viewmodel.HomeViewModel
 import moe.tlaster.precompose.koin.koinViewModel
 
@@ -14,7 +14,9 @@ fun HomeRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
     snackbarHost : @Composable () -> Unit = {},
-     homeViewModel:HomeViewModel = koinViewModel<HomeViewModel>()
+    snackbarHostState: SnackbarHostState,
+    globalUiState: GlobalUiState,
+    homeViewModel:HomeViewModel = koinViewModel<HomeViewModel>()
 ){
     val uiState by homeViewModel.uiState.collectAsState()
 //    val uiState = homeViewModel.uiState.collectAsState(homeViewModel.viewModelState.value.toUiState()).value

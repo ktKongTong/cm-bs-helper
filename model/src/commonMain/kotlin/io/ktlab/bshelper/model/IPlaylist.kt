@@ -20,8 +20,6 @@ interface IPlaylist {
     fun getImage(): String
     fun isCustom(): Boolean
     fun getMinNPS(): Double
-    fun getPlaylistDescription(): String {
-        return "nothing here"
-    }
+    fun getPlaylistDescription():String
     fun getTargetPath():String
 }

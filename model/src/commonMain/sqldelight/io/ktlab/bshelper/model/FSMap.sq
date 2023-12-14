@@ -102,8 +102,14 @@ DELETE FROM FSMap;
 
 
 
-delteFSMapByPlaylistId:
+deleteFSMapByPlaylistId:
 DELETE FROM FSMap WHERE playlistId = ?;
+
+deleteFSMapByPlaylistIds:
+DELETE FROM FSMap WHERE playlistId IN ?;
 
 deleteFSMapByMapIdsAndPlaylistId:
 DELETE FROM FSMap WHERE mapId IN ? AND playlistId = ?;
+
+deleteFSMapByMapPathsAndPlaylistId:
+DELETE FROM FSMap WHERE dirName IN ? AND playlistId = ?;

@@ -73,11 +73,11 @@ fun PlaylistFilterPanel(
     }
     Column (
         modifier = Modifier
-            .wrapContentSize()
+            .fillMaxHeight()
     ){
         Column(
             modifier = Modifier
-                .wrapContentHeight()
+                .fillMaxHeight()
                 .verticalScroll(rememberScrollState())
                 .weight(weight = 1f, fill = false)
         ){
@@ -101,7 +101,6 @@ fun PlaylistFilterPanel(
                 )
             }
             // NPSRangeSelector
-            Divider(modifier = Modifier.padding(4.dp))
             Row {
                 Text(
                     modifier = Modifier

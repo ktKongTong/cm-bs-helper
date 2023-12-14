@@ -3,14 +3,13 @@ package io.ktlab.bshelper.api
 import io.ktlab.bshelper.model.dto.ExportPlaylist
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.response.APIRespResult
-import io.ktlab.bshelper.model.dto.response.BSRespDTO
 import io.ktlab.bshelper.model.dto.response.KVSetResponse
 import io.ktlab.bshelper.utils.Constants
-import io.ktor.client.HttpClient
+import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.util.*
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 class ToolAPI(private val httpClient: HttpClient) {
@@ -39,10 +38,15 @@ class ToolAPI(private val httpClient: HttpClient) {
     suspend fun getKV(key: String): APIRespResult<ExportPlaylist> {
         return try {
             val response = httpClient.get("$BASE_PATH/api/$key")
-            val resp = response.body<ExportPlaylist>()
-            APIRespResult.Success(resp)
+            val resp = response.body<ToolAPIResp>()
+            APIRespResult.Success(resp.content)
         }catch (e: Exception){
             APIRespResult.Error(e)
         }
     }
 }
+@Serializable
+data class ToolAPIResp(
+    val message: String,
+    val content: ExportPlaylist,
+)

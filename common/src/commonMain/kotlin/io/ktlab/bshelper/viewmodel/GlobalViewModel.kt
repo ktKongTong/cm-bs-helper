@@ -1,8 +1,10 @@
 package io.ktlab.bshelper.viewmodel
 
 import androidx.compose.material3.SnackbarDuration
-import io.ktlab.bshelper.repository.EventType
+import androidx.compose.ui.text.AnnotatedString
+import io.ktlab.bshelper.repository.Event
 import io.ktlab.bshelper.repository.RuntimeEventFlow
+import io.ktlab.bshelper.service.IBSClipBoardManager
 import io.ktlab.bshelper.service.MediaPlayer
 import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
@@ -16,6 +18,7 @@ sealed class GlobalUIEvent: UIEvent(){
     data class SnackBarShown(val msgId:Long):GlobalUIEvent()
     data class WriteToClipboard(val text:String):GlobalUIEvent()
 //    data class MediaEvent(val media: IMedia):GlobalUIEvent()
+    data class ReportError(val throwable: Throwable):GlobalUIEvent()
     data class PlayMedia(val media: IMedia):GlobalUIEvent()
     data class OnMediaEvent(val event: MediaEvent):GlobalUIEvent()
 }
@@ -50,7 +53,8 @@ data class GlobalViewModelState(
     val snackBarMessages: List<SnackBarMessage> = emptyList(),
     val isLoading: Boolean = false,
     val currentMedia: IMedia,
-    val currentMediaState : CurrentMediaState
+    val currentMediaState : CurrentMediaState,
+    val errorDialogState: ErrorDialogState? = null,
 ){
     fun toUiState(): GlobalUiState {
         return GlobalUiState(
@@ -61,15 +65,26 @@ data class GlobalViewModelState(
         )
     }
 }
+
+data class ErrorDialogState(
+    val title: String,
+    val message: String,
+    val confirmLabel: String?=null,
+    val cancelLabel: String?=null,
+    val onConfirm: (() -> Unit)?=null,
+    val onCancel: (() -> Unit)?=null,
+)
 data class GlobalUiState (
     val isLoading: Boolean,
     val snackBarMessages: List<SnackBarMessage> = emptyList(),
     val currentMedia: IMedia,
-    val currentMediaState : CurrentMediaState = CurrentMediaState.Stopped
+    val currentMediaState : CurrentMediaState = CurrentMediaState.Stopped,
+    val errorDialogState: ErrorDialogState? = null,
 )
 class GlobalViewModel(
     private val runtimeEventFlow: RuntimeEventFlow,
-    private val mediaPlayer: MediaPlayer
+    private val mediaPlayer: MediaPlayer,
+    private val clipboardManager: IBSClipBoardManager,
 ) : ViewModel(){
     private val viewModelState = MutableStateFlow(GlobalViewModelState(
         isLoading = true,
@@ -87,12 +102,12 @@ class GlobalViewModel(
 
     init {
         runtimeEventFlow.subscribeEvent { event ->
-            when (event.type) {
-                EventType.Exception -> {
-                    dispatchUiEvents(GlobalUIEvent.ShowSnackBar((event.data as Exception).message ?: "Unknown Error"))
+            when (event) {
+                is Event.ExceptionEvent -> {
+                    dispatchUiEvents(GlobalUIEvent.ReportError(event.throwable))
                 }
-                EventType.Message -> {
-                    dispatchUiEvents(GlobalUIEvent.ShowSnackBar(event.data as String))
+                is Event.MessageEvent -> {
+                    dispatchUiEvents(GlobalUIEvent.ShowSnackBar(event.message))
                 }
             }
         }
@@ -114,6 +129,28 @@ class GlobalViewModel(
             }
             is GlobalUIEvent.OnMediaEvent -> {
                 playMediaEvent(event = event.event)
+            }
+            is GlobalUIEvent.ReportError -> {
+                showSnackBar(msg = "Error: ${event.throwable.message}", actionLabel = "Check Details", action = {
+                    viewModelState.update {
+                        it.copy(errorDialogState = ErrorDialogState(
+                            title = "Error",
+                            message = event.throwable.stackTraceToString(),
+                            confirmLabel = "确认",
+                            cancelLabel = "复制以报告",
+                            onConfirm = {
+                                viewModelState.update { vmState ->
+                                    vmState.copy(errorDialogState = null)
+                                }
+                            },
+                            onCancel = {
+                                writeToClipboard(text = event.throwable.stackTraceToString())
+                            }
+                        ))
+
+                    }
+//                    showSnackBar(msg = event.throwable.stackTraceToString())
+                })
             }
         }
     }
@@ -158,13 +195,15 @@ class GlobalViewModel(
                     }
                 }
             )
-        }else if (media is IMedia.MapPreview){
-            // a map preview component
         }
+//        else if (media is IMedia.MapPreview){
+//            // a map preview component
+//        }
 
 
     }
-    private fun writeToClipboard(text: String, label: String = "") {
+    fun writeToClipboard(text: String, label: String = "") {
+        clipboardManager.setText(AnnotatedString(text))
 //        clipboardManager.setPrimaryClip(ClipData.newPlainText(label,text))
     }
     fun showSnackBar(

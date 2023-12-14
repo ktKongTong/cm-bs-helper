@@ -8,16 +8,19 @@ import app.cash.sqldelight.coroutines.mapToList
 import io.ktlab.bshelper.api.BeatSaverAPI
 import io.ktlab.bshelper.api.ToolAPI
 import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.dto.BSUserWithStatsDTO
 import io.ktlab.bshelper.model.dto.ExportPlaylist
 import io.ktlab.bshelper.model.dto.MapItem
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
+import io.ktlab.bshelper.model.dto.response.BSMapperDetailDTO
 import io.ktlab.bshelper.model.enums.SyncStateEnum
 import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
 import io.ktlab.bshelper.model.vo.ScanStateV2
+import io.ktlab.bshelper.paging.BSMapperPagingSource
 import io.ktlab.bshelper.paging.BSPlaylistDetailPagingSource
 import io.ktlab.bshelper.paging.BSPlaylistPagingSource
 import kotlinx.coroutines.*
@@ -52,8 +55,15 @@ class PlaylistRepository(
             }
         }
     }
-
-    fun createNewPlaylist(playlistName:String): Result<String> {
+    fun isPlaylistExist(playlistName:String):Boolean {
+        val manageDir = preference.currentManageDir.toPath()
+        if (!FileSystem.SYSTEM.exists(manageDir)) {
+            return false
+        }
+        return bsHelperDAO.fSPlaylistQueries.selectByIds(listOf(manageDir.resolve(playlistName).toString()))
+        .executeAsList().firstOrNull()?.let { true }?:false
+    }
+    fun createNewPlaylist(playlistName:String, bsPlaylistId:Int? = null): Result<FSPlaylist> {
         val manageDir = preference.currentManageDir.toPath()
         if (!FileSystem.SYSTEM.exists(manageDir)) {
             return Result.Error(Exception("manage dir not exist"))
@@ -68,7 +78,7 @@ class PlaylistRepository(
             id = basePath,
             name = playlistName,
             description = "custom create playlist",
-            bsPlaylistId = null,
+            bsPlaylistId = bsPlaylistId,
             basePath = basePath,
             sync = SyncStateEnum.SYNCED,
             syncTimestamp = Clock.System.now().toEpochMilliseconds(),
@@ -76,13 +86,13 @@ class PlaylistRepository(
             topPlaylist = false,
         )
         bsHelperDAO.fSPlaylistQueries.insertAnyway(fSPlaylist)
-        return Result.Success(basePath)
+        return Result.Success(fSPlaylist)
     }
 
     fun deletePlaylistById(id:String) {
         bsHelperDAO.transaction{
             bsHelperDAO.fSPlaylistQueries.deleteById(id)
-            bsHelperDAO.fSMapQueries.delteFSMapByPlaylistId(id)
+            bsHelperDAO.fSMapQueries.deleteFSMapByPlaylistId(id)
         }
     }
 
@@ -160,14 +170,30 @@ class PlaylistRepository(
             }
         ).flow
     }
+    fun getPagingBSUser(): Flow<PagingData<BSUserWithStatsDTO>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = {
+                BSMapperPagingSource(bsAPI)
+            }
+        ).flow
+    }
 
-    suspend fun scanSinglePlaylist(basePath: String) = playlistScanner.scanSinglePlaylist(basePath)
+    suspend fun getBSUserDetail(id:Int): Result<BSMapperDetailDTO> {
+        when(val res = bsAPI.getMapperDetail(id)){
+            is APIRespResult.Success -> {
+                return Result.Success(res.data)
+            }
+            is APIRespResult.Error -> {
+                return Result.Error(res.exception)
+            }
+        }
+    }
+
+     suspend fun scanSinglePlaylist(basePath: String) = playlistScanner.scanSinglePlaylist(basePath)
      fun scanPlaylist(basePath: String): Flow<ScanStateV2> = playlistScanner.scanPlaylist(basePath)
 
-//    suspend fun scanFSMapInPlaylists(scanState:ScanState): Flow<ScanState> = playlistScanner.scanFSMapInPlaylists(scanState)
-
-
-    suspend fun exportPlaylistAsKey(playlist: IPlaylist): Result<String> {
+     suspend fun exportPlaylistAsKey(playlist: IPlaylist): Result<String> {
          val mapItems = bsHelperDAO
              .fSMapQueries
              .getAllByPlaylistId(playlist.id)
@@ -181,6 +207,44 @@ class PlaylistRepository(
          }
          return Result.Success((res as APIRespResult.Success).data.key!!)
      }
+
+    suspend fun exportPlaylistAsBPList(playlist: IPlaylist): Result<String> {
+        val mapItems = bsHelperDAO
+            .fSMapQueries
+            .getAllByPlaylistId(playlist.id)
+            .executeAsList()
+            .mapToVO()
+            .map { MapItem(it.fsMap.mapId) }
+        val exportPlaylist = ExportPlaylist(playlist.title,playlist.id,mapItems)
+        // save to download dir
+        TODO()
+//        if (res is APIRespResult.Error){
+//            return Result.Error(res.exception)
+//        }
+//        return Result.Success((res as APIRespResult.Success).data.key!!)
+    }
+
+    suspend fun importPlaylistByKey(key:String,targetPlaylist: IPlaylist): Result<List<String>> {
+        val res = toolAPI.getKV(key)
+        return when (res) {
+            is APIRespResult.Error -> {
+                Result.Error(res.exception)
+            }
+            is APIRespResult.Success -> {
+                val mapItems = bsHelperDAO
+                    .fSPlaylistQueries
+                    .selectByIds(listOf(targetPlaylist.id))
+                    .executeAsList()
+                    .firstOrNull()?.let {
+                        bsHelperDAO.fSMapQueries.getAllByPlaylistId(it.id).executeAsList().mapToVO()
+                    } ?: emptyList()
+                val ids =  res.data.mapItems.filter {
+                    it.mapId !in mapItems.map { it.fsMap.mapId }
+                }.map { it.mapId }
+                Result.Success(ids)
+            }
+        }
+    }
 
     fun clear() {
         bsHelperDAO.transaction {

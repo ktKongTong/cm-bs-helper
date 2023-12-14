@@ -13,6 +13,7 @@ import io.ktlab.bshelper.model.dto.response.BSMapReviewDTO
 import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
+import io.ktlab.bshelper.paging.BSMapByUserPagingSource
 import io.ktlab.bshelper.paging.BSMapPagingSource
 import io.ktlab.bshelper.paging.BSPlaylistDetailPagingSource
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +23,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import kotlin.io.path.Path
-import kotlin.io.path.pathString
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -49,16 +48,19 @@ class FSMapRepository(
     fun moveFSMapsToPlaylist(targetPlaylist: IPlaylist, fsMaps:List<FSMap>): Flow<Result<String>> = flow {
         try {
             val playlistPath = (targetPlaylist as FSPlaylistVO).basePath
-//            TODO failure handle
             fsMaps.forEach{
-                val path = Path(it.playlistBasePath,it.dirName)
-                val tarPath = Path(playlistPath,it.dirName)
+                val path = it.playlistBasePath.toPath().resolve(it.dirName)
+                val tarPath = playlistPath.toPath().resolve(it.dirName)
                 path.toFile().renameTo(tarPath.toFile())
             }
             bsHelperDAO.transaction {
-                val targetPath = Path(targetPlaylist._name).resolve(targetPlaylist._name).pathString
                 fsMaps.forEach {
-                    bsHelperDAO.fSMapQueries.moveFSMapToPlaylist(targetPlaylist.id,targetPath,it.mapId,it.playlistId)
+                    bsHelperDAO.fSMapQueries.moveFSMapToPlaylist(
+                        targetPlaylist.id,
+                        targetPlaylist.id,
+                        it.mapId,
+                        it.playlistId
+                    )
                 }
             }
             emit(Result.Success(""))
@@ -153,7 +155,7 @@ class FSMapRepository(
                         relativeInfoFilename = "",
                         relativeSongFilename = "",
                         relativeCoverFilename = "",
-                        dirName = "${it.map.mapId} (${it.map.songName} - ${it.map.songAuthorName})".replace("/", " "),
+                        dirName = it.getFilename(),
                         previewStartTime = 0.0,
                         previewDuration = Duration.ZERO,
                         playlistBasePath = targetPlaylist.getTargetPath(),
@@ -162,7 +164,6 @@ class FSMapRepository(
                         active = false,
                     )
                 )
-//                bsHelperDAO.fSMapQueries.insertFSMap(it.map.mapId,playlistId)
             }
         }
     }
@@ -193,11 +194,18 @@ class FSMapRepository(
             }
         ).flow
     }
+
+    fun getPagingBSMapByBSUserId(id:Int): Flow<PagingData<IMap>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = { BSMapByUserPagingSource(bsAPI,id) }
+        ).flow
+    }
     suspend fun deleteFSMapsByPath(playlistId: String,fsMaps:List<FSMap>):Result<String>{
         try {
 //            批量删除
             fsMaps.forEach{
-                FileSystem.SYSTEM.deleteRecursively(it.playlistBasePath.toPath().resolve(it.dirName))
+                FileSystem.SYSTEM.deleteRecursively(it.playlistBasePath.toPath().resolve(it.dirName),mustExist = true)
             }
             val mapIds = fsMaps.map { it.mapId }
             bsHelperDAO.fSMapQueries.deleteFSMapByMapIdsAndPlaylistId(mapIds,playlistId)

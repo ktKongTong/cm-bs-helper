@@ -3,25 +3,20 @@ package io.ktlab.bshelper.repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
-
-enum  class EventType(
-    private val dataType: Any? = null
-) {
-    Exception(Exception::class),
-    Message(String::class),
+sealed interface Event{
+    data class ExceptionEvent(val throwable: Throwable): Event
+    data class MessageEvent(val message: String): Event
 }
 
 
 
-data class Event(
-    val type: EventType,
-    val data: Any? = null
-)
+//data class Event(
+//    val type: EventType,
+//    val data: Any? = null
+//)
 
 class RuntimeEventFlow {
     private val eventFlow = MutableStateFlow<Event?>(null)

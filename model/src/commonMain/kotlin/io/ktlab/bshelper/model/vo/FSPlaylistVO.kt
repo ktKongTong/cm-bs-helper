@@ -88,6 +88,9 @@ data class FSPlaylistVO(
     override fun getMinNPS(): Double {
         return 0.0
     }
+    override fun getPlaylistDescription(): String {
+        return bsPlaylist?.playlist?.description?:description?:""
+    }
 
     override fun getTargetPath(): String {
         return basePath

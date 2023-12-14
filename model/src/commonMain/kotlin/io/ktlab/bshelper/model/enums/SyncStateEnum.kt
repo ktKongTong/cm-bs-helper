@@ -6,7 +6,6 @@ enum class SyncStateEnum(val value: String) {
     UN_SYNCED("UN_SYNCED");
     companion object {
         fun from(value: String): SyncStateEnum {
-            println(value)
             return when (value) {
                 "SYNCED" -> SYNCED
                 "SYNCING" -> SYNCING

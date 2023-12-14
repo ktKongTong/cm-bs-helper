@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.stringResource
+import io.beatmaps.common.fixedStr
 import io.ktlab.bshelper.MR
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
@@ -24,6 +25,7 @@ import io.ktlab.bshelper.ui.components.MapAlertDialog
 import io.ktlab.bshelper.ui.components.SortButton
 import io.ktlab.bshelper.ui.components.labels.BSNPSRangeLabel
 import io.ktlab.bshelper.ui.components.labels.MapAmountLabel
+import io.ktlab.bshelper.ui.components.labels.MapperLabel
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.HomeUIEvent
 import io.ktlab.bshelper.viewmodel.MapListState
@@ -70,19 +72,14 @@ fun PlaylistDetailCardTop(
                         modifier = Modifier
                             .padding(bottom = 8.dp)
                     )
-                    Text(
-                        text = if (playlist.getAuthor()!="") {playlist.getAuthor()} else {"custom"},
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                    )
+                    MapperLabel(playlist.getAuthor())
                 }
             }
             Column(
                 Modifier.weight(1f),
                 horizontalAlignment = Alignment.End
             ) {
-                    BSNPSRangeLabel("${playlist.getMinNPS()} - ${playlist.getMaxNPS()}")
+                    BSNPSRangeLabel("${playlist.getMinNPS().fixedStr(2)} - ${playlist.getMaxNPS().fixedStr(2)}")
                     MapAmountLabel(playlist.getMapAmount())
             }
         }

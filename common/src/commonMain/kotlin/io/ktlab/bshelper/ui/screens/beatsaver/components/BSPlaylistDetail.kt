@@ -25,11 +25,7 @@ import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
 import io.ktlab.bshelper.ui.components.DropDownPlaylistSelector
-import io.ktlab.bshelper.ui.components.labels.MapperLabel
-import io.ktlab.bshelper.ui.components.labels.BSDurationLabel
-import io.ktlab.bshelper.ui.components.labels.BSNPSRangeLabel
-import io.ktlab.bshelper.ui.components.labels.BSThumbDownLabel
-import io.ktlab.bshelper.ui.components.labels.BSThumbUpLabel
+import io.ktlab.bshelper.ui.components.labels.*
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.utils.prettyFormat
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
@@ -206,9 +202,6 @@ fun BSPlaylistHeader(
                                 }
                             }
                         }
-
-
-
                     }
                 }
             }

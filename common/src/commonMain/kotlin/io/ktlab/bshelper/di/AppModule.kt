@@ -32,13 +32,13 @@ object AppModule {
             UserPreferenceRepository(get())
         }
         single {
-            DownloaderRepository(get(),get(),get(),get(),get())
+            DownloaderRepository(get(),get(),get(),get(),get(),get())
         }
     }
 
     private val viewModelModule = module {
-        single<GlobalViewModel> { GlobalViewModel(get(),get()) }
-        single<HomeViewModel> { HomeViewModel(get(),get(),get(),get()) }
+        single<GlobalViewModel> { GlobalViewModel(get(),get(),get()) }
+        single<HomeViewModel> { HomeViewModel(get(),get(),get(),get(),get()) }
         single<ToolboxViewModel> { ToolboxViewModel(get(),get(),get(),get()) }
         single<BeatSaverViewModel> { BeatSaverViewModel(get(),get(),get(),get(),get()) }
 //        factory<BeatSaverViewModel> {

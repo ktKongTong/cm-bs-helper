@@ -3,8 +3,6 @@ package io.ktlab.bshelper.ui.screens.toolbox.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -74,8 +72,6 @@ fun ScanPlaylistDialog(
 //                StepsProgressBar(numberOfSteps = 4, currentStep = getStepByCurrentState(scanState.state))
                 var targetPath by remember { mutableStateOf("") }
                 Box(modifier = Modifier
-                    .fillMaxHeight(0.7f)
-                    .weight(1f, fill = false)
                 ) {
                     StepContent(scanState,targetPath,{targetPath = it},onUIEvent)
                 }
@@ -114,18 +110,19 @@ fun StepContent(
 ){
     when(scanState.state) {
             ScanStateEventEnum.NOT_START -> {
-                DirectoryChooser(targetPath,onSelectTargetPath,onUIEvent)
+//                DirectoryChooser(targetPath,onSelectTargetPath,onUIEvent)
             }
             ScanStateEventEnum.SCANNING,ScanStateEventEnum.SCAN_COMPLETE,ScanStateEventEnum.SCAN_ERROR -> {
                 Column {
                     Text(text = "文件夹：${targetPath}")
                     if (scanState.state == ScanStateEventEnum.SCAN_COMPLETE || scanState.state == ScanStateEventEnum.SCAN_ERROR){
                         Text(text = "扫描完成")
-                    }else {
+                    }
+//                    else {
                         Text(text = "扫描中，请稍后 ${scanState.scannedDirCount}/${scanState.totalDirCount}")
                         Text(text = "当前歌单：${scanState.currentPlaylistDir},已扫描${scanState.scannedMapCount}", maxLines = 1)
                         Text(text = "当前谱面：${scanState.currentMapDir}", maxLines = 1)
-                    }
+//                    }
 
                     LazyColumn {
                         items(scanState.playlistScanList.size) { index ->
@@ -173,7 +170,7 @@ fun StepContent(
                                 }
                             }
                         }
-                    }
+            }
         }
 }
 
@@ -195,13 +192,16 @@ fun DirectoryChooser(
             }
         }
     )
-    BSDirectoryPicker(showDirPicker){ path ->
-        showDirPicker = false
-        if (path != null) {
-            onUIEvent(ToolboxUIEvent.UpdateDefaultManageDir(path))
-            onSelectTargetPath(path)
+    if (showDirPicker) {
+        BSDirectoryPicker(showDirPicker){ path ->
+            showDirPicker = false
+            if (path != null) {
+                onUIEvent(ToolboxUIEvent.UpdateDefaultManageDir(path))
+                onSelectTargetPath(path)
+            }
         }
     }
+
 }
 
 @Composable

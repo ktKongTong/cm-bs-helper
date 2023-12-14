@@ -6,7 +6,10 @@ package io.ktlab.bshelper.ui.screens.beatsaver.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -20,6 +23,7 @@ import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.itemKey
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.download.IDownloadTask
+import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.LocalState
@@ -58,13 +62,13 @@ fun MapCardPagingList(
         }
         Column {
             stickyHeader()
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .padding(horizontal = 16.dp),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-            )
+//            Divider(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(1.dp)
+//                    .padding(horizontal = 16.dp),
+//                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+//            )
             if (mapPagingItems.loadState.refresh is LoadState.Loading) {
                 Box(
                     modifier = Modifier
@@ -84,7 +88,7 @@ fun MapCardPagingList(
 
                 items(
                     count = mapPagingItems.itemCount,
-                    key = mapPagingItems.itemKey { it.getID() },
+                    key = mapPagingItems.itemKey { (it as BSMapVO).versions.first().version.hash },
                     span = { GridItemSpan(1) }
                 ) { index ->
                     val map = mapPagingItems[index]

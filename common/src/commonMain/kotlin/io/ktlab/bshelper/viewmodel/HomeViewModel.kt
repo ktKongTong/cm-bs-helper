@@ -5,6 +5,7 @@ import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.enums.SortKey
 import io.ktlab.bshelper.model.enums.SortType
 import io.ktlab.bshelper.model.vo.FSMapVO
+import io.ktlab.bshelper.repository.DownloaderRepository
 import io.ktlab.bshelper.repository.FSMapRepository
 import io.ktlab.bshelper.repository.PlaylistRepository
 import io.ktlab.bshelper.repository.UserPreferenceRepository
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
-import java.util.*
 
 data class HomeViewModelState(
     val playlists: List<IPlaylist> = emptyList(),
@@ -79,7 +79,6 @@ sealed interface HomeUiState {
 }
 
 sealed class HomeUIEvent: UIEvent(){
-    data class ShowSnackBar(val message:String): HomeUIEvent()
     data class PlaylistTapped(val playlistId: String) : HomeUIEvent()
     data class MapTapped(val mapId: String) : HomeUIEvent()
     data class ChangeMapListSortRule(val sortRule:Pair<SortKey,SortType>):HomeUIEvent()
@@ -95,11 +94,11 @@ sealed class HomeUIEvent: UIEvent(){
     data class BuildBPList(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class SharePlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class ExportPlaylistAsKey(val playlist:IPlaylist):HomeUIEvent()
+    data class ExportPlaylistAsBPList(val playlist:IPlaylist):HomeUIEvent()
     data class DeletePlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class EditPlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class SyncPlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class ImportPlaylist(val key:String,val targetPlaylist:IPlaylist):HomeUIEvent()
-    data class SnackBarShown(val msgId:Long):HomeUIEvent()
 //    data class DividePlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
 }
 
@@ -109,6 +108,7 @@ class HomeViewModel(
     private val playlistRepository: PlaylistRepository,
     private val mapRepository: FSMapRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
+    private val downloaderRepository: DownloaderRepository,
 )
     : ViewModel()
 {
@@ -141,12 +141,8 @@ class HomeViewModel(
 
     fun dispatchUiEvents(event: UIEvent){
         when(event){
-            is HomeUIEvent.ShowSnackBar -> {}
-            is HomeUIEvent.SnackBarShown -> {
-                snackBarShown(event.msgId)
-            }
-            is HomeUIEvent.ImportPlaylist ->{
-//                importPlaylist(event.key,event.targetPlaylist)
+            is GlobalUIEvent.ShowSnackBar -> {
+                globalViewModel.showSnackBar(msg = event.message)
             }
             is HomeUIEvent.DeletePlaylist -> {
                 deletePlaylist(event.targetPlaylist)
@@ -167,6 +163,9 @@ class HomeViewModel(
             is HomeUIEvent.MultiDeleteAction -> { onMultiDeleteAction(event.mapSet) }
             is HomeUIEvent.MultiMoveAction -> { onMultiMoveAction(event.mapSet,event.targetPlaylist) }
             is HomeUIEvent.ExportPlaylistAsKey -> { onExportPlaylistAsKey(event.playlist) }
+
+            is HomeUIEvent.ImportPlaylist ->{ onImportPlaylist(event.key,event.targetPlaylist) }
+            is HomeUIEvent.ExportPlaylistAsBPList -> { onExportPlaylistAsBPList(event.playlist) }
             is HomeUIEvent.PlayPreviewMusicSegment -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     globalViewModel.playMedia(IMedia.MapAudioPreview(
@@ -205,7 +204,7 @@ class HomeViewModel(
                             }
                         }
                         is Result.Error -> {
-                            showSnackBar(
+                            globalViewModel.showSnackBar(
                                 msg = "error loading playlists",
                                 actionLabel = "retry",
                                 action = { refreshPlayLists(managerPath) }
@@ -247,26 +246,41 @@ class HomeViewModel(
     private fun onExportPlaylistAsKey(playlist: IPlaylist) {
         viewModelScope.launch {
             val res = playlistRepository.exportPlaylistAsKey(playlist)
-            showSnackBar(
+            globalViewModel.showSnackBar(
                 msg = res.successOr("export failed"),
                 actionLabel = "copy",
-                action = {copyToClipboard(res.successOr(""))},
+                action = {globalViewModel.writeToClipboard(res.successOr(""))},
                 duration = SnackbarDuration.Long
             )
         }
     }
+    private fun onExportPlaylistAsBPList(playlist: IPlaylist) {
+        viewModelScope.launch {
+            val res = playlistRepository.exportPlaylistAsBPList(playlist)
+            globalViewModel.showSnackBar(msg = res.successOr("export failed"))
+        }
+    }
 
+    private fun onImportPlaylist(key: String, targetPlaylist: IPlaylist) {
+        viewModelScope.launch {
+            val res = playlistRepository.importPlaylistByKey(key, targetPlaylist)
+            when (res) {
+                is Result.Success -> {
+                    globalViewModel.showSnackBar(msg = "将导入 ${res.data.size} 个 map 至 ${targetPlaylist.title}")
+                    downloaderRepository.downloadMapByMapIds(targetPlaylist, res.data)
+                }
+                is Result.Error -> {
+                    globalViewModel.showSnackBar(msg = "import failed")
+                }
+            }
+
+        }
+    }
     private fun onChangeMapListSortRule(sortRule:Pair<SortKey,SortType>) {
         viewModelState.update {
             it.copy(
                 mapListState = it.mapListState.copy(sortRule = sortRule)
             )
-        }
-    }
-
-    private fun deleteFSMap(fsMap: FSMap) {
-        viewModelScope.launch {
-            mapRepository.deleteFSMapsByPath(viewModelState.value.selectedPlaylistId!!,listOf(fsMap))
         }
     }
 
@@ -312,11 +326,11 @@ class HomeViewModel(
                     .flowOn(Dispatchers.IO)
                     .collect{
                         if (it is Result.Success) {
-                            showSnackBar(
+                            globalViewModel.showSnackBar(
                                 msg = "move ${mapToBeMoved.size} maps to ${targetPlaylist.title} succeed",
                             )
                         }else {
-                            showSnackBar(
+                            globalViewModel.showSnackBar(
                                 msg = "move ${mapToBeMoved.size} maps to ${targetPlaylist.title} failed",
                             )
                         }
@@ -371,31 +385,6 @@ class HomeViewModel(
                     },
                 )
             )
-        }
-    }
-
-    private fun showSnackBar(
-        msg: String,
-        actionLabel: String? = null,
-        duration: SnackbarDuration = SnackbarDuration.Short,
-        action: (() -> Unit)? = null
-    ) {
-        val snackBarMessages = viewModelState.value.snackBarMessages + SnackBarMessage(
-            id = UUID.randomUUID().mostSignificantBits,
-            message = msg,
-            actionLabel = actionLabel,
-            action = action,
-            duration = duration
-        )
-        viewModelState.update { vmState ->
-            vmState.copy(snackBarMessages = snackBarMessages, isLoading = false)
-        }
-    }
-
-    fun snackBarShown(snackBarId: Long) {
-        viewModelState.update { currentUiState ->
-            val snackBarMessages = currentUiState.snackBarMessages.filterNot { it.id == snackBarId }
-            currentUiState.copy(snackBarMessages = snackBarMessages)
         }
     }
 }

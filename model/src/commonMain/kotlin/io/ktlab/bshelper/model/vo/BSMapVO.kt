@@ -84,4 +84,8 @@ data class BSMapVO(
     override fun isRelateWithBSMap(): Boolean {
         return true
     }
+
+    fun getFilename() :String {
+        return "${getID()} (${map.songName} - ${map.songAuthorName})"
+    }
 }
