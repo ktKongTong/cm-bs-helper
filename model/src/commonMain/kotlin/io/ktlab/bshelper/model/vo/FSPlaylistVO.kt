@@ -69,12 +69,12 @@ data class FSPlaylistVO(
         return avgDuration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO
     }
 
-    override fun getAvgNPS(): String {
-        return avgNps?.toString() ?: "0.0"
+    override fun getAvgNPS(): Double {
+        return avgNps?:0.0
     }
 
-    override fun getAvgNotes(): String {
-        return avgNote?.toString() ?: "0.0"
+    override fun getAvgNotes(): Double {
+        return avgNote?:0.0
     }
 
     override fun getImage(): String {

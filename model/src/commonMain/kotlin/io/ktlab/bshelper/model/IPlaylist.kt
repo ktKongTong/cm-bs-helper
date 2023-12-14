@@ -1,9 +1,6 @@
 package io.ktlab.bshelper.model
 
-import java.io.File
 import kotlin.time.Duration
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 interface IPlaylist {
     val id: String
@@ -18,8 +15,8 @@ interface IPlaylist {
     fun getMaxNotes(): Int
     fun getMaxNPS(): Double
     fun getAvgDuration(): Duration
-    fun getAvgNPS(): String
-    fun getAvgNotes(): String
+    fun getAvgNPS(): Double
+    fun getAvgNotes(): Double
     fun getImage(): String
     fun isCustom(): Boolean
     fun getMinNPS(): Double

@@ -1,7 +1,6 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
@@ -27,7 +26,7 @@ fun DownloadIconButton(
     modifier: Modifier = Modifier.size(24.dp)
 ){
     if (localExist) {
-        IconButton({}, enabled = false,modifier = Modifier.padding(2.dp)) {
+        IconButton({}, enabled = false,modifier = modifier) {
             Icon(Icons.Rounded.Check, contentDescription = "local icon")
         }
     }else if (downloadInfo != null) {
@@ -45,7 +44,7 @@ fun DownloadIconButton(
                 )
             }
             is KownTaskStatus.Completed -> {
-                IconButton({}, enabled = false,modifier = Modifier.padding(2.dp)) {
+                IconButton({}, enabled = false,modifier = modifier) {
                     Icon(
                         Icons.Rounded.Check,
 

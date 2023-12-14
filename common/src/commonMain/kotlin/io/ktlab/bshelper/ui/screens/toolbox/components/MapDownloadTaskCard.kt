@@ -22,6 +22,7 @@ import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.enums.MapTag
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.ui.components.*
+import io.ktlab.bshelper.ui.components.labels.MapDiffLabel
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
 import io.ktlab.kown.model.KownTaskStatus

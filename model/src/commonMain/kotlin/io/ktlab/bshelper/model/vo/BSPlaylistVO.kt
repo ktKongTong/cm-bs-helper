@@ -58,17 +58,16 @@ data class BSPlaylistVO(
         return Duration.INFINITE
     }
 
-    override fun getAvgNPS(): String {
-        return "0"
-//        return playlist.avgNps.toString()
+    override fun getAvgNPS(): Double {
+        return 0.0
     }
 
-    override fun getAvgNotes(): String {
-        return "0"
+    override fun getAvgNotes(): Double {
+        return 0.0
     }
 
     override fun getImage(): String {
-        TODO("Not yet implemented")
+        return playlist.playlistImage512
     }
 
     override fun isCustom(): Boolean {

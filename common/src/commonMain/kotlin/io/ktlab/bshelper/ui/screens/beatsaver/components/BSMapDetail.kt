@@ -23,7 +23,7 @@ import io.ktlab.bshelper.model.dto.response.BSMapReviewSentiment
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
 import io.ktlab.bshelper.ui.components.MapTags
-import io.ktlab.bshelper.ui.components.MapperLabel
+import io.ktlab.bshelper.ui.components.labels.MapperLabel
 import io.ktlab.bshelper.ui.components.ResizeTwoColumnHeightRow
 import io.ktlab.bshelper.ui.components.labels.*
 import io.ktlab.bshelper.utils.prettyFormat

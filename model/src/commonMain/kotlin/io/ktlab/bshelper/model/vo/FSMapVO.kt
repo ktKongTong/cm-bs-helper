@@ -2,6 +2,7 @@ package io.ktlab.bshelper.model.vo
 
 import io.ktlab.bshelper.model.*
 import io.ktlab.bshelper.model.enums.EMapDifficulty
+import okio.Path.Companion.toPath
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -24,7 +25,12 @@ class FSMapVO(
     }
 
     override fun getMusicPreviewURL(): String {
-        return ""
+        if (bsMapWithUploader != null) {
+            return bsMapWithUploader.version?.previewURL ?: ""
+        }
+        // basePath
+
+        return fsMap.playlistBasePath.toPath().resolve(fsMap.dirName).resolve(fsMap.relativeSongFilename).toString()
 //        return Uri.parse(bsMapWithUploader?.versionWithDiffList?.version?.previewURL ?: fsMap.getSongPath())
     }
 

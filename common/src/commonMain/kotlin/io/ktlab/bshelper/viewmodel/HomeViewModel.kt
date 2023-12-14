@@ -168,9 +168,13 @@ class HomeViewModel(
             is HomeUIEvent.MultiMoveAction -> { onMultiMoveAction(event.mapSet,event.targetPlaylist) }
             is HomeUIEvent.ExportPlaylistAsKey -> { onExportPlaylistAsKey(event.playlist) }
             is HomeUIEvent.PlayPreviewMusicSegment -> {
-//                viewModelScope.launch(Dispatchers.IO) {
-//                    mediaPlayerManager.play(MediaPlayerManager.generateMapID(event.map),event.map.getMusicPreviewURI().toString())
-//                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    globalViewModel.playMedia(IMedia.MapAudioPreview(
+                        id = event.map.getID(),
+                        url = event.map.getMusicPreviewURL(),
+                        avatarUrl = event.map.getAvatar(),
+                    ))
+                }
             }
             is GlobalUIEvent -> {
                 globalViewModel.dispatchUiEvents(event)

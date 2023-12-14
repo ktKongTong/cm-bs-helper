@@ -16,7 +16,7 @@ import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
-import io.ktlab.bshelper.ui.components.MapperLabel
+import io.ktlab.bshelper.ui.components.labels.MapperLabel
 import io.ktlab.bshelper.ui.components.labels.*
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent

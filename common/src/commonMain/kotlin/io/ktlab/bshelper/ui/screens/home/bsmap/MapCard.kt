@@ -1,8 +1,16 @@
 package io.ktlab.bshelper.ui.screens.home.bsmap
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,23 +47,37 @@ fun MapCard(
                     checked = checked,
                     onCheckedChange = { onUIEvent(HomeUIEvent.MapMultiSelected(map)) },
                     modifier = Modifier
-                        .padding(end = 16.dp)
+                        .size(28.dp)
                         .align(Alignment.Center)
                 )
             }else {
                 var previewDialogOpen by remember { mutableStateOf(false) }
-                MapCardMenu(
-                    modifier = Modifier
-                        .padding(start = 2.dp)
-                        .align(Alignment.Center),
-                    onDelete = {
-                        onUIEvent(HomeUIEvent.MultiDeleteAction(setOf(map)))
-                    },
-                    onMove = {
-
-                    },
-                    onPreview = { previewDialogOpen = true },
-                )
+//                MapCardMenu(
+//                    modifier = Modifier
+//                        .size(28.dp)
+//                        .align(Alignment.Center),
+//                    onDelete = {
+//                        onUIEvent(HomeUIEvent.MultiDeleteAction(setOf(map)))
+//                    },
+//                    onMove = {
+//
+//                    },
+//                    onPreview = { previewDialogOpen = true },
+//                )
+                Row (
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ){
+                   IconButton(onClick = { onUIEvent(HomeUIEvent.MultiDeleteAction(setOf(map))) }, modifier = Modifier.size(28.dp)) {
+                       Icon(Icons.Default.Delete, contentDescription = "delete map")
+                   }
+                    IconButton(onClick = { onUIEvent(HomeUIEvent.PlayPreviewMusicSegment(map)) }, modifier = Modifier.size(28.dp)) {
+                        Icon(Icons.Default.MusicNote, contentDescription = "play preview map")
+                    }
+                    IconButton(onClick = { previewDialogOpen = true }, modifier = Modifier.size(28.dp)) {
+                        Icon(Icons.Default.PlayArrow, contentDescription = "preview map")
+                    }
+                }
                 if (previewDialogOpen) {
                     MapOnlinePreview(onDismiss = { previewDialogOpen = false }, mapId = map.getID())
                 }

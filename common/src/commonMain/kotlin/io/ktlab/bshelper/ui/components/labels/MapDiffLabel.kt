@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.ui.components
+package io.ktlab.bshelper.ui.components.labels
 
 //import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Row

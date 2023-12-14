@@ -84,7 +84,7 @@ fun BSNPSLabel(
     ) {
         BSNPSIcon(modifier, tint)
         Text(
-            text = String.format("%.2f", nps),
+            text = nps.fixedStr(2),
             modifier = Modifier.padding(start = 2.dp),
             style = MaterialTheme.typography.labelMedium
         )
@@ -238,6 +238,26 @@ fun DateLabel(
         BSDateIcon(modifier, tint)
         Text(
             text = date.prettyFormat(),
+            modifier = Modifier.padding(start = 2.dp),
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
+}
+
+
+@Composable
+fun MapAmountLabel(
+    count: Int,
+    modifier: Modifier = Modifier,
+    tint: Color = LocalContentColor.current
+) {
+    Row(
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        modifier = modifier.padding(horizontal = 2.dp)
+    ) {
+        BSMapAmountIcon(modifier, tint)
+        Text(
+            text = count.toString(),
             modifier = Modifier.padding(start = 2.dp),
             style = MaterialTheme.typography.labelMedium
         )

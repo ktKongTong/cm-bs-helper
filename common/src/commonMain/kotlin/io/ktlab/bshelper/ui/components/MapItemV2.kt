@@ -36,12 +36,19 @@ fun MapItemV2(
             .clip(shape = MaterialTheme.shapes.medium)
             .combinedClickable(onLongClick = {onLongClick(map)}, onClick = {onClick(map)})
             .fillMaxWidth()
-            .height(IntrinsicSize.Min)
+//            .height(IntrinsicSize.Max)
+
     ) {
-        Box(Modifier
-            .align(Alignment.CenterEnd)
-            .widthIn(max = 200.dp)
-            .fillMaxHeight()
+        Box (
+            Modifier
+                .height(IntrinsicSize.Min)
+        ){
+
+        Box(
+            Modifier
+                .align(Alignment.CenterEnd)
+                .widthIn(max = 200.dp)
+                .fillMaxHeight()
         ) {
             AsyncImageWithFallback(
                 source = map.getAvatar(),
@@ -50,10 +57,12 @@ fun MapItemV2(
                 contentScale = ContentScale.FillWidth,
                 alpha = 0.9f
             )
-            Canvas(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .align(Alignment.CenterEnd)) {
+            Canvas(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .align(Alignment.CenterEnd)
+            ) {
                 val gradient = Brush.horizontalGradient(
                     0f to Color.White,
                     0.8f to Color.Transparent,
@@ -61,83 +70,81 @@ fun MapItemV2(
                 drawRect(brush = gradient)
             }
         }
-            Column(
-//                modifier = modifier,
-
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                SongNameLabel(songName = map.getSongName())
-                FlowRow {
-                    MapperLabel(
-                        mapperName = map.getAuthor(),
-                        onClick = {},
-                        verified = when (map) {
-                            is FSMapVO -> map.isVerified()
-                            is BSMapVO -> map.uploader.verifiedMapper ?: false
-                            else -> false
-                        },
-                        avatarUrl = map.getAvatar()
-                    )
-                    when (map) {
-                        is FSMapVO -> {
-                            map.bsMapWithUploader?.bsMap?.createdAt?.let {
-                                DateLabel(date = it)
-                            }
-                        }
-                        is BSMapVO -> {
-                            DateLabel(date = map.map.createdAt)
-                        }
-                    }
-                }
-                if(map.isRelateWithBSMap()) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        when (map) {
-                            is FSMapVO -> {
-                                BSThumbUpLabel(map.bsMapWithUploader?.bsMap?.upVotes?:0)
-                                BSThumbDownLabel(map.bsMapWithUploader?.bsMap?.downVotes?:0)
-                                BSRatingLabel(map.bsMapWithUploader?.bsMap?.score?:0.0)
-                            }
-                            is BSMapVO -> {
-                                BSThumbUpLabel(map.map.upVotes)
-                                BSThumbDownLabel(map.map.downVotes)
-                                BSRatingLabel(map.map.score)
-                            }
-                        }
-                    }
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    BSNPSLabel(nps = map.getMaxNPS())
-                    BSDurationLabel(duration = map.getDuration())
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    BSMapFeatureLabel(map = map)
-                }
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            SongNameLabel(songName = map.getSongName())
+            FlowRow {
+                MapperLabel(
+                    mapperName = map.getAuthor(),
+                    onClick = {},
+                    verified = when (map) {
+                        is FSMapVO -> map.isVerified()
+                        is BSMapVO -> map.uploader.verifiedMapper ?: false
+                        else -> false
+                    },
+                    avatarUrl = map.getAvatar()
+                )
                 when (map) {
                     is FSMapVO -> {
-                        MapTags(tags = map.bsMapWithUploader?.bsMap?.tags?: listOf())
+                        map.bsMapWithUploader?.bsMap?.createdAt?.let {
+                            DateLabel(date = it)
+                        }
                     }
+
                     is BSMapVO -> {
-                        MapTags(tags = map.map.tags)
+                        DateLabel(date = map.map.createdAt)
                     }
-                }
-                Box (
-                    modifier = Modifier
-                        .padding(8.dp)
-                ){
-                    menuArea()
                 }
             }
-            //gradient and transparent map image
+            if (map.isRelateWithBSMap()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    when (map) {
+                        is FSMapVO -> {
+                            BSThumbUpLabel(map.bsMapWithUploader?.bsMap?.upVotes ?: 0)
+                            BSThumbDownLabel(map.bsMapWithUploader?.bsMap?.downVotes ?: 0)
+                            BSRatingLabel(map.bsMapWithUploader?.bsMap?.score ?: 0.0)
+                        }
 
+                        is BSMapVO -> {
+                            BSThumbUpLabel(map.map.upVotes)
+                            BSThumbDownLabel(map.map.downVotes)
+                            BSRatingLabel(map.map.score)
+                        }
+                    }
+                }
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                BSNPSLabel(nps = map.getMaxNPS())
+                BSDurationLabel(duration = map.getDuration())
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                BSMapFeatureLabel(map = map)
+            }
+            when (map) {
+                is FSMapVO -> {
+                    MapTags(tags = map.bsMapWithUploader?.bsMap?.tags ?: listOf())
+                }
 
-
+                is BSMapVO -> {
+                    MapTags(tags = map.map.tags)
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .padding(8.dp)
+            ) {
+                menuArea()
+            }
+        }
+        }
     }
 
 }

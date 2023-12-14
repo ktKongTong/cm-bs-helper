@@ -25,7 +25,7 @@ import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
 import io.ktlab.bshelper.ui.components.DropDownPlaylistSelector
-import io.ktlab.bshelper.ui.components.MapperLabel
+import io.ktlab.bshelper.ui.components.labels.MapperLabel
 import io.ktlab.bshelper.ui.components.labels.BSDurationLabel
 import io.ktlab.bshelper.ui.components.labels.BSNPSRangeLabel
 import io.ktlab.bshelper.ui.components.labels.BSThumbDownLabel

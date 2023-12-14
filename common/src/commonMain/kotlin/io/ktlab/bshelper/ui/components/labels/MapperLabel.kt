@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.ui.components
+package io.ktlab.bshelper.ui.components.labels
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
 
 @Composable
 fun MapperLabel(
@@ -33,13 +34,13 @@ fun MapperLabel(
                 AsyncImageWithFallback(
                     Modifier
                         .clip(shape = CircleShape)
-                        .size(16.dp),
+                        .size(24.dp),
                     source = avatarUrl,
                     fallback = {
                         Icon(
                             Icons.Rounded.Person,
                             contentDescription = "Avatar",
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 )
