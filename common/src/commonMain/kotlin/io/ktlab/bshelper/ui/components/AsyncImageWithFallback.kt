@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import dev.icerock.moko.resources.compose.painterResource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -26,7 +27,9 @@ fun AsyncImageWithFallback(
     modifier: Modifier = Modifier,
     source: String,
     contentDescription: String? = null,
+    contentScale: ContentScale = ContentScale.Crop,
     type: String = getTypeBySource(source),
+    alpha: Float = 1f,
     fallback: @Composable () -> Unit = {
         DefaultImage(modifier)
     }
@@ -51,6 +54,8 @@ fun AsyncImageWithFallback(
                 modifier = modifier,
                 resource = asyncPainterResource(proxiedSource),
                 contentDescription = "Profile",
+                contentScale = contentScale,
+                alpha = alpha,
                 onLoading = { progress -> Box(
                     modifier = Modifier
                         .fillMaxSize()

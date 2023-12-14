@@ -16,7 +16,7 @@ import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.bsMapVO
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.components.MapAlertDialog
-import io.ktlab.bshelper.ui.components.MapItem
+import io.ktlab.bshelper.ui.components.MapItemV2
 import io.ktlab.bshelper.ui.components.MapOnlinePreview
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistCard
@@ -38,8 +38,8 @@ fun BSMapCard(
     selectableIPlaylists : List<IPlaylist>,
     onPlayPreviewMusicSegment: (IMap) -> Unit = {},
 ) {
-    MapItem(
-        modifier = modifier.widthIn(min = 350.dp),
+    MapItemV2(
+        modifier = modifier.widthIn(min = 350.dp).padding(8.dp),
         map = map,
         onLongClick = {onUIEvent(BeatSaverUIEvent.MapLongTapped(map))},
         onClick = {onUIEvent(BeatSaverUIEvent.MapTapped(map))},
@@ -50,7 +50,7 @@ fun BSMapCard(
             DownloadIconButton(
                 onClick = {onUIEvent(BeatSaverUIEvent.DownloadMap(map))},
                 downloadInfo = downloadInfo,
-                modifier = Modifier.padding(2.dp),
+                modifier = Modifier,
                 localExist = local
             )
         }else if (!local) {
@@ -59,7 +59,7 @@ fun BSMapCard(
                 onCheckedChange = { onMapMultiSelected(map) },
             )
         }else {
-            IconButton({}, enabled = false,modifier = Modifier.padding(2.dp)) {
+            IconButton({}, enabled = false,modifier = Modifier) {
                 Icon(Icons.Rounded.Check, contentDescription = "local icon")
             }
         }

@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.fakeFSMapVO
-import io.ktlab.bshelper.ui.components.MapItem
+import io.ktlab.bshelper.ui.components.MapItemV2
 import io.ktlab.bshelper.ui.components.MapOnlinePreview
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
@@ -25,7 +25,7 @@ fun MapCard(
     multiSelectedMode: Boolean = false,
     onUIEvent: (UIEvent) -> Unit,
 ) {
-    MapItem(
+    MapItemV2(
         map = map,
         onClick = { onUIEvent(HomeUIEvent.MapTapped(map.getID())) },
         onLongClick = {},
