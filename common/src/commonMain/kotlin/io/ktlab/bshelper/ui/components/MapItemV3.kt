@@ -17,7 +17,7 @@ import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.FSMapVO
 import io.ktlab.bshelper.ui.components.labels.*
-import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapFeatureLabel
+import io.ktlab.bshelper.ui.components.labels.BSMapFeatureLabel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable

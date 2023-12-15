@@ -1,8 +1,8 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -22,6 +23,8 @@ import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.enums.MapFeatureTag
 import io.ktlab.bshelper.model.enums.MapTag
 import io.ktlab.bshelper.model.enums.MapTagType
+import io.ktlab.bshelper.ui.components.BSDateRangePicker
+import io.ktlab.bshelper.ui.components.ChipDropDownSelector
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import java.text.SimpleDateFormat
@@ -79,11 +82,10 @@ fun MapFilterPanel(
             value.formatTime()
         }
     }
-    var dateRangePickerDialogOpen by remember { mutableStateOf(false) }
     val dateRangePickerState = rememberDateRangePickerState(
         initialSelectedStartDateMillis = dateStringToLong(mapFilterPanelState.from),
         initialSelectedEndDateMillis = dateStringToLong(mapFilterPanelState.to),
-        initialDisplayMode =  DisplayMode.Input)
+        initialDisplayMode =  DisplayMode.Picker)
     var queryKey by remember { mutableStateOf(mapFilterPanelState.queryKey) }
 
     var selectedStyleTagState by remember { mutableStateOf(findMapTagByString(mapFilterPanelState.tags, MapTagType.Style)) }
@@ -174,11 +176,10 @@ fun MapFilterPanel(
                     label = { Text(text = "Search") },
                     keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                    shape = RoundedCornerShape(10.dp),
+                    shape = MaterialTheme.shapes.large,
                 )
             }
             // NPSRangeSelector
-//            Divider(modifier = Modifier.padding(4.dp))
             Row {
                 PlainTooltipBox(
                     tooltip = {
@@ -262,67 +263,43 @@ fun MapFilterPanel(
                 onValueChangeFinished = {},
                 steps = 19,
             )
-//        SortBySelector
-            DividerWithTitle("Sort By")
-            val options = listOf("Relevance","Latest", "Rating", "Curated")
-//            val radioOptions = listOf("Relevance","Latest", "Rating", "Curated")
-            FilterChipGroup(options,selectedSortOrder) { onSortOrderOptionSelected(it);updateFilter() }
-//            RadioButtons(selectedOption= selectedSortOrder,onOptionSelected = { onSortOrderOptionSelected(it);updateFilter() })
+        //        SortBySelector
 
-//        DateRangePicker
-//            TODO updateState
-            DividerWithTitle("Date Selector")
+            val options = listOf("Relevance","Latest", "Rating", "Curated")
+            Row (
+                Modifier.fillMaxWidth().background(Color.Red),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically){
+                Text("Sort By", Modifier.padding(4.dp), style = MaterialTheme.typography.titleMedium)
+                ChipDropDownSelector(options,selectedSortOrder) { onSortOrderOptionSelected(it);updateFilter() }
+            }
+
+            Text("Date Selector", Modifier.padding(4.dp), style = MaterialTheme.typography.labelMedium)
             Row (
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
             ){
+                var dateRangePickerDialogOpen by remember { mutableStateOf(false) }
                 TextButton(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     onClick = { dateRangePickerDialogOpen = true }
                 ) {
-                    val start = millisToDateFormatString(dateRangePickerState.selectedStartDateMillis) ?: "Start Date"
-                    val end = millisToDateFormatString(dateRangePickerState.selectedEndDateMillis) ?: "End Date"
+                    val start = millisToDateFormatString(dateRangePickerState.selectedStartDateMillis) ?: "Start"
+                    val end = millisToDateFormatString(dateRangePickerState.selectedEndDateMillis) ?: "End"
                     Text(
                         "$start - $end",
                         modifier=Modifier.padding(2.dp)
                     )
                     Icon(Icons.Filled.Edit, stringResource(MR.strings.edit))
                 }
-            }
-            if (dateRangePickerDialogOpen){
-                AlertDialog(
-                    onDismissRequest = { dateRangePickerDialogOpen = false },
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        shape = RoundedCornerShape(10)
-                    ){
-                        DateRangePicker(
-                            state = dateRangePickerState,
-                            title = {},
-                            modifier = Modifier.weight(1f, fill = false)
-                        )
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
-                            horizontalArrangement = Arrangement.End,
-                        ) {
-                            TextButton(onClick = { dateRangePickerState.setSelection(null, null) }) {
-                                Icon(Icons.Filled.Clear, stringResource(MR.strings.clear))
-                                Text(
-                                    modifier = Modifier.padding(start = 2.dp),
-                                    text = stringResource(MR.strings.clear)
-                                )
-                            }
-                            TextButton(onClick = { dateRangePickerDialogOpen = false;updateFilter() }) {
-                                Icon(Icons.Filled.Check, stringResource(MR.strings.confirm))
-                                Text(text = stringResource(MR.strings.confirm))
-                            }
-                        }
-                    }
+                if (dateRangePickerDialogOpen){
+                    BSDateRangePicker(
+                        state = dateRangePickerState,
+                        title = {},
+                        onDismissRequest = { dateRangePickerDialogOpen = false },
+                        onConfirm = { dateRangePickerDialogOpen = false;updateFilter() },
+                    )
                 }
             }
 
@@ -332,7 +309,7 @@ fun MapFilterPanel(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 MapFeatureTag.mapFeatureTags.forEach {
-                    ElevatedFilterChip(
+                    FilterChip(
                         modifier = Modifier.padding(horizontal = 4.dp),
                         selected = featureSelectedState[it] ?: false,
                         onClick = {
@@ -432,3 +409,4 @@ fun DividerWithTitle(title: String){
         )
     }
 }
+

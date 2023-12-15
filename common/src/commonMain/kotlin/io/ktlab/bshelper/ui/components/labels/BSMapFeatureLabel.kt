@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.ui.screens.beatsaver.components
+package io.ktlab.bshelper.ui.components.labels
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
