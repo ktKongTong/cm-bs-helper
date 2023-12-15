@@ -1,6 +1,5 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -12,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -267,11 +265,15 @@ fun MapFilterPanel(
 
             val options = listOf("Relevance","Latest", "Rating", "Curated")
             Row (
-                Modifier.fillMaxWidth().background(Color.Red),
+                Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically){
+                verticalAlignment = Alignment.CenterVertically
+            ){
                 Text("Sort By", Modifier.padding(4.dp), style = MaterialTheme.typography.titleMedium)
-                ChipDropDownSelector(options,selectedSortOrder) { onSortOrderOptionSelected(it);updateFilter() }
+                ChipDropDownSelector(options,selectedSortOrder, modifier = Modifier.padding(4.dp)) {
+                    onSortOrderOptionSelected(it);updateFilter()
+                }
+
             }
 
             Text("Date Selector", Modifier.padding(4.dp), style = MaterialTheme.typography.labelMedium)
