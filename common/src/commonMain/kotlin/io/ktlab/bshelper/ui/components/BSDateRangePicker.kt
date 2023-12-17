@@ -42,18 +42,14 @@ fun BSDateRangePicker(
     title: @Composable () -> Unit,
     onDismissRequest: () -> Unit = {},
     onConfirm: () -> Unit = {},
-) {
-    val quickSelect = listOf(
+    quickSelect: List<Pair<String, Long>> = listOf(
         "1 week" to Clock.System.now().minus(7L.days).toEpochMilliseconds(),
         "1 month" to Clock.System.now().minus(30L.days).toEpochMilliseconds(),
         "3 month" to Clock.System.now().minus(90L.days).toEpochMilliseconds(),
         "6 month" to Clock.System.now().minus(180L.days).toEpochMilliseconds(),
         "1 year" to Clock.System.now().minus(365L.days).toEpochMilliseconds(),
-//            "this month" to (Clock.System.now().toEpochMilliseconds() - Clock.System.now().toEpochMilliseconds().rem(30L.days.inWholeMilliseconds)),
-//            "start from last month" to (Clock.System.now().toEpochMilliseconds() - Clock.System.now().toEpochMilliseconds().rem(30L.days.inWholeMilliseconds) + 30L.days.inWholeMilliseconds),
-//            "start from this year" to (Clock.System.now().toEpochMilliseconds() - Clock.System.now().toEpochMilliseconds().rem(365L.days.inWholeMilliseconds)),
-//            "all" to (Clock.System.now().toEpochMilliseconds() - Clock.System.now().toEpochMilliseconds().rem(365L.days.inWholeMilliseconds))
     )
+) {
     AlertDialog(
         modifier = modifier,
         onDismissRequest = onDismissRequest,

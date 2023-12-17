@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
-import io.ktlab.bshelper.model.bsMapVO
 import io.ktlab.bshelper.model.download.IDownloadTask
+import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.ui.components.MapAlertDialog
 import io.ktlab.bshelper.ui.components.MapItemV2
 import io.ktlab.bshelper.ui.components.MapOnlinePreview
@@ -33,6 +33,7 @@ fun BSMapCard(
     modifier: Modifier = Modifier,
     checked: Boolean,
     local: Boolean = false,
+    selectedBSMap: IMap? = null,
     onMapMultiSelected: (IMap) -> Unit,
     downloadInfo: IDownloadTask.MapDownloadTask?,
     onUIEvent: (UIEvent) -> Unit,
@@ -40,14 +41,15 @@ fun BSMapCard(
     multiSelectedMode: Boolean = false,
     selectableIPlaylists : List<IPlaylist>,
     onPlayPreviewMusicSegment: (IMap) -> Unit = {},
+    enableAuthorClick: Boolean = true,
 ) {
     MapItemV2(
         modifier = modifier.widthIn(min = 350.dp).padding(8.dp),
         map = map,
+        imageMaxWidth = 250.dp,
         onLongClick = {onUIEvent(BeatSaverUIEvent.MapLongTapped(map))},
         onClick = {onUIEvent(BeatSaverUIEvent.MapTapped(map))},
-        onAuthorClick = {},
-        onAvatarClick = {onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map))}
+        onAuthorClick = {if (enableAuthorClick) onUIEvent(BeatSaverUIEvent.OnSelectedBSMapper((map as BSMapVO).uploader.id))},
     ) {
 
         var previewDialogOpen by remember { mutableStateOf(false) }
@@ -165,14 +167,14 @@ fun DownloadSelectPlaylistDialog(
 @Composable
 fun BSMapCardPreview(){
     BSHelperTheme {
-        BSMapCard(
-            map = bsMapVO,
-            checked = false,
-            downloadInfo = null,
-            onDownloadMap = {_->},
-            onMapMultiSelected = {},
-            selectableIPlaylists = listOf(),
-            onUIEvent = {}
-        )
+//        BSMapCard(
+//            map = bsMapVO,
+//            checked = false,
+//            downloadInfo = null,
+//            onDownloadMap = {_->},
+//            onMapMultiSelected = {},
+//            selectableIPlaylists = listOf(),
+//            onUIEvent = {}
+//        )
     }
 }

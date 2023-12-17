@@ -6,42 +6,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.DialogProperties
 
-interface TriggerScope {
-    var open: Boolean
-    val onTrigger:()->Unit
-}
-class AppAlertDialogScope :TriggerScope {
-    override var open by mutableStateOf(false)
-    override val onTrigger: () -> Unit get() = { open = !open }
-}
-
 @Composable
-fun rememberDialogTriggerScope(): AppAlertDialogScope {
-    return remember { AppAlertDialogScope() }
-}
-
-@Composable
-fun AppAlertDialog(
+fun AppDialog(
     title: String,
     text: String = "",
     onConfirm: () -> Unit = {},
     onCancel: (() -> Unit)? = null,
-    triggerBy: @Composable TriggerScope.() -> Unit = {},
+    openState: MutableState<Boolean>,
     content: @Composable () -> Unit = {},
 ) {
-    val scope = rememberDialogTriggerScope()
-    triggerBy(scope)
-    if (scope.open) {
+    if (openState.value) {
         AlertDialog(
-            onDismissRequest = {scope.open = false},
+            onDismissRequest = {openState.value = false},
             dismissButton = {
                 if (onCancel != null) {
                     TextButton(onClick = {
-                        scope.open = false
+                        openState.value = false
                         onCancel()
                     }) {
                         Text(text = "取消")
@@ -49,7 +34,7 @@ fun AppAlertDialog(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { scope.open = false;onConfirm() }) {
+                TextButton(onClick = { openState.value = false;onConfirm() }) {
                     Text(text = "确定")
                 }
             },
@@ -74,5 +59,4 @@ fun AppAlertDialog(
             )
         )
     }
-
 }

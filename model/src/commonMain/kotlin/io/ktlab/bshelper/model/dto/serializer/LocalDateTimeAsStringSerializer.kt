@@ -1,5 +1,6 @@
 package io.ktlab.bshelper.model.dto.serializer
 
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.serialization.KSerializer
@@ -23,5 +24,19 @@ class LocalDateTimeAsStringSerializer : KSerializer<LocalDateTime> {
         val str = decoder.decodeString()
         //    2023-08-09T11:18:14.812561Z, remove the last Z
         return LocalDateTime.parse(str.removeSuffix("Z"))
+    }
+}
+
+class DateAsStringSerializer : KSerializer<LocalDate> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("LocalDate", PrimitiveKind.STRING)
+    // to 2023-09-09
+    override fun serialize(encoder: Encoder, value: LocalDate) = encoder.encodeString(
+        value.toString()
+    )
+
+    override fun deserialize(decoder: Decoder): LocalDate {
+        val str = decoder.decodeString()
+        return LocalDate.parse(str.removeSuffix("Z"))
     }
 }

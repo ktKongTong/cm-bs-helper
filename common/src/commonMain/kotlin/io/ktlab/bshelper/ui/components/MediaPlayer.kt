@@ -1,5 +1,6 @@
 package io.ktlab.bshelper.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
@@ -47,44 +47,41 @@ fun MediaPlayer(
             else -> {}
         }
     }
-
-    Box (
+    Box(
         modifier = Modifier
-            .padding(top = 8.dp)
+            .padding(8.dp)
+            .clip(shape = CircleShape)
+            .size(48.dp)
     ){
-        val modifier = remember {
-            Modifier
-                .clip(shape = CircleShape)
-                .size(36.dp)
-        }
-
-        when (media) {
-            is IMedia.MapAudioPreview -> {
-                AsyncImageWithFallback(
-                    modifier = modifier
-                        .clickable { clickEvent() }
-                        .rotate(angleState),
-                    source = media.avatarUrl?:"",
-                    fallback = {
-                        Image(
-                            painter = painterResource(MR.images.bs_icon),
-                            contentDescription = "default image",
-                            modifier = Modifier
-                                .size(36.dp)
-                                .clip(CircleShape)
-                        )
-                    }
-                )
-            }
-            is IMedia.MapPreview -> {
-                // a map preview component
-            }
-            is IMedia.None -> {
-                Image(
-                    painter = painterResource(MR.images.bs_icon),
-                    contentDescription = "default image",
-                    modifier = modifier
-                )
+        AnimatedVisibility(visible = media != IMedia.None) {
+            when (media) {
+                is IMedia.MapAudioPreview -> {
+                    AsyncImageWithFallback(
+                        modifier = Modifier
+                            .clickable { clickEvent() }
+                            .rotate(angleState),
+                        source = media.avatarUrl?:"",
+                        fallback = {
+                            Image(
+                                painter = painterResource(MR.images.bs_icon),
+                                contentDescription = "default image",
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
+                    )
+                }
+                is IMedia.MapPreview -> {
+                    // a map preview component
+                }
+                is IMedia.None -> {
+                    Image(
+                        painter = painterResource(MR.images.bs_icon),
+                        contentDescription = "default image",
+                        modifier = Modifier
+                    )
+                }
             }
         }
     }

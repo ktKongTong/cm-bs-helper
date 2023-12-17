@@ -65,7 +65,9 @@ DELETE FROM `FSPlaylist`;
 deleteAllByBasePath:
 DELETE FROM `FSPlaylist`
 WHERE basePath = ?;
-
+updatePlaylistInfo:
+UPDATE FSPlaylist
+SET customTags = ?,description = ?,name = ?, id = ?, basePath = ? WHERE basePath = ?;
 updateSyncState:
 UPDATE `FSPlaylist`
 SET sync = ?,

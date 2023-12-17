@@ -41,7 +41,7 @@ koin-ktor = "3.5.1"
 wsc-multiplatform = "0.3.1"
 kamel = "0.8.3"
 mpfilepicker = "3.0.0"
-
+kmpalette = "2.2.0"
 # androidx
 androidx-corektx = "1.12.0"
 androidx-appcompat = "1.6.1"
@@ -99,6 +99,7 @@ sqldelight-androidx-paging3-extensions = { module = "app.cash.sqldelight:android
 sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
 
 
+
 # resources
 moko-resources = { module = "dev.icerock.moko:resources", version.ref = "moko-resources" }
 moko-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "moko-resources" }
@@ -119,6 +120,15 @@ precompose = { module = "moe.tlaster:precompose", version.ref = "precompose" }
 precompose-molecule = { module = "moe.tlaster:precompose-molecule", version.ref = "precompose" }
 precompose-viewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "precompose" }
 precompose-koin = { module = "moe.tlaster:precompose-koin", version.ref = "precompose" }
+
+kmpalette-core = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
+# Optional source libraries
+kmpalette-extensions-base64 = { module = "com.kmpalette:extensions-base64", version.ref = "kmpalette" }
+kmpalette-extensions-bytearray = { module = "com.kmpalette:extensions-bytearray", version.ref = "kmpalette" }
+kmpalette-extensions-libres = { module = "com.kmpalette:extensions-libres", version.ref = "kmpalette" }
+kmpalette-extensions-network = { module = "com.kmpalette:extensions-network", version.ref = "kmpalette" }
+kmpalette-extensions-resources = { module = "com.kmpalette:extensions-resources", version.ref = "kmpalette" }
+kmpalette-extensions-file = { module = "com.kmpalette:extensions-file", version.ref = "kmpalette" }
 
 # io
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }

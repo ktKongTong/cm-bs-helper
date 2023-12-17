@@ -25,9 +25,10 @@ fun ChipDropDownSelector(
         modifier = modifier,
     ) {
         FilterChip(
+            elevation = null,
             modifier = Modifier.menuAnchor(),
             label = { Text(selectedOption) },
-            selected = true,
+            selected = false,
             onClick = {expanded = true},
 //            leadingIcon = {Icon(Icons.Rounded.Check, "Checked Icon")},
             trailingIcon = { Icon(Icons.Rounded.ExpandMore,"ExpandMore Icon") },
@@ -38,7 +39,6 @@ fun ChipDropDownSelector(
             modifier = Modifier
                 .heightIn(0.dp, 250.dp)
                 .verticalScroll(rememberScrollState())
-
         ){
             options.map {
                 DropdownMenuItem(

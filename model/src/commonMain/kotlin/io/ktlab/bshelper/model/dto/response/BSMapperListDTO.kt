@@ -19,15 +19,16 @@ data class BSMapperDetailDTO (
     val curatorTab: Boolean?=null,
     val description: String,
     val followData: FollowData,
-    val hash: String,
-    val id: Long,
+
+    val id: Int,
     val name: String,
     val patreon: String?=null,
     @SerialName("playlistUrl")
     val playlistURL: String,
     val stats: BSUserStats,
     val type: String,
-    val verifiedMapper: Boolean
+    val hash: String?=null,
+    val verifiedMapper: Boolean?=null,
 )
 
 @Serializable
@@ -48,9 +49,9 @@ data class BSUserStats(
     val firstUpload: LocalDateTime,
     @Serializable(with = LocalDateTimeAsStringSerializer::class)
     val lastUpload: LocalDateTime,
-    val totalDownvotes: Int,
-    val totalMaps: Int,
-    val totalUpvotes: Int,
+    val totalDownvotes: Int = 0,
+    val totalMaps: Int = 0,
+    val totalUpvotes: Int = 0,
     val diffStats: DiffStats?=null,
 )
 

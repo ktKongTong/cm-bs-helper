@@ -1,6 +1,10 @@
 package io.ktlab.bshelper.ui.screens.beatsaver
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -14,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapDetail
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSPlaylistDetail
 import io.ktlab.bshelper.ui.screens.beatsaver.components.PlaylistFilterPanel
 import io.ktlab.bshelper.ui.screens.beatsaver.components.PlaylistPagingList
@@ -26,65 +29,80 @@ fun BSPlaylistScreen(
     uiState: BeatSaverUiState,
     snackbarHostState: SnackbarHostState,
     onUIEvent: (UIEvent) -> Unit,
-    modifier: Modifier = Modifier
-){
-    uiState as BeatSaverUiState.PlaylistQuery
-    Box(
-        modifier = modifier
-            .clip(shape = RoundedCornerShape(10.dp))
-            .widthIn(max = 300.dp)
-            .fillMaxWidth()
-    ) {
-        PlaylistFilterPanel(
-            playlistFilterPanelState = uiState.playlistFilterPanelState,
-            onUIEvent = onUIEvent
-        )
-    }
-    val playlistPagingItems = uiState.playlistFlow.collectAsLazyPagingItems()
-    if (uiState.selectedBSMap != null) {
-        BSMapDetail(
-            map = uiState.selectedBSMap,
-            onUIEvent = onUIEvent,
-            comments = uiState.selectedBSMapReview,
-        )
-    }
-    if (uiState.selectedBSPlaylist != null) {
-        BSPlaylistDetail(
-            playlist = uiState.selectedBSPlaylist,
-            onUIEvent = onUIEvent,
-            localState = uiState.localState,
-            mapFlow = uiState.mapFlow,
-            snackbarHostState = snackbarHostState,
-            uiState = uiState,
+    modifier: Modifier = Modifier,
+    lazyListState:LazyListState = rememberLazyListState()
+) {
+//    uiState as BeatSaverUiState.PlaylistQuery
+    Row {
+        Box(
+            modifier = modifier
+                .clip(shape = RoundedCornerShape(10.dp))
+                .widthIn(max = 300.dp)
+                .fillMaxWidth()
+        ) {
+            PlaylistFilterPanel(uiState.playlistFilterPanelState, onUIEvent)
+        }
+        val playlistPagingItems = uiState.playlistFlow.collectAsLazyPagingItems()
+        AnimatedContent(targetState = uiState.selectedBSPlaylist,
+            transitionSpec = {
+                (fadeIn() + slideInVertically(animationSpec = tween(400),
+                    initialOffsetY = {
+                        if (targetState == null) {
+                            - it
+                        } else {
+                            it
+                        }
+                    }))
+                    .togetherWith(fadeOut(animationSpec = tween())+
+                        slideOutVertically(animationSpec = tween(400),
+                            targetOffsetY = {
+                                if (targetState == null) {
+                                    it
+                                } else {
+                                    - it
+                                }
+                            }))
+            }
 
-        )
-    }else {
-        val downloadingTasks= uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value
-            .filter { it is IDownloadTask.PlaylistDownloadTask }
-            .map { it as IDownloadTask.PlaylistDownloadTask }
-            .associateBy { it.playlist.id }
-        PlaylistPagingList(
-            Modifier,
-            snackbarHostState = snackbarHostState,
-            playlistPagingItems = playlistPagingItems,
-            localState = uiState.localState,
-            mapMultiSelectedMode = uiState.multiSelectMode,
-            multiSelectedMaps = uiState.multiSelectedBSMap,
-            onUIEvent = onUIEvent,
-            stickyHeader = {
-                Row (
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .fillMaxWidth()
-                ){
-                    Text(
-                        text = "Playlists",
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
-            },
-            downloadingTask = downloadingTasks,
-        )
+        ) {
+            if (it != null) {
+                BSPlaylistDetail(
+                    playlist = it,
+                    onUIEvent = onUIEvent,
+                    localState = uiState.localState,
+                    mapFlow = uiState.mapFlow,
+                    snackbarHostState = snackbarHostState,
+                    uiState = uiState,
+                )
+            } else {
+                val downloadingTasks = uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value
+                    .filter { it is IDownloadTask.PlaylistDownloadTask }
+                    .map { it as IDownloadTask.PlaylistDownloadTask }
+                    .associateBy { it.playlist.id }
+                PlaylistPagingList(
+                    Modifier,
+                    snackbarHostState = snackbarHostState,
+                    playlistPagingItems = playlistPagingItems,
+                    localState = uiState.localState,
+                    lazyListState = lazyListState,
+                    mapMultiSelectedMode = uiState.multiSelectMode,
+                    multiSelectedMaps = uiState.multiSelectedBSMap,
+                    onUIEvent = onUIEvent,
+                    stickyHeader = {
+                        Row(
+                            modifier = Modifier
+                                .padding(horizontal = 20.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "Playlists",
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                        }
+                    },
+                    downloadingTask = downloadingTasks,
+                )
+            }
+        }
     }
-
 }

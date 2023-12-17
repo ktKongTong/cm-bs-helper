@@ -21,6 +21,8 @@ fun FilterChipGroup(
     ) {
         options.map { text ->
             FilterChip(
+
+                elevation = null,
                 modifier = Modifier,
                 selected = (text == selectedOption),
                 onClick = { onOptionSelected(text) },

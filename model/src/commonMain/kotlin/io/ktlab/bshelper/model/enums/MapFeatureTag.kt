@@ -5,13 +5,13 @@ enum class MapFeatureTagType(val color: String) {
     None(""), General("blue"), Requirement("green");
 }
 //Verified Mapper
-enum class MapFeatureTag(val type: MapFeatureTagType, val human: String, val slug: String) {
+enum class MapFeatureTag(val type: MapFeatureTagType, val human: String, val slug: String, val description: String = "") {
 
-    None(MapFeatureTagType.None, "", ""),
+    None(MapFeatureTagType.None, "", "", ""),
 
-    AI(MapFeatureTagType.General, "AI", "automapper"),
-    Curated(MapFeatureTagType.General, "Curated", "curated"),
-    Ranked(MapFeatureTagType.General, "Ranked", "ranked"),
+    AI(MapFeatureTagType.General, "AI", "automapper", "query with this, the result will include AI generated map"),
+    Curated(MapFeatureTagType.General, "Curated", "curated", "query with this only curated map will be shown."),
+    Ranked(MapFeatureTagType.General, "Ranked", "ranked","query with this only ranked map will be shown."),
     FullSpread(MapFeatureTagType.General, "Full Spread", "fullSpread"),
     VerifiedMapper(MapFeatureTagType.General, "Verified Mapper", "verified"),
 

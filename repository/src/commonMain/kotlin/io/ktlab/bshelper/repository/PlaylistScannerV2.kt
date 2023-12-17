@@ -123,6 +123,8 @@ class PlaylistScannerV2(
                 return
             }
         }
+
+        val topPlaylist = playlist.playlist_name == "Custom Top Playlist"
         bsHelperDAO.fSPlaylistQueries.updateSyncState(SyncStateEnum.SYNCING,Clock.System.now().epochSeconds,basePath)
 
 
@@ -154,7 +156,7 @@ class PlaylistScannerV2(
         }
         bsHelperDAO.fSMapQueries.deleteFSMapByMapPathsAndPlaylistId(deletedMap.map { it.dirName },playlist.playlist_id)
         scanStateV2.update { it.copy(state = ScanStateEventEnum.SCANNING, totalDirCount = allDirs.size) }
-        val fsPlaylist = MutableStateFlow(NewFSPlaylist(basePath,name=playlistPath.name))
+        val fsPlaylist = MutableStateFlow(NewFSPlaylist(basePath,name=playlist.playlist_name, topPlaylist = topPlaylist))
         val playlistScanStateV2 = MutableStateFlow(PlaylistScanStateV2(
             playlistName = playlistPath.name,
             playlistPath = playlistPath.toString(),
@@ -191,11 +193,10 @@ class PlaylistScannerV2(
                 if (fsMap != null) {
                     bsHelperDAO.fSMapQueries.insert(fsMap.copy(playlistId = fsPlaylist.value.id))
                 }
-//                emit(scanStateV2.value)
             }
-//            bsHelperDAO.fSPlaylistQueries.updateMapAmount(fsPlaylist.value.mapAmount,fsPlaylist.value.id)
-            bsHelperDAO.fSPlaylistQueries.updateSyncState(SyncStateEnum.SYNCED, Clock.System.now().epochSeconds,basePath)
         }
+        bsHelperDAO.fSPlaylistQueries.insertAnyway(fsPlaylist.value)
+        bsHelperDAO.fSPlaylistQueries.updateSyncState(SyncStateEnum.SYNCED, Clock.System.now().epochSeconds,basePath)
     }
 
      fun scanPlaylist(basePath: String): Flow<ScanStateV2> = flow {
@@ -247,6 +248,7 @@ class PlaylistScannerV2(
                 if(!BSMapUtils.checkIfBSMap(mapDir)) {
                     return@forEach
                 }
+                println(mapDir)
                 val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(mapDir)
                 handleExtractMapInfoAndInsertToDB(extractedMapInfo,fsPlaylist) { emit(scanStateV2.value) }
             }

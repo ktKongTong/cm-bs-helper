@@ -37,7 +37,6 @@ fun MapCard(
         map = map,
         onClick = { onUIEvent(HomeUIEvent.MapTapped(map.getID())) },
         onLongClick = {},
-        onAvatarClick = {},
         modifier = modifier
             .fillMaxWidth(),
         imageMaxWidth = 350.dp,

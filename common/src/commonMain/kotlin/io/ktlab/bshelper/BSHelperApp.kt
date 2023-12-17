@@ -2,18 +2,25 @@ package io.ktlab.bshelper
 
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.ui.components.*
+import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.route.BSHelperDestinations
 import io.ktlab.bshelper.ui.route.BSHelperNavGraph
 import io.ktlab.bshelper.ui.route.BSHelperNavigationActions
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
+import io.ktlab.bshelper.ui.theme.defaultThemeSeedColor
+import io.ktlab.bshelper.viewmodel.ErrorDialogState
 import io.ktlab.bshelper.viewmodel.GlobalUIEvent
 import io.ktlab.bshelper.viewmodel.GlobalViewModel
 import kotlinx.coroutines.launch
@@ -21,11 +28,18 @@ import moe.tlaster.precompose.koin.koinViewModel
 import moe.tlaster.precompose.navigation.rememberNavigator
 import org.koin.compose.KoinContext
 
+val LocalUIEventHandler = staticCompositionLocalOf<((UIEvent) -> Unit)> { {} }
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BSHelperApp(){
     KoinContext {
-        BSHelperTheme {
+
+        val globalViewModel = koinViewModel<GlobalViewModel>()
+        val globalUiState by globalViewModel.uiState.collectAsState()
+//        globalViewModel
+        // get
+        val color = globalUiState.userPreference.getThemeColor()?.let { Color(it) } ?: defaultThemeSeedColor
+        BSHelperTheme(color) {
             val navigator = rememberNavigator()
             val navigationActions = remember(navigator) {
                 BSHelperNavigationActions(navigator)
@@ -38,6 +52,7 @@ fun BSHelperApp(){
                 }
             }
 
+
             val windowSizeClass = calculateWindowSizeClass().widthSizeClass
             val coroutineScope = rememberCoroutineScope()
 
@@ -48,8 +63,8 @@ fun BSHelperApp(){
                 (windowSizeClass == WindowWidthSizeClass.Expanded) || (windowSizeClass == WindowWidthSizeClass.Medium)
             val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
 
-            val globalViewModel = koinViewModel<GlobalViewModel>()
-            val globalUiState by globalViewModel.uiState.collectAsState()
+
+            CompositionLocalProvider( LocalUIEventHandler provides globalViewModel::dispatchUiEvents) {
                 ModalNavigationDrawer(
                     drawerContent = {
                         AppDrawer(
@@ -75,7 +90,6 @@ fun BSHelperApp(){
                                 )
                             }
                             val snackbarHostState = remember { SnackbarHostState() }
-
                             BSHelperNavGraph(
                                 isExpandedScreen = isExpandedScreen,
                                 navigator = navigator,
@@ -84,31 +98,8 @@ fun BSHelperApp(){
                                 snackbarHostState = snackbarHostState,
                                 globalUiState = globalUiState,
                             )
-                            if(globalUiState.errorDialogState != null) {
-                                AlertDialog(
-                                    onDismissRequest = {
-                                        globalUiState.errorDialogState!!.onCancel?.let { it() }
-                                    },
-                                    title = { Text(text = globalUiState.errorDialogState!!.title) },
-                                    text = {
-                                        Text(text = globalUiState.errorDialogState!!.message, maxLines = 10, softWrap = false)
-                                    },
-                                    confirmButton = {
-                                        TextButton(
-                                            onClick = { globalUiState.errorDialogState!!.onConfirm?.let { it() } }
-                                        ) { Text(globalUiState.errorDialogState!!.confirmLabel!!) }
-                                    },
-                                    dismissButton = {
-                                        if(globalUiState.errorDialogState!!.onCancel != null) {
-                                            TextButton(
-                                                onClick = {
-                                                    globalUiState.errorDialogState!!.onCancel?.let { it() }
-                                                }
-                                            ) { Text(globalUiState.errorDialogState!!.cancelLabel!!) }
-                                        }
-                                    }
-                                )
-                            }
+                            ErrorReportDialog(errorDialogState = globalUiState.errorDialogState)
+                            //
                             SnackBarShown(
                                 snackbarHostState = snackbarHostState,
                                 snackBarMessages = globalUiState.snackBarMessages,
@@ -119,8 +110,46 @@ fun BSHelperApp(){
                          }
 
             }
+
+            }
         }
     }
+}
+
+@Composable
+private fun ErrorReportDialog(
+    errorDialogState: ErrorDialogState?,
+) {
+    if (errorDialogState == null) {
+        return
+    }
+    AlertDialog(
+        onDismissRequest = {
+            errorDialogState.onCancel?.let { it() }
+        },
+        title = { Text(text = errorDialogState.title) },
+        text = {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .heightIn(max = 400.dp)
+            ) {
+                Text(modifier = Modifier.verticalScroll(rememberScrollState()), text = errorDialogState.message)
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { errorDialogState.onConfirm?.let { it() } }
+            ) { Text(errorDialogState.confirmLabel!!) }
+        },
+        dismissButton = {
+            if(errorDialogState.onCancel != null) {
+                TextButton(
+                    onClick = { errorDialogState.onCancel?.let { it() } }
+                ) { Text(errorDialogState.cancelLabel!!) }
+            }
+        }
+    )
 }
 
 

@@ -81,6 +81,9 @@ data class BSMapVO(
         TODO("Not yet implemented")
     }
 
+    override fun getAuthorAvatar(): String {
+        return uploader.avatar
+    }
     override fun isRelateWithBSMap(): Boolean {
         return true
     }

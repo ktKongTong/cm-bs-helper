@@ -89,14 +89,14 @@ sealed class HomeUIEvent: UIEvent(){
     data class MultiMapFullChecked(val mapMap:Map<String,IMap>):HomeUIEvent()
     data class MultiMapOppoChecked(val mapMap:Map<String,IMap>):HomeUIEvent()
     data class PlayPreviewMusicSegment(val map:IMap):HomeUIEvent()
-    data class CreateNewPlaylist(val name:String):HomeUIEvent()
+    data class CreateNewPlaylist(val name:String,val description:String?=null,val customTags:String?=null):HomeUIEvent()
     data class MergePlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class BuildBPList(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class SharePlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class ExportPlaylistAsKey(val playlist:IPlaylist):HomeUIEvent()
     data class ExportPlaylistAsBPList(val playlist:IPlaylist):HomeUIEvent()
     data class DeletePlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
-    data class EditPlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
+    data class EditPlaylist(val targetPlaylist:IPlaylist, val resPlaylist:FSPlaylist):HomeUIEvent()
     data class SyncPlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
     data class ImportPlaylist(val key:String,val targetPlaylist:IPlaylist):HomeUIEvent()
 //    data class DividePlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
@@ -147,7 +147,11 @@ class HomeViewModel(
             is HomeUIEvent.DeletePlaylist -> {
                 deletePlaylist(event.targetPlaylist)
             }
-            is HomeUIEvent.EditPlaylist -> {}
+            is HomeUIEvent.EditPlaylist -> {
+//                viewModelScope.launch {
+//                    playlistRepository.updatePlaylist(event.resPlaylist)
+//                }
+            }
             is HomeUIEvent.SyncPlaylist -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     playlistRepository.scanSinglePlaylist(event.targetPlaylist.getTargetPath())
@@ -179,7 +183,7 @@ class HomeViewModel(
                 globalViewModel.dispatchUiEvents(event)
             }
             is HomeUIEvent.CreateNewPlaylist -> {
-                onCreateNewPlaylist(event.name)
+                onCreateNewPlaylist(event.name,event.description,event.customTags)
             }
         }
     }
@@ -289,9 +293,9 @@ class HomeViewModel(
             playlistRepository.deletePlaylistById(playlist.id)
         }
     }
-    private fun onCreateNewPlaylist(name:String) {
+    private fun onCreateNewPlaylist(name:String,description: String?,customTags: String?){
         viewModelScope.launch {
-            playlistRepository.createNewPlaylist(name)
+            playlistRepository.createNewPlaylist(name, description = description, customTags = customTags)
         }
     }
     private fun onMultiDeleteAction(mapSet:Set<IMap>){

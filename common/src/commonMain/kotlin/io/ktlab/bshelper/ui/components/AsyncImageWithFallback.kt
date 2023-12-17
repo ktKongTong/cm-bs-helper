@@ -31,7 +31,7 @@ fun AsyncImageWithFallback(
     type: String = getTypeBySource(source),
     alpha: Float = 1f,
     fallback: @Composable () -> Unit = {
-        DefaultImage(modifier)
+        DefaultImage(modifier,contentScale,alpha)
     }
 ){
     val proxiedSource = source
@@ -49,7 +49,6 @@ fun AsyncImageWithFallback(
 //            )
 //        }
         "network" -> {
-//            fallback()
             KamelImage(
                 modifier = modifier,
                 resource = asyncPainterResource(proxiedSource),
@@ -87,12 +86,16 @@ fun AsyncImageWithFallback(
 //@Preview
 @Composable
 fun DefaultImage(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentScale : ContentScale = ContentScale.Crop,
+    alpha: Float = 1f
 ){
     Image(
         painter = painterResource(MR.images.home_empty_list),
         contentDescription = "default image",
-        modifier = modifier
+        modifier = modifier,
+        contentScale = contentScale,
+        alpha = alpha
     )
 }
 

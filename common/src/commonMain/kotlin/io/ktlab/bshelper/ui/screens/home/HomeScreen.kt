@@ -1,5 +1,7 @@
 package io.ktlab.bshelper.ui.screens.home
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -21,7 +23,6 @@ import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.home.bsmap.MapCardList
 import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistDetailCardTop
 import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistList
-import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistListTop
 import io.ktlab.bshelper.viewmodel.HomeUiState
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -62,28 +63,39 @@ fun HomeContent(
     onUIEvent: (UIEvent) -> Unit,
     modifier: Modifier = Modifier,
 ){
+    // todo:
+    // when selectedPlaylist is null, only show playlist list
+    // can cover full screen, use grid layout with multiple columns
+    // when select a playlist, show map list, use animation, shrink playlist list to left
+    //
     uiState as HomeUiState.Playlist
     val homeListLazyListState = rememberLazyListState()
     Row(modifier) {
+        val playlistModifier = if (uiState.selectedPlaylist!=null) {
+            Modifier
+                .animateContentSize()
+                .widthIn(Dp.Unspecified, 300.dp)
+        } else { Modifier.animateContentSize() }
         PlaylistList(
-            modifier = Modifier
-                .widthIn(Dp.Unspecified, 300.dp),
+            modifier = playlistModifier,
             state = homeListLazyListState,
             playlists = uiState.playlists,
             selectedPlaylist = uiState.selectedPlaylist,
             onUIEvent = onUIEvent,
-            stickyHeader = {
-                PlaylistListTop(
-                    onUIEvent = onUIEvent,
-                    selectablePlaylists = uiState.playlists,
-                )
-            }
         )
-        HomeRightPart(
-            uiState = uiState,
-            onUIEvent = onUIEvent,
-            modifier = Modifier.fillMaxHeight(),
-        )
+        AnimatedVisibility(
+        uiState.selectedPlaylist!=null,
+            enter = (fadeIn() + slideInHorizontally (
+                animationSpec = tween(400),
+                initialOffsetX = { fullWidth ->  fullWidth })
+            ),
+        ) {
+            HomeRightPart(
+                uiState = uiState,
+                onUIEvent = onUIEvent,
+                modifier = Modifier.fillMaxHeight(),
+            )
+        }
     }
 }
 
@@ -105,28 +117,46 @@ fun HomeRightPart(
                 collectAsState(Result.Success(emptyList())).value.successOr(emptyList())
             }
             val detailPlaylist = uiState.selectedPlaylist!!
-            key(detailPlaylist.id) {
-                MapCardList(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxSize(),
-                    mapListState = uiState.mapListState,
-                    onUIEvent = onUIEvent,
-                    mapList = mapList,
-                    stickyHeader = {
-                        PlaylistDetailCardTop(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            playlist = detailPlaylist,
-                            mapListState = uiState.mapListState,
-                            mapList = mapList,
-                            selectablePlaylists = uiState.playlists.filter { it.id != detailPlaylist.id },
-                            onUIEvent = onUIEvent,
+            AnimatedContent(
+                detailPlaylist,
+                transitionSpec = {
+                    (
+                        fadeIn() + slideInVertically (
+                            animationSpec = tween(400),
+                            initialOffsetY = { if (targetState.title < initialState.title) { - it } else { it } }
                         )
-                    }
-                )
+                    ).togetherWith(
+                        fadeOut() + slideOutVertically (
+                            animationSpec = tween(400),
+                            targetOffsetY = { if (targetState.title < initialState.title) { it } else { - it } }
+                        )
+                    )
+                }
+            ) {
+                key(it.id) {
+                    MapCardList(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxSize(),
+                        mapListState = uiState.mapListState,
+                        onUIEvent = onUIEvent,
+                        mapList = mapList,
+                        stickyHeader = {
+                            PlaylistDetailCardTop(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                playlist = detailPlaylist,
+                                mapListState = uiState.mapListState,
+                                mapList = mapList,
+                                selectablePlaylists = uiState.playlists.filter { it.id != detailPlaylist.id },
+                                onUIEvent = onUIEvent,
+                            )
+                        }
+                    )
+                }
             }
+
         }
     }
 }

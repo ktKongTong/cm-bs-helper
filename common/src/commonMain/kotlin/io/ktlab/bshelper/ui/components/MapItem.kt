@@ -17,7 +17,6 @@ import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.FSMapVO
 import io.ktlab.bshelper.ui.components.labels.*
-import io.ktlab.bshelper.ui.components.labels.BSMapFeatureLabel
 
 
 @Composable
@@ -63,7 +62,7 @@ fun MapAvatar(
 fun MapItem(
     map: IMap,
     modifier: Modifier = Modifier,
-    onAvatarClick: (IMap) -> Unit = {},
+    onAvatarClick: ((IMap) -> Unit)? = null,
     onLongClick: (IMap) -> Unit = {},
     onClick: (IMap) -> Unit = {},
     onAuthorClick: (IMap) -> Unit = {},
@@ -86,7 +85,7 @@ fun MapItem(
                     is BSMapVO -> map.curator != null
                     else -> false
                 },
-                onClick = {onAvatarClick(map)}
+                onClick = {onAvatarClick?.let { it(map) }}
             )
             Column(
                     modifier = Modifier
@@ -103,7 +102,7 @@ fun MapItem(
                                 is BSMapVO -> map.uploader.verifiedMapper ?: false
                                 else -> false
                             },
-                            avatarUrl = map.getAvatar()
+                            avatarUrl = map.getAuthorAvatar()
                         )
                         when (map) {
                             is FSMapVO -> {

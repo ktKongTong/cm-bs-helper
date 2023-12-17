@@ -86,8 +86,7 @@ fun BSMapperDetail(
     onUIEvent: (UIEvent) -> Unit,
     mapFlow: Flow<PagingData<IMap>>,
 ) {
-    uiState as BeatSaverUiState.MapperQuery
-    val mapPagingItems = uiState.mapFlow.collectAsLazyPagingItems()
+    val mapPagingItems = uiState.selectedBSMapperMapFlow.collectAsLazyPagingItems()
     val downloadingTasks = uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value.flatMap {
         when(it) {
             is IDownloadTask.MapDownloadTask -> listOf(it)

@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.compose.itemKey
-import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapperDetail
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapperOverview
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUiState
@@ -30,31 +29,12 @@ fun BSMapperScreen(
     onUIEvent: (io.ktlab.bshelper.ui.event.UIEvent) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    state: LazyGridState = rememberLazyGridState(),
+    lazyGridState: LazyGridState = rememberLazyGridState(),
 ) {
-    uiState as BeatSaverUiState.MapperQuery
 
-    if (uiState.selectedBSMapper != null) {
-        // bsMapperDetail
-        BSMapperDetail(
-            uiState = uiState,
-            modifier = modifier,
-            contentPadding = contentPadding,
-            state = state,
-            snackbarHostState = snackbarHostState,
-            onUIEvent = onUIEvent,
-            mapFlow = uiState.mapFlow,
-            localState = uiState.localState,
-//            playlist = uiState.selectedBSMapper,
-        )
-        return
-    }
-
-
+//    uiState as BeatSaverUiState.MapperQuery
     val mapperPagingItems = uiState.mapperFlow.collectAsLazyPagingItems()
-
-
-
+    Row {
     if (mapperPagingItems.loadState.refresh is LoadState.Error) {
         LaunchedEffect(key1 = snackbarHostState) {
             snackbarHostState.showSnackbar(
@@ -63,11 +43,11 @@ fun BSMapperScreen(
         }
     }
     val windowSizeClass = calculateWindowSizeClass().widthSizeClass
-    val size = when(windowSizeClass) {
+    val size = when (windowSizeClass) {
         WindowWidthSizeClass.Expanded -> 2
         else -> 1
     }
-    Box(Modifier.fillMaxSize()){
+    Box(Modifier.fillMaxSize()) {
         Column {
             Row {
                 Text("Mappers", style = MaterialTheme.typography.headlineLarge)
@@ -81,12 +61,12 @@ fun BSMapperScreen(
                 ) {
                     CircularProgressIndicator(modifier = Modifier.padding(16.dp))
                 }
-            }else {
+            } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(size),
                     // remember scroll state to scroll to the position when items count changes
                     contentPadding = contentPadding,
-                    state = state,
+                    state = lazyGridState,
                 ) {
                     items(
                         count = mapperPagingItems.itemCount,
@@ -97,7 +77,7 @@ fun BSMapperScreen(
                         if (mapper != null) {
                             BSMapperOverview(
                                 bsMapper = mapper,
-                                onClick = { onUIEvent(BeatSaverUIEvent.OnSelectedBSMapper(mapper)) }
+                                onClick = { onUIEvent(BeatSaverUIEvent.OnSelectedBSMapper(mapper.id)) }
                             )
                         }
 
@@ -121,4 +101,5 @@ fun BSMapperScreen(
 
         }
     }
+}
 }

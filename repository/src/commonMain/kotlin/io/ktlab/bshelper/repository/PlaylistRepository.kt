@@ -63,7 +63,17 @@ class PlaylistRepository(
         return bsHelperDAO.fSPlaylistQueries.selectByIds(listOf(manageDir.resolve(playlistName).toString()))
         .executeAsList().firstOrNull()?.let { true }?:false
     }
-    fun createNewPlaylist(playlistName:String, bsPlaylistId:Int? = null): Result<FSPlaylist> {
+    // todo: EditPlaylist
+    fun editPlaylist(playlist: FSPlaylist) {
+        // if name changed, rename dir
+        val manageDir = preference.currentManageDir.toPath()
+        if (!FileSystem.SYSTEM.exists(manageDir)) {
+            return
+        }
+        val oldDir = manageDir.resolve(playlist.name)
+    }
+
+    fun createNewPlaylist(playlistName:String, bsPlaylistId:Int? = null, description:String?=null, customTags:String?=null): Result<FSPlaylist> {
         val manageDir = preference.currentManageDir.toPath()
         if (!FileSystem.SYSTEM.exists(manageDir)) {
             return Result.Error(Exception("manage dir not exist"))
@@ -77,12 +87,12 @@ class PlaylistRepository(
         val fSPlaylist = FSPlaylist(
             id = basePath,
             name = playlistName,
-            description = "custom create playlist",
+            description = description?: "custom create playlist",
             bsPlaylistId = bsPlaylistId,
             basePath = basePath,
             sync = SyncStateEnum.SYNCED,
             syncTimestamp = Clock.System.now().toEpochMilliseconds(),
-            customTags = "",
+            customTags = customTags,
             topPlaylist = false,
         )
         bsHelperDAO.fSPlaylistQueries.insertAnyway(fSPlaylist)

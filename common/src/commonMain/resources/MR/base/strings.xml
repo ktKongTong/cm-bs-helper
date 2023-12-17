@@ -16,6 +16,7 @@
     <string name="settings">设置</string>
     <string name="edit">编辑</string>
     <string name="clear">清除</string>
+    <string name="search">查询</string>
     <string name="load_error">load error</string>
     <string name="retry">重试</string>
     <string name="downloader">下载管理</string>

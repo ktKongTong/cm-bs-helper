@@ -46,8 +46,8 @@ fun BSPlaylistDetail(
     onUIEvent: (UIEvent) -> Unit,
     mapFlow: Flow<PagingData<IMap>>,
 ){
-    uiState as BeatSaverUiState.PlaylistQuery
-    val mapPagingItems = uiState.mapFlow.collectAsLazyPagingItems()
+//    uiState as BeatSaverUiState.PlaylistQuery
+    val mapPagingItems = uiState.selectedBSPlaylistDetailMapFlow.collectAsLazyPagingItems()
     val downloadingTasks = uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value.flatMap {
         when(it) {
             is IDownloadTask.MapDownloadTask -> listOf(it)

@@ -36,12 +36,9 @@ fun BSMapCardListHeader(
             Row{
                 DropDownPlaylistSelector(
                     onUIEvent = onUIEvent,
-                    modifier = Modifier,
                     selectablePlaylists = localState.selectableLocalPlaylists,
                     selectedIPlaylist = localState.targetPlaylist,
-                    onSelectedPlaylist = {
-                        onUIEvent(BeatSaverUIEvent.ChangeTargetPlaylist(it))
-                    },
+                    onSelectedPlaylist = { onUIEvent(BeatSaverUIEvent.ChangeTargetPlaylist(it)) },
                 )
             }
             Row (

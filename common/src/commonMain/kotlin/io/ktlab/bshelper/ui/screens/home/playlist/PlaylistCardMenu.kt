@@ -1,95 +1,76 @@
 package io.ktlab.bshelper.ui.screens.home.playlist
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ImportExport
+import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import io.ktlab.bshelper.ui.components.AppAlertDialog
+import io.ktlab.bshelper.model.FSPlaylist
+import io.ktlab.bshelper.ui.components.AppDialog
+import io.ktlab.bshelper.ui.components.FSPlaylistFormV2
+import io.ktlab.bshelper.ui.screens.beatsaver.components.IconExposedDropDownMenu
 
 @Composable
 fun PlaylistCardMenu(
     modifier: Modifier,
+    fsPlaylist: FSPlaylist,
     onExport: ()->Unit,
     onExportAsBPList: ()->Unit,
     onDelete: ()->Unit,
-    onEdit: ()->Unit,
+    onEdit: (FSPlaylist)->Unit,
     onSync: ()->Unit,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-//    val context = LocalContext.current
-    Box(
-        modifier = modifier
-    ) {
-        IconButton(onClick = { expanded = true }) {
-            Icon(Icons.Default.MoreVert, contentDescription = "")
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            DropdownMenuItem(
+    val playlistFormOpenState = remember { mutableStateOf(false) }
+    val deleteDialogOpenState = remember { mutableStateOf(false) }
+    // will cause embedded composable error
+    // outer closed then inner also closed
+    IconExposedDropDownMenu(modifier) {
+        DropdownMenuItem(
             text = { Text(text = "同步") },
-            onClick = {onSync();expanded = false },
-            leadingIcon = {
-                Icon(
-                    Icons.Default.Sync,
-                    contentDescription = "Sync Playlist info"
-                )
-            })
-            DropdownMenuItem(
+            onClick = {onTrigger(); onSync() },
+            leadingIcon = { Icon(Icons.Default.Sync, contentDescription = "Sync Playlist info") }
+        )
+        DropdownMenuItem(
             text = { Text(text = "编辑") },
-            onClick = {onEdit();expanded = false },
-            leadingIcon = {
-                Icon(
-                    Icons.Default.Edit,
-                    contentDescription = "Edit Playlist info"
-                )
-            })
+            onClick = { onTrigger();playlistFormOpenState.value = true },
+            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = "Edit Playlist info") }
+        )
+        DropdownMenuItem(
+            text = { Text(text = "删除") },
+            onClick = {onTrigger(); deleteDialogOpenState.value = true },
+            leadingIcon = { Icon(Icons.Default.Delete, contentDescription = "Delete Playlist") }
+        )
 
-            var deleteAlertDialog by remember { mutableStateOf(false) }
-            AppAlertDialog(
-                title = "删除歌单",
-                text = "确定要删除歌单吗？",
-                openDialog = deleteAlertDialog,
-                onConfirm = {
-                    onDelete()
-                },
-                onClose = { deleteAlertDialog = false },
-                triggerBy = {
-                    DropdownMenuItem(
-                        text = { Text(text = "删除") },
-                        onClick = {expanded = false; deleteAlertDialog = true },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = "Delete Playlist"
-                            )
-                        })
-                }
-            )
-            DropdownMenuItem(
-                text = { Text(text = "导出 bplist") },
-                onClick = {onExportAsBPList();expanded = false },
-                leadingIcon = {
-                Icon(
-                    Icons.Default.ImportExport,
-                    contentDescription = "Export Playlist"
-                )
-            })
-            DropdownMenuItem(
-                text = { Text(text = "导出为 key") },
-                onClick = {
-                    onExport()
-                    expanded = false
-                },
-            leadingIcon = {
-                Icon(
-                    Icons.Default.ImportExport,
-                    contentDescription = "Export Playlist"
-                )
-            })
-        }
+        DropdownMenuItem(
+            text = { Text(text = "导出为 bplist") },
+            onClick = {onTrigger();onExportAsBPList() },
+            leadingIcon = { Icon(Icons.Default.ImportExport, contentDescription = "Export Playlist AS bplist") }
+        )
+        DropdownMenuItem(
+            text = { Text(text = "导出为 key") },
+            onClick = {onTrigger(); onExport() },
+            leadingIcon = { Icon(Icons.Default.ImportExport, contentDescription = "Export Playlist as key") }
+        )
     }
+
+    //
+
+    AppDialog(
+        title = "删除歌单",
+        text = "确定要删除歌单吗？",
+        onConfirm = { onDelete() },
+        openState = deleteDialogOpenState
+    )
+
+    FSPlaylistFormV2(
+        fsPlaylist = fsPlaylist,
+        openState = playlistFormOpenState,
+    )
 }

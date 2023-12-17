@@ -1,43 +1,32 @@
 package io.ktlab.bshelper.repository
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import io.ktlab.bshelper.model.UserPreference
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 
 class UserPreferenceRepository (
     private val dataStore: DataStore<Preferences>
 ){
     companion object {
         const val DEFAULT_CURRENT_MANAGE_DIR = ""
-        const val DEFAULT_CURRENT_PLAYLIST_ID = ""
     }
 
     private val currentManageDirKey = stringPreferencesKey("currentManageDir")
-    private val currentPlaylistIdKey = stringPreferencesKey("currentPlaylistId")
-
+    private val currentThemeColorKey = stringPreferencesKey("currentThemeColor")
+    private val currentThemeModeKey = stringPreferencesKey("currentThemeMode")
     private val preferenceFlow: Flow<UserPreference> = dataStore.data.map {
         UserPreference(
             it[currentManageDirKey] ?: DEFAULT_CURRENT_MANAGE_DIR,
-            it[currentPlaylistIdKey] ?: DEFAULT_CURRENT_PLAYLIST_ID,
+            it[currentThemeColorKey] ?: "",
+            it[currentThemeModeKey] ?: "",
         )
     }
 
     fun getUserPreference(): Flow<UserPreference> = preferenceFlow
-
-
-//    fun getCurrentManageDir(): String {
-//        var res = ""
-//        runBlocking {
-//            preferenceFlow.map { it.currentManageDir }.collectLatest {
-//                res = it
-//            }
-//        }
-//        return res
-//    }
 
     suspend fun changeCurrentManageDir(currentManageDir: String) {
         dataStore.edit {
@@ -45,17 +34,21 @@ class UserPreferenceRepository (
         }
     }
 
+    suspend fun changeCurrentThemeColor(currentThemeColor: String) {
+        dataStore.edit {
+            it[currentThemeColorKey] = currentThemeColor
+        }
+    }
 
-//    suspend fun changeCurrentPlaylistId(currentPlaylistId: String) {
-//        dataStore.edit {
-//            it[currentPlaylistIdKey] = currentPlaylistId
-//        }
-//    }
+    suspend fun changeCurrentThemeMode(currentThemeMode: String) {
+        dataStore.edit {
+            it[currentThemeModeKey] = currentThemeMode
+        }
+    }
 
     suspend fun updateUserPreference(userPreference: UserPreference) {
         dataStore.edit {
             it[currentManageDirKey] = userPreference.currentManageDir
-            it[currentPlaylistIdKey] = userPreference.currentPlaylistId
         }
     }
 

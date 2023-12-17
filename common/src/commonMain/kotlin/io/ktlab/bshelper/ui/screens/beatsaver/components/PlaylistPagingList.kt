@@ -12,8 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -43,7 +41,6 @@ fun PlaylistPagingList(
     playlistPagingItems: LazyPagingItems<IPlaylist>,
     downloadingTask: Map<String, IDownloadTask.PlaylistDownloadTask>,
     onUIEvent: (UIEvent) -> Unit,
-
     stickyHeader : @Composable () -> Unit = {},
 ) {
 
@@ -56,11 +53,6 @@ fun PlaylistPagingList(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        val windowSizeClass = calculateWindowSizeClass().widthSizeClass
-        val size = when (windowSizeClass) {
-            WindowWidthSizeClass.Expanded -> 2
-            else -> 1
-        }
         Column {
             stickyHeader()
             if (playlistPagingItems.loadState.refresh is LoadState.Loading) {
@@ -74,7 +66,6 @@ fun PlaylistPagingList(
                 }
             }else {
                 LazyColumn (
-//                    columns = GridCells.Fixed(size),
                     contentPadding = contentPadding,
                     state = lazyListState,
                 ) {

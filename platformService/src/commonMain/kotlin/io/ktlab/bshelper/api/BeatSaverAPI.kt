@@ -43,8 +43,9 @@ class BeatSaverAPI(private val httpClient: HttpClient) {
                 }
             }.build()
             val response = httpClient.get(url)
-            val resp = response.body<BSRespDTO>()
-            APIRespResult.Success(resp)
+            val resp = response.body<String>()
+            val res = json.decodeFromString(BSRespDTO.serializer(),resp)
+            APIRespResult.Success(res)
         }catch (e: Exception){
             APIRespResult.Error(e)
         }

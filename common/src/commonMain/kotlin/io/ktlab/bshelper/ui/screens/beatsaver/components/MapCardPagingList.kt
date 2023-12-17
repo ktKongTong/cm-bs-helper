@@ -62,41 +62,29 @@ fun MapCardPagingList(
         }
         Column {
             stickyHeader()
-//            Divider(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(1.dp)
-//                    .padding(horizontal = 16.dp),
-//                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-//            )
             if (mapPagingItems.loadState.refresh is LoadState.Loading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
-                }
+                LoadingPlaceholder()
             }else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(size),
-                    // remember scroll state to scroll to the position when items count changes
                     contentPadding = contentPadding,
                     state = state,
                 ) {
-
+                // https://issuetracker.google.com/issues/259686541
+                // d
                 items(
                     count = mapPagingItems.itemCount,
                     key = mapPagingItems.itemKey { (it as BSMapVO).versions.first().version.hash },
                     span = { GridItemSpan(1) }
                 ) { index ->
                     val map = mapPagingItems[index]
+//                    require(map != null){ "map should not be null" }
                     if (map != null) {
                         val local =
                             localState.targetPlaylist != null && localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID())
                         BSMapCard(
                             modifier = Modifier.fillMaxSize(),
+                            selectedBSMap = selectedBSMap,
                             map = map,
                             checked = mapMultiSelected.contains(map),
                             multiSelectedMode = mapMultiSelectedMode,
@@ -112,22 +100,32 @@ fun MapCardPagingList(
                         )
                     }
                 }
-                item {
-                    if (mapPagingItems.loadState.append is LoadState.Loading) {
-                        CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                item(key = "loading state",{  GridItemSpan(maxCurrentLineSpan)}) {
+                    if (mapPagingItems.loadState.append is LoadState.Loading || mapPagingItems.loadState.refresh is LoadState.Loading) {
+                        LoadingPlaceholder()
                     } else if (mapPagingItems.loadState.append.endOfPaginationReached) {
-                        Row(
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            horizontalArrangement = Arrangement.Center,
+                                .fillMaxSize().height(48.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(text = "😲 no more data", style = MaterialTheme.typography.bodyMedium)
+                            Text(text = "😲 no more data", style = MaterialTheme.typography.labelLarge)
                         }
                     }
                 }
             }
             }
         }
+    }
+}
+
+@Composable
+private fun LoadingPlaceholder() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(modifier = Modifier.padding(16.dp).size(48.dp))
     }
 }

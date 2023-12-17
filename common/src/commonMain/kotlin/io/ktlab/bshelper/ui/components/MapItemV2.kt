@@ -2,6 +2,7 @@ package io.ktlab.bshelper.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -18,7 +19,6 @@ import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.FSMapVO
 import io.ktlab.bshelper.ui.components.labels.*
-import io.ktlab.bshelper.ui.components.labels.BSMapFeatureLabel
 
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
@@ -26,16 +26,19 @@ import io.ktlab.bshelper.ui.components.labels.BSMapFeatureLabel
 fun MapItemV2(
     map: IMap,
     modifier: Modifier = Modifier,
-    onAvatarClick: (IMap) -> Unit = {},
+//    onAvatarClick: (IMap) -> Unit = {},
     onLongClick: (IMap) -> Unit = {},
     onClick: (IMap) -> Unit = {},
-    onAuthorClick: (IMap) -> Unit = {},
+    onAuthorClick: ((IMap) -> Unit)? = null,
     imageMaxWidth: Dp = 200.dp,
     menuArea: @Composable BoxScope.() -> Unit = {},
 ) {
+    val imageMaxHeight = 200.dp
+    val containerColor = MaterialTheme.colorScheme.surface
     Box (
         modifier = modifier
             .clip(shape = MaterialTheme.shapes.medium)
+            .background(containerColor)
             .combinedClickable(onLongClick = {onLongClick(map)}, onClick = {onClick(map)})
             .fillMaxWidth()
 //            .height(IntrinsicSize.Max)
@@ -45,12 +48,12 @@ fun MapItemV2(
             Modifier
                 .height(IntrinsicSize.Min)
         ){
-
         Box(
             Modifier
                 .align(Alignment.CenterEnd)
                 .widthIn(max = imageMaxWidth)
-                .fillMaxHeight()
+                .heightIn(max = imageMaxHeight)
+//                .fillMaxHeight()
         ) {
             AsyncImageWithFallback(
                 source = map.getAvatar(),
@@ -65,8 +68,9 @@ fun MapItemV2(
                     .fillMaxHeight()
                     .align(Alignment.CenterEnd)
             ) {
+
                 val gradient = Brush.horizontalGradient(
-                    0f to Color.White,
+                    0f to containerColor,
                     0.8f to Color.Transparent,
                 )
                 drawRect(brush = gradient)
@@ -79,13 +83,13 @@ fun MapItemV2(
             FlowRow {
                 MapperLabel(
                     mapperName = map.getAuthor(),
-                    onClick = {},
+                    onClick = {onAuthorClick?.let { it(map) }},
                     verified = when (map) {
                         is FSMapVO -> map.isVerified()
                         is BSMapVO -> map.uploader.verifiedMapper ?: false
                         else -> false
                     },
-                    avatarUrl = map.getAvatar()
+                    avatarUrl = map.getAuthorAvatar()
                 )
                 when (map) {
                     is FSMapVO -> {

@@ -1,11 +1,7 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -27,14 +23,14 @@ fun TextTabs(
 
         TabRow(
             selectedTabIndex = TabType.getIndexOf(selectedTab),
-            containerColor = MaterialTheme.colorScheme.background,
             indicator = { tabPositions ->
                 Box(
                     modifier = Modifier
+                        .width(tabPositions[TabType.getIndexOf(selectedTab)].width)
                         .tabIndicatorOffset(tabPositions[TabType.getIndexOf(selectedTab)])
                         .height(4.dp)
-                        .padding(horizontal = 28.dp)
-                        .background(color = MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 32.dp)
+                        .background(color = MaterialTheme.colorScheme.primary, MaterialTheme.shapes.large)
                 )
             },
             divider = {}
@@ -43,7 +39,8 @@ fun TextTabs(
                 Tab(
                     selected = selectedTab == TabType.fromIndex(index),
                     onClick = { onClickTab(tabType) },
-                    text = { Text(text = tabType.human, overflow = TextOverflow.Ellipsis) }
+                    text = { Text(text = tabType.human, style = MaterialTheme.typography.labelLarge
+                        , overflow = TextOverflow.Ellipsis) }
                 )
             }
         }

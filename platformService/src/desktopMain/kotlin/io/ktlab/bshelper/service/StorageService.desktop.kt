@@ -17,12 +17,12 @@ actual class StorageService {
         synchronized(this){
             if (!FileSystem.SYSTEM.exists(appDir)) {
                 FileSystem.SYSTEM.createDirectory(appDir,mustCreate = true)
-                if (!FileSystem.SYSTEM.exists(configDir)) {
-                    FileSystem.SYSTEM.createDirectory(configDir,mustCreate = true)
-                }
-                if (!FileSystem.SYSTEM.exists(tmpDir)) {
-                    FileSystem.SYSTEM.createDirectory(tmpDir,mustCreate = true)
-                }
+            }
+            if (!FileSystem.SYSTEM.exists(configDir)) {
+                FileSystem.SYSTEM.createDirectory(configDir,mustCreate = true)
+            }
+            if (!FileSystem.SYSTEM.exists(tmpDir)) {
+                FileSystem.SYSTEM.createDirectory(tmpDir,mustCreate = true)
             }
         }
     }

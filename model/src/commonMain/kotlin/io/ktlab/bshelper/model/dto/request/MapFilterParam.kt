@@ -1,7 +1,11 @@
 package io.ktlab.bshelper.model.dto.request
 
+import io.ktlab.bshelper.model.annotation.BSMapFeatTag
 import io.ktlab.bshelper.model.annotation.QueryParam
+import io.ktlab.bshelper.model.dto.serializer.DateAsStringSerializer
 import io.ktlab.bshelper.model.enums.MapFeatureTag
+import kotlinx.datetime.LocalDate
+import kotlinx.serialization.Serializable
 
 
 data class MapFilterParam(
@@ -16,18 +20,30 @@ data class MapFilterParam(
     @QueryParam("maxBpm") val maxBpm: Float? = null,
     @QueryParam("minRating") val minRating: Float? = null,
     @QueryParam("maxRating") val maxRating: Float? = null,
-    @QueryParam("from") val from: String? = null,
-    @QueryParam("to") val to: String? = null,
+    @Serializable(with = DateAsStringSerializer::class)
+    @QueryParam("from") val from: LocalDate? = null,
+    @Serializable(with = DateAsStringSerializer::class)
+    @QueryParam("to") val to: LocalDate? = null,
     @QueryParam("tags") val mapper: String? = null,
+    @BSMapFeatTag(MapFeatureTag.AI)
     @QueryParam("automapper") val automapper: Boolean? = null,
+    @BSMapFeatTag(MapFeatureTag.Chroma)
     @QueryParam("chroma") val chroma: Boolean? = null,
+    @BSMapFeatTag(MapFeatureTag.Noodle)
     @QueryParam("noodle") val noodle: Boolean? = null,
+    @BSMapFeatTag(MapFeatureTag.MappingExtensions)
     @QueryParam("me") val me: Boolean? = null,
+    @BSMapFeatTag(MapFeatureTag.Cinema)
     @QueryParam("cinema") val cinema: Boolean? = null,
+    @BSMapFeatTag(MapFeatureTag.Ranked)
     @QueryParam("ranked") val ranked: Boolean? = null,
+    @BSMapFeatTag(MapFeatureTag.Curated)
     @QueryParam("curated") val curated: Boolean? = null,
+    @BSMapFeatTag(MapFeatureTag.VerifiedMapper)
     @QueryParam("verified") val verified: Boolean? = null,
+    @BSMapFeatTag(MapFeatureTag.FullSpread)
     @QueryParam("fullSpread") val fullSpread: Boolean? = null,
+
     @QueryParam("sortOrder") val sortKey: String = "Relevance",
 ) {
     fun mapFeatureTagsMap() : Map<MapFeatureTag,Boolean> {
@@ -42,5 +58,8 @@ data class MapFilterParam(
             MapFeatureTag.VerifiedMapper to verified,
             MapFeatureTag.FullSpread to fullSpread,
         ).filterValues { it != null } as Map<MapFeatureTag, Boolean>
+    }
+    companion object {
+        val default = MapFilterParam()
     }
 }

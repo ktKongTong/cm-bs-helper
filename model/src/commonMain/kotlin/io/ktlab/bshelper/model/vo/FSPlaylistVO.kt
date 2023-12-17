@@ -21,12 +21,26 @@ data class FSPlaylistVO(
     val avgNps: Double?,
     val bsPlaylistId: Int?,
     val basePath: String,
+    val customTags: String?,
     val sync: SyncStateEnum,
     val syncTimestamp: Long,
     override val id: String,
     override val title: String,
     val bsPlaylist: BSPlaylistVO?,
 ): IPlaylist {
+    fun toFSPlaylist(): FSPlaylist {
+        return FSPlaylist(
+            id = id,
+            name = _name,
+            description = description,
+            customTags = customTags,
+            sync = sync,
+            syncTimestamp = syncTimestamp,
+            basePath = basePath,
+            bsPlaylistId = bsPlaylistId,
+            topPlaylist = false,
+        )
+    }
     override fun getAvatar(): String {
         bsPlaylist?.let {
             return it.owner.avatar
@@ -106,6 +120,7 @@ data class FSPlaylistVO(
                 bsPlaylistId = dbo.playlist_bsPlaylistId,
                 sync = dbo.sync,
                 syncTimestamp = dbo.playlist_syncTimestamp,
+                customTags = dbo.playlist_customTags,
                 basePath = dbo.playlist_basePath,
                 _mapAmount = dbo.map_count?.toInt()?:0,
                 totalDuration = dbo.sum_duration?.toLong(DurationUnit.SECONDS)?:0L,

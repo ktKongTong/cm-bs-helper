@@ -3,6 +3,7 @@ package io.ktlab.bshelper.ui.route
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import io.ktlab.bshelper.ui.screens.beatsaver.BeatSaverRoute
 import io.ktlab.bshelper.viewmodel.GlobalUiState
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.Navigator

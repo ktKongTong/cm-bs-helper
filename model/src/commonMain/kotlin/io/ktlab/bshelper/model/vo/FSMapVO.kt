@@ -42,6 +42,13 @@ class FSMapVO(
         return bsMapWithUploader?.version?.coverURL ?: ""
     }
 
+    override fun getAuthorAvatar(): String {
+        return bsMapWithUploader?.uploader?.avatar ?:
+        if (fsMap.relativeCoverFilename.isNotEmpty()) {
+            fsMap.dirName.toPath().resolve(fsMap.relativeCoverFilename).toString()
+        }else ""
+    }
+
 
     fun isCurated(): Boolean {
         return false
@@ -56,11 +63,6 @@ class FSMapVO(
 
     fun getDownVotes(): Long? {
         return bsMapWithUploader?.bsMap?.upVotes
-    }
-
-    fun getAuthorAvatar(): String {
-        return ""
-//        return bsMapWithUploader?.uploader?.avatar ?: fsMap.getCoverPath().ifEmpty { "" }
     }
 
     override fun getMapDescription(): String {

@@ -9,6 +9,7 @@ interface IMap {
     fun getMusicPreviewURL(): String
     fun getAuthor(): String
     fun getAvatar(): String
+    fun getAuthorAvatar(): String
     fun getMapDescription(): String
     fun getDuration(): String
     fun getID(): String
