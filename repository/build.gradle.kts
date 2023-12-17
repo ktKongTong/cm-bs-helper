@@ -31,7 +31,6 @@ kotlin {
                 // logger
                 implementation(libs.kotlin.logging)
                 implementation(libs.slf4j.api)
-                implementation(libs.slf4j.log4j)
                 implementation(libs.beatmap.io)
 
                 implementation(libs.androidx.annotation)

@@ -52,19 +52,9 @@ kotlin {
                 api(libs.precompose.koin)
                 api(libs.precompose.viewmodel)
                 api(libs.precompose.molecule)
-                implementation("com.github.skydoves:orbital:0.3.3")
-                implementation("com.materialkolor:material-kolor:1.3.0")
-                api("io.github.kevinnzou:compose-webview-multiplatform:1.7.8")
-//                implementation("io.github.dokar3:chiptextfield-m3:0.6.4")
                 implementation(libs.kmpalette.core)
-
-                // Optional extensions based on your image source
-                implementation(libs.kmpalette.extensions.base64)
-                implementation(libs.kmpalette.extensions.bytearray)
-                implementation(libs.kmpalette.extensions.libres)
-                implementation(libs.kmpalette.extensions.network)
-                implementation(libs.kmpalette.extensions.resources)
-                implementation(libs.kmpalette.extensions.file)
+                implementation("com.materialkolor:material-kolor:1.3.0")
+//                implementation(libs.kmpalette)
                 // resources
                 api(libs.moko.resources)
                 api(libs.moko.resources.compose)
@@ -80,9 +70,8 @@ kotlin {
                 implementation(libs.koin.core.coroutines)
                 implementation(libs.koin.compose)
                 // logger
-//                implementation(libs.kotlin.logging)
-//                implementation(libs.slf4j.api)
-//                implementation(libs.slf4j.log4j)
+                implementation(libs.kotlin.logging)
+                implementation(libs.slf4j.api)
                 // dataStore
                 implementation(libs.androidx.datastore.preferences.core)
                 // beatmap-io
@@ -92,7 +81,8 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.koin.androidx.compose)
-//                implementation(libs.kotlin.logging.jvm)
+                implementation(libs.kotlin.logging.jvm)
+                implementation(libs.slf4j.log4j)
                 implementation(compose.preview)
             }
         }
@@ -102,10 +92,10 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.common)
                 implementation(compose.preview)
-                implementation(compose.desktop.macos_arm64)
                 // see https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.1.1
                 implementation(libs.kotlinx.coroutines.swing)
-//                implementation(libs.kotlin.logging.jvm)
+                implementation(libs.slf4j.log4j)
+                implementation(libs.kotlin.logging.jvm)
             }
         }
     }

@@ -2,6 +2,7 @@ package io.ktlab.bshelper.viewmodel
 
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.text.AnnotatedString
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.UserPreference
 import io.ktlab.bshelper.repository.Event
@@ -13,7 +14,11 @@ import io.ktlab.bshelper.service.MediaPlayer
 import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
@@ -115,6 +120,8 @@ data class GlobalUiState(
     val userPreference: UserPreference,
 )
 
+private val logger = KotlinLogging.logger {}
+
 class GlobalViewModel(
     private val runtimeEventFlow: RuntimeEventFlow,
     private val mediaPlayer: MediaPlayer,
@@ -122,7 +129,6 @@ class GlobalViewModel(
     private val playlistRepository: PlaylistRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
 ) : ViewModel() {
-//    private lateinit var userPreference: UserPreference
 
     private val viewModelState =
         MutableStateFlow(
@@ -148,11 +154,11 @@ class GlobalViewModel(
         CoroutineExceptionHandler { coroutineContext, throwable ->
             runtimeEventFlow.sendEvent(Event.ExceptionEvent(throwable))
         }
-
     init {
+        logger.debug { "GlobalViewModelInit" }
         viewModelScope.launch {
             userPreferenceRepository.getUserPreference().collect {
-//                userPreference = it
+                logger.debug { "userPreference Update" }
                 viewModelState.update { vmState ->
                     vmState.copy(userPreference = it)
                 }
