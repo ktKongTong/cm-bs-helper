@@ -7,7 +7,18 @@ plugins {
 android {
     namespace = "io.ktlab.bshelper"
     compileSdk = 34
-
+    buildTypes {
+        getByName("debug") {
+            // code shrink enable will cause unknown issue, filter changed, but query result is the same
+            // so disable now
+//            isDebuggable=false
+//            isMinifyEnabled = true
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+        }
+    }
     defaultConfig {
 //        compileSdkPreview = "UpsideDownCake"
         minSdk = 29

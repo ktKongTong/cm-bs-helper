@@ -48,18 +48,16 @@ buildscript {
     }
 }
 
-// task("clean") {
-//    group = "build"
-//    description = "Deletes the build directory"
-//    doLast {
-// //        project.delete(project.buildDir)
-//        allprojects.forEach{
-//            it.delete(it.buildDir)
-//        }
-//    }
-// }
+tasks.register("copySpotlessPreCommitHook") {
+    doLast {
+        copy {
+            from("./spotless/spotless.sh")
+            into("./.git/hooks")
+        }
+    }
+}
 
-// apply("${project.rootDir}/buildscripts/toml-updater-config.gradle")
+apply("${project.rootDir}/buildscripts/toml-updater-config.gradle")
 
 group = "io.ktlab"
 version = "1.0-SNAPSHOT"
