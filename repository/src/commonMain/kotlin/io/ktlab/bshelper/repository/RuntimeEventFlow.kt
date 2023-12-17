@@ -6,33 +6,31 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-sealed interface Event{
-    data class ExceptionEvent(val throwable: Throwable,val shortDescription:String ?= null): Event
-    data class MessageEvent(val message: String): Event
+sealed interface Event {
+    data class ExceptionEvent(val throwable: Throwable, val shortDescription: String? = null) : Event
+
+    data class MessageEvent(val message: String) : Event
 }
 
-
-
-//data class Event(
+// data class Event(
 //    val type: EventType,
 //    val data: Any? = null
-//)
+// )
 
 class RuntimeEventFlow {
     private val eventFlow = MutableStateFlow<Event?>(null)
 
-
     private val scope = CoroutineScope(SupervisorJob())
+
     init {
         scope.consumeEvent()
     }
 
     private val listeners = mutableListOf<(Event) -> Unit>()
 
-
     private fun CoroutineScope.consumeEvent() {
         launch {
-            eventFlow.collect{ event ->
+            eventFlow.collect { event ->
                 if (event == null) return@collect
                 listeners.forEach {
                     it(event)
@@ -47,7 +45,6 @@ class RuntimeEventFlow {
         }
     }
 
-
     fun subscribeEvent(onEvent: (Event) -> Unit) {
         synchronized(this) {
             listeners.add(onEvent)
@@ -59,5 +56,4 @@ class RuntimeEventFlow {
             listeners.remove(onEvent)
         }
     }
-
 }

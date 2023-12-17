@@ -5,15 +5,14 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import io.ktlab.bshelper.model.BSHelperDatabase
 
 actual class DBDriverFactory(
-    storageService: StorageService
+    storageService: StorageService,
 ) {
-
     private val configPath = storageService.getConfigDir()
-    private val DB_URL: String = "jdbc:sqlite:$configPath/bs-helper.db"
+    private val dbURL: String = "jdbc:sqlite:$configPath/bs-helper.db"
+
     actual fun createDriver(): SqlDriver {
-        val driver: SqlDriver = JdbcSqliteDriver(DB_URL)
+        val driver: SqlDriver = JdbcSqliteDriver(dbURL)
         BSHelperDatabase.Schema.create(driver)
         return driver
     }
-
 }

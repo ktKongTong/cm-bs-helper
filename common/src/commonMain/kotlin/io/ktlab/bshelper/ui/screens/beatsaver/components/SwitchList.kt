@@ -26,17 +26,17 @@ fun SwitchList(
     modifier: Modifier = Modifier,
     switchModifier: Modifier = Modifier,
     switchList: List<SwitchItem>,
-    onSwitchItemCheckedChange: (Int,Boolean) -> Unit = { _, _ -> },
+    onSwitchItemCheckedChange: (Int, Boolean) -> Unit = { _, _ -> },
     thumbContent: (@Composable () -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     Column(modifier) {
         switchList.mapIndexed { index, switchItem ->
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Text(text = switchItem.title, style = MaterialTheme.typography.labelLarge)
                 Switch(
                     modifier = switchModifier,
@@ -48,6 +48,5 @@ fun SwitchList(
                 )
             }
         }
-
     }
 }

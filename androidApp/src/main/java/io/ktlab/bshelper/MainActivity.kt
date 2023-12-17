@@ -16,9 +16,8 @@ class MainActivity : PreComposeActivity() {
             androidContext(this@MainActivity)
             modules(AppModule.getModules())
         }
-        setContent{
-                BSHelperApp()
+        setContent {
+            BSHelperApp()
         }
-
     }
 }

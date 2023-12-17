@@ -317,9 +317,10 @@ fun <T : Chip> BasicChipTextField(
             .collect {
                 when (it) {
                     TextFieldFocusState.None -> {}
-                    TextFieldFocusState.Focused -> runCatching {
-                        textFieldFocusRequester.requestFocus()
-                    }
+                    TextFieldFocusState.Focused ->
+                        runCatching {
+                            textFieldFocusRequester.requestFocus()
+                        }
 
                     TextFieldFocusState.Unfocused -> {
                         focusManager.clearFocus()
@@ -337,22 +338,23 @@ fun <T : Chip> BasicChipTextField(
 
     decorationBox {
         FlowRow(
-            modifier = modifier
-                .pointerInput(value) {
-                    detectTapGestures(
-                        onTap = {
-                            if (!editable) return@detectTapGestures
-                            keyboardController?.show()
-                            runCatching { textFieldFocusRequester.requestFocus() }
-                            state.updateFocusedChip(null)
-                            state.focusTextField()
-                            // Move cursor to the end
-                            val selection = value.text.length
-                            onValueChange(value.copy(selection = TextRange(selection)))
-                            scope.launch { bringLastIntoViewRequester.value.bringIntoView() }
-                        },
-                    )
-                },
+            modifier =
+                modifier
+                    .pointerInput(value) {
+                        detectTapGestures(
+                            onTap = {
+                                if (!editable) return@detectTapGestures
+                                keyboardController?.show()
+                                runCatching { textFieldFocusRequester.requestFocus() }
+                                state.updateFocusedChip(null)
+                                state.focusTextField()
+                                // Move cursor to the end
+                                val selection = value.text.length
+                                onValueChange(value.copy(selection = TextRange(selection)))
+                                scope.launch { bringLastIntoViewRequester.value.bringIntoView() }
+                            },
+                        )
+                    },
             horizontalArrangement = Arrangement.spacedBy(chipHorizontalSpacing),
             verticalArrangement = Arrangement.spacedBy(chipVerticalSpacing),
         ) {
@@ -416,9 +418,10 @@ fun <T : Chip> BasicChipTextField(
                         state.updateFocusedChip(null)
                     }
                 },
-                modifier = Modifier
-                    .padding(top = chipVerticalSpacing)
-                    .bringIntoViewRequester(bringLastIntoViewRequester.value),
+                modifier =
+                    Modifier
+                        .padding(top = chipVerticalSpacing)
+                        .bringIntoViewRequester(bringLastIntoViewRequester.value),
             )
         }
     }
@@ -445,16 +448,18 @@ private fun <T : Chip> Chips(
 ) {
     val chips = state.chips
 
-    val focusRequesters = remember(chips.size) {
-        List(chips.size) { FocusRequester() }
-    }
+    val focusRequesters =
+        remember(chips.size) {
+            List(chips.size) { FocusRequester() }
+        }
 
     fun focusChip(index: Int) {
         runCatching { focusRequesters[index].requestFocus() }
         val targetChip = chips[index]
-        targetChip.textFieldValue = targetChip.textFieldValue.copy(
-            selection = TextRange(targetChip.text.length),
-        )
+        targetChip.textFieldValue =
+            targetChip.textFieldValue.copy(
+                selection = TextRange(targetChip.text.length),
+            )
     }
 
     val focusManager = LocalFocusManager.current
@@ -536,11 +541,12 @@ private fun <T : Chip> Chips(
             chipStyle = chipStyle,
             chipLeadingIcon = chipLeadingIcon,
             chipTrailingIcon = chipTrailingIcon,
-            modifier = if (index == chips.lastIndex) {
-                Modifier.bringIntoViewRequester(bringLastIntoViewRequester.value)
-            } else {
-                Modifier
-            },
+            modifier =
+                if (index == chips.lastIndex) {
+                    Modifier.bringIntoViewRequester(bringLastIntoViewRequester.value)
+                } else {
+                    Modifier
+                },
         )
     }
 }
@@ -566,9 +572,10 @@ private fun <T : Chip> Input(
     if (value.text.isEmpty() && (!enabled || readOnly)) {
         return
     }
-    val textColor = textStyle.color.takeOrElse {
-        colors.textColor(enabled, isError, interactionSource).value
-    }
+    val textColor =
+        textStyle.color.takeOrElse {
+            colors.textColor(enabled, isError, interactionSource).value
+        }
 
     fun tryAddNewChip(value: TextFieldValue): Boolean {
         return onSubmit(value)?.also { state.addChip(it) } != null
@@ -576,43 +583,46 @@ private fun <T : Chip> Input(
 
     BasicTextField(
         value = value,
-        onValueChange = filterNewLines { newValue, hasNewLine ->
-            if (hasNewLine && newValue.text.isNotEmpty() && tryAddNewChip(newValue)) {
-                onValueChange(TextFieldValue())
-            } else {
-                onValueChange(newValue)
-            }
-        },
-        modifier = modifier
-            .focusRequester(focusRequester)
-            .onFocusChanged {
-                onFocusChange(it.isFocused)
-                if (it.isFocused) {
-                    state.focusTextField()
+        onValueChange =
+            filterNewLines { newValue, hasNewLine ->
+                if (hasNewLine && newValue.text.isNotEmpty() && tryAddNewChip(newValue)) {
+                    onValueChange(TextFieldValue())
+                } else {
+                    onValueChange(newValue)
                 }
-            }
-            .onPreviewKeyEvent {
-                if (it.type == KeyEventType.KeyDown && it.key == Key.Backspace) {
-                    if (value.text.isEmpty() && state.chips.isNotEmpty()) {
-                        // Remove previous chip
-                        state.removeLastChip()
+            },
+        modifier =
+            modifier
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    onFocusChange(it.isFocused)
+                    if (it.isFocused) {
                         state.focusTextField()
-                        return@onPreviewKeyEvent true
                     }
                 }
-                false
-            },
+                .onPreviewKeyEvent {
+                    if (it.type == KeyEventType.KeyDown && it.key == Key.Backspace) {
+                        if (value.text.isEmpty() && state.chips.isNotEmpty()) {
+                            // Remove previous chip
+                            state.removeLastChip()
+                            state.focusTextField()
+                            return@onPreviewKeyEvent true
+                        }
+                    }
+                    false
+                },
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle.copy(color = textColor),
         keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                if (value.text.isNotEmpty() && tryAddNewChip(value)) {
-                    onValueChange(TextFieldValue())
-                }
-            }
-        ),
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    if (value.text.isNotEmpty() && tryAddNewChip(value)) {
+                        onValueChange(TextFieldValue())
+                    }
+                },
+            ),
         interactionSource = interactionSource,
         cursorBrush = SolidColor(colors.cursorColor(isError).value),
     )
@@ -636,7 +646,7 @@ private fun <T : Chip> ChipItem(
     chipStyle: ChipStyle,
     chipLeadingIcon: @Composable (chip: T) -> Unit,
     chipTrailingIcon: @Composable (chip: T) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -690,56 +700,59 @@ private fun <T : Chip> ChipItem(
         trailingIcon = {
             chipTrailingIcon(chip)
         },
-        modifier = modifier
-            .clip(shape = shape)
-            .background(color = backgroundColor)
-            .border(
-                width = borderWidth,
-                color = borderColor,
-                shape = shape
-            )
-            .padding(borderWidth)
-            .combinedClickable(
-                enabled = enabled,
-                onClick = {
-                    if (editable) {
-                        keyboardController?.show()
-                        runCatching { focusRequester.requestFocus() }
-                    }
-                    onClick?.invoke()
-                },
-                onLongClick = {
-                    onLongClick?.invoke()
-                }
-            ),
+        modifier =
+            modifier
+                .clip(shape = shape)
+                .background(color = backgroundColor)
+                .border(
+                    width = borderWidth,
+                    color = borderColor,
+                    shape = shape,
+                )
+                .padding(borderWidth)
+                .combinedClickable(
+                    enabled = enabled,
+                    onClick = {
+                        if (editable) {
+                            keyboardController?.show()
+                            runCatching { focusRequester.requestFocus() }
+                        }
+                        onClick?.invoke()
+                    },
+                    onLongClick = {
+                        onLongClick?.invoke()
+                    },
+                ),
     ) {
         var canRemoveChip by remember { mutableStateOf(false) }
         BasicTextField(
             value = chip.textFieldValue,
-            onValueChange = filterNewLines { value, hasNewLine ->
-                chip.textFieldValue = value
-                if (hasNewLine) {
-                    onFocusNextRequest()
-                }
-            },
-            modifier = Modifier
-                .width(IntrinsicSize.Min)
-                .padding(horizontal = 8.dp, vertical = 3.dp)
-                .focusRequester(focusRequester)
-                .onFocusChanged { onFocusChange(it.isFocused) }
-                .onPreviewKeyEvent {
-                    if (it.key == Key.Backspace) {
-                        if (it.type == KeyEventType.KeyDown) {
-                            canRemoveChip = chip.text.isEmpty()
-                        } else if (it.type == KeyEventType.KeyUp) {
-                            if (canRemoveChip) {
-                                onRemoveRequest()
-                                return@onPreviewKeyEvent true
+            onValueChange =
+                filterNewLines { value, hasNewLine ->
+                    chip.textFieldValue = value
+                    if (hasNewLine) {
+                        onFocusNextRequest()
+                    }
+                },
+            modifier =
+                Modifier
+                    .width(IntrinsicSize.Min)
+                    .padding(horizontal = 8.dp, vertical = 3.dp)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { onFocusChange(it.isFocused) }
+                    .onPreviewKeyEvent {
+                        if (it.key == Key.Backspace) {
+                            if (it.type == KeyEventType.KeyDown) {
+                                canRemoveChip = chip.text.isEmpty()
+                            } else if (it.type == KeyEventType.KeyUp) {
+                                if (canRemoveChip) {
+                                    onRemoveRequest()
+                                    return@onPreviewKeyEvent true
+                                }
                             }
                         }
-                    }
-                    false
-                },
+                        false
+                    },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = { onFocusNextRequest() }),
             singleLine = false,
@@ -784,11 +797,12 @@ private fun ChipItemLayout(
         val contentPlaceable = contentMeasurable.measure(Constraints(maxWidth = restWidth))
 
         val width = leadingPlaceable.width + contentPlaceable.width + trailingPlaceable.width
-        val height = maxOf(
-            leadingPlaceable.height,
-            contentPlaceable.height,
-            trailingPlaceable.height,
-        )
+        val height =
+            maxOf(
+                leadingPlaceable.height,
+                contentPlaceable.height,
+                trailingPlaceable.height,
+            )
 
         val placeables = arrayOf(leadingPlaceable, contentPlaceable, trailingPlaceable)
 

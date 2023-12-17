@@ -1,16 +1,14 @@
 package io.ktlab.bsmg.beatmapv3
 
 import io.ktlab.bsmg.CustomData
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonObject
 
 /**
  * @see <a href="https://bsmg.wiki/mapping/difficulty-format-v3.html#v3-base-object">difficulty format v3</a>
  */
 @Serializable
-data class V3BeatMapObject (
+data class V3BeatMapObject(
     val version: String,
     val basicBeatmapEvents: List<BasicBeatMapEvents>,
     val bombNotes: List<BombNotes>,
@@ -26,6 +24,6 @@ data class V3BeatMapObject (
     val sliders: List<Sliders>,
     val useNormalEventsAsCompatibleEvents: Boolean,
     val waypoints: JsonArray,
-    val basicEventTypesWithKeywords: CustomData= null,
+    val basicEventTypesWithKeywords: CustomData = null,
     val customData: CustomData = null,
 )

@@ -9,7 +9,7 @@ import java.util.*
 @Composable
 actual fun MapOnlinePreview(
     onDismiss: () -> Unit,
-    mapId: String
+    mapId: String,
 ) {
     val mapPreviewURL = "https://allpoland.github.io/ArcViewer/?id=$mapId"
     // open web browser with mapPreviewURL

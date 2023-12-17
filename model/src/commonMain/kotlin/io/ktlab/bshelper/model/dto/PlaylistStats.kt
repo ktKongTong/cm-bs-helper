@@ -1,10 +1,9 @@
 package io.ktlab.bshelper.model.dto
 
 import kotlinx.serialization.Serializable
-import kotlin.time.Duration
 
 @Serializable
-data class PlaylistStats (
+data class PlaylistStats(
     val avgScore: Double,
     val downVotes: Long,
     val mapperCount: Long,

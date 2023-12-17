@@ -28,7 +28,6 @@ import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
 import io.ktlab.kown.model.KownTaskStatus
 import kotlinx.datetime.Instant
 
-
 fun Long.toMB(): String {
     // remain 2 decimal
     return String.format("%.2f MB", this / 1024f / 1024f)
@@ -40,32 +39,35 @@ fun MapDownloadTaskCard(
     downloadTask: IDownloadTask,
     modifier: Modifier = Modifier,
     onUIEvent: (UIEvent) -> Unit,
-){
-
+) {
     Column {
         val map = downloadTask as IDownloadTask.MapDownloadTask
         Row(
-            modifier = modifier
-                .fillMaxWidth()
+            modifier =
+                modifier
+                    .fillMaxWidth(),
         ) {
             AsyncImageWithFallback(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(128.dp, 128.dp)
-                    .align(Alignment.CenterVertically)
-                    .clip(shape = RoundedCornerShape(10.dp)),
+                modifier =
+                    Modifier
+                        .padding(8.dp)
+                        .size(128.dp, 128.dp)
+                        .align(Alignment.CenterVertically)
+                        .clip(shape = RoundedCornerShape(10.dp)),
                 source = map.relateMap.getAvatar(),
             )
-            Column (
-                modifier = Modifier
-                    .weight(1f),
-                verticalArrangement = Arrangement.Center
-            ){
-                Text(text = map.relateMap.getSongName(),
+            Column(
+                modifier =
+                    Modifier
+                        .weight(1f),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = map.relateMap.getSongName(),
                     modifier = Modifier.padding(bottom = 4.dp),
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Row {
                     if ((map.relateMap as BSMapVO).uploader.verifiedMapper?.let { true } == true) {
@@ -73,7 +75,7 @@ fun MapDownloadTaskCard(
                             Icons.Filled.Verified,
                             modifier = Modifier.size(20.dp),
                             contentDescription = "Verified Mapper",
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.primary,
                         )
                     }
                     MapperIconWIthText(text = map.relateMap.getAuthor())
@@ -82,9 +84,9 @@ fun MapDownloadTaskCard(
                     Spacer(modifier = Modifier.width(8.dp))
                     NPSIconWIthText(text = "%.2f".format(map.relateMap.getMaxNPS()))
                 }
-                Row (
-                    verticalAlignment = Alignment.CenterVertically
-                ){
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     FlowRow {
                         MapTag.sort((map.relateMap as BSMapVO).map.tags).map {
                             MapTag(tag = it)
@@ -92,7 +94,7 @@ fun MapDownloadTaskCard(
                     }
                 }
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Row {
                         ThumbUpIconWIthText(text = (map.relateMap as BSMapVO).map.upVotes.toString())
@@ -102,20 +104,29 @@ fun MapDownloadTaskCard(
                     Spacer(modifier = Modifier.width(8.dp))
                     MapDiffLabel(diff = (map.relateMap as BSMapVO).getDiffMatrix())
                 }
-                Text(text = "目标歌单：${map.targetPlaylist.getName()}", modifier = Modifier.padding(bottom = 4.dp), style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "目标歌单：${map.targetPlaylist.getName()}",
+                    modifier = Modifier.padding(bottom = 4.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
                 Text(text = "creatAt：${Instant.fromEpochMilliseconds(map.downloadTaskModel.createdAt)}")
                 Row(
-                    modifier = Modifier
-                        .widthIn(0.dp, 400.dp)
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
+                    modifier =
+                        Modifier
+                            .widthIn(0.dp, 400.dp)
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
                 ) {
-                    when(downloadTask.downloadTaskModel.status) {
+                    when (downloadTask.downloadTaskModel.status) {
                         is KownTaskStatus.Queued -> {
                             Text(text = "等待中")
                         }
                         is KownTaskStatus.Running -> {
-                            Text(text = "${downloadTask.downloadTaskModel.downloadedBytes.toMB()}/${downloadTask.downloadTaskModel.totalBytes.toMB()}")
+                            Text(
+                                text = "${downloadTask.downloadTaskModel
+                                    .downloadedBytes.toMB()}/${downloadTask.downloadTaskModel
+                                    .totalBytes.toMB()}",
+                            )
                         }
                         is KownTaskStatus.Completed -> {
                             Text(text = "下载完成")
@@ -128,32 +139,33 @@ fun MapDownloadTaskCard(
                                 text = "下载失败：${(downloadTask.downloadTaskModel.status as KownTaskStatus.Failed).reason}",
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
-                                softWrap = false
+                                softWrap = false,
                             )
                         }
                     }
                 }
             }
             Row(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .fillMaxHeight()
-                    .align(Alignment.CenterVertically),
+                modifier =
+                    Modifier
+                        .padding(end = 8.dp)
+                        .fillMaxHeight()
+                        .align(Alignment.CenterVertically),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                when(downloadTask.downloadTaskModel.status) {
-                    is KownTaskStatus.Queued,is KownTaskStatus.Running -> {
+                when (downloadTask.downloadTaskModel.status) {
+                    is KownTaskStatus.Queued, is KownTaskStatus.Running -> {
                         IconButton(onClick = { onUIEvent(ToolboxUIEvent.PauseDownloadTask(downloadTask)) }) {
                             Icon(
                                 Icons.Rounded.Pause,
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         IconButton(onClick = { onUIEvent(ToolboxUIEvent.CancelDownloadTask(downloadTask)) }) {
                             Icon(
                                 Icons.Rounded.Cancel,
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
                     }
@@ -161,7 +173,7 @@ fun MapDownloadTaskCard(
                         IconButton(onClick = { onUIEvent(ToolboxUIEvent.ResumeDownloadTask(downloadTask)) }) {
                             Icon(
                                 Icons.Rounded.Start,
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
                     }
@@ -169,13 +181,12 @@ fun MapDownloadTaskCard(
                         IconButton(onClick = { onUIEvent(ToolboxUIEvent.RetryDownloadMap(downloadTask)) }) {
                             Icon(
                                 Icons.Rounded.Redo,
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
                     }
                 }
             }
         }
-
     }
 }

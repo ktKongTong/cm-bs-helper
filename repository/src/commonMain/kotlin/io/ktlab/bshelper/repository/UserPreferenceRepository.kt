@@ -8,9 +8,9 @@ import io.ktlab.bshelper.model.UserPreference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class UserPreferenceRepository (
-    private val dataStore: DataStore<Preferences>
-){
+class UserPreferenceRepository(
+    private val dataStore: DataStore<Preferences>,
+) {
     companion object {
         const val DEFAULT_CURRENT_MANAGE_DIR = ""
     }
@@ -18,13 +18,14 @@ class UserPreferenceRepository (
     private val currentManageDirKey = stringPreferencesKey("currentManageDir")
     private val currentThemeColorKey = stringPreferencesKey("currentThemeColor")
     private val currentThemeModeKey = stringPreferencesKey("currentThemeMode")
-    private val preferenceFlow: Flow<UserPreference> = dataStore.data.map {
-        UserPreference(
-            it[currentManageDirKey] ?: DEFAULT_CURRENT_MANAGE_DIR,
-            it[currentThemeColorKey] ?: "",
-            it[currentThemeModeKey] ?: "",
-        )
-    }
+    private val preferenceFlow: Flow<UserPreference> =
+        dataStore.data.map {
+            UserPreference(
+                it[currentManageDirKey] ?: DEFAULT_CURRENT_MANAGE_DIR,
+                it[currentThemeColorKey] ?: "",
+                it[currentThemeModeKey] ?: "",
+            )
+        }
 
     fun getUserPreference(): Flow<UserPreference> = preferenceFlow
 
@@ -51,5 +52,4 @@ class UserPreferenceRepository (
             it[currentManageDirKey] = userPreference.currentManageDir
         }
     }
-
 }

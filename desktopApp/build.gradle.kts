@@ -9,7 +9,7 @@ kotlin {
     jvmToolchain(17)
     jvm()
     sourceSets {
-        val jvmMain by getting  {
+        val jvmMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(project(":common"))
@@ -29,7 +29,7 @@ compose.desktop {
             // see https://github.com/cashapp/sqldelight/issues/2151
             // https://github.com/JetBrains/compose-multiplatform/issues/381
             // for sqldelight and ktor
-            modules("java.sql","java.naming")
+            modules("java.sql", "java.naming")
 
             windows {
                 menu = true

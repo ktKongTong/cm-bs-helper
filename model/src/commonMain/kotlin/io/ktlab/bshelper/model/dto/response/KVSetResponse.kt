@@ -11,7 +11,7 @@ data class KVSetResponse(
 )
 
 @Serializable
-data class KVGetResponse< T :@Serializable Any>(
+data class KVGetResponse<T : @Serializable Any>(
     val message: String,
     val content: T? = null,
 )

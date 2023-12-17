@@ -26,7 +26,6 @@ import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistCard
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 
-
 @Composable
 fun BSMapCard(
     map: IMap,
@@ -39,7 +38,7 @@ fun BSMapCard(
     onUIEvent: (UIEvent) -> Unit,
     onDownloadMap: (IMap) -> Unit,
     multiSelectedMode: Boolean = false,
-    selectableIPlaylists : List<IPlaylist>,
+    selectableIPlaylists: List<IPlaylist>,
     onPlayPreviewMusicSegment: (IMap) -> Unit = {},
     enableAuthorClick: Boolean = true,
 ) {
@@ -47,29 +46,29 @@ fun BSMapCard(
         modifier = modifier.widthIn(min = 350.dp).padding(8.dp),
         map = map,
         imageMaxWidth = 250.dp,
-        onLongClick = {onUIEvent(BeatSaverUIEvent.MapLongTapped(map))},
-        onClick = {onUIEvent(BeatSaverUIEvent.MapTapped(map))},
-        onAuthorClick = {if (enableAuthorClick) onUIEvent(BeatSaverUIEvent.OnSelectedBSMapper((map as BSMapVO).uploader.id))},
+        onLongClick = { onUIEvent(BeatSaverUIEvent.MapLongTapped(map)) },
+        onClick = { onUIEvent(BeatSaverUIEvent.MapTapped(map)) },
+        onAuthorClick = { if (enableAuthorClick) onUIEvent(BeatSaverUIEvent.OnSelectedBSMapper((map as BSMapVO).uploader.id)) },
     ) {
-
         var previewDialogOpen by remember { mutableStateOf(false) }
-        Row (verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Box {
                 if (!multiSelectedMode) {
                     DownloadIconButton(
-                        onClick = {onUIEvent(BeatSaverUIEvent.DownloadMap(map))},
+                        onClick = { onUIEvent(BeatSaverUIEvent.DownloadMap(map)) },
                         downloadInfo = downloadInfo,
                         modifier = Modifier.size(28.dp),
-                        localExist = local
+                        localExist = local,
                     )
-                }else if (!local) {
+                } else if (!local) {
                     Checkbox(
                         modifier = Modifier.size(28.dp),
                         checked = checked,
                         onCheckedChange = { onMapMultiSelected(map) },
                     )
-                }else {
-                    IconButton({},
+                } else {
+                    IconButton(
+                        {},
                         enabled = false,
                         modifier = Modifier.size(28.dp),
                     ) {
@@ -79,8 +78,8 @@ fun BSMapCard(
             }
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
-                onClick = {onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map))},
-                modifier = Modifier.size(28.dp)
+                onClick = { onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map)) },
+                modifier = Modifier.size(28.dp),
             ) {
                 Icon(
                     Icons.Rounded.MusicNote,
@@ -89,8 +88,8 @@ fun BSMapCard(
             }
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
-                onClick = {previewDialogOpen = true},
-                modifier = Modifier.size(28.dp)
+                onClick = { previewDialogOpen = true },
+                modifier = Modifier.size(28.dp),
             ) {
                 Icon(
                     Icons.Rounded.PlayArrow,
@@ -103,7 +102,6 @@ fun BSMapCard(
         }
     }
 }
-
 
 @Composable
 fun DownloadSelectPlaylistDialog(
@@ -119,53 +117,52 @@ fun DownloadSelectPlaylistDialog(
         modifier = modifier,
         onDismiss = onDismiss,
         onConfirm = {
-            if (targetPlaylist == null){
+            if (targetPlaylist == null) {
 //                Toast.makeText(context, "please select a target playlist", Toast.LENGTH_SHORT).show()
-            }else {
+            } else {
                 onConfirm(targetPlaylist!!)
                 onDismiss()
             }
-        }
-    ){
+        },
+    ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
             verticalArrangement = Arrangement.Center,
             content = {
-                if (targetPlaylists.isEmpty()){
+                if (targetPlaylists.isEmpty()) {
                     item {
-                        Row (
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.Center
-                        ){
+                        Row(
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
                             Text(text = "no playlist")
                         }
                     }
-                }else{
-                    items(targetPlaylists.size){
+                } else {
+                    items(targetPlaylists.size) {
                         val playlist = targetPlaylists[it]
                         PlaylistCard(
                             playlist = playlist,
-                            onClick = {_ ->
+                            onClick = { _ ->
                                 targetPlaylist = playlist
                             },
-                            selected = (targetPlaylist?.id == playlist.id)
+                            selected = (targetPlaylist?.id == playlist.id),
                         )
                     }
                 }
-            })
+            },
+        )
     }
 }
 
-
-
-
-
 @Composable
-fun BSMapCardPreview(){
+fun BSMapCardPreview() {
     BSHelperTheme {
 //        BSMapCard(
 //            map = bsMapVO,

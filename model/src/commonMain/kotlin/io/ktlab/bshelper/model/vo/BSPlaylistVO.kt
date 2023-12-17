@@ -12,7 +12,7 @@ data class BSPlaylistVO(
     val playlist: BSPlaylist,
     val owner: BSUser,
     val curator: BSUser? = null,
-):IPlaylist {
+) : IPlaylist {
     override val id: String
         get() = playlist.id.toString()
     override val title: String
@@ -79,19 +79,18 @@ data class BSPlaylistVO(
     }
 
     override fun getPlaylistDescription(): String {
-        return playlist.description?:""
+        return playlist.description ?: ""
     }
 
     override fun getTargetPath(): String {
         return ""
     }
-
 }
 
-fun BSPlaylistVO.convertDBOToVO():BSPlaylistVO {
+fun BSPlaylistVO.convertDBOToVO(): BSPlaylistVO {
     return BSPlaylistVO(
         playlist = this.playlist,
         owner = this.owner,
-        curator = this.curator
+        curator = this.curator,
     )
 }

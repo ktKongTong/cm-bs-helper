@@ -6,7 +6,11 @@ import app.cash.paging.PagingData
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import io.ktlab.bshelper.api.BeatSaverAPI
-import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.BSHelperDatabase
+import io.ktlab.bshelper.model.FSMap
+import io.ktlab.bshelper.model.IMap
+import io.ktlab.bshelper.model.IPlaylist
+import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.dto.response.BSMapReviewDTO
@@ -28,46 +32,51 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class FSMapRepository(
-    private val bsHelperDAO:BSHelperDatabase,
-    private val bsAPI: BeatSaverAPI
+    private val bsHelperDAO: BSHelperDatabase,
+    private val bsAPI: BeatSaverAPI,
 ) {
-    fun getFlowMapsByPlaylistId(playlistId: String): Flow<Result<List<IMap>>> = flow {
-        try {
-            bsHelperDAO.fSMapQueries.getAllByPlaylistId(playlistId)
-                .asFlow()
-                .mapToList(Dispatchers.IO)
-                .collect { q ->
-                    val grouped = q.mapToVO()
-                    emit(Result.Success(grouped))
-                }
-        } catch (e: Exception) {
-            emit(Result.Error(e))
+    fun getFlowMapsByPlaylistId(playlistId: String): Flow<Result<List<IMap>>> =
+        flow {
+            try {
+                bsHelperDAO.fSMapQueries.getAllByPlaylistId(playlistId)
+                    .asFlow()
+                    .mapToList(Dispatchers.IO)
+                    .collect { q ->
+                        val grouped = q.mapToVO()
+                        emit(Result.Success(grouped))
+                    }
+            } catch (e: Exception) {
+                emit(Result.Error(e))
+            }
         }
-    }
 
-    fun moveFSMapsToPlaylist(targetPlaylist: IPlaylist, fsMaps:List<FSMap>): Flow<Result<String>> = flow {
-        try {
-            val playlistPath = (targetPlaylist as FSPlaylistVO).basePath
-            fsMaps.forEach{
-                val path = it.playlistBasePath.toPath().resolve(it.dirName)
-                val tarPath = playlistPath.toPath().resolve(it.dirName)
-                path.toFile().renameTo(tarPath.toFile())
-            }
-            bsHelperDAO.transaction {
+    fun moveFSMapsToPlaylist(
+        targetPlaylist: IPlaylist,
+        fsMaps: List<FSMap>,
+    ): Flow<Result<String>> =
+        flow {
+            try {
+                val playlistPath = (targetPlaylist as FSPlaylistVO).basePath
                 fsMaps.forEach {
-                    bsHelperDAO.fSMapQueries.moveFSMapToPlaylist(
-                        targetPlaylist.id,
-                        targetPlaylist.id,
-                        it.mapId,
-                        it.playlistId
-                    )
+                    val path = it.playlistBasePath.toPath().resolve(it.dirName)
+                    val tarPath = playlistPath.toPath().resolve(it.dirName)
+                    path.toFile().renameTo(tarPath.toFile())
                 }
+                bsHelperDAO.transaction {
+                    fsMaps.forEach {
+                        bsHelperDAO.fSMapQueries.moveFSMapToPlaylist(
+                            targetPlaylist.id,
+                            targetPlaylist.id,
+                            it.mapId,
+                            it.playlistId,
+                        )
+                    }
+                }
+                emit(Result.Success(""))
+            } catch (e: Exception) {
+                emit(Result.Error(e))
             }
-            emit(Result.Success(""))
-        } catch (e: Exception) {
-            emit(Result.Error(e))
         }
-    }
 
     fun deleteAll() {
         bsHelperDAO.transaction {
@@ -83,9 +92,7 @@ class FSMapRepository(
 //        fsMapDao.deleteAll()
     }
 
-    suspend fun insertBSMap(
-        bsMap: BSMapVO
-    ) {
+    suspend fun insertBSMap(bsMap: BSMapVO) {
         bsHelperDAO.transaction {
             bsHelperDAO.bSMapQueries.insert(bsMap.map)
             bsHelperDAO.bSUserQueries.insert(bsMap.uploader)
@@ -97,24 +104,21 @@ class FSMapRepository(
             }
         }
     }
-    suspend fun insertFSMap(
-        bsMap: BSMapVO
-    ) {
-        bsHelperDAO.transaction {
-            bsHelperDAO.bSMapQueries.insert(bsMap.map)
-            bsHelperDAO.bSUserQueries.insert(bsMap.uploader)
-            bsMap.versions.map {
-                bsHelperDAO.bSMapVersionQueries.insert(it.version)
-                it.diffs.map {
-                    bsHelperDAO.mapDifficultyQueries.insert(it)
-                }
-            }
-        }
-    }
-    fun batchInsertBSMap(
-        bsMaps: List<BSMapVO>
-    ) {
 
+    suspend fun insertFSMap(bsMap: BSMapVO) {
+        bsHelperDAO.transaction {
+            bsHelperDAO.bSMapQueries.insert(bsMap.map)
+            bsHelperDAO.bSUserQueries.insert(bsMap.uploader)
+            bsMap.versions.map {
+                bsHelperDAO.bSMapVersionQueries.insert(it.version)
+                it.diffs.map {
+                    bsHelperDAO.mapDifficultyQueries.insert(it)
+                }
+            }
+        }
+    }
+
+    fun batchInsertBSMap(bsMaps: List<BSMapVO>) {
         bsHelperDAO.transaction {
             bsMaps.map {
                 bsHelperDAO.bSMapQueries.insert(it.map)
@@ -128,9 +132,10 @@ class FSMapRepository(
             }
         }
     }
+
     fun batchInsertBSMapAndFSMap(
         bsMaps: List<BSMapVO>,
-        targetPlaylist: IPlaylist
+        targetPlaylist: IPlaylist,
     ) {
         bsHelperDAO.transaction {
             bsMaps.map {
@@ -159,56 +164,66 @@ class FSMapRepository(
                         previewStartTime = 0.0,
                         previewDuration = Duration.ZERO,
                         playlistBasePath = targetPlaylist.getTargetPath(),
-                        hash = it.versions.firstOrNull()?.version?.hash?:"",
+                        hash = it.versions.firstOrNull()?.version?.hash ?: "",
                         playlistId = targetPlaylist.id,
                         active = false,
-                    )
+                    ),
                 )
             }
         }
     }
 
-    fun activeFSMapByMapId(mapId: String,playlistId: String) {
+    fun activeFSMapByMapId(
+        mapId: String,
+        playlistId: String,
+    ) {
         bsHelperDAO.transaction {
-            bsHelperDAO.fSMapQueries.acitveFSMap(mapId,playlistId)
+            bsHelperDAO.fSMapQueries.acitveFSMap(mapId, playlistId)
         }
     }
+
     fun getAllFSMapByPlaylistId(playlistId: String): List<IMap> {
         return bsHelperDAO.fSMapQueries.getAllByPlaylistId(playlistId)
             .executeAsList()
             .mapToVO()
     }
+
     fun getPagingBSMapByPlaylistId(playlistId: String): Flow<PagingData<IMap>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
             pagingSourceFactory = {
-                BSPlaylistDetailPagingSource(bsAPI,playlistId)
-            }
+                BSPlaylistDetailPagingSource(bsAPI, playlistId)
+            },
         ).flow
     }
+
     fun getPagingBSMap(mapFilterParam: MapFilterParam): Flow<PagingData<IMap>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
             pagingSourceFactory = {
-                BSMapPagingSource(bsAPI,mapFilterParam)
-            }
+                BSMapPagingSource(bsAPI, mapFilterParam)
+            },
         ).flow
     }
 
-    fun getPagingBSMapByBSUserId(id:Int): Flow<PagingData<IMap>> {
+    fun getPagingBSMapByBSUserId(id: Int): Flow<PagingData<IMap>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = { BSMapByUserPagingSource(bsAPI,id) }
+            pagingSourceFactory = { BSMapByUserPagingSource(bsAPI, id) },
         ).flow
     }
-    suspend fun deleteFSMapsByPath(playlistId: String,fsMaps:List<FSMap>):Result<String>{
+
+    suspend fun deleteFSMapsByPath(
+        playlistId: String,
+        fsMaps: List<FSMap>,
+    ): Result<String> {
         try {
 //            批量删除
-            fsMaps.forEach{
-                FileSystem.SYSTEM.deleteRecursively(it.playlistBasePath.toPath().resolve(it.dirName),mustExist = true)
+            fsMaps.forEach {
+                FileSystem.SYSTEM.deleteRecursively(it.playlistBasePath.toPath().resolve(it.dirName), mustExist = true)
             }
             val mapIds = fsMaps.map { it.mapId }
-            bsHelperDAO.fSMapQueries.deleteFSMapByMapIdsAndPlaylistId(mapIds,playlistId)
+            bsHelperDAO.fSMapQueries.deleteFSMapByMapIdsAndPlaylistId(mapIds, playlistId)
 //            bsHelperDAO.fSPlaylistQueries.adjustPlaylistMapCntByPlaylistId((-mapIds.count()),playlistId)
         } catch (e: Exception) {
             return Result.Error(e)
@@ -216,41 +231,46 @@ class FSMapRepository(
         return Result.Success("")
     }
 
-    fun getLocalMapIdSet(): Flow<Set<Pair<String,String>>> = bsHelperDAO.fSMapQueries
-        .getAllFSMapId()
-        .asFlow()
-        .mapToList(Dispatchers.IO)
-        .map {
-            it.map {item-> Pair(item.playlistId,item.mapId) }.toSet()
-        }
-        .catch {
+    fun getLocalMapIdSet(): Flow<Set<Pair<String, String>>> =
+        bsHelperDAO.fSMapQueries
+            .getAllFSMapId()
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+            .map {
+                it.map { item -> Pair(item.playlistId, item.mapId) }.toSet()
+            }
+            .catch {
 //            Log()
-            emit(setOf())
-        }
-    fun getLocalMapIdSetByPlaylist(playlistId: String): Flow<Set<Pair<String,String>>> = bsHelperDAO.fSMapQueries
-        .getAllFSMapId()
-        .asFlow()
-        .mapToList(Dispatchers.IO)
-        .map {
-            it.map {item-> Pair(item.playlistId,item.mapId) }.toSet()
-        }
-        .catch {
+                emit(setOf())
+            }
+
+    fun getLocalMapIdSetByPlaylist(playlistId: String): Flow<Set<Pair<String, String>>> =
+        bsHelperDAO.fSMapQueries
+            .getAllFSMapId()
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+            .map {
+                it.map { item -> Pair(item.playlistId, item.mapId) }.toSet()
+            }
+            .catch {
 //            Log()
-            emit(setOf())
-        }
+                emit(setOf())
+            }
 
     suspend fun getBSMapByIds(ids: List<String>): Map<String, BSMapVO> {
-        val localMap = bsHelperDAO.bSMapQueries.selectAllByMapIds(ids).executeAsList().mapToVO().map {
-            it.map.mapId to it
-        }.toMap()
-        val bsMapVOs = ids.filter { !localMap.containsKey(it) }.chunked(50).map {
-            return@map bsAPI.getMapsByIds(it).values.map { it.convertToVO() }
-        }.flatten()
+        val localMap =
+            bsHelperDAO.bSMapQueries.selectAllByMapIds(ids).executeAsList().mapToVO().map {
+                it.map.mapId to it
+            }.toMap()
+        val bsMapVOs =
+            ids.filter { !localMap.containsKey(it) }.chunked(50).map {
+                return@map bsAPI.getMapsByIds(it).values.map { it.convertToVO() }
+            }.flatten()
         batchInsertBSMap(bsMapVOs)
         return bsMapVOs.map { it.map.mapId to it }.toMap() + localMap
     }
+
     suspend fun getBSMapReviewsById(mapId: String): APIRespResult<List<BSMapReviewDTO>> {
         return bsAPI.getMapReview(mapId)
     }
-
 }

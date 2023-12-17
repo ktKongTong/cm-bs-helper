@@ -2,20 +2,18 @@ package io.ktlab.bshelper.model.scanner
 
 import okio.Path
 
-
-//open class ScannerException(
+// open class ScannerException(
 //    override val message: String,
 //    override val cause: Throwable? = null,
-//): Exception(message, cause)
+// ): Exception(message, cause)
 
 sealed interface ScannerException {
-
     class JSONFileTooLargeException(
         override val message: String,
         override val cause: Throwable? = null,
         val mapId: String? = null,
         val mapPath: Path,
-    ): ScannerException, Exception(message, cause) {
+    ) : ScannerException, Exception(message, cause) {
         override fun toString(): String {
             return "JSONFileTooLargeException: $message, mapId: $mapId, mapPath: $mapPath"
         }
@@ -31,18 +29,19 @@ sealed interface ScannerException {
         val lackInfo: Boolean = false,
         val mapId: String? = null,
         val mapDir: String? = null,
-    ): ScannerException, Exception(message, cause) {
+    ) : ScannerException, Exception(message, cause) {
         override fun toString(): String {
             return "FileMissingException: $message, mapId: $mapId, mapPath: $mapDir"
         }
     }
+
     class ParseException(
         override val message: String,
         override val cause: Throwable? = null,
         val lackInfo: Boolean = false,
         val mapId: String? = null,
         val mapDir: String? = null,
-    ): ScannerException, Exception(message, cause) {
+    ) : ScannerException, Exception(message, cause) {
         override fun toString(): String {
             return "ParseException: $message, mapId: $mapId, mapPath: $mapDir"
         }

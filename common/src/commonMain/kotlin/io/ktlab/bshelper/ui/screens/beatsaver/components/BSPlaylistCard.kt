@@ -16,11 +16,9 @@ import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
-import io.ktlab.bshelper.ui.components.labels.MapperLabel
 import io.ktlab.bshelper.ui.components.labels.*
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
-import io.ktlab.kown.model.isProcessing
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -31,28 +29,32 @@ fun BSPlaylistCard(
     downloadInfo: IDownloadTask.PlaylistDownloadTask?,
 ) {
     Box(
-        modifier = modifier
-            .widthIn(min = 350.dp)
-            .clip(shape = RoundedCornerShape(10.dp))
-    ){
+        modifier =
+            modifier
+                .widthIn(min = 350.dp)
+                .clip(shape = RoundedCornerShape(10.dp)),
+    ) {
         Row(
-            modifier = Modifier
-                .clickable {
-                    onUIEvent(BeatSaverUIEvent.OnSelectBSPlaylist(playlist))
-                }
+            modifier =
+                Modifier
+                    .clickable {
+                        onUIEvent(BeatSaverUIEvent.OnSelectBSPlaylist(playlist))
+                    },
         ) {
             AsyncImageWithFallback(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(128.dp, 128.dp)
-                    .align(Alignment.Top)
-                    .clip(shape = RoundedCornerShape(10.dp))
-                    .clickable { },
+                modifier =
+                    Modifier
+                        .padding(8.dp)
+                        .size(128.dp, 128.dp)
+                        .align(Alignment.Top)
+                        .clip(shape = RoundedCornerShape(10.dp))
+                        .clickable { },
                 source = playlist.getAvatar(),
             )
             Column(
-                modifier = Modifier
-                    .weight(1f),
+                modifier =
+                    Modifier
+                        .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
@@ -60,14 +62,14 @@ fun BSPlaylistCard(
                     modifier = Modifier.padding(bottom = 4.dp),
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Row {
                     MapperLabel(
                         mapperName = playlist.getAuthor(),
                         onClick = {},
                         verified = (playlist as BSPlaylistVO).owner.verifiedMapper?.let { true } == true,
-                        avatarUrl =  (playlist as BSPlaylistVO).owner.avatar
+                        avatarUrl = (playlist as BSPlaylistVO).owner.avatar,
                     )
                     DateLabel(date = playlist.playlist.createdAt, modifier = Modifier.padding(start = 8.dp))
                 }
@@ -76,7 +78,7 @@ fun BSPlaylistCard(
                     BSNPSRangeLabel(npsRange = "%.2f - %.2f".format(playlist.getMinNPS(), playlist.getMaxNPS()))
                 }
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     BSThumbUpLabel((playlist as BSPlaylistVO).playlist.upVotes)
                     BSThumbDownLabel(playlist.playlist.downVotes)
@@ -84,15 +86,13 @@ fun BSPlaylistCard(
 
                 if (downloadInfo != null) {
                     Row(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        val progress = downloadInfo.taskList.count { it.downloadTaskModel.status.isProcessing() } / downloadInfo.taskList.size
-
-                    }
-                }else {
+                        modifier =
+                            Modifier
+                                .padding(top = 8.dp)
+                                .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {}
+                } else {
                     PlaylistDownloadIconButton(
                         onClick = { onUIEvent(BeatSaverUIEvent.DownloadPlaylist(playlist)) },
                         downloadInfo = downloadInfo,

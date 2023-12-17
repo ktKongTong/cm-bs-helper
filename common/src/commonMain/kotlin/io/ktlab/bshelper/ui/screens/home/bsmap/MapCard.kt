@@ -24,7 +24,6 @@ import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
 import io.ktlab.bshelper.viewmodel.HomeUIEvent
 
-
 @Composable
 fun MapCard(
     map: IMap,
@@ -37,8 +36,9 @@ fun MapCard(
         map = map,
         onClick = { onUIEvent(HomeUIEvent.MapTapped(map.getID())) },
         onLongClick = {},
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth(),
         imageMaxWidth = 350.dp,
         onAuthorClick = {},
         menuArea = {
@@ -46,11 +46,12 @@ fun MapCard(
                 Checkbox(
                     checked = checked,
                     onCheckedChange = { onUIEvent(HomeUIEvent.MapMultiSelected(map)) },
-                    modifier = Modifier
-                        .size(28.dp)
-                        .align(Alignment.Center)
+                    modifier =
+                        Modifier
+                            .size(28.dp)
+                            .align(Alignment.Center),
                 )
-            }else {
+            } else {
                 var previewDialogOpen by remember { mutableStateOf(false) }
 //                MapCardMenu(
 //                    modifier = Modifier
@@ -64,13 +65,13 @@ fun MapCard(
 //                    },
 //                    onPreview = { previewDialogOpen = true },
 //                )
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                ){
-                   IconButton(onClick = { onUIEvent(HomeUIEvent.MultiDeleteAction(setOf(map))) }, modifier = Modifier.size(28.dp)) {
-                       Icon(Icons.Default.Delete, contentDescription = "delete map")
-                   }
+                ) {
+                    IconButton(onClick = { onUIEvent(HomeUIEvent.MultiDeleteAction(setOf(map))) }, modifier = Modifier.size(28.dp)) {
+                        Icon(Icons.Default.Delete, contentDescription = "delete map")
+                    }
                     IconButton(onClick = { onUIEvent(HomeUIEvent.PlayPreviewMusicSegment(map)) }, modifier = Modifier.size(28.dp)) {
                         Icon(Icons.Default.MusicNote, contentDescription = "play preview map")
                     }
@@ -82,7 +83,7 @@ fun MapCard(
                     MapOnlinePreview(onDismiss = { previewDialogOpen = false }, mapId = map.getID())
                 }
             }
-        }
+        },
     )
 }
 

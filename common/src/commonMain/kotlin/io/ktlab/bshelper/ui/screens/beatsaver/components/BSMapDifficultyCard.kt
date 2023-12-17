@@ -16,16 +16,14 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BSMapDifficultyCard(
-    diff: MapDifficulty
-){
+fun BSMapDifficultyCard(diff: MapDifficulty) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.background(Color.Blue)
+        modifier = Modifier.background(Color.Blue),
     ) {
         BSMapDiffLabel(diff.difficulty, characteristic = diff.characteristic)
-        Row (verticalAlignment = Alignment.CenterVertically){
+        Row(verticalAlignment = Alignment.CenterVertically) {
             BSLightEventLabel(diff.events!!)
             BSNPSLabel(diff.nps!!)
             BSNoteLabel(diff.notes!!)
@@ -38,26 +36,25 @@ fun BSMapDifficultyCard(
 @Composable
 fun BSMapDifficulties(
     diffs: List<MapDifficulty>? = null,
-    modifier: Modifier = Modifier
-){
-
+    modifier: Modifier = Modifier,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            diffs?.map {diff ->
+            diffs?.map { diff ->
                 BSMapDiffLabel(diff.difficulty, characteristic = diff.characteristic)
             }
         }
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            diffs?.map {diff ->
-                Row (verticalAlignment = Alignment.CenterVertically){
+            diffs?.map { diff ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     BSLightEventLabel(diff.events!!)
                     BSNPSLabel(diff.nps!!)
                     BSNoteLabel(diff.notes!!)
@@ -66,6 +63,5 @@ fun BSMapDifficulties(
                 }
             }
         }
-
     }
 }

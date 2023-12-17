@@ -1,0 +1,21 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+indent_size = 4
+ktlint_standard = enabled
+# ktlint_experimental = enabled
+ktlint_custom-rule-set = enabled
+ktlint_code_style = ktlint_official
+ktlint_standard_comment-spacing = disabled
+ktlint_standard_package-name = disabled
+ktlint_experimental_package-naming = disabled
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_enum-entry-name-case = disabled
+ktlint_standard_function-naming = disabled
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true

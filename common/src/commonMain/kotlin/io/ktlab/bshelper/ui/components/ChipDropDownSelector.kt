@@ -17,7 +17,7 @@ fun ChipDropDownSelector(
     selectedOption: String,
     modifier: Modifier = Modifier,
     onSelectedOptionChange: (String) -> Unit,
-){
+) {
     var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -29,24 +29,25 @@ fun ChipDropDownSelector(
             modifier = Modifier.menuAnchor(),
             label = { Text(selectedOption) },
             selected = false,
-            onClick = {expanded = true},
+            onClick = { expanded = true },
 //            leadingIcon = {Icon(Icons.Rounded.Check, "Checked Icon")},
-            trailingIcon = { Icon(Icons.Rounded.ExpandMore,"ExpandMore Icon") },
+            trailingIcon = { Icon(Icons.Rounded.ExpandMore, "ExpandMore Icon") },
         )
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .heightIn(0.dp, 250.dp)
-                .verticalScroll(rememberScrollState())
-        ){
+            modifier =
+                Modifier
+                    .heightIn(0.dp, 250.dp)
+                    .verticalScroll(rememberScrollState()),
+        ) {
             options.map {
                 DropdownMenuItem(
                     text = { Text(it) },
                     onClick = {
                         expanded = false
                         onSelectedOptionChange(it)
-                    }
+                    },
                 )
             }
         }

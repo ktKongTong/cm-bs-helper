@@ -21,18 +21,17 @@ import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.ui.components.chiptextfield.core.Chip
 import io.ktlab.bshelper.ui.components.chiptextfield.core.rememberChipTextFieldState
 import io.ktlab.bshelper.ui.components.chiptextfield.m3.OutlinedChipTextField
-import io.ktlab.bshelper.utils.NewFSPlaylist
-
+import io.ktlab.bshelper.utils.newFSPlaylist
 
 private fun isValidFilename(filename: String): Boolean {
-    return filename.isNotEmpty() && filename.isNotBlank() && filename.length < 255
-            && !filename.matches(Regex("[^\\\\/:*?\"<>|]+")) && !filename.startsWith(".")
-
+    return filename.isNotEmpty() && filename.isNotBlank() && filename.length < 255 &&
+        !filename.matches(Regex("[^\\\\/:*?\"<>|]+")) && !filename.startsWith(".")
 }
+
 @Composable
 fun FSPlaylistFormV2(
     fsPlaylist: FSPlaylist? = null,
-    checkIfExist : (String) -> Boolean = { false },
+    checkIfExist: (String) -> Boolean = { false },
     onSubmitFSPlaylist: (FSPlaylist?) -> Unit = {},
     openState: MutableState<Boolean>,
 ) {
@@ -43,30 +42,32 @@ fun FSPlaylistFormV2(
         title = fsPlaylist?.let { "编辑歌单信息" } ?: "新建歌单",
         onConfirm = {
             onSubmitFSPlaylist(
-                fsPlaylist?.
-                copy(name = name, customTags = customTags.joinToString(","), description = description)
-                    ?: NewFSPlaylist(name = name, customTags = customTags.joinToString(","), description = description)
+                fsPlaylist
+                    ?.copy(name = name, customTags = customTags.joinToString(","), description = description)
+                    ?: newFSPlaylist(name = name, customTags = customTags.joinToString(","), description = description),
             )
         },
         openState = openState,
-    ){
+    ) {
         Column {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                     value = name,
                     onValueChange = { name = it },
                     supportingText = {
                         if (!isValidFilename(name)) {
                             Text(text = "歌单名不合法")
-                        }else if(name.isEmpty()) {
+                        } else if (name.isEmpty()) {
                             Text(text = "歌单名不能为空")
                         } else if (name.length > 255) {
                             Text(text = "歌单名过长")
@@ -74,7 +75,7 @@ fun FSPlaylistFormV2(
                             Text(text = "歌单名不能以.开头")
                         } else if (name.matches(Regex("[^\\\\/:*?\"<>|]+"))) {
                             Text(text = "歌单名不能包含以下字符: \\/:*?\"<>|")
-                        } else if(checkIfExist(name)) {
+                        } else if (checkIfExist(name)) {
                             Text(text = "歌单名已存在")
                         }
                     },
@@ -82,42 +83,48 @@ fun FSPlaylistFormV2(
                     shape = MaterialTheme.shapes.large,
                     maxLines = 1,
                 )
-
             }
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                val state = rememberChipTextFieldState(
-                    chips = customTags.map { Chip(it) }.toMutableList(),
-                )
+                val state =
+                    rememberChipTextFieldState(
+                        chips = customTags.map { Chip(it) }.toMutableList(),
+                    )
                 OutlinedChipTextField(
-                    modifier = Modifier.onFocusChanged {
-                        if(!it.isFocused) {
-                            customTags = state.chips.map { it.text }.toSet()
-                        }
-                    },
+                    modifier =
+                        Modifier.onFocusChanged {
+                            if (!it.isFocused) {
+                                customTags = state.chips.map { it.text }.toSet()
+                            }
+                        },
                     state = state,
                     onSubmit = { Chip(it) },
-                    chipLeadingIcon = { }, // Show check icon if checked
-                    chipTrailingIcon = {chip-> Box(
-                        Modifier
-                        .clip(CircleShape)
-                        .clickable {
-                            customTags = customTags - chip.text
-                            state.chips = state.chips.filter { it.text != chip.text }.toMutableList()
-                        }) {
-                        Icon(
-                            Icons.Rounded.Clear,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(2.dp)
-                                .align(Alignment.Center)
-                        )
-                    } }, // Hide default close button
+                    chipLeadingIcon = { },
+                    chipTrailingIcon = { chip ->
+                        Box(
+                            Modifier
+                                .clip(CircleShape)
+                                .clickable {
+                                    customTags = customTags - chip.text
+                                    state.chips = state.chips.filter { it.text != chip.text }.toMutableList()
+                                },
+                        ) {
+                            Icon(
+                                Icons.Rounded.Clear,
+                                contentDescription = "",
+                                modifier =
+                                    Modifier
+                                        .padding(2.dp)
+                                        .align(Alignment.Center),
+                            )
+                        }
+                    },
                     onChipClick = {},
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     shape = MaterialTheme.shapes.large,
@@ -125,11 +132,12 @@ fun FSPlaylistFormV2(
                 )
             }
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
 //            val focusManager = LocalFocusManager.current
                 OutlinedTextField(

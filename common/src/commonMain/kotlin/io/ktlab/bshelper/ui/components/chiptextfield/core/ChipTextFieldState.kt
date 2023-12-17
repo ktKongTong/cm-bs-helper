@@ -8,9 +8,7 @@ import androidx.compose.runtime.*
  * @param chips Default chips
  */
 @Composable
-fun <T : Chip> rememberChipTextFieldState(
-    chips: List<T> = emptyList()
-): ChipTextFieldState<T> {
+fun <T : Chip> rememberChipTextFieldState(chips: List<T> = emptyList()): ChipTextFieldState<T> {
     return remember { ChipTextFieldState(chips = chips) }
 }
 
@@ -21,7 +19,7 @@ fun <T : Chip> rememberChipTextFieldState(
  */
 @Stable
 class ChipTextFieldState<T : Chip>(
-    chips: List<T> = emptyList()
+    chips: List<T> = emptyList(),
 ) {
     internal var disposed = false
 

@@ -34,28 +34,39 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun millisToDateFormatString(millis: Long?): String? {
-    return if (millis == null) { null } else {
+    return if (millis == null) {
+        null
+    } else {
         val sdf = SimpleDateFormat("yyyy-MM-dd")
         sdf.format(Date(millis))
     }
 }
+
 fun dateStringToLong(dateString: String?): Long? {
-    return if ((dateString == null) or (dateString == "Start Date") or (dateString == "End Date")) { null } else {
+    return if ((dateString == null) or (dateString == "Start Date") or (dateString == "End Date")) {
+        null
+    } else {
         val sdf = SimpleDateFormat("yyyy-MM-dd")
         sdf.parse(dateString)!!.time
     }
 }
 
-fun findMapTagByString(tag: String?,type: MapTagType): MapTag? {
-    if (tag == null) { return null }
+fun findMapTagByString(
+    tag: String?,
+    type: MapTagType,
+): MapTag? {
+    if (tag == null) {
+        return null
+    }
     val tagItem = tag.split(",")
     for (item in tagItem) {
         val genreMapTag = MapTag.allMapTags.find { it.slug == item && it.type == type }
-        if (genreMapTag != null) { return genreMapTag }
+        if (genreMapTag != null) {
+            return genreMapTag
+        }
     }
     return null
 }
-
 
 // a bullshit component but useful, maybe improve it later
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -63,17 +74,19 @@ fun findMapTagByString(tag: String?,type: MapTagType): MapTag? {
 fun MapFilterPanel(
     mapFilterPanelState: MapFilterParam,
     onUIEvent: (UIEvent) -> Unit = {},
-){
-    val dateRangePickerState = rememberDateRangePickerState(
-        initialSelectedStartDateMillis = mapFilterPanelState.to?.atStartOfDayIn(TimeZone.currentSystemDefault())?.toEpochMilliseconds(),
-        initialSelectedEndDateMillis = mapFilterPanelState.to?.atStartOfDayIn(TimeZone.currentSystemDefault())?.toEpochMilliseconds(),
-        initialDisplayMode =  DisplayMode.Picker)
+) {
+    val dateRangePickerState =
+        rememberDateRangePickerState(
+            initialSelectedStartDateMillis = mapFilterPanelState.to?.atStartOfDayIn(TimeZone.currentSystemDefault())?.toEpochMilliseconds(),
+            initialSelectedEndDateMillis = mapFilterPanelState.to?.atStartOfDayIn(TimeZone.currentSystemDefault())?.toEpochMilliseconds(),
+            initialDisplayMode = DisplayMode.Picker,
+        )
 
     var selectedStyleTagState by remember { mutableStateOf(findMapTagByString(mapFilterPanelState.tags, MapTagType.Style)) }
     var selectedGenreTagState by remember { mutableStateOf(findMapTagByString(mapFilterPanelState.tags, MapTagType.Genre)) }
     var featureSelectedState by remember { mutableStateOf(mapFilterPanelState.mapFeatureTagsMap()) }
 
-    val updateFilter = { it:MapFilterParam->
+    val updateFilter = { it: MapFilterParam ->
         onUIEvent(BeatSaverUIEvent.UpdateMapFilterParam(it))
     }
     val clearFilter = {
@@ -84,16 +97,18 @@ fun MapFilterPanel(
         updateFilter(MapFilterParam.default)
     }
 
-    Column (
-        modifier = Modifier
-            .wrapContentSize()
-    ){
+    Column(
+        modifier =
+            Modifier
+                .wrapContentSize(),
+    ) {
         Column(
-            modifier = Modifier
-                .wrapContentHeight()
-                .verticalScroll(rememberScrollState())
-                .weight(weight = 1f, fill = false)
-        ){
+            modifier =
+                Modifier
+                    .wrapContentHeight()
+                    .verticalScroll(rememberScrollState())
+                    .weight(weight = 1f, fill = false),
+        ) {
             BSSearchBar(
                 query = mapFilterPanelState.queryKey,
                 onQueryChange = { updateFilter(mapFilterPanelState.copy(queryKey = it)) },
@@ -102,47 +117,52 @@ fun MapFilterPanel(
             NPSRangeSlider(
                 npsSliderValues = mapFilterPanelState.minNps to mapFilterPanelState.maxNps,
                 limit = 0.0 to 16.0,
-                onNPSRangeChange = { updateFilter(mapFilterPanelState.copy(minNps =it.first, maxNps = it.second)) },
+                onNPSRangeChange = { updateFilter(mapFilterPanelState.copy(minNps = it.first, maxNps = it.second)) },
             )
             DurationRangeSlider(
                 durationSliderValues = mapFilterPanelState.minDuration?.toDouble() to mapFilterPanelState.maxDuration?.toDouble(),
                 limit = 0.0 to 330.0,
-                onDurationRangeChange = { updateFilter(mapFilterPanelState.copy(minDuration =it.first?.toInt(), maxDuration = it.second?.toInt())) },
+                onDurationRangeChange = {
+                    updateFilter(
+                        mapFilterPanelState.copy(minDuration = it.first?.toInt(), maxDuration = it.second?.toInt()),
+                    )
+                },
                 step = 10,
             )
             RatingRangeSlider(
                 ratingSliderValues = mapFilterPanelState.minRating?.toDouble() to mapFilterPanelState.maxRating?.toDouble(),
                 limit = 0.0 to 1.0,
                 onRatingRangeChange = {
-                    updateFilter(mapFilterPanelState.copy(minRating =it.first?.toFloat(), maxRating = it.second?.toFloat()))
+                    updateFilter(mapFilterPanelState.copy(minRating = it.first?.toFloat(), maxRating = it.second?.toFloat()))
                 },
                 step = 19,
             )
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 TitleLabel("Sort By")
                 ChipDropDownSelector(
-                    options = remember { listOf("Relevance","Latest", "Rating", "Curated") },
+                    options = remember { listOf("Relevance", "Latest", "Rating", "Curated") },
                     selectedOption = mapFilterPanelState.sortKey,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp),
                 ) { updateFilter(mapFilterPanelState.copy(sortKey = it)) }
             }
-            DateRangeSelector(dateRangePickerState){
+            DateRangeSelector(dateRangePickerState) {
                 updateFilter(
                     mapFilterPanelState.copy(
-                        from = dateRangePickerState.selectedStartDateMillis?.let {
-                            Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date
-                        },
-                        to = dateRangePickerState.selectedEndDateMillis?.let {
-                            Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date
-                        },
-                    )
+                        from =
+                            dateRangePickerState.selectedStartDateMillis?.let {
+                                Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            },
+                        to =
+                            dateRangePickerState.selectedEndDateMillis?.let {
+                                Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            },
+                    ),
                 )
             }
-
 
 //            FeatureSelector
             TitleLabel("Feature Selector")
@@ -155,16 +175,22 @@ fun MapFilterPanel(
                         modifier = Modifier.padding(horizontal = 4.dp),
                         selected = featureSelectedState[it] ?: false,
                         onClick = {
-                            featureSelectedState = if (featureSelectedState[it] == true) {
-                                featureSelectedState - it
-                            } else {
-                                featureSelectedState + (it to true)
-                            }
+                            featureSelectedState =
+                                if (featureSelectedState[it] == true) {
+                                    featureSelectedState - it
+                                } else {
+                                    featureSelectedState + (it to true)
+                                }
                             updateFilter(mapFilterPanelState)
                         },
-                        leadingIcon = if (featureSelectedState[it] == true) { {
-                            Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
-                        } } else { null },
+                        leadingIcon =
+                            if (featureSelectedState[it] == true) {
+                                {
+                                    Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
+                                }
+                            } else {
+                                null
+                            },
                         label = { Text(it.human) },
                     )
                 }
@@ -181,12 +207,22 @@ fun MapFilterPanel(
                         modifier = Modifier.padding(horizontal = 4.dp),
                         selected = it == selectedStyleTagState,
                         onClick = {
-                            selectedStyleTagState = if (it == selectedStyleTagState) { null } else { it }
+                            selectedStyleTagState =
+                                if (it == selectedStyleTagState) {
+                                    null
+                                } else {
+                                    it
+                                }
                             updateFilter(mapFilterPanelState)
                         },
-                        leadingIcon = if (selectedStyleTagState == it) { {
-                            Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
-                        } } else { null },
+                        leadingIcon =
+                            if (selectedStyleTagState == it) {
+                                {
+                                    Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
+                                }
+                            } else {
+                                null
+                            },
                         label = { Text(it.human) },
                     )
                 }
@@ -202,50 +238,65 @@ fun MapFilterPanel(
                         modifier = Modifier.padding(horizontal = 4.dp),
                         selected = it == selectedGenreTagState,
                         onClick = {
-                            selectedGenreTagState = if (it == selectedGenreTagState) { null } else { it }
+                            selectedGenreTagState =
+                                if (it == selectedGenreTagState) {
+                                    null
+                                } else {
+                                    it
+                                }
                             updateFilter(mapFilterPanelState)
                         },
-                        leadingIcon = if (selectedGenreTagState == it) { {
-                            Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
-                        } } else { null },
+                        leadingIcon =
+                            if (selectedGenreTagState == it) {
+                                {
+                                    Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
+                                }
+                            } else {
+                                null
+                            },
                         label = { Text(it.human) },
                     )
                 }
             }
         }
 
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 8.dp, bottom = 8.dp),
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(end = 8.dp, bottom = 8.dp),
             horizontalArrangement = Arrangement.End,
-        ){
+        ) {
             ClearTextButton { clearFilter() }
             QueryTextButton { onUIEvent(BeatSaverUIEvent.SearchMapWithFilter(mapFilterPanelState)) }
         }
     }
 }
 
-
-
 @Composable
-fun DividerWithTitle(title: String){
-    Column{
+fun DividerWithTitle(title: String) {
+    Column {
 //        Divider(modifier = Modifier.padding(horizontal = 4.dp))
         Text(
-            modifier = Modifier
-                .padding(4.dp),
-            text =title,
-            style = MaterialTheme.typography.labelMedium
+            modifier =
+                Modifier
+                    .padding(4.dp),
+            text = title,
+            style = MaterialTheme.typography.labelMedium,
         )
     }
 }
 
 @Composable
-fun TitleLabel(title: String, modifier: Modifier = Modifier){
+fun TitleLabel(
+    title: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
-        modifier = modifier
-            .padding(4.dp),
-        text =title,
-        style = MaterialTheme.typography.titleMedium
+        modifier =
+            modifier
+                .padding(4.dp),
+        text = title,
+        style = MaterialTheme.typography.titleMedium,
     )
 }

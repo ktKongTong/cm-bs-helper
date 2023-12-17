@@ -9,13 +9,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import io.ktlab.bshelper.ui.event.SnackBarMessage
 
-
 @Composable
 fun SnackBarShown(
     snackbarHostState: SnackbarHostState,
     snackBarMessages: List<SnackBarMessage>,
     onSnackBarShown: (Long) -> Unit,
-){
+) {
     if (snackBarMessages.isNotEmpty()) {
         val snackBarMessage = remember { snackBarMessages[0] }
         val msg: String = snackBarMessage.message
@@ -23,13 +22,14 @@ fun SnackBarShown(
 
         val onSnackBarShownState by rememberUpdatedState(onSnackBarShown)
         LaunchedEffect(msg, actionLabel, snackbarHostState) {
-            val snackbarResult = snackbarHostState.showSnackbar(
-                message = msg,
-                actionLabel = actionLabel,
-                duration = snackBarMessage.duration
-            )
+            val snackbarResult =
+                snackbarHostState.showSnackbar(
+                    message = msg,
+                    actionLabel = actionLabel,
+                    duration = snackBarMessage.duration,
+                )
             if (snackbarResult == SnackbarResult.ActionPerformed) {
-                if (snackBarMessage.action != null){
+                if (snackBarMessage.action != null) {
                     snackBarMessage.action?.let { it() }
                 }
             }

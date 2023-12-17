@@ -15,34 +15,33 @@ import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
 
 @Composable
-fun EmptyContent(
-    modifier: Modifier = Modifier
-){
-        Box(
-
-            modifier.fillMaxHeight().fillMaxWidth(),
-            contentAlignment = Alignment.Center,
+fun EmptyContent(modifier: Modifier = Modifier) {
+    Box(
+        modifier.fillMaxHeight().fillMaxWidth(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(
-                modifier = Modifier,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painter = painterResource(MR.images.home_empty_list),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
+            Image(
+                painter = painterResource(MR.images.home_empty_list),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier =
+                    Modifier
                         .height(150.dp)
-                        .width(150.dp)
-                )
-                Text(
-                    stringResource(MR.strings.empty_content),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.h4,
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                )
-            }
+                        .width(150.dp),
+            )
+            Text(
+                stringResource(MR.strings.empty_content),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.h4,
+                modifier =
+                    Modifier
+                        .padding(top = 16.dp),
+            )
         }
+    }
 }

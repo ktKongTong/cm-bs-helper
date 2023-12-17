@@ -15,15 +15,15 @@ import kotlin.time.toDuration
 
 fun BSDifficulty.generateMapDifficultyInfo(
     extractedMapInfo: IExtractedMapInfo,
-    characteristic:ECharacteristic,
-    difficulty: FSMapDifficulty
-):MapDifficulty {
-    when(extractedMapInfo) {
-        is IExtractedMapInfo.LocalMapInfo,is IExtractedMapInfo.BSMapInfo -> {
+    characteristic: ECharacteristic,
+    difficulty: FSMapDifficulty,
+): MapDifficulty {
+    when (extractedMapInfo) {
+        is IExtractedMapInfo.LocalMapInfo, is IExtractedMapInfo.BSMapInfo -> {
             return MapDifficulty(
                 seconds = 0.0,
                 hash = extractedMapInfo.hash,
-                mapId = if(extractedMapInfo is IExtractedMapInfo.BSMapInfo) extractedMapInfo.mapId else "",
+                mapId = if (extractedMapInfo is IExtractedMapInfo.BSMapInfo) extractedMapInfo.mapId else "",
                 difficulty = EMapDifficulty.from(difficulty.difficulty),
                 characteristic = characteristic,
                 notes = noteCount().toLong(),
@@ -48,15 +48,15 @@ fun BSDifficulty.generateMapDifficultyInfo(
 
 fun BSDifficultyV3.generateMapDifficultyInfo(
     extractedMapInfo: IExtractedMapInfo,
-    characteristic:ECharacteristic,
-    difficulty: FSMapDifficulty
-):MapDifficulty {
+    characteristic: ECharacteristic,
+    difficulty: FSMapDifficulty,
+): MapDifficulty {
     when (extractedMapInfo) {
-        is IExtractedMapInfo.LocalMapInfo,is IExtractedMapInfo.BSMapInfo -> {
+        is IExtractedMapInfo.LocalMapInfo, is IExtractedMapInfo.BSMapInfo -> {
             return MapDifficulty(
                 seconds = 0.0,
                 hash = extractedMapInfo.hash,
-                mapId = if(extractedMapInfo is IExtractedMapInfo.BSMapInfo) extractedMapInfo.mapId else "",
+                mapId = if (extractedMapInfo is IExtractedMapInfo.BSMapInfo) extractedMapInfo.mapId else "",
                 difficulty = EMapDifficulty.from(difficulty.difficulty),
                 characteristic = characteristic,
                 notes = noteCount().toLong(),
@@ -78,8 +78,10 @@ fun BSDifficultyV3.generateMapDifficultyInfo(
         else -> throw Exception("Unknown map info type")
     }
 }
-sealed interface IExtractedMapInfo{
+
+sealed interface IExtractedMapInfo {
     val hash: String
+
     // means that the map is not uploaded to beatsaver
     data class LocalMapInfo(
         override val hash: String,
@@ -91,21 +93,22 @@ sealed interface IExtractedMapInfo{
         val mapInfo: FSMapInfo,
         val v2MapObjectMap: Map<String, BSDifficulty>? = null,
         val v3MapObjectMap: Map<String, BSDifficultyV3>? = null,
-    ): IExtractedMapInfo {
+    ) : IExtractedMapInfo {
         fun generateMapDifficultyInfo(): List<MapDifficulty> {
             val difficultyDBOList = mutableListOf<MapDifficulty>()
-            mapInfo.difficultyBeatmapSets.forEach { bms->
+            mapInfo.difficultyBeatmapSets.forEach { bms ->
                 bms.difficultyBeatmaps.forEach { bf ->
-                    v2MapObjectMap?.get(bms.characteristicName+bf.difficulty)?.let {
-                        difficultyDBOList += it.generateMapDifficultyInfo(this, ECharacteristic.from(bms.characteristicName),bf)
+                    v2MapObjectMap?.get(bms.characteristicName + bf.difficulty)?.let {
+                        difficultyDBOList += it.generateMapDifficultyInfo(this, ECharacteristic.from(bms.characteristicName), bf)
                     }
-                    v3MapObjectMap?.get(bms.characteristicName+bf.difficulty)?.let {
-                        difficultyDBOList += it.generateMapDifficultyInfo(this, ECharacteristic.from(bms.characteristicName),bf)
+                    v3MapObjectMap?.get(bms.characteristicName + bf.difficulty)?.let {
+                        difficultyDBOList += it.generateMapDifficultyInfo(this, ECharacteristic.from(bms.characteristicName), bf)
                     }
                 }
             }
             return difficultyDBOList
         }
+
         fun generateFSMapDBO(playlistId: String): FSMap {
             return FSMap(
                 hash = hash,
@@ -118,9 +121,9 @@ sealed interface IExtractedMapInfo{
                 songSubname = "mapInfo.songSubname",
                 songAuthorName = mapInfo.songAuthorName,
                 levelAuthorName = "mapInfo.levelAuthorName",
-                relativeCoverFilename = coverFilename?:"",
-                relativeSongFilename = songFilename?:"",
-                relativeInfoFilename = infoFilename?:"",
+                relativeCoverFilename = coverFilename ?: "",
+                relativeSongFilename = songFilename ?: "",
+                relativeInfoFilename = infoFilename ?: "",
                 dirName = mapPath.name,
                 playlistBasePath = mapPath.parent.toString(),
                 playlistId = playlistId,
@@ -129,6 +132,7 @@ sealed interface IExtractedMapInfo{
             )
         }
     }
+
     data class BSMapInfo(
         override val hash: String,
         val mapId: String,
@@ -140,21 +144,22 @@ sealed interface IExtractedMapInfo{
         val coverFilename: String? = null,
         val v2MapObjectMap: Map<String, BSDifficulty>? = null,
         val v3MapObjectMap: Map<String, BSDifficultyV3>? = null,
-    ): IExtractedMapInfo {
+    ) : IExtractedMapInfo {
         fun generateMapDifficultyInfo(): List<MapDifficulty> {
             val difficultyDBOList = mutableListOf<MapDifficulty>()
-            mapInfo.difficultyBeatmapSets.forEach { bms->
+            mapInfo.difficultyBeatmapSets.forEach { bms ->
                 bms.difficultyBeatmaps.forEach { bf ->
-                    v2MapObjectMap?.get(bms.characteristicName+bf.difficulty)?.let {
-                        difficultyDBOList += it.generateMapDifficultyInfo(this, ECharacteristic.from(bms.characteristicName),bf)
+                    v2MapObjectMap?.get(bms.characteristicName + bf.difficulty)?.let {
+                        difficultyDBOList += it.generateMapDifficultyInfo(this, ECharacteristic.from(bms.characteristicName), bf)
                     }
-                    v3MapObjectMap?.get(bms.characteristicName+bf.difficulty)?.let {
-                        difficultyDBOList += it.generateMapDifficultyInfo(this, ECharacteristic.from(bms.characteristicName),bf)
+                    v3MapObjectMap?.get(bms.characteristicName + bf.difficulty)?.let {
+                        difficultyDBOList += it.generateMapDifficultyInfo(this, ECharacteristic.from(bms.characteristicName), bf)
                     }
                 }
             }
             return difficultyDBOList
         }
+
         fun generateFSMapDBO(playlistId: String): FSMap {
             return FSMap(
                 hash = hash,
@@ -167,9 +172,9 @@ sealed interface IExtractedMapInfo{
                 songSubname = "mapInfo.songSubname",
                 songAuthorName = mapInfo.songAuthorName,
                 levelAuthorName = "mapInfo.levelAuthorName",
-                relativeCoverFilename = coverFilename?:"",
-                relativeSongFilename = songFilename?:"",
-                relativeInfoFilename = infoFilename?:"",
+                relativeCoverFilename = coverFilename ?: "",
+                relativeSongFilename = songFilename ?: "",
+                relativeInfoFilename = infoFilename ?: "",
                 dirName = mapPath.name,
                 playlistBasePath = mapPath.parent.toString(),
                 playlistId = playlistId,
@@ -185,24 +190,25 @@ sealed interface IExtractedMapInfo{
         val mapPath: Path,
         val mapInfo: FSMapInfo?,
         val exception: ScannerException,
-    ): IExtractedMapInfo {
+    ) : IExtractedMapInfo {
         fun generateMapDifficultyInfo(): List<MapDifficulty> {
             return emptyList()
         }
+
         fun generateFSMapDBO(playlistId: String): FSMap {
 //            when (exception) {
 //                is ScannerException.JSONFileTooLargeException
 //            }
             return FSMap(
                 hash = hash,
-                name = mapInfo?.songName?:"",
+                name = mapInfo?.songName ?: "",
                 duration = Duration.ZERO,
-                previewStartTime = mapInfo?.previewStartTime?:0.0,
-                previewDuration = mapInfo?.previewDuration?.toDuration(DurationUnit.SECONDS)?:Duration.ZERO,
-                bpm = mapInfo?.bpm?:0.0,
-                songName = mapInfo?.songName?:"",
+                previewStartTime = mapInfo?.previewStartTime ?: 0.0,
+                previewDuration = mapInfo?.previewDuration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO,
+                bpm = mapInfo?.bpm ?: 0.0,
+                songName = mapInfo?.songName ?: "",
                 songSubname = "mapInfo.songSubname",
-                songAuthorName = mapInfo?.songAuthorName?:"",
+                songAuthorName = mapInfo?.songAuthorName ?: "",
                 levelAuthorName = "mapInfo.levelAuthorName",
                 relativeCoverFilename = "",
                 relativeSongFilename = "",
@@ -211,9 +217,8 @@ sealed interface IExtractedMapInfo{
                 playlistBasePath = mapPath.parent.toString(),
                 playlistId = playlistId,
                 active = true,
-                mapId = mapId?:"",
+                mapId = mapId ?: "",
             )
         }
     }
-
 }

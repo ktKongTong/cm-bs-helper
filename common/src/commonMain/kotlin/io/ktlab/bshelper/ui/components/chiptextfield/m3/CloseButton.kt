@@ -17,7 +17,7 @@ fun <T : Chip> CloseButton(
     backgroundColor: Color = Color.Black.copy(alpha = 0.3f),
     strokeColor: Color = Color.White,
     startPadding: Dp = 0.dp,
-    endPadding: Dp = 6.dp
+    endPadding: Dp = 6.dp,
 ) {
     BasicCloseButton(
         state = state,

@@ -31,44 +31,50 @@ fun PlaylistList(
     playlists: List<IPlaylist>,
     selectedPlaylist: IPlaylist?,
     onUIEvent: (UIEvent) -> Unit,
-    stickyHeader : @Composable () -> Unit = {},
+    stickyHeader: @Composable () -> Unit = {},
 ) {
-
     var query by remember { mutableStateOf("") }
     LazyColumn(
-    modifier = modifier
-        .fillMaxSize(),
-    contentPadding = contentPadding,
-    state = state,
+        modifier =
+            modifier
+                .fillMaxSize(),
+        contentPadding = contentPadding,
+        state = state,
     ) {
         stickyHeader {
             Surface {
-                Row(Modifier.padding(vertical = 4.dp, horizontal = 16.dp).fillParentMaxWidth(),
+                Row(
+                    Modifier.padding(vertical = 4.dp, horizontal = 16.dp).fillParentMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     BSSearchBar(
                         Modifier.weight(1f, fill = false),
                         query = query,
-                        onQueryChange = {query = it },
-                        onClear = {query = ""},
+                        onQueryChange = { query = it },
+                        onClear = { query = "" },
                     )
                     Row(
                         modifier = Modifier,
                         horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-
                         val playlistFormOpenState = remember { mutableStateOf(false) }
                         val playlistImportFormOpenState = remember { mutableStateOf(false) }
                         IconExposedDropDownMenu {
                             DropdownMenuItem(
                                 text = { Text(text = "导入") },
-                                onClick = { onTrigger();playlistImportFormOpenState.value = true }
+                                onClick = {
+                                    onTrigger()
+                                    playlistImportFormOpenState.value = true
+                                },
                             )
                             DropdownMenuItem(
                                 text = { Text(text = "新增") },
-                                onClick = { onTrigger();playlistFormOpenState.value = true }
+                                onClick = {
+                                    onTrigger()
+                                    playlistFormOpenState.value = true
+                                },
                             )
                         }
                         FSPlaylistImportFormV2(
@@ -85,23 +91,26 @@ fun PlaylistList(
                 }
             }
         }
-        val selectablePlaylists = playlists.filter { it.id.contains(query) ||
-                it.getName().contains(query) || selectedPlaylist?.id == it.id }
+        val selectablePlaylists =
+            playlists.filter {
+                it.id.contains(query) ||
+                    it.getName().contains(query) || selectedPlaylist?.id == it.id
+            }
         if (selectablePlaylists.isNotEmpty()) {
-            items(selectablePlaylists.size){
+            items(selectablePlaylists.size) {
                 PlaylistCard(
                     playlist = selectablePlaylists[it],
-                    onClick = {playlistId->
-                              onUIEvent(HomeUIEvent.PlaylistTapped(playlistId))
-                              },
+                    onClick = { playlistId ->
+                        onUIEvent(HomeUIEvent.PlaylistTapped(playlistId))
+                    },
                     selected = selectedPlaylist?.id == selectablePlaylists[it].id,
-                    onUIEvent = onUIEvent
+                    onUIEvent = onUIEvent,
                 )
             }
-        }else {
+        } else {
             item {
                 Box(
-                    modifier = Modifier.fillParentMaxSize()
+                    modifier = Modifier.fillParentMaxSize(),
                 ) {
                     EmptyContent()
                 }

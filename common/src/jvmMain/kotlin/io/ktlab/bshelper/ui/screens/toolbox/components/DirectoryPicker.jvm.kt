@@ -1,14 +1,13 @@
 package io.ktlab.bshelper.ui.screens.toolbox.components
 
+import androidx.compose.runtime.Composable
 import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
 
-
-import androidx.compose.runtime.Composable
 @Composable
 actual fun BSDirectoryPicker(
     show: Boolean,
     initialDirectory: String?,
-    onFileSelected: (String?) -> Unit
+    onFileSelected: (String?) -> Unit,
 ) {
-    DirectoryPicker(show,initialDirectory,onFileSelected)
+    DirectoryPicker(show, initialDirectory, onFileSelected)
 }

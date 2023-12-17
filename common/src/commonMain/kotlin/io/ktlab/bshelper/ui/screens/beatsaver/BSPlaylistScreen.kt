@@ -30,40 +30,50 @@ fun BSPlaylistScreen(
     snackbarHostState: SnackbarHostState,
     onUIEvent: (UIEvent) -> Unit,
     modifier: Modifier = Modifier,
-    lazyListState:LazyListState = rememberLazyListState()
+    lazyListState: LazyListState = rememberLazyListState(),
 ) {
 //    uiState as BeatSaverUiState.PlaylistQuery
     Row {
         Box(
-            modifier = modifier
-                .clip(shape = RoundedCornerShape(10.dp))
-                .widthIn(max = 300.dp)
-                .fillMaxWidth()
+            modifier =
+                modifier
+                    .clip(shape = RoundedCornerShape(10.dp))
+                    .widthIn(max = 300.dp)
+                    .fillMaxWidth(),
         ) {
             PlaylistFilterPanel(uiState.playlistFilterPanelState, onUIEvent)
         }
         val playlistPagingItems = uiState.playlistFlow.collectAsLazyPagingItems()
-        AnimatedContent(targetState = uiState.selectedBSPlaylist,
+        AnimatedContent(
+            targetState = uiState.selectedBSPlaylist,
             transitionSpec = {
-                (fadeIn() + slideInVertically(animationSpec = tween(400),
-                    initialOffsetY = {
-                        if (targetState == null) {
-                            - it
-                        } else {
-                            it
-                        }
-                    }))
-                    .togetherWith(fadeOut(animationSpec = tween())+
-                        slideOutVertically(animationSpec = tween(400),
-                            targetOffsetY = {
+                (
+                    fadeIn() +
+                        slideInVertically(
+                            animationSpec = tween(400),
+                            initialOffsetY = {
                                 if (targetState == null) {
-                                    it
+                                    -it
                                 } else {
-                                    - it
+                                    it
                                 }
-                            }))
-            }
-
+                            },
+                        )
+                )
+                    .togetherWith(
+                        fadeOut(animationSpec = tween()) +
+                            slideOutVertically(
+                                animationSpec = tween(400),
+                                targetOffsetY = {
+                                    if (targetState == null) {
+                                        it
+                                    } else {
+                                        -it
+                                    }
+                                },
+                            ),
+                    )
+            },
         ) {
             if (it != null) {
                 BSPlaylistDetail(
@@ -75,10 +85,11 @@ fun BSPlaylistScreen(
                     uiState = uiState,
                 )
             } else {
-                val downloadingTasks = uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value
-                    .filter { it is IDownloadTask.PlaylistDownloadTask }
-                    .map { it as IDownloadTask.PlaylistDownloadTask }
-                    .associateBy { it.playlist.id }
+                val downloadingTasks =
+                    uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value
+                        .filter { it is IDownloadTask.PlaylistDownloadTask }
+                        .map { it as IDownloadTask.PlaylistDownloadTask }
+                        .associateBy { it.playlist.id }
                 PlaylistPagingList(
                     Modifier,
                     snackbarHostState = snackbarHostState,
@@ -90,9 +101,10 @@ fun BSPlaylistScreen(
                     onUIEvent = onUIEvent,
                     stickyHeader = {
                         Row(
-                            modifier = Modifier
-                                .padding(horizontal = 20.dp)
-                                .fillMaxWidth()
+                            modifier =
+                                Modifier
+                                    .padding(horizontal = 20.dp)
+                                    .fillMaxWidth(),
                         ) {
                             Text(
                                 text = "Playlists",

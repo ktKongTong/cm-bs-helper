@@ -5,7 +5,6 @@ pluginManagement {
         google()
         mavenCentral()
     }
-
 }
 
 plugins {
@@ -23,5 +22,4 @@ include(
     ":model",
     ":repository",
     ":utils",
-//    ":kown-downloader"
 )

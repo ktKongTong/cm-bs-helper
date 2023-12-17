@@ -15,15 +15,16 @@ import androidx.compose.ui.unit.dp
 fun BSHelperSnackbarHost(
     hostState: SnackbarHostState,
     modifier: Modifier = Modifier,
-    snackbar: @Composable (SnackbarData) -> Unit = { Snackbar(it) }
+    snackbar: @Composable (SnackbarData) -> Unit = { Snackbar(it) },
 ) {
     SnackbarHost(
         hostState = hostState,
-        modifier = modifier
+        modifier =
+            modifier
 //            .systemBarsPadding()
-            // Limit the Snackbar width for large screens
-            .wrapContentWidth(align = Alignment.Start)
-            .widthIn(max = 550.dp),
-        snackbar = snackbar
+                // Limit the Snackbar width for large screens
+                .wrapContentWidth(align = Alignment.Start)
+                .widthIn(max = 550.dp),
+        snackbar = snackbar,
     )
 }

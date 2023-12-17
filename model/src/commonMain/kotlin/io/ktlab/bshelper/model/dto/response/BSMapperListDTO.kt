@@ -7,37 +7,34 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
-
 typealias BSMapperListDTO = List<BSUserWithStatsDTO>
 
-
 @Serializable
-data class BSMapperDetailDTO (
+data class BSMapperDetailDTO(
     val admin: Boolean,
     val avatar: String,
     val curator: Boolean,
-    val curatorTab: Boolean?=null,
+    val curatorTab: Boolean? = null,
     val description: String,
     val followData: FollowData,
-
     val id: Int,
     val name: String,
-    val patreon: String?=null,
+    val patreon: String? = null,
     @SerialName("playlistUrl")
     val playlistURL: String,
     val stats: BSUserStats,
     val type: String,
-    val hash: String?=null,
-    val verifiedMapper: Boolean?=null,
+    val hash: String? = null,
+    val verifiedMapper: Boolean? = null,
 )
 
 @Serializable
-data class FollowData (
+data class FollowData(
     val curation: Boolean,
     val followers: Long,
     val following: Boolean,
     val follows: JsonElement? = null,
-    val upload: Boolean
+    val upload: Boolean,
 )
 
 @Serializable
@@ -52,15 +49,15 @@ data class BSUserStats(
     val totalDownvotes: Int = 0,
     val totalMaps: Int = 0,
     val totalUpvotes: Int = 0,
-    val diffStats: DiffStats?=null,
+    val diffStats: DiffStats? = null,
 )
 
 @Serializable
-data class DiffStats (
+data class DiffStats(
     val easy: Long,
     val expert: Long,
     val expertPlus: Long,
     val hard: Long,
     val normal: Long,
-    val total: Long
+    val total: Long,
 )

@@ -6,7 +6,7 @@ import io.ktlab.bshelper.model.BSUser
 import io.ktlab.bshelper.model.MapDifficulty
 import io.ktlab.bshelper.model.dto.BSMapDTO
 
-fun BSMapDTO.convertToBSMapDBO():BSMap{
+fun BSMapDTO.convertToBSMapDBO(): BSMap {
     return BSMap(
         mapId = id,
         name = name,
@@ -36,7 +36,7 @@ fun BSMapDTO.convertToBSMapDBO():BSMap{
     )
 }
 
-fun BSMapDTO.convertToBSUserDBO():BSUser{
+fun BSMapDTO.convertToBSUserDBO(): BSUser {
     return BSUser(
         id = uploader.id,
         name = uploader.name,
@@ -56,7 +56,7 @@ fun BSMapDTO.convertToBSMapVersionDBO(): BSMapVersion {
         mapId = id,
         state = versions[0].state,
         createdAt = versions[0].createdAt,
-        sageScore = versions[0].sageScore ?:0,
+        sageScore = versions[0].sageScore ?: 0,
         downloadURL = versions[0].downloadURL,
         coverURL = versions[0].coverURL,
         previewURL = versions[0].previewURL,
@@ -86,6 +86,5 @@ fun BSMapDTO.convertToMapDifficulties(): List<MapDifficulty> {
             maxScore = it.maxScore,
             label = it.label,
         )
-
     }
 }

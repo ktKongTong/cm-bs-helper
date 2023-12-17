@@ -16,28 +16,30 @@ import io.ktlab.bshelper.ui.components.labels.MapperLabel
 
 @Composable
 fun BSMapperOverview(
-    bsMapper:BSUserWithStatsDTO,
+    bsMapper: BSUserWithStatsDTO,
     onClick: () -> Unit,
 ) {
     Box(Modifier.padding(16.dp).clip(MaterialTheme.shapes.medium)) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onClick),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onClick),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             AsyncImageWithFallback(
                 source = bsMapper.avatar,
                 modifier = Modifier.size(64.dp).clip(CircleShape),
-                contentDescription = "avatar"
+                contentDescription = "avatar",
             )
-            Column() {
+            Column {
                 MapperLabel(mapperName = bsMapper.name)
                 Text(
                     bsMapper.description.ifEmpty { "mapper 在这里什么都没说..." },
-                    modifier = Modifier.padding(start = 8.dp) ,
+                    modifier = Modifier.padding(start = 8.dp),
                     style = MaterialTheme.typography.bodySmall,
-                    maxLines = 2)
+                    maxLines = 2,
+                )
             }
         }
     }

@@ -25,32 +25,35 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun PlaylistFilterPanel(
     state: PlaylistFilterParam,
     onUIEvent: (UIEvent) -> Unit = {},
-){
-    val dateRangePickerState = rememberDateRangePickerState(
-        initialSelectedStartDateMillis = state.from?.atStartOfDayIn(TimeZone.currentSystemDefault())?.toEpochMilliseconds(),
-        initialSelectedEndDateMillis = state.to?.atStartOfDayIn(TimeZone.currentSystemDefault())?.toEpochMilliseconds(),
-        initialDisplayMode =  DisplayMode.Picker
-    )
+) {
+    val dateRangePickerState =
+        rememberDateRangePickerState(
+            initialSelectedStartDateMillis = state.from?.atStartOfDayIn(TimeZone.currentSystemDefault())?.toEpochMilliseconds(),
+            initialSelectedEndDateMillis = state.to?.atStartOfDayIn(TimeZone.currentSystemDefault())?.toEpochMilliseconds(),
+            initialDisplayMode = DisplayMode.Picker,
+        )
     var featureSelectedState by remember { mutableStateOf(state.mapFeatureTagsMap()) }
-    val updateFilter = fun (newState: PlaylistFilterParam) { onUIEvent(BeatSaverUIEvent.UpdatePlaylistFilterParam(newState)) }
-    val clearFilter =  {
+    val updateFilter = fun (newState: PlaylistFilterParam) {
+        onUIEvent(BeatSaverUIEvent.UpdatePlaylistFilterParam(newState))
+    }
+    val clearFilter = {
         featureSelectedState = state.mapFeatureTagsMap()
         dateRangePickerState.setSelection(null, null)
         updateFilter(PlaylistFilterParam.default)
     }
-    Column (Modifier.fillMaxHeight()){
+    Column(Modifier.fillMaxHeight()) {
         Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .verticalScroll(rememberScrollState())
-                .weight(weight = 1f, fill = false)
-        ){
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState())
+                    .weight(weight = 1f, fill = false),
+        ) {
             BSSearchBar(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 query = state.queryKey,
@@ -61,36 +64,38 @@ fun PlaylistFilterPanel(
             NPSRangeSlider(
                 npsSliderValues = state.minNps to state.maxNps,
                 limit = 0.0 to 16.0,
-                onNPSRangeChange = { updateFilter(state.copy(minNps =it.first, maxNps = it.second)) },
+                onNPSRangeChange = { updateFilter(state.copy(minNps = it.first, maxNps = it.second)) },
             )
 //        SortBySelector
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 TitleLabel("Sort By")
                 ChipDropDownSelector(
                     options = remember { listOf("Relevance", "Latest", "Curated") },
-                    selectedOption= state.sortKey,
-                    onSelectedOptionChange = { updateFilter(state.copy(sortKey = it)) }
+                    selectedOption = state.sortKey,
+                    onSelectedOptionChange = { updateFilter(state.copy(sortKey = it)) },
                 )
             }
             DateRangeSelector(dateRangePickerState) {
                 updateFilter(
                     state.copy(
-                        from = dateRangePickerState.selectedStartDateMillis?.let {
-                            Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date
-                        },
-                        to = dateRangePickerState.selectedEndDateMillis?.let {
-                            Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date
-                        },
-                    )
+                        from =
+                            dateRangePickerState.selectedStartDateMillis?.let {
+                                Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            },
+                        to =
+                            dateRangePickerState.selectedEndDateMillis?.let {
+                                Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            },
+                    ),
                 )
             }
 
             TitleLabel("Feature Selector")
-            Column (
+            Column(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 listOf(MapFeatureTag.VerifiedMapper, MapFeatureTag.Curated).map { tag ->
@@ -99,26 +104,31 @@ fun PlaylistFilterPanel(
                         modifier = Modifier.padding(horizontal = 4.dp),
                         selected = featureSelectedState[tag] ?: false,
                         onClick = {
-                            featureSelectedState = if (featureSelectedState[tag] == true) {
-                                featureSelectedState - tag
-                            } else {
-                                featureSelectedState + (tag to true)
-                            }
+                            featureSelectedState =
+                                if (featureSelectedState[tag] == true) {
+                                    featureSelectedState - tag
+                                } else {
+                                    featureSelectedState + (tag to true)
+                                }
                         },
-                        leadingIcon = if (featureSelectedState[tag] == true) {{
-                                Icon(Icons.Rounded.Check, "Checked Icon")
-                            }} else { null },
+                        leadingIcon =
+                            if (featureSelectedState[tag] == true) {
+                                {
+                                    Icon(Icons.Rounded.Check, "Checked Icon")
+                                }
+                            } else {
+                                null
+                            },
                         label = { Text(tag.human) },
                     )
                 }
             }
         }
 
-
-        Row (
+        Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
-        ){
+        ) {
             ClearTextButton { clearFilter() }
             QueryTextButton { onUIEvent(BeatSaverUIEvent.SearchPlaylistWithFilter(state)) }
         }

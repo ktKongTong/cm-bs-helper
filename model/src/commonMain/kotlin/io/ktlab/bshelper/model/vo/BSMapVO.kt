@@ -1,24 +1,26 @@
 package io.ktlab.bshelper.model.vo
 
-import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.BSMap
+import io.ktlab.bshelper.model.BSMapVersion
+import io.ktlab.bshelper.model.BSUser
+import io.ktlab.bshelper.model.IMap
+import io.ktlab.bshelper.model.MapDifficulty
 import io.ktlab.bshelper.model.enums.EMapDifficulty
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 data class VersionWithDiffList(
     val version: BSMapVersion,
-    val diffs: List<MapDifficulty>
+    val diffs: List<MapDifficulty>,
 )
-
 
 data class BSMapVO(
     val map: BSMap,
     val uploader: BSUser,
     val curator: BSUser? = null,
     val collaborators: List<BSUser>? = null,
-    val versions: List<VersionWithDiffList>
-):IMap {
-
+    val versions: List<VersionWithDiffList>,
+) : IMap {
     override fun getSongName(): String {
         return map.name
     }
@@ -57,7 +59,7 @@ data class BSMapVO(
 
     override fun getDiffMatrix(): MapDiff {
         return MapDiff.build().addDiff(
-            versions.first().diffs.map { it.difficulty }
+            versions.first().diffs.map { it.difficulty },
         )
     }
 
@@ -84,11 +86,12 @@ data class BSMapVO(
     override fun getAuthorAvatar(): String {
         return uploader.avatar
     }
+
     override fun isRelateWithBSMap(): Boolean {
         return true
     }
 
-    fun getFilename() :String {
+    fun getFilename(): String {
         return "${getID()} (${map.songName} - ${map.songAuthorName})"
     }
 }

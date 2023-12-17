@@ -10,17 +10,18 @@ import androidx.core.net.toUri
 actual fun BSDirectoryPicker(
     show: Boolean,
     initialDirectory: String?,
-    onFileSelected: (String?) -> Unit
+    onFileSelected: (String?) -> Unit,
 ) {
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocumentTree()
-    ) { uri ->
-        if (uri == null) return@rememberLauncherForActivityResult
-        var path = uri.path
-        
-        path = path?.replace("/tree/primary:", "/storage/emulated/0/")
-        onFileSelected(path)
-    }
+    val launcher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.OpenDocumentTree(),
+        ) { uri ->
+            if (uri == null) return@rememberLauncherForActivityResult
+            var path = uri.path
+
+            path = path?.replace("/tree/primary:", "/storage/emulated/0/")
+            onFileSelected(path)
+        }
     LaunchedEffect(show) {
         launcher.launch("/storage/emulated/0/".toUri())
     }

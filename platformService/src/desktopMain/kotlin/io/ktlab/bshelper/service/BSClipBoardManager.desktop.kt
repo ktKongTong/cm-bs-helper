@@ -2,12 +2,10 @@ package io.ktlab.bshelper.service
 
 import androidx.compose.ui.text.AnnotatedString
 
- class BSHelperDesktopClipboardManager : IBSClipBoardManager {
-
+class BSHelperDesktopClipboardManager : IBSClipBoardManager {
     private val skikoClipboardManager = org.jetbrains.skiko.ClipboardManager()
 
-    override fun getText(): AnnotatedString? =
-        skikoClipboardManager.getText()?.let { AnnotatedString(it) }
+    override fun getText(): AnnotatedString? = skikoClipboardManager.getText()?.let { AnnotatedString(it) }
 
     override fun setText(annotatedString: AnnotatedString) {
         skikoClipboardManager.setText(annotatedString.text)
@@ -16,6 +14,6 @@ import androidx.compose.ui.text.AnnotatedString
     override fun hasText(): Boolean = skikoClipboardManager.hasText()
 }
 
-actual class BSHelperClipboardFactory{
+actual class BSHelperClipboardFactory {
     actual fun createClipboardManager(): IBSClipBoardManager = BSHelperDesktopClipboardManager()
 }

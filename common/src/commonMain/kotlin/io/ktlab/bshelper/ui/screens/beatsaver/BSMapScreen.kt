@@ -30,27 +30,30 @@ fun BSMapScreen(
 //    uiState as BeatSaverUiState.MapQuery
     Row {
         Box(
-            modifier = modifier
-                .widthIn(Dp.Unspecified,300.dp)
-                .fillMaxWidth()
-        ){
+            modifier =
+                modifier
+                    .widthIn(Dp.Unspecified, 300.dp)
+                    .fillMaxWidth(),
+        ) {
             MapFilterPanel(
                 mapFilterPanelState = uiState.mapFilterPanelState,
                 onUIEvent = onUIEvent,
             )
         }
-        val downloadingTasks= uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value.flatMap {
-            when(it) {
-                is IDownloadTask.MapDownloadTask -> listOf(it)
-                is IDownloadTask.BatchDownloadTask -> it.taskList
-                is IDownloadTask.PlaylistDownloadTask -> it.taskList
-            }
-        }.associateBy { it.downloadTaskModel.relateEntityId!! + it.targetPlaylist.id }
+        val downloadingTasks =
+            uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value.flatMap {
+                when (it) {
+                    is IDownloadTask.MapDownloadTask -> listOf(it)
+                    is IDownloadTask.BatchDownloadTask -> it.taskList
+                    is IDownloadTask.PlaylistDownloadTask -> it.taskList
+                }
+            }.associateBy { it.downloadTaskModel.relateEntityId!! + it.targetPlaylist.id }
         val mapPagingItems = uiState.mapFlow.collectAsLazyPagingItems()
 
         Box(
-            modifier = modifier
-            .fillMaxWidth()
+            modifier =
+                modifier
+                    .fillMaxWidth(),
         ) {
             MapCardPagingList(
                 Modifier,
@@ -73,7 +76,6 @@ fun BSMapScreen(
                 },
                 downloadingTask = downloadingTasks,
             )
-            }
+        }
     }
-
 }

@@ -26,11 +26,10 @@ fun ConfirmTextButton(
         Icon(Icons.Rounded.Check, stringResource(MR.strings.confirm))
         Text(
             modifier = Modifier.padding(start = 2.dp),
-            text = stringResource(MR.strings.confirm)
+            text = stringResource(MR.strings.confirm),
         )
     }
 }
-
 
 @Composable
 fun QueryTextButton(
@@ -44,7 +43,7 @@ fun QueryTextButton(
         Icon(Icons.Rounded.Search, stringResource(MR.strings.search))
         Text(
             modifier = Modifier.padding(start = 2.dp),
-            text = stringResource(MR.strings.search)
+            text = stringResource(MR.strings.search),
         )
     }
 }
@@ -58,7 +57,7 @@ fun ClearTextButton(
         Icon(Icons.Filled.Clear, stringResource(MR.strings.clear))
         Text(
             modifier = Modifier.padding(start = 2.dp),
-            text = stringResource(MR.strings.clear)
+            text = stringResource(MR.strings.clear),
         )
     }
 }

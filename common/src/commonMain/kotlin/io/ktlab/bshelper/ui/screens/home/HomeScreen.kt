@@ -32,25 +32,25 @@ fun HomeScreen(
     showTopAppBar: Boolean,
     snackbarHost: @Composable () -> Unit = {},
     onUIEvent: (UIEvent) -> Unit,
-    modifier: Modifier = Modifier
-){
-
+    modifier: Modifier = Modifier,
+) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
     Scaffold(
         snackbarHost = snackbarHost,
         topBar = {},
-        modifier = modifier
-    ){ innerPadding ->
-        val contentModifier = Modifier
-            .padding(innerPadding)
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-        when(uiState) {
+        modifier = modifier,
+    ) { innerPadding ->
+        val contentModifier =
+            Modifier
+                .padding(innerPadding)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+        when (uiState) {
             is HomeUiState.Playlist -> {
                 HomeContent(
                     uiState,
                     onUIEvent,
-                    contentModifier
+                    contentModifier,
                 )
             }
         }
@@ -62,7 +62,7 @@ fun HomeContent(
     uiState: HomeUiState,
     onUIEvent: (UIEvent) -> Unit,
     modifier: Modifier = Modifier,
-){
+) {
     // todo:
     // when selectedPlaylist is null, only show playlist list
     // can cover full screen, use grid layout with multiple columns
@@ -71,11 +71,14 @@ fun HomeContent(
     uiState as HomeUiState.Playlist
     val homeListLazyListState = rememberLazyListState()
     Row(modifier) {
-        val playlistModifier = if (uiState.selectedPlaylist!=null) {
-            Modifier
-                .animateContentSize()
-                .widthIn(Dp.Unspecified, 300.dp)
-        } else { Modifier.animateContentSize() }
+        val playlistModifier =
+            if (uiState.selectedPlaylist != null) {
+                Modifier
+                    .animateContentSize()
+                    .widthIn(Dp.Unspecified, 300.dp)
+            } else {
+                Modifier.animateContentSize()
+            }
         PlaylistList(
             modifier = playlistModifier,
             state = homeListLazyListState,
@@ -84,10 +87,13 @@ fun HomeContent(
             onUIEvent = onUIEvent,
         )
         AnimatedVisibility(
-        uiState.selectedPlaylist!=null,
-            enter = (fadeIn() + slideInHorizontally (
-                animationSpec = tween(400),
-                initialOffsetX = { fullWidth ->  fullWidth })
+            uiState.selectedPlaylist != null,
+            enter = (
+                fadeIn() +
+                    slideInHorizontally(
+                        animationSpec = tween(400),
+                        initialOffsetX = { fullWidth -> fullWidth },
+                    )
             ),
         ) {
             HomeRightPart(
@@ -105,58 +111,73 @@ fun HomeRightPart(
     modifier: Modifier,
     onUIEvent: (UIEvent) -> Unit,
 ) {
-
     Box(modifier) {
         if (uiState.isMapEmpty()) {
             EmptyContent()
-        }else {
-            val mapList = if (uiState.mapListState.mapFlow == null) {
-                emptyList()
-            } else {
-                uiState.mapListState.mapFlow.
-                collectAsState(Result.Success(emptyList())).value.successOr(emptyList())
-            }
+        } else {
+            val mapList =
+                if (uiState.mapListState.mapFlow == null) {
+                    emptyList()
+                } else {
+                    uiState.mapListState.mapFlow
+                        .collectAsState(Result.Success(emptyList())).value.successOr(emptyList())
+                }
             val detailPlaylist = uiState.selectedPlaylist!!
             AnimatedContent(
                 detailPlaylist,
                 transitionSpec = {
                     (
-                        fadeIn() + slideInVertically (
-                            animationSpec = tween(400),
-                            initialOffsetY = { if (targetState.title < initialState.title) { - it } else { it } }
-                        )
+                        fadeIn() +
+                            slideInVertically(
+                                animationSpec = tween(400),
+                                initialOffsetY = {
+                                    if (targetState.title < initialState.title) {
+                                        -it
+                                    } else {
+                                        it
+                                    }
+                                },
+                            )
                     ).togetherWith(
-                        fadeOut() + slideOutVertically (
-                            animationSpec = tween(400),
-                            targetOffsetY = { if (targetState.title < initialState.title) { it } else { - it } }
-                        )
+                        fadeOut() +
+                            slideOutVertically(
+                                animationSpec = tween(400),
+                                targetOffsetY = {
+                                    if (targetState.title < initialState.title) {
+                                        it
+                                    } else {
+                                        -it
+                                    }
+                                },
+                            ),
                     )
-                }
+                },
             ) {
                 key(it.id) {
                     MapCardList(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 16.dp)
+                                .fillMaxSize(),
                         mapListState = uiState.mapListState,
                         onUIEvent = onUIEvent,
                         mapList = mapList,
                         stickyHeader = {
                             PlaylistDetailCardTop(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
                                 playlist = detailPlaylist,
                                 mapListState = uiState.mapListState,
                                 mapList = mapList,
                                 selectablePlaylists = uiState.playlists.filter { it.id != detailPlaylist.id },
                                 onUIEvent = onUIEvent,
                             )
-                        }
+                        },
                     )
                 }
             }
-
         }
     }
 }

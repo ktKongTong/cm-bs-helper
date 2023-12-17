@@ -20,7 +20,7 @@ fun AppDrawer(
     currentRoute: String,
     navigateAction: (String) -> Unit,
     closeDrawer: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     ModalDrawerSheet(modifier) {
 //        LBHelperLogo(
@@ -30,22 +30,31 @@ fun AppDrawer(
             label = { Text("home") },
             icon = { Icon(Icons.Filled.Home, null) },
             selected = currentRoute == BSHelperDestinations.HOME_ROUTE,
-            onClick = { navigateAction(BSHelperDestinations.HOME_ROUTE); closeDrawer() },
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            onClick = {
+                navigateAction(BSHelperDestinations.HOME_ROUTE)
+                closeDrawer()
+            },
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
         )
         NavigationDrawerItem(
             label = { Text("beat saver") },
             icon = { Icon(Icons.Filled.Home, null) },
             selected = currentRoute == BSHelperDestinations.BEAT_SAVER_ROUTE,
-            onClick = { navigateAction(BSHelperDestinations.BEAT_SAVER_ROUTE); closeDrawer() },
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            onClick = {
+                navigateAction(BSHelperDestinations.BEAT_SAVER_ROUTE)
+                closeDrawer()
+            },
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
         )
         NavigationDrawerItem(
             label = { Text("toolbox") },
             icon = { Icon(Icons.Filled.Settings, null) },
             selected = currentRoute == BSHelperDestinations.TOOLBOX_ROUTE,
-            onClick = { navigateAction(BSHelperDestinations.TOOLBOX_ROUTE); closeDrawer() },
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            onClick = {
+                navigateAction(BSHelperDestinations.TOOLBOX_ROUTE)
+                closeDrawer()
+            },
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
         )
     }
 }

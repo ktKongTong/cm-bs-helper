@@ -74,7 +74,7 @@ fun <T : Chip> ChipTextField(
             TextFieldDefaults.contentPaddingWithoutLabel()
         } else {
             TextFieldDefaults.contentPaddingWithLabel()
-        }
+        },
 ) {
     var value by remember { mutableStateOf(TextFieldValue()) }
     val onValueChange: (TextFieldValue) -> Unit = { value = it }
@@ -164,7 +164,7 @@ fun <T : Chip> ChipTextField(
             TextFieldDefaults.contentPaddingWithoutLabel()
         } else {
             TextFieldDefaults.contentPaddingWithLabel()
-        }
+        },
 ) {
     // Copied from androidx.compose.foundation.text.BasicTextField.kt
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
@@ -274,16 +274,17 @@ fun <T : Chip> ChipTextField(
             TextFieldDefaults.contentPaddingWithoutLabel()
         } else {
             TextFieldDefaults.contentPaddingWithLabel()
-        }
+        },
 ) {
     val fieldColors = remember(colors) { colors.toChipTextFieldColors() }
     Box(
-        modifier = modifier
-            .background(
-                fieldColors.backgroundColor(enabled, isError, interactionSource).value,
-                shape
-            )
-            .indicatorLine(enabled, isError, interactionSource, colors)
+        modifier =
+            modifier
+                .background(
+                    fieldColors.backgroundColor(enabled, isError, interactionSource).value,
+                    shape,
+                )
+                .indicatorLine(enabled, isError, interactionSource, colors),
     ) {
         BasicChipTextField(
             state = state,

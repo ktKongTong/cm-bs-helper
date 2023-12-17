@@ -3,7 +3,7 @@ package io.ktlab.bshelper.model.vo
 import io.ktlab.bshelper.model.scanner.ScannerException
 import kotlinx.coroutines.flow.MutableStateFlow
 
-enum class GlobalScanStateEnum(val human:String) {
+enum class GlobalScanStateEnum(val human: String) {
     NOT_START("not start"),
     SCANNING_PLAYLISTS("scanning playlist"),
     SCAN_PLAYLISTS_COMPLETE("playlist scanning"),
@@ -11,8 +11,6 @@ enum class GlobalScanStateEnum(val human:String) {
     SCAN_COMPLETE("complete"),
     SCAN_ERROR("error"),
 }
-
-
 
 enum class ScanStateMachineStateEnum {
     INIT,
@@ -22,9 +20,8 @@ enum class ScanStateMachineStateEnum {
     SCAN_COMPLETE,
     SCAN_ERROR,
 }
-class ScanStateMachine {
 
-}
+class ScanStateMachine
 
 enum class ScanStateEnum {
     NOT_START,
@@ -35,9 +32,9 @@ enum class ScanStateEnum {
 
 data class ScanState(
     val state: GlobalScanStateEnum,
-    val playlistStates : List<MutableStateFlow<PlaylistScanState>>,
+    val playlistStates: List<MutableStateFlow<PlaylistScanState>>,
     val error: Error? = null,
-){
+) {
     companion object {
         fun getDefaultInstance(): ScanState {
             return ScanState(
@@ -56,7 +53,7 @@ data class MapScanState(
     val mapVersion: String = "",
     val mapHash: String = "",
     val error: Error? = null,
-){
+) {
     companion object {
         fun getDefaultInstance(): MapScanState {
             return MapScanState(
@@ -66,7 +63,6 @@ data class MapScanState(
     }
 }
 
-
 enum class PlaylistScanStateEnum {
     UNSELECTED,
     SELECTED_BUT_NOT_START,
@@ -74,6 +70,7 @@ enum class PlaylistScanStateEnum {
     SCAN_COMPLETE,
     SCAN_ERROR,
 }
+
 data class PlaylistScanState(
     var state: PlaylistScanStateEnum,
     var playlistName: String = "",
@@ -82,7 +79,7 @@ data class PlaylistScanState(
     var possibleMapAmount: Int = 0,
     var mapScanStates: List<MapScanState>,
     val error: Error? = null,
-){
+) {
     companion object {
         fun getDefaultInstance(): PlaylistScanState {
             return PlaylistScanState(
@@ -93,7 +90,7 @@ data class PlaylistScanState(
     }
 }
 
-enum class ScanStateEventEnum(val human:String) {
+enum class ScanStateEventEnum(val human: String) {
     NOT_START("not start"),
     SCANNING("scanning"),
     SCAN_ERROR("error"),
@@ -113,22 +110,21 @@ data class PlaylistScanStateV2(
     val currentMapDir: String = "",
     val fileAmount: Int = 0,
     val scannedFileAmount: Int = 0,
-    val errorStates: List<ScannerException>
+    val errorStates: List<ScannerException>,
 )
 
 data class ScanStateV2(
     val state: ScanStateEventEnum = ScanStateEventEnum.NOT_START,
-    val currentPlaylistDir : String = "",
+    val currentPlaylistDir: String = "",
     val currentMapDir: String = "",
     // subdir
     val totalDirCount: Int = 0,
     val scannedDirCount: Int = 0,
-
     val scannedMapCount: Int = 0,
     val message: String = "",
-    val playlistScanList:List<MutableStateFlow<PlaylistScanStateV2>> = mutableListOf(),
+    val playlistScanList: List<MutableStateFlow<PlaylistScanStateV2>> = mutableListOf(),
     val errorStates: List<ScannerException> = emptyList(),
-){
+) {
     companion object {
         fun getDefaultInstance(): ScanStateV2 {
             return ScanStateV2(

@@ -6,7 +6,7 @@ plugins {
 
 kotlin {
     jvmToolchain(17)
-    jvm{}
+    jvm {}
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -20,7 +20,6 @@ kotlin {
                 implementation(libs.beatmap.io)
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.kotlinx.datetime)
-
             }
         }
     }

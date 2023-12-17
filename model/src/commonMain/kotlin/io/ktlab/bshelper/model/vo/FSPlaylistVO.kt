@@ -1,6 +1,11 @@
 package io.ktlab.bshelper.model.vo
 
-import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.BSPlaylist
+import io.ktlab.bshelper.model.BSUser
+import io.ktlab.bshelper.model.FSPlaylist
+import io.ktlab.bshelper.model.FSPlaylistView
+import io.ktlab.bshelper.model.IMap
+import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.enums.SyncStateEnum
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -27,7 +32,7 @@ data class FSPlaylistVO(
     override val id: String,
     override val title: String,
     val bsPlaylist: BSPlaylistVO?,
-): IPlaylist {
+) : IPlaylist {
     fun toFSPlaylist(): FSPlaylist {
         return FSPlaylist(
             id = id,
@@ -41,10 +46,11 @@ data class FSPlaylistVO(
             topPlaylist = false,
         )
     }
+
     override fun getAvatar(): String {
         bsPlaylist?.let {
             return it.owner.avatar
-        }?: return ""
+        } ?: return ""
     }
 
     override fun getName(): String {
@@ -84,11 +90,11 @@ data class FSPlaylistVO(
     }
 
     override fun getAvgNPS(): Double {
-        return avgNps?:0.0
+        return avgNps ?: 0.0
     }
 
     override fun getAvgNotes(): Double {
-        return avgNote?:0.0
+        return avgNote ?: 0.0
     }
 
     override fun getImage(): String {
@@ -102,8 +108,9 @@ data class FSPlaylistVO(
     override fun getMinNPS(): Double {
         return 0.0
     }
+
     override fun getPlaylistDescription(): String {
-        return bsPlaylist?.playlist?.description?:description?:""
+        return bsPlaylist?.playlist?.description ?: description ?: ""
     }
 
     override fun getTargetPath(): String {
@@ -122,10 +129,10 @@ data class FSPlaylistVO(
                 syncTimestamp = dbo.playlist_syncTimestamp,
                 customTags = dbo.playlist_customTags,
                 basePath = dbo.playlist_basePath,
-                _mapAmount = dbo.map_count?.toInt()?:0,
-                totalDuration = dbo.sum_duration?.toLong(DurationUnit.SECONDS)?:0L,
-                maxDuration = dbo.max_duration ?:0L,
-                avgDuration = dbo.avg_duration?.toLong()?:0L,
+                _mapAmount = dbo.map_count?.toInt() ?: 0,
+                totalDuration = dbo.sum_duration?.toLong(DurationUnit.SECONDS) ?: 0L,
+                maxDuration = dbo.max_duration ?: 0L,
+                avgDuration = dbo.avg_duration?.toLong() ?: 0L,
                 maxNote = dbo.max_notes,
                 avgNote = dbo.avg_notes,
                 avgObstacle = dbo.avg_obstacles,
@@ -139,52 +146,54 @@ data class FSPlaylistVO(
         private fun buildBSPlaylist(dbo: FSPlaylistView): BSPlaylistVO? {
             return dbo.bsPlaylist_id?.let {
                 BSPlaylistVO(
-                    playlist = BSPlaylist(
-                        id = it,
-                        name = dbo.bsPlaylist_name!!,
-                        description = dbo.bsPlaylist_description,
-                        ownerId = dbo.bsPlaylist_ownerId!!,
-                        curatorId = dbo.bsPlaylist_curatorId,
-                        downloadURL = dbo.bsPlaylist_downloadURL!!,
-                        playlistImage = dbo.bsPlaylist_playlistImage!!,
-                        playlistImage512 = dbo.bsPlaylist_playlistImage512!!,
-                        songsChangedAt = dbo.bsPlaylist_songsChangedAt,
-                        updatedAt = dbo.bsPlaylist_updatedAt,
-                        createdAt = dbo.bsPlaylist_createdAt!!,
-                        type = dbo.bsPlaylist_type!!,
-                        avgScore = dbo.bsPlaylist_avgScore!!,
-                        upVotes = dbo.bsPlaylist_upVotes!!,
-                        downVotes = dbo.bsPlaylist_downVotes!!,
-                        mapperCount = dbo.bsPlaylist_mapperCount!!,
-                        maxNps = dbo.bsPlaylist_maxNps!!,
-                        minNps = dbo.bsPlaylist_minNps!!,
-                        totalDuration = 0,
-
-                    ),
-                    owner = BSUser(
-                        id = dbo.owner_id!!,
-                        name = dbo.owner_name!!,
-                        avatar = dbo.owner_avatar!!,
-                        type = dbo.owner_type!!,
-                        description = dbo.owner_description!!,
-                        admin = dbo.owner_admin!!,
-                        curator = dbo.owner_curator!!,
-                        playlistUrl = dbo.owner_playlistUrl!!,
-                        verifiedMapper = dbo.owner_verifiedMapper,
-                    ),
-                    curator = dbo.curator_id?.let {
+                    playlist =
+                        BSPlaylist(
+                            id = it,
+                            name = dbo.bsPlaylist_name!!,
+                            description = dbo.bsPlaylist_description,
+                            ownerId = dbo.bsPlaylist_ownerId!!,
+                            curatorId = dbo.bsPlaylist_curatorId,
+                            downloadURL = dbo.bsPlaylist_downloadURL!!,
+                            playlistImage = dbo.bsPlaylist_playlistImage!!,
+                            playlistImage512 = dbo.bsPlaylist_playlistImage512!!,
+                            songsChangedAt = dbo.bsPlaylist_songsChangedAt,
+                            updatedAt = dbo.bsPlaylist_updatedAt,
+                            createdAt = dbo.bsPlaylist_createdAt!!,
+                            type = dbo.bsPlaylist_type!!,
+                            avgScore = dbo.bsPlaylist_avgScore!!,
+                            upVotes = dbo.bsPlaylist_upVotes!!,
+                            downVotes = dbo.bsPlaylist_downVotes!!,
+                            mapperCount = dbo.bsPlaylist_mapperCount!!,
+                            maxNps = dbo.bsPlaylist_maxNps!!,
+                            minNps = dbo.bsPlaylist_minNps!!,
+                            totalDuration = 0,
+                        ),
+                    owner =
                         BSUser(
-                            id = dbo.curator_id,
-                            name = dbo.curator_name!!,
-                            avatar = dbo.curator_avatar!!,
-                            type = dbo.curator_type!!,
-                            description = dbo.curator_description!!,
-                            admin = dbo.curator_admin!!,
-                            curator = dbo.curator_curator!!,
-                            playlistUrl = dbo.curator_playlistUrl!!,
-                            verifiedMapper = dbo.curator_verifiedMapper,
-                        )
-                    }
+                            id = dbo.owner_id!!,
+                            name = dbo.owner_name!!,
+                            avatar = dbo.owner_avatar!!,
+                            type = dbo.owner_type!!,
+                            description = dbo.owner_description!!,
+                            admin = dbo.owner_admin!!,
+                            curator = dbo.owner_curator!!,
+                            playlistUrl = dbo.owner_playlistUrl!!,
+                            verifiedMapper = dbo.owner_verifiedMapper,
+                        ),
+                    curator =
+                        dbo.curator_id?.let {
+                            BSUser(
+                                id = dbo.curator_id,
+                                name = dbo.curator_name!!,
+                                avatar = dbo.curator_avatar!!,
+                                type = dbo.curator_type!!,
+                                description = dbo.curator_description!!,
+                                admin = dbo.curator_admin!!,
+                                curator = dbo.curator_curator!!,
+                                playlistUrl = dbo.curator_playlistUrl!!,
+                                verifiedMapper = dbo.curator_verifiedMapper,
+                            )
+                        },
                 )
             }
         }

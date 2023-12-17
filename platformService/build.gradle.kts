@@ -54,11 +54,10 @@ kotlin {
             }
         }
         val desktopMain by getting {
-            dependencies{
+            dependencies {
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.sqldelight.jvm.driver)
             }
-
         }
     }
 }
@@ -73,7 +72,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin{
+    kotlin {
         jvmToolchain(17)
     }
     namespace = "io.ktlab.bshelper.service"

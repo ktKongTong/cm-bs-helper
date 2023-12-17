@@ -15,29 +15,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-
 @Composable
 fun VerifiedMapperIcon(
     modifier: Modifier = Modifier,
     verified: Boolean,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
 ) {
-    Box{
+    Box {
         Icon(
             imageVector = Icons.Rounded.Person,
             contentDescription = "mapper icon",
             modifier = modifier.size(20.dp),
-            tint = tint
+            tint = tint,
         )
         if (verified) {
             Icon(
                 Icons.Filled.Verified,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .size(12.dp)
-                    .offset(x = 4.dp, y = (4).dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .size(12.dp)
+                        .offset(x = 4.dp, y = (4).dp),
                 contentDescription = "Verified Mapper Icon",
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
             )
         }
     }

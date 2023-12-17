@@ -8,7 +8,6 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-
 @Serializable(with = MapTagSlugSerializable::class)
 enum class MapTag(val type: MapTagType, val human: String, val slug: String) {
     None(MapTagType.None, "", ""),
@@ -56,10 +55,12 @@ enum class MapTag(val type: MapTagType, val human: String, val slug: String) {
     Dance(MapTagType.Genre, "Dance", "dance"),
     Rock(MapTagType.Genre, "Rock", "rock"),
     Pop(MapTagType.Genre, "Pop", "pop"),
-    Electronic(MapTagType.Genre, "Electronic", "electronic");
+    Electronic(MapTagType.Genre, "Electronic", "electronic"),
+    ;
 
     companion object {
         private val map = entries.associateBy(MapTag::slug)
+
         fun fromSlug(slug: String) = map[slug]
 
         fun isStyleTag(tag: String) = fromSlug(tag)?.type == MapTagType.Style
@@ -68,12 +69,13 @@ enum class MapTag(val type: MapTagType, val human: String, val slug: String) {
         val genreMapTags = entries.filter { it.type == MapTagType.Genre }
         val allMapTags = entries.filter { it.type != MapTagType.None }
 
-        fun sort(tags:List<String>): List<String> = tags.sortedWith(compareBy({ fromSlug(it)?.type?.ordinal }, { it }))
+        fun sort(tags: List<String>): List<String> = tags.sortedWith(compareBy({ fromSlug(it)?.type?.ordinal }, { it }))
 
-        val maxPerType = mapOf(
-            MapTagType.Style to 2,
-            MapTagType.Genre to 2
-        ).withDefault { 0 }
+        val maxPerType =
+            mapOf(
+                MapTagType.Style to 2,
+                MapTagType.Genre to 2,
+            ).withDefault { 0 }
 
         val sorted = entries.toTypedArray().sortedWith(compareBy({ it.type.ordinal }, { it.human }))
     }
@@ -82,11 +84,18 @@ enum class MapTag(val type: MapTagType, val human: String, val slug: String) {
 class MapTagSlugSerializable : KSerializer<MapTag> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("MapTag", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): MapTag = MapTag.fromSlug(decoder.decodeString())
-        ?: MapTag.None
-    override fun serialize(encoder: Encoder, value: MapTag) = encoder.encodeString(value.slug)
+    override fun deserialize(decoder: Decoder): MapTag =
+        MapTag.fromSlug(decoder.decodeString())
+            ?: MapTag.None
+
+    override fun serialize(
+        encoder: Encoder,
+        value: MapTag,
+    ) = encoder.encodeString(value.slug)
 }
 
 enum class MapTagType(val color: String) {
-    None(""), Style("blue"), Genre("green");
+    None(""),
+    Style("blue"),
+    Genre("green"),
 }

@@ -41,26 +41,26 @@ import io.ktlab.bshelper.viewmodel.LocalState
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun BSMapperDetailOverview(
-    selectedBSMapper: BSMapperDetailDTO,
-){
-    Column (
-        modifier = Modifier
-            .width(300.dp)
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-    ){
+fun BSMapperDetailOverview(selectedBSMapper: BSMapperDetailDTO) {
+    Column(
+        modifier =
+            Modifier
+                .width(300.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+    ) {
         Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-        ){
+            modifier =
+                Modifier
+                    .clip(RoundedCornerShape(16.dp)),
+        ) {
             AsyncImageWithFallback(
                 source = selectedBSMapper.avatar,
-                modifier = Modifier
-                    .clickable(onClick = {})
-                    .clip(shape =  RoundedCornerShape(16.dp))
-                    .background(Color.Blue)
-                ,
+                modifier =
+                    Modifier
+                        .clickable(onClick = {})
+                        .clip(shape = RoundedCornerShape(16.dp))
+                        .background(Color.Blue),
                 contentScale = ContentScale.FillWidth,
             )
         }
@@ -87,13 +87,14 @@ fun BSMapperDetail(
     mapFlow: Flow<PagingData<IMap>>,
 ) {
     val mapPagingItems = uiState.selectedBSMapperMapFlow.collectAsLazyPagingItems()
-    val downloadingTasks = uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value.flatMap {
-        when(it) {
-            is IDownloadTask.MapDownloadTask -> listOf(it)
-            is IDownloadTask.BatchDownloadTask -> it.taskList
-            is IDownloadTask.PlaylistDownloadTask -> it.taskList
-        }
-    }.associateBy { it.downloadTaskModel.relateEntityId!! + it.targetPlaylist.id }
+    val downloadingTasks =
+        uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value.flatMap {
+            when (it) {
+                is IDownloadTask.MapDownloadTask -> listOf(it)
+                is IDownloadTask.BatchDownloadTask -> it.taskList
+                is IDownloadTask.PlaylistDownloadTask -> it.taskList
+            }
+        }.associateBy { it.downloadTaskModel.relateEntityId!! + it.targetPlaylist.id }
     Row {
         BSMapperDetailOverview(selectedBSMapper = uiState.selectedBSMapper!!)
         MapCardPagingList(
@@ -112,15 +113,14 @@ fun BSMapperDetail(
                     ) {
                         IconButton(
                             onClick = { onUIEvent(BeatSaverUIEvent.OnExitBSMapper) },
-                            modifier = Modifier.padding(horizontal = 16.dp)
+                            modifier = Modifier.padding(horizontal = 16.dp),
                         ) {
                             Icon(
                                 Icons.Rounded.ArrowBack,
-                                contentDescription = "back icon"
+                                contentDescription = "back icon",
                             )
                         }
-                        Column(
-                        ) {
+                        Column {
                             DropDownPlaylistSelector(
                                 onUIEvent = onUIEvent,
                                 modifier = Modifier,
@@ -134,12 +134,12 @@ fun BSMapperDetail(
                             val multiSelectedBSMap = uiState.multiSelectedBSMap
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = if (multiSelectedMode) Arrangement.SpaceBetween else Arrangement.End
+                                horizontalArrangement = if (multiSelectedMode) Arrangement.SpaceBetween else Arrangement.End,
                             ) {
                                 if (multiSelectedMode) {
                                     Text(
                                         text = "已选中: ${multiSelectedBSMap.size}",
-                                        modifier = Modifier.align(Alignment.CenterVertically)
+                                        modifier = Modifier.align(Alignment.CenterVertically),
                                     )
                                 }
                                 Row {
@@ -160,12 +160,12 @@ fun BSMapperDetail(
                                         if (!multiSelectedMode) {
                                             Icon(
                                                 Icons.Rounded.QueueMusic,
-                                                contentDescription = stringResource(MR.strings.multi_select)
+                                                contentDescription = stringResource(MR.strings.multi_select),
                                             )
                                         } else {
                                             Icon(
                                                 Icons.Rounded.Cancel,
-                                                contentDescription = stringResource(MR.strings.cancel_multi_select)
+                                                contentDescription = stringResource(MR.strings.cancel_multi_select),
                                             )
                                         }
                                     }
@@ -174,7 +174,7 @@ fun BSMapperDetail(
                         }
                     }
                 }
-            }
+            },
         )
     }
 }

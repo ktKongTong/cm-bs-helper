@@ -20,23 +20,22 @@ import androidx.compose.ui.window.DialogProperties
 @Composable
 actual fun MapOnlinePreview(
     onDismiss: () -> Unit,
-    mapId: String
-)
-{
+    mapId: String,
+) {
     val context = LocalContext.current
     val webView by remember(LocalContext.current) { mutableStateOf(WebView(context)) }
     webView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null)
     Dialog(
-
         onDismissRequest = {
             onDismiss()
             webView.destroy()
         },
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-            usePlatformDefaultWidth = false
-        )
+        properties =
+            DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true,
+                usePlatformDefaultWidth = false,
+            ),
     ) {
         val mUrl = "https://allpoland.github.io/ArcViewer/?id=$mapId"
         Surface(
@@ -46,17 +45,20 @@ actual fun MapOnlinePreview(
                 modifier = Modifier.fillMaxSize(),
                 factory = {
                     webView.apply {
-                        layoutParams = ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT
-                        )
+                        layoutParams =
+                            ViewGroup.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                            )
                         webViewClient = WebViewClient()
                         settings.javaScriptEnabled = true
                         loadUrl(mUrl)
                     }
-                }, update = {
+                },
+                update = {
                     it.loadUrl(mUrl)
-                })
+                },
+            )
         }
     }
 }

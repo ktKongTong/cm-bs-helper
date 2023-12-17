@@ -21,8 +21,9 @@ import io.ktlab.bshelper.ui.components.icons.VerifiedMapperIcon
 fun IconWIthText(
     onClick: () -> Unit,
     icon: ImageVector,
-    description:String ,text: String,
-    tint: Color = LocalContentColor.current
+    description: String,
+    text: String,
+    tint: Color = LocalContentColor.current,
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -31,7 +32,7 @@ fun IconWIthText(
             imageVector = icon,
             contentDescription = description,
             modifier = Modifier.size(20.dp),
-            tint = tint
+            tint = tint,
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(text = text, textAlign = TextAlign.Center, softWrap = false, maxLines = 1)
@@ -42,92 +43,124 @@ fun IconWIthText(
 fun ThumbUpIconWIthText(
     text: String,
     onClick: () -> Unit = {},
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
 ) {
     IconWIthText(
         onClick = onClick,
         icon = Icons.Rounded.ThumbUp,
         description = "Thumb Up",
         text = text,
-        tint = tint
+        tint = tint,
     )
 }
+
 @Composable
 fun ThumbDownIconWIthText(
     text: String,
     onClick: () -> Unit = {},
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
 ) {
     IconWIthText(
         onClick = onClick,
         icon = Icons.Rounded.ThumbDown,
         description = "Thumb Down",
         text = text,
-        tint = tint
+        tint = tint,
     )
 }
 
 @Composable
-fun NPSIconWIthText(onClick: () -> Unit = {}, text: String) {
+fun NPSIconWIthText(
+    onClick: () -> Unit = {},
+    text: String,
+) {
     IconWIthText(
         onClick = onClick,
         icon = Icons.Rounded.Speed,
         description = "NPS",
-        text = text)
+        text = text,
+    )
 }
 
 @Composable
-fun MapAmountIconWIthText(onClick: () -> Unit = {}, text: String) {
+fun MapAmountIconWIthText(
+    onClick: () -> Unit = {},
+    text: String,
+) {
     IconWIthText(
         onClick = onClick,
         icon = Icons.Rounded.Map,
         description = "Map Amount",
-        text = text)
+        text = text,
+    )
 }
 
 @Composable
-fun DurationIconWIthText(onClick: () -> Unit = {}, text: String) {
+fun DurationIconWIthText(
+    onClick: () -> Unit = {},
+    text: String,
+) {
     IconWIthText(
         onClick = onClick,
         icon = Icons.Rounded.HourglassBottom,
         description = "Duration",
-        text = text)
+        text = text,
+    )
 }
+
 @Composable
-fun MapperIconWIthText(onClick: () -> Unit = {}, verified:Boolean=false,text: String, description: String = "Mapper Icon") {
+fun MapperIconWIthText(
+    onClick: () -> Unit = {},
+    verified: Boolean = false,
+    text: String,
+    description: String = "Mapper Icon",
+) {
     Row {
         VerifiedMapperIcon(
             modifier = Modifier.size(20.dp),
             verified = verified,
-            tint = LocalContentColor.current
+            tint = LocalContentColor.current,
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(text = text, textAlign = TextAlign.Center, softWrap = false, maxLines = 1)
     }
 }
+
 @Composable
-fun DateTimeIconWIthText(onClick: () -> Unit = {}, text: String) {
+fun DateTimeIconWIthText(
+    onClick: () -> Unit = {},
+    text: String,
+) {
     IconWIthText(
         onClick = onClick,
         icon = Icons.Rounded.Schedule,
         description = "Time Icon",
-        text = text)
+        text = text,
+    )
 }
 
 @Composable
-fun BPMIconWIthText(onClick: () -> Unit = {}, text: String) {
+fun BPMIconWIthText(
+    onClick: () -> Unit = {},
+    text: String,
+) {
     IconWIthText(
         onClick = onClick,
         icon = Icons.Rounded.PunchClock,
         description = "BPM",
-        text = text)
+        text = text,
+    )
 }
 
 @Composable
-fun MapIdIconWIthText(onClick: () -> Unit = {}, text: String) {
+fun MapIdIconWIthText(
+    onClick: () -> Unit = {},
+    text: String,
+) {
     IconWIthText(
         onClick = onClick,
         icon = Icons.Rounded.CreditCard,
         description = "BPM",
-        text = text)
+        text = text,
+    )
 }

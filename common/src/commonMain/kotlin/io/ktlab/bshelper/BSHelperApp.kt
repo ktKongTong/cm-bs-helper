@@ -1,6 +1,5 @@
 package io.ktlab.bshelper
 
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -29,11 +28,11 @@ import moe.tlaster.precompose.navigation.rememberNavigator
 import org.koin.compose.KoinContext
 
 val LocalUIEventHandler = staticCompositionLocalOf<((UIEvent) -> Unit)> { {} }
+
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun BSHelperApp(){
+fun BSHelperApp() {
     KoinContext {
-
         val globalViewModel = koinViewModel<GlobalViewModel>()
         val globalUiState by globalViewModel.uiState.collectAsState()
 //        globalViewModel
@@ -41,9 +40,10 @@ fun BSHelperApp(){
         val color = globalUiState.userPreference.getThemeColor()?.let { Color(it) } ?: defaultThemeSeedColor
         BSHelperTheme(color) {
             val navigator = rememberNavigator()
-            val navigationActions = remember(navigator) {
-                BSHelperNavigationActions(navigator)
-            }
+            val navigationActions =
+                remember(navigator) {
+                    BSHelperNavigationActions(navigator)
+                }
             val navigateAction = fun(navDestination: String) {
                 when (navDestination) {
                     BSHelperDestinations.HOME_ROUTE -> navigationActions.navigateToHome()
@@ -51,7 +51,6 @@ fun BSHelperApp(){
                     BSHelperDestinations.TOOLBOX_ROUTE -> navigationActions.navigateToToolbox()
                 }
             }
-
 
             val windowSizeClass = calculateWindowSizeClass().widthSizeClass
             val coroutineScope = rememberCoroutineScope()
@@ -63,63 +62,61 @@ fun BSHelperApp(){
                 (windowSizeClass == WindowWidthSizeClass.Expanded) || (windowSizeClass == WindowWidthSizeClass.Medium)
             val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
 
-
-            CompositionLocalProvider( LocalUIEventHandler provides globalViewModel::dispatchUiEvents) {
+            CompositionLocalProvider(LocalUIEventHandler provides globalViewModel::dispatchUiEvents) {
                 ModalNavigationDrawer(
                     drawerContent = {
                         AppDrawer(
                             currentRoute = currentRoute,
                             navigateAction = navigateAction,
-                            closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } }
+                            closeDrawer = { coroutineScope.launch { sizeAwareDrawerState.close() } },
                         )
                     },
                     drawerState = sizeAwareDrawerState,
                     // Only enable opening the drawer via gestures if the screen is not expanded
-                    gesturesEnabled = !isExpandedScreen
+                    gesturesEnabled = !isExpandedScreen,
                 ) {
-
-                        Row {
-                            if (isExpandedScreen) {
-                                AppNavRail(
-                                    currentRoute = currentRoute,
-                                    navigateAction = navigateAction,
-                                    backAction = { },
-                                    header = {
-                                        MediaPlayer(globalUiState.currentMedia,globalUiState.currentMediaState,globalViewModel::dispatchUiEvents)
-                                    }
-                                )
-                            }
-                            val snackbarHostState = remember { SnackbarHostState() }
-                            BSHelperNavGraph(
-                                isExpandedScreen = isExpandedScreen,
-                                navigator = navigator,
-                                openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
-                                snackbarHost = { BSHelperSnackbarHost(hostState = snackbarHostState) },
-                                snackbarHostState = snackbarHostState,
-                                globalUiState = globalUiState,
-                            )
-                            ErrorReportDialog(errorDialogState = globalUiState.errorDialogState)
-                            //
-                            SnackBarShown(
-                                snackbarHostState = snackbarHostState,
-                                snackBarMessages = globalUiState.snackBarMessages,
-                                onSnackBarShown = {
-                                    globalViewModel.dispatchUiEvents(GlobalUIEvent.SnackBarShown(it))
+                    Row {
+                        if (isExpandedScreen) {
+                            AppNavRail(
+                                currentRoute = currentRoute,
+                                navigateAction = navigateAction,
+                                backAction = { },
+                                header = {
+                                    MediaPlayer(
+                                        globalUiState.currentMedia,
+                                        globalUiState.currentMediaState,
+                                        globalViewModel::dispatchUiEvents,
+                                    )
                                 },
                             )
-                         }
-
-            }
-
+                        }
+                        val snackbarHostState = remember { SnackbarHostState() }
+                        BSHelperNavGraph(
+                            isExpandedScreen = isExpandedScreen,
+                            navigator = navigator,
+                            openDrawer = { coroutineScope.launch { sizeAwareDrawerState.open() } },
+                            snackbarHost = { BSHelperSnackbarHost(hostState = snackbarHostState) },
+                            snackbarHostState = snackbarHostState,
+                            globalUiState = globalUiState,
+                        )
+                        ErrorReportDialog(errorDialogState = globalUiState.errorDialogState)
+                        //
+                        SnackBarShown(
+                            snackbarHostState = snackbarHostState,
+                            snackBarMessages = globalUiState.snackBarMessages,
+                            onSnackBarShown = {
+                                globalViewModel.dispatchUiEvents(GlobalUIEvent.SnackBarShown(it))
+                            },
+                        )
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun ErrorReportDialog(
-    errorDialogState: ErrorDialogState?,
-) {
+private fun ErrorReportDialog(errorDialogState: ErrorDialogState?) {
     if (errorDialogState == null) {
         return
     }
@@ -130,28 +127,28 @@ private fun ErrorReportDialog(
         title = { Text(text = errorDialogState.title) },
         text = {
             Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .heightIn(max = 400.dp)
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .heightIn(max = 400.dp),
             ) {
                 Text(modifier = Modifier.verticalScroll(rememberScrollState()), text = errorDialogState.message)
             }
         },
         confirmButton = {
             TextButton(
-                onClick = { errorDialogState.onConfirm?.let { it() } }
+                onClick = { errorDialogState.onConfirm?.let { it() } },
             ) { Text(errorDialogState.confirmLabel!!) }
         },
         dismissButton = {
-            if(errorDialogState.onCancel != null) {
+            if (errorDialogState.onCancel != null) {
                 TextButton(
-                    onClick = { errorDialogState.onCancel?.let { it() } }
+                    onClick = { errorDialogState.onCancel?.let { it() } },
                 ) { Text(errorDialogState.cancelLabel!!) }
             }
-        }
+        },
     )
 }
-
 
 /**
  * Determine the drawer state to pass to the modal drawer.
@@ -179,7 +176,7 @@ private fun rememberSizeAwareDrawerState(isExpandedScreen: Boolean): DrawerState
 @Composable
 fun rememberContentPaddingForScreen(
     additionalTop: Dp = 0.dp,
-    excludeTop: Boolean = false
+    excludeTop: Boolean = false,
 ) = WindowInsets.systemBars
     .only(if (excludeTop) WindowInsetsSides.Bottom else WindowInsetsSides.Vertical)
     .add(WindowInsets(top = additionalTop)).asPaddingValues()

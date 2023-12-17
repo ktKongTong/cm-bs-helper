@@ -1,14 +1,11 @@
 package io.ktlab.bshelper.ui.screens.home.bsmap
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MoveDown
 import androidx.compose.material.icons.filled.Preview
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -19,37 +16,40 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
 fun MapCardMenu(
     modifier: Modifier,
-    onDelete: ()->Unit,
-    onMove: ()->Unit = {},
-    onPreview: ()->Unit = {},
+    onDelete: () -> Unit,
+    onMove: () -> Unit = {},
+    onPreview: () -> Unit = {},
 ) {
     var expanded by remember { mutableStateOf(false) }
 //    val context = LocalContext.current
     Box(
-        modifier = modifier
+        modifier = modifier,
     ) {
         IconButton(onClick = { expanded = true }) {
             Icon(Icons.Default.MoreVert, contentDescription = "Localized description")
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
                 text = { Text(text = "删除") },
-                onClick = { onDelete();expanded = false },
+                onClick = {
+                    onDelete()
+                    expanded = false
+                },
                 leadingIcon = {
                     Icon(
                         Icons.Default.Delete,
-                        contentDescription = "Remove Map"
+                        contentDescription = "Remove Map",
                     )
-            })
+                },
+            )
             DropdownMenuItem(
                 text = { Text(text = "移动") },
                 onClick = {
@@ -60,9 +60,10 @@ fun MapCardMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Default.MoveDown,
-                        contentDescription = "Move Map"
+                        contentDescription = "Move Map",
                     )
-                })
+                },
+            )
             DropdownMenuItem(
                 text = { Text(text = "预览") },
                 onClick = {
@@ -72,9 +73,10 @@ fun MapCardMenu(
                 leadingIcon = {
                     Icon(
                         Icons.Default.Preview,
-                        contentDescription = "Preview Map"
+                        contentDescription = "Preview Map",
                     )
-                })
+                },
+            )
         }
     }
 }

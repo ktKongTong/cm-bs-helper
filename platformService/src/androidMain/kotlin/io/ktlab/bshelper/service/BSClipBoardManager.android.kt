@@ -7,14 +7,14 @@ import androidx.compose.ui.text.AnnotatedString
 private const val PLAIN_TEXT_LABEL = "plain text"
 
 class BSHelperAndroidClipboardManager constructor(context: Context) : IBSClipBoardManager {
-    val clipboardManager =  context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
 
     override fun setText(annotatedString: AnnotatedString) {
         clipboardManager.setPrimaryClip(
             ClipData.newPlainText(
                 PLAIN_TEXT_LABEL,
-                annotatedString.text
-            )
+                annotatedString.text,
+            ),
         )
     }
 
@@ -28,10 +28,9 @@ class BSHelperAndroidClipboardManager constructor(context: Context) : IBSClipBoa
         }
     }
 
-    override fun hasText() =
-        clipboardManager.primaryClipDescription?.hasMimeType("text/*") ?: false
+    override fun hasText() = clipboardManager.primaryClipDescription?.hasMimeType("text/*") ?: false
 }
 
-actual class BSHelperClipboardFactory(private val context: Context){
+actual class BSHelperClipboardFactory(private val context: Context) {
     actual fun createClipboardManager(): IBSClipBoardManager = BSHelperAndroidClipboardManager(context)
 }

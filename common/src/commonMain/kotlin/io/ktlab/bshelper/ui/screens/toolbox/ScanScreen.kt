@@ -20,8 +20,7 @@ import io.ktlab.bshelper.ui.screens.toolbox.components.DirectoryChooser
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
 
 @Composable
-expect fun isStoragePermissionGranted():Boolean
-
+expect fun isStoragePermissionGranted(): Boolean
 
 @Composable
 expect fun RequestStoragePermission()
@@ -30,11 +29,10 @@ expect fun RequestStoragePermission()
 fun ScanScreen(
     scanState: ScanStateV2,
     onUIEvent: (UIEvent) -> Unit,
-){
-    Column (
-        modifier = Modifier.fillMaxSize()
-    ){
-
+) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+    ) {
         var requestPermission by remember { mutableStateOf(false) }
 
         var targetPath by remember { mutableStateOf("") }
@@ -43,7 +41,7 @@ fun ScanScreen(
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text("扫描曲包", style = MaterialTheme.typography.headlineLarge)
             IconButton(onClick = {
@@ -60,10 +58,10 @@ fun ScanScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             val isStoragePermissionGranted = isStoragePermissionGranted()
-            DirectoryChooser(targetPath,{targetPath = it},onUIEvent)
+            DirectoryChooser(targetPath, { targetPath = it }, onUIEvent)
             TextButton(onClick = {
                 // TODO: check if storage permission is granted
-                if(!isStoragePermissionGranted){
+                if (!isStoragePermissionGranted) {
                     requestPermission = true
                     return@TextButton
                 }
@@ -72,50 +70,51 @@ fun ScanScreen(
                 Text(text = "扫描")
             }
         }
-        if(targetPath.isNotEmpty()){
-            Column (
-                modifier = Modifier
-                    .padding( horizontal = 32.dp)
-                    .fillMaxWidth()
-                    .weight(1f, fill = false),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
+        if (targetPath.isNotEmpty()) {
+            Column(
+                modifier =
+                    Modifier
+                        .padding(horizontal = 32.dp)
+                        .fillMaxWidth()
+                        .weight(1f, fill = false),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
-                Box(modifier = Modifier
-                    .fillMaxHeight(0.7f)
-                    .weight(1f, fill = false)
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxHeight(0.7f)
+                            .weight(1f, fill = false),
                 ) {
-                    StepContent(scanState,targetPath,{targetPath = it},onUIEvent)
+                    StepContent(scanState, targetPath, { targetPath = it }, onUIEvent)
                 }
             }
         }
     }
 }
 
-
-
 @Composable
 fun StepContent(
     scanState: ScanStateV2,
     targetPath: String,
     onSelectTargetPath: (String) -> Unit,
-    onUIEvent: (UIEvent) -> Unit
-){
-    if (scanState.state == ScanStateEventEnum.SCANNING
-        ||scanState.state == ScanStateEventEnum.SCAN_COMPLETE
-        || scanState.state == ScanStateEventEnum.SCAN_ERROR)  {
+    onUIEvent: (UIEvent) -> Unit,
+) {
+    if (scanState.state == ScanStateEventEnum.SCANNING ||
+        scanState.state == ScanStateEventEnum.SCAN_COMPLETE ||
+        scanState.state == ScanStateEventEnum.SCAN_ERROR
+    ) {
         Column {
-            Text(text = "文件夹：${targetPath}")
-            if (scanState.state == ScanStateEventEnum.SCAN_COMPLETE || scanState.state == ScanStateEventEnum.SCAN_ERROR){
+            Text(text = "文件夹：$targetPath")
+            if (scanState.state == ScanStateEventEnum.SCAN_COMPLETE || scanState.state == ScanStateEventEnum.SCAN_ERROR) {
                 Text(text = "扫描完成")
                 Text(text = "共扫描文件夹：${scanState.scannedDirCount}")
                 Text(text = "共扫描谱面：${scanState.scannedMapCount}")
                 Text(text = "扫描错误数：${scanState.playlistScanList.map { it.value.errorStates.count() }.sum()}")
-            }else {
+            } else {
                 Text(text = "扫描中，请稍后 ${scanState.scannedDirCount}/${scanState.totalDirCount}")
                 Text(text = "当前歌单：${scanState.currentPlaylistDir}")
                 Text(text = "当前谱面：${scanState.currentMapDir}", maxLines = 1)
             }
-
 
             LazyColumn {
                 items(scanState.playlistScanList.size) { index ->
@@ -124,9 +123,10 @@ fun StepContent(
                     item.value.let { playlistScanState ->
                         var animatedVisibility by remember { mutableStateOf(false) }
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(text = playlistScanState.playlistName)
@@ -135,25 +135,26 @@ fun StepContent(
 
                             if (playlistScanState.errorStates.isNotEmpty()) {
                                 IconButton(
-                                    onClick = { animatedVisibility = !animatedVisibility }
+                                    onClick = { animatedVisibility = !animatedVisibility },
                                 ) {
                                     Icon(Icons.Filled.Error, contentDescription = null)
                                 }
                             }
                         }
                         AnimatedVisibility(animatedVisibility) {
-                            if (playlistScanState.errorStates.isNotEmpty()){
+                            if (playlistScanState.errorStates.isNotEmpty()) {
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f, fill = false),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f, fill = false),
                                     horizontalArrangement = Arrangement.End,
-                                ){
+                                ) {
                                     Column {
                                         playlistScanState.errorStates.map {
-                                            Row (
-                                                Modifier.horizontalScroll(rememberScrollState())
-                                            ){
+                                            Row(
+                                                Modifier.horizontalScroll(rememberScrollState()),
+                                            ) {
                                                 Text(
                                                     text = it.toString(),
                                                     maxLines = 1,
@@ -169,5 +170,4 @@ fun StepContent(
             }
         }
     }
-
 }

@@ -6,22 +6,21 @@ import io.ktlab.bshelper.model.download.DownloadTaskType
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.event.UIEvent
 
-
 @Composable
 fun DownloadTaskCard(
     downloadTask: IDownloadTask,
     modifier: Modifier = Modifier,
     onUIEvent: (UIEvent) -> Unit,
-){
+) {
     when (downloadTask.taskType) {
-        DownloadTaskType.Batch ->{
+        DownloadTaskType.Batch -> {
             BatchMapDownloadTaskCard(
                 downloadTask = downloadTask,
                 modifier = modifier,
                 onUIEvent = onUIEvent,
             )
         }
-        DownloadTaskType.Playlist->{
+        DownloadTaskType.Playlist -> {
             PlaylistDownloadTaskCard(
                 downloadTask = downloadTask,
                 modifier = modifier,

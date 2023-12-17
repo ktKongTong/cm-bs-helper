@@ -6,13 +6,12 @@ import io.ktlab.bshelper.model.vo.BSMapVO
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class BSMapDTO(
     val id: String,
     val name: String,
     val description: String,
-    val bookmarked: Boolean=false,
+    val bookmarked: Boolean = false,
     val automapper: Boolean,
     val ranked: Boolean,
     val qualified: Boolean,
@@ -30,44 +29,44 @@ data class BSMapDTO(
     @Serializable(with = LocalDateTimeAsStringSerializer::class)
     val updatedAt: LocalDateTime,
     @Serializable(with = LocalDateTimeAsStringSerializer::class)
-    val lastPublishedAt: LocalDateTime
+    val lastPublishedAt: LocalDateTime,
 ) {
-
-    fun convertToVO():BSMapVO {
+    fun convertToVO(): BSMapVO {
         return BSMapVO(
-            map = BSMap(
-                mapId = id,
-                name = name,
-                description = description,
-                uploaderId = uploader.id,
+            map =
+                BSMap(
+                    mapId = id,
+                    name = name,
+                    description = description,
+                    uploaderId = uploader.id,
 //                curatorId = curator?.id?.toLong(),
 //                collaboratorIds = collaborators?.map { it.id.toLong() },
-                automapper = automapper,
-                ranked = ranked,
-                qualified = qualified,
-                bookmarked = bookmarked,
-                uploaded = uploaded,
-                tags = tags,
-                createdAt = createdAt,
-                updatedAt = updatedAt,
-                lastPublishedAt = lastPublishedAt,
-                plays = stats.plays,
-                downloads = stats.downloads,
-                upVotes = stats.upvotes,
-                downVotes = stats.downvotes,
-                score = stats.score,
-                bpm = metadata.bpm,
-                duration = metadata.duration,
-                songName = metadata.songName,
-                songSubname = metadata.songSubName,
-                songAuthorName = metadata.songAuthorName,
-                levelAuthorName = metadata.levelAuthorName,
-                curatorId = curator?.id,
-            ),
+                    automapper = automapper,
+                    ranked = ranked,
+                    qualified = qualified,
+                    bookmarked = bookmarked,
+                    uploaded = uploaded,
+                    tags = tags,
+                    createdAt = createdAt,
+                    updatedAt = updatedAt,
+                    lastPublishedAt = lastPublishedAt,
+                    plays = stats.plays,
+                    downloads = stats.downloads,
+                    upVotes = stats.upvotes,
+                    downVotes = stats.downvotes,
+                    score = stats.score,
+                    bpm = metadata.bpm,
+                    duration = metadata.duration,
+                    songName = metadata.songName,
+                    songSubname = metadata.songSubName,
+                    songAuthorName = metadata.songAuthorName,
+                    levelAuthorName = metadata.levelAuthorName,
+                    curatorId = curator?.id,
+                ),
             uploader = uploader.convertToEntity(),
             curator = curator?.convertToEntity(),
             collaborators = collaborators?.map { it.convertToEntity() },
-            versions = versions.map { it.convertToVersionWithDiffList(id) }
+            versions = versions.map { it.convertToVersionWithDiffList(id) },
         )
     }
 }

@@ -1,6 +1,6 @@
 package io.ktlab.bshelper.ui.components
 
-//import androidx.compose.desktop.ui.tooling.preview.Preview
+// import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -25,7 +25,7 @@ import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.GlobalUIEvent
 
-//TODO fix keyboard action
+// TODO fix keyboard action
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun DropDownPlaylistSelector(
@@ -34,16 +34,16 @@ fun DropDownPlaylistSelector(
     onSelectedPlaylist: (IPlaylist?) -> Unit = {},
     selectablePlaylists: List<IPlaylist> = emptyList(),
     selectedIPlaylist: IPlaylist? = null,
-){
-
+) {
     var expanded by remember { mutableStateOf(false) }
     var searchKey by remember { mutableStateOf("") }
 
-    val searchedSelectablePlaylist = selectablePlaylists.filter {
-        searchKey.ifEmpty { return@filter true }
-        it.getPlaylistDescription().contains(searchKey, ignoreCase = true) ||
+    val searchedSelectablePlaylist =
+        selectablePlaylists.filter {
+            searchKey.ifEmpty { return@filter true }
+            it.getPlaylistDescription().contains(searchKey, ignoreCase = true) ||
                 it.getName().contains(searchKey, ignoreCase = true)
-    }
+        }
     val playlistFormOpenState = remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -53,23 +53,27 @@ fun DropDownPlaylistSelector(
         val focusManager = LocalFocusManager.current
         val onClose = {
             expanded = false
-            if (selectedIPlaylist == null) { searchKey = "" }
+            if (selectedIPlaylist == null) {
+                searchKey = ""
+            }
 //            focusManager.clearFocus()
         }
-        val onOpen = { expanded = true;searchKey = "" }
+        val onOpen = {
+            expanded = true
+            searchKey = ""
+        }
         val focusState = remember { mutableStateOf(false) }
         OutlinedTextField(
-            modifier = modifier
-                .menuAnchor()
-                .onFocusChanged {
-                    focusState.value = it.isFocused
-                    if (it.isFocused) {
-                        onOpen()
-                    }
-                }
-            ,
-            value = if (focusState.value) searchKey else selectedIPlaylist?.getName() ?: ""
-            ,
+            modifier =
+                modifier
+                    .menuAnchor()
+                    .onFocusChanged {
+                        focusState.value = it.isFocused
+                        if (it.isFocused) {
+                            onOpen()
+                        }
+                    },
+            value = if (focusState.value) searchKey else selectedIPlaylist?.getName() ?: "",
             onValueChange = { searchKey = it },
             placeholder = {
                 Text(
@@ -79,20 +83,32 @@ fun DropDownPlaylistSelector(
             },
             label = { Text("目标歌单") },
             suffix = {
-                    if(focusState.value || selectedIPlaylist != null) {
-                        Box(Modifier.clip(CircleShape).clickable {
-                            if(focusState.value) {searchKey = ""}
-                            else onSelectedPlaylist(null);onClose()
-                        }) {
-                            Icon(
-                                Icons.Rounded.Clear,
-                                modifier = Modifier
+                if (focusState.value || selectedIPlaylist != null) {
+                    Box(
+                        Modifier.clip(CircleShape).clickable {
+                            if (focusState.value) {
+                                searchKey = ""
+                            } else {
+                                onSelectedPlaylist(null)
+                            }
+                            onClose()
+                        },
+                    ) {
+                        Icon(
+                            Icons.Rounded.Clear,
+                            modifier =
+                                Modifier
                                     .padding(2.dp),
-                                contentDescription = "")
-                        }
+                            contentDescription = "",
+                        )
                     }
+                }
             },
-            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus();onClose() }),
+            keyboardActions =
+                KeyboardActions(onDone = {
+                    focusManager.clearFocus()
+                    onClose()
+                }),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             singleLine = true,
             shape = MaterialTheme.shapes.large,
@@ -100,32 +116,36 @@ fun DropDownPlaylistSelector(
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = onClose,
-            modifier = Modifier
-                .heightIn(0.dp, 250.dp)
-                .alpha(0.95f)
-                .verticalScroll(rememberScrollState())
+            modifier =
+                Modifier
+                    .heightIn(0.dp, 250.dp)
+                    .alpha(0.95f)
+                    .verticalScroll(rememberScrollState()),
         ) {
-
             Column {
-                if (searchedSelectablePlaylist.isEmpty()){
+                if (searchedSelectablePlaylist.isEmpty()) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(64.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(64.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        DefaultImage(modifier = Modifier.weight(1f,false))
+                        DefaultImage(modifier = Modifier.weight(1f, false))
                         Text(text = "没有找到歌单", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
                 TextButton(
                     modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
-                    onClick = { onClose(); playlistFormOpenState.value = true }
+                    onClick = {
+                        onClose()
+                        playlistFormOpenState.value = true
+                    },
                 ) {
                     Text(text = "新建歌单")
                 }
                 if (searchedSelectablePlaylist.isNotEmpty()) {
-                    searchedSelectablePlaylist.forEach{
+                    searchedSelectablePlaylist.forEach {
                         val playlist = it
                         DropdownMenuItem(
                             text = { Text(playlist.getName()) },
@@ -141,7 +161,7 @@ fun DropDownPlaylistSelector(
         }
     }
     FSPlaylistFormV2(
-        onSubmitFSPlaylist = { it?.let{onUIEvent(GlobalUIEvent.CreatePlaylist(it))} },
+        onSubmitFSPlaylist = { it?.let { onUIEvent(GlobalUIEvent.CreatePlaylist(it)) } },
         checkIfExist = { name -> selectablePlaylists.any { it.getName() == name } },
         openState = playlistFormOpenState,
     )

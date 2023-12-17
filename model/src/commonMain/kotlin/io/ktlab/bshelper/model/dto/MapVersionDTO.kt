@@ -7,7 +7,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MapVersionDTO (
+data class MapVersionDTO(
     val hash: String,
     val key: String? = "none",
     val state: String,
@@ -18,22 +18,20 @@ data class MapVersionDTO (
     val downloadURL: String,
     val coverURL: String,
     val previewURL: String,
-){
-
-
-
-    fun convertToVersionWithDiffList(mapId:String): VersionWithDiffList {
+) {
+    fun convertToVersionWithDiffList(mapId: String): VersionWithDiffList {
         return VersionWithDiffList(
             version = convertToEntity(mapId),
-            diffs = diffs.map { it.convertToEntity(hash,mapId) }
+            diffs = diffs.map { it.convertToEntity(hash, mapId) },
         )
     }
-    fun convertToEntity(mapId:String): BSMapVersion {
+
+    fun convertToEntity(mapId: String): BSMapVersion {
         return BSMapVersion(
             hash = hash,
             state = state,
             createdAt = createdAt,
-            sageScore = sageScore?:0,
+            sageScore = sageScore ?: 0,
 //            diffs = diffs.map { it.convertToEntity() },
             downloadURL = downloadURL,
             coverURL = coverURL,

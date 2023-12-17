@@ -4,21 +4,35 @@ import android.media.MediaPlayer as AndroidIMediaPlayer
 
 actual interface MediaPlayer {
     actual fun play()
+
     actual fun pause()
+
     actual fun stop()
+
     actual fun release()
+
     actual fun seekTo(position: Long)
+
     actual fun getCurrentPosition(): Long
+
     actual fun getDuration(): Long
+
     actual fun isPlaying(): Boolean
+
     actual fun isPaused(): Boolean
+
     actual fun isStopped(): Boolean
-    actual fun loadAndPlay(url: String, onPrepared: () -> Unit, onCompletion: () -> Unit)
+
+    actual fun loadAndPlay(
+        url: String,
+        onPrepared: () -> Unit,
+        onCompletion: () -> Unit,
+    )
 }
 
-
-class AndroidMediaPlayer: MediaPlayer {
+class AndroidMediaPlayer : MediaPlayer {
     private val player = AndroidIMediaPlayer()
+
     override fun play() {
         if (player.isPlaying) {
             player.stop()
@@ -63,15 +77,19 @@ class AndroidMediaPlayer: MediaPlayer {
         return !player.isPlaying
     }
 
-    override fun loadAndPlay(url: String, onPrepared: () -> Unit, onCompletion: () -> Unit) {
+    override fun loadAndPlay(
+        url: String,
+        onPrepared: () -> Unit,
+        onCompletion: () -> Unit,
+    ) {
         try {
             player.stop()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         try {
             player.reset()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         player.setDataSource(url)

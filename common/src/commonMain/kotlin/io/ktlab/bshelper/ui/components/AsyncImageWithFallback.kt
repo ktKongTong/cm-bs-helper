@@ -1,6 +1,6 @@
 package io.ktlab.bshelper.ui.components
 
-//import coil.compose.AsyncImage
+// import coil.compose.AsyncImage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +21,7 @@ private fun getTypeBySource(source: String): String {
         else -> "image"
     }
 }
+
 @OptIn(ExperimentalEncodingApi::class)
 @Composable
 fun AsyncImageWithFallback(
@@ -31,9 +32,9 @@ fun AsyncImageWithFallback(
     type: String = getTypeBySource(source),
     alpha: Float = 1f,
     fallback: @Composable () -> Unit = {
-        DefaultImage(modifier,contentScale,alpha)
-    }
-){
+        DefaultImage(modifier, contentScale, alpha)
+    },
+) {
     val proxiedSource = source
 //        .replace(Url(source).host, "beatsaver.wgzeyu.vip/cdn")
 
@@ -55,20 +56,22 @@ fun AsyncImageWithFallback(
                 contentDescription = "Profile",
                 contentScale = contentScale,
                 alpha = alpha,
-                onLoading = { progress -> Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    CircularProgressIndicator(
-                        progress = progress,
-                        modifier = Modifier
-                    )
-                } },
+                onLoading = { progress ->
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxSize(),
+                    ) {
+                        CircularProgressIndicator(
+                            progress = progress,
+                            modifier = Modifier,
+                        )
+                    }
+                },
                 onFailure = { throwable -> fallback() },
             )
         }
         "file" -> {
-
             fallback()
 //            val painter = BitmapPainter(BitmapFactory.decodeFile(source).asImageBitmap())
 //            KamelImage(
@@ -83,19 +86,18 @@ fun AsyncImageWithFallback(
     }
 }
 
-//@Preview
+// @Preview
 @Composable
 fun DefaultImage(
     modifier: Modifier = Modifier,
-    contentScale : ContentScale = ContentScale.Crop,
-    alpha: Float = 1f
-){
+    contentScale: ContentScale = ContentScale.Crop,
+    alpha: Float = 1f,
+) {
     Image(
         painter = painterResource(MR.images.home_empty_list),
         contentDescription = "default image",
         modifier = modifier,
         contentScale = contentScale,
-        alpha = alpha
+        alpha = alpha,
     )
 }
-

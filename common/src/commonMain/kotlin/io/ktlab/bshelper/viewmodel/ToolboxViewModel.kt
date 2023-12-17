@@ -15,27 +15,34 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 
-sealed class ToolboxUIEvent: UIEvent() {
+sealed class ToolboxUIEvent : UIEvent() {
 //    data class SelectPlaylistTobeScan(val playlistScanState: PlaylistScanState) : UIEvent()
 //    data class ScanPlaylistTapped(val dirPath: String? = null) : ToolboxUIEvent()
     data object ScanSelectedPlaylist : UIEvent()
-    data class ScanPlaylist(val dirPath:String) : ToolboxUIEvent()
+
+    data class ScanPlaylist(val dirPath: String) : ToolboxUIEvent()
+
     data object ClearScanState : ToolboxUIEvent()
+
     data object ClearLocalData : ToolboxUIEvent()
-    data class UpdateDefaultManageDir(val path:String):ToolboxUIEvent()
+
+    data class UpdateDefaultManageDir(val path: String) : ToolboxUIEvent()
     //    data class MapMultiSelectTapped : ToolboxUIEvent()
 
     data object DeleteAllDownloadTasks : ToolboxUIEvent()
-    data class RemoveDownloadTask(val downloadTask: IDownloadTask): ToolboxUIEvent()
-    data class ResumeDownloadTask(val downloadTask: IDownloadTask): ToolboxUIEvent()
-    data class PauseDownloadTask(val downloadTask: IDownloadTask): ToolboxUIEvent()
-    data class CancelDownloadTask(val downloadTask: IDownloadTask): ToolboxUIEvent()
-    data class RetryDownloadMap(val downloadTask: IDownloadTask): ToolboxUIEvent()
-    data class UpdateManageDir(val path:String): ToolboxUIEvent()
+
+    data class RemoveDownloadTask(val downloadTask: IDownloadTask) : ToolboxUIEvent()
+
+    data class ResumeDownloadTask(val downloadTask: IDownloadTask) : ToolboxUIEvent()
+
+    data class PauseDownloadTask(val downloadTask: IDownloadTask) : ToolboxUIEvent()
+
+    data class CancelDownloadTask(val downloadTask: IDownloadTask) : ToolboxUIEvent()
+
+    data class RetryDownloadMap(val downloadTask: IDownloadTask) : ToolboxUIEvent()
+
+    data class UpdateManageDir(val path: String) : ToolboxUIEvent()
 }
-
-
-
 
 data class ToolboxUiState(
     val isLoading: Boolean,
@@ -50,35 +57,37 @@ data class ToolboxViewModelState constructor(
     val scanState: ScanStateV2 = ScanStateV2(),
     val downloadTasks: List<IDownloadTask> = emptyList(),
 ) {
-
-    fun toUiState(): ToolboxUiState = ToolboxUiState(
-        isLoading = isLoading,
-        scanState = scanState,
-        userPreferenceState = userPreferenceState,
-        downloadTasks = downloadTasks,
-    )
+    fun toUiState(): ToolboxUiState =
+        ToolboxUiState(
+            isLoading = isLoading,
+            scanState = scanState,
+            userPreferenceState = userPreferenceState,
+            downloadTasks = downloadTasks,
+        )
 }
+
 class ToolboxViewModel(
     private val globalViewModel: GlobalViewModel,
     private val playlistRepository: PlaylistRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
-    private val downloaderRepository: DownloaderRepository
+    private val downloaderRepository: DownloaderRepository,
 ) : ViewModel() {
-
     private val localViewModelScope = viewModelScope
-    private val viewModelState = MutableStateFlow(
-        ToolboxViewModelState(
-            isLoading = true,
-            userPreferenceState = UserPreference.getDefaultUserPreference()
+    private val viewModelState =
+        MutableStateFlow(
+            ToolboxViewModelState(
+                isLoading = true,
+                userPreferenceState = UserPreference.getDefaultUserPreference(),
+            ),
         )
-    )
-    val uiState = viewModelState
-        .map(ToolboxViewModelState::toUiState)
-        .stateIn(
-            localViewModelScope,
-            SharingStarted.Eagerly,
-            viewModelState.value.toUiState()
-        )
+    val uiState =
+        viewModelState
+            .map(ToolboxViewModelState::toUiState)
+            .stateIn(
+                localViewModelScope,
+                SharingStarted.Eagerly,
+                viewModelState.value.toUiState(),
+            )
 
     init {
         localViewModelScope.observeUserPreference()
@@ -87,30 +96,30 @@ class ToolboxViewModel(
 
     private fun CoroutineScope.observeUserPreference() {
         launch {
-            userPreferenceRepository.getUserPreference().collect{userPreference->
+            userPreferenceRepository.getUserPreference().collect { userPreference ->
                 viewModelState.update { state ->
                     state.copy(
-                        userPreferenceState = userPreference
+                        userPreferenceState = userPreference,
                     )
                 }
             }
         }
     }
 
-    private fun CoroutineScope.observeDownloadTasks(){
+    private fun CoroutineScope.observeDownloadTasks() {
         launch {
-            downloaderRepository.getDownloadTaskFlow().collect{res->
+            downloaderRepository.getDownloadTaskFlow().collect { res ->
                 viewModelState.update { state ->
                     state.copy(
-                        downloadTasks = res
+                        downloadTasks = res,
                     )
                 }
             }
         }
     }
 
-    fun dispatchUiEvents(event: UIEvent){
-        when(event){
+    fun dispatchUiEvents(event: UIEvent) {
+        when (event) {
             is ToolboxUIEvent.ClearScanState -> {
                 viewModelState.update { state ->
                     state.copy(scanState = ScanStateV2.getDefaultInstance())
@@ -165,7 +174,8 @@ class ToolboxViewModel(
             else -> {}
         }
     }
-    private fun onScanSelectedPlaylist(){
+
+    private fun onScanSelectedPlaylist() {
 //        localViewModelScope.launch {
 //            playlistRepository.scanFSMapInPlaylists(viewModelState.value.scanState)
 //                .flowOn(Dispatchers.IO)
@@ -179,7 +189,8 @@ class ToolboxViewModel(
 //                }
 //        }
     }
-    private fun onSelectPlaylistToBeScan(playlistScanState: PlaylistScanState){
+
+    private fun onSelectPlaylistToBeScan(playlistScanState: PlaylistScanState) {
 //        viewModelState.value.scanState.playlistStates.find {
 //            it.value.playlistId == playlistScanState.playlistId
 //        }?.update { state ->
@@ -199,14 +210,14 @@ class ToolboxViewModel(
     }
 
     private fun onScanPlaylist(dirPath: String) {
-        if (dirPath.isEmpty()){
+        if (dirPath.isEmpty()) {
             globalViewModel.showSnackBar("请选择文件夹")
             return
         }
         localViewModelScope.launch {
             playlistRepository.scanPlaylist(dirPath)
                 .flowOn(Dispatchers.IO)
-                .collect{
+                .collect {
                     viewModelState.update { state ->
                         state.copy(scanState = it)
                     }

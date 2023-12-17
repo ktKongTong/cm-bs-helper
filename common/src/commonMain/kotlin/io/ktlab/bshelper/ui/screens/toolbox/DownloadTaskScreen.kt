@@ -17,25 +17,23 @@ import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.toolbox.components.DownloadTaskCard
 import io.ktlab.bshelper.viewmodel.ToolboxUIEvent
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DownloadTaskScreen(
     onUIEvent: (UIEvent) -> Unit,
     downloadTasks: List<IDownloadTask>,
-){
+) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
-    ){
+    ) {
         stickyHeader {
             // order query key
             Surface(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                ){
+                ) {
                     Text(text = "下载任务", style = MaterialTheme.typography.headlineLarge)
                     IconButton(onClick = {
                         onUIEvent(ToolboxUIEvent.DeleteAllDownloadTasks)
@@ -51,7 +49,7 @@ fun DownloadTaskScreen(
             }
         }
 //        val sortedDownloadTasks = downloadTasks
-        items(downloadTasks.size){
+        items(downloadTasks.size) {
             // 对象没变化，不会重新渲染
             // 如何强制渲染？
             val task = downloadTasks[it]
@@ -61,7 +59,6 @@ fun DownloadTaskScreen(
                     onUIEvent = onUIEvent,
                 )
             }
-
         }
     }
 }

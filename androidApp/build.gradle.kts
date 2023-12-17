@@ -19,7 +19,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    packaging{
+    packaging {
         resources {
             excludes.add("META-INF/AL2.0")
             excludes.add("mozilla/public-suffix-list.txt")
@@ -29,7 +29,7 @@ android {
             excludes.add("META-INF/versions/9/previous-compilation-data.bin")
         }
     }
-    kotlin{
+    kotlin {
         jvmToolchain(17)
     }
 }

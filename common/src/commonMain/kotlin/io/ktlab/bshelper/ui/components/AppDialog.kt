@@ -22,7 +22,7 @@ fun AppDialog(
 ) {
     if (openState.value) {
         AlertDialog(
-            onDismissRequest = {openState.value = false},
+            onDismissRequest = { openState.value = false },
             dismissButton = {
                 if (onCancel != null) {
                     TextButton(onClick = {
@@ -34,14 +34,17 @@ fun AppDialog(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { openState.value = false;onConfirm() }) {
+                TextButton(onClick = {
+                    openState.value = false
+                    onConfirm()
+                }) {
                     Text(text = "确定")
                 }
             },
             title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Text(text = title)
                 }
@@ -49,14 +52,15 @@ fun AppDialog(
             text = {
                 if (text.isNotEmpty()) {
                     Text(text = text)
-                }else {
+                } else {
                     content()
                 }
             },
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-            )
+            properties =
+                DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                ),
         )
     }
 }

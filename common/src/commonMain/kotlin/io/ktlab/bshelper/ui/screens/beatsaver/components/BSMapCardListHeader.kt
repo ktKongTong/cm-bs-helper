@@ -25,15 +25,16 @@ fun BSMapCardListHeader(
     multiSelectedMode: Boolean,
     multiSelectedBSMap: Set<IMap>,
     onUIEvent: (UIEvent) -> Unit,
-){
+) {
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         Column {
             Text(text = "Maps", style = MaterialTheme.typography.titleLarge)
-            Row{
+            Row {
                 DropDownPlaylistSelector(
                     onUIEvent = onUIEvent,
                     selectablePlaylists = localState.selectableLocalPlaylists,
@@ -41,35 +42,33 @@ fun BSMapCardListHeader(
                     onSelectedPlaylist = { onUIEvent(BeatSaverUIEvent.ChangeTargetPlaylist(it)) },
                 )
             }
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = if (multiSelectedMode) Arrangement.SpaceBetween else Arrangement.End
-            ){
+                horizontalArrangement = if (multiSelectedMode) Arrangement.SpaceBetween else Arrangement.End,
+            ) {
                 if (multiSelectedMode) {
                     Text(text = "已选中: ${multiSelectedBSMap.size}", modifier = Modifier.align(Alignment.CenterVertically))
                     TextButton(onClick = {
                         if (localState.targetPlaylist != null) {
                             onUIEvent(BeatSaverUIEvent.MultiDownload(localState.targetPlaylist))
-                        }else {
+                        } else {
                             onUIEvent(GlobalUIEvent.ShowSnackBar("请选择目标歌单"))
                         }
                     }) {
                         Text(text = "Download")
                     }
                 }
-                Box(
-                ){
+                Box {
                     IconButton(onClick = {
                         onUIEvent(BeatSaverUIEvent.ChangeMultiSelectMode(!multiSelectedMode))
                     }, modifier = Modifier) {
                         if (!multiSelectedMode) {
                             Icon(Icons.Default.QueueMusic, contentDescription = stringResource(MR.strings.multi_select))
-                        }else {
+                        } else {
                             Icon(Icons.Default.Cancel, contentDescription = stringResource(MR.strings.cancel_multi_select))
                         }
                     }
                 }
-
             }
         }
     }

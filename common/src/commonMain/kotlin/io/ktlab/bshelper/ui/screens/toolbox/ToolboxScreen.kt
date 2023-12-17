@@ -29,8 +29,8 @@ fun ToolboxScreen(
     onUIEvent: (UIEvent) -> Unit,
     globalUiState: GlobalUiState,
 //    onSnackBarShown: (Long) -> Unit,
-    modifier: Modifier = Modifier
-){
+    modifier: Modifier = Modifier,
+) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
     Scaffold(
@@ -43,32 +43,43 @@ fun ToolboxScreen(
 //                )
 //            }
         },
-        modifier = modifier
+        modifier = modifier,
     ) { innerPadding ->
-        val contentModifier = Modifier
-            .padding(innerPadding)
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-        Row (contentModifier){
-            var selectedPage by remember { mutableStateOf(if(!showTopAppBar){ToolboxPage.Toolbox}else{ToolboxPage.Toolbox}) }
+        val contentModifier =
+            Modifier
+                .padding(innerPadding)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+        Row(contentModifier) {
+            var selectedPage by remember {
+                mutableStateOf(
+                    if (!showTopAppBar) {
+                        ToolboxPage.Toolbox
+                    } else {
+                        ToolboxPage.Toolbox
+                    },
+                )
+            }
             ToolboxLeftSide(
-                modifier = Modifier
-                    .widthIn(Dp.Unspecified, 300.dp),
+                modifier =
+                    Modifier
+                        .widthIn(Dp.Unspecified, 300.dp),
                 selectedPage = selectedPage,
-                onSelectedPage = { selectedPage = it }
+                onSelectedPage = { selectedPage = it },
             )
 //            if(!showTopAppBar){
-                ToolboxRightSide(
-                    modifier = Modifier
+            ToolboxRightSide(
+                modifier =
+                    Modifier
                         .fillMaxWidth(),
-                    selectedPage = selectedPage,
-                    uiState = uiState,
-                    onUIEvent = onUIEvent
-                )
+                selectedPage = selectedPage,
+                uiState = uiState,
+                onUIEvent = onUIEvent,
+            )
 //            }
         }
     }
-
 }
+
 enum class ToolboxPage {
     None,
     Toolbox,
@@ -76,46 +87,50 @@ enum class ToolboxPage {
     About,
     Downloader,
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToolboxLeftSide(
     modifier: Modifier = Modifier,
     selectedPage: ToolboxPage,
-    onSelectedPage: (ToolboxPage) -> Unit
-){
+    onSelectedPage: (ToolboxPage) -> Unit,
+) {
     ModalDrawerSheet(
         modifier,
         drawerContainerColor = Color.Transparent,
     ) {
         NavigationDrawerItem(
-            colors = NavigationDrawerItemDefaults.colors(
-                unselectedContainerColor = Color.Transparent,
-            ),
+            colors =
+                NavigationDrawerItemDefaults.colors(
+                    unselectedContainerColor = Color.Transparent,
+                ),
             label = { Text(stringResource(MR.strings.toolbox_title)) },
             icon = { Icon(Icons.Filled.Home, null) },
             selected = selectedPage == ToolboxPage.Toolbox,
             onClick = { onSelectedPage(ToolboxPage.Toolbox) },
-            modifier = Modifier.padding(PaddingValues(vertical = 2.dp, horizontal = 12.dp))
+            modifier = Modifier.padding(PaddingValues(vertical = 2.dp, horizontal = 12.dp)),
         )
         NavigationDrawerItem(
-            colors = NavigationDrawerItemDefaults.colors(
-                unselectedContainerColor = Color.Transparent,
-            ),
+            colors =
+                NavigationDrawerItemDefaults.colors(
+                    unselectedContainerColor = Color.Transparent,
+                ),
             label = { Text(stringResource(MR.strings.settings)) },
             icon = { Icon(Icons.Filled.Settings, null) },
             selected = selectedPage == ToolboxPage.Settings,
             onClick = { onSelectedPage(ToolboxPage.Settings) },
-            modifier = Modifier.padding(PaddingValues(vertical = 2.dp, horizontal = 12.dp))
+            modifier = Modifier.padding(PaddingValues(vertical = 2.dp, horizontal = 12.dp)),
         )
         NavigationDrawerItem(
-            colors = NavigationDrawerItemDefaults.colors(
-                unselectedContainerColor = Color.Transparent,
-            ),
+            colors =
+                NavigationDrawerItemDefaults.colors(
+                    unselectedContainerColor = Color.Transparent,
+                ),
             label = { Text(stringResource(MR.strings.downloader)) },
             icon = { Icon(Icons.Filled.Download, null) },
             selected = selectedPage == ToolboxPage.Downloader,
             onClick = { onSelectedPage(ToolboxPage.Downloader) },
-            modifier = Modifier.padding(PaddingValues(vertical = 2.dp, horizontal = 12.dp))
+            modifier = Modifier.padding(PaddingValues(vertical = 2.dp, horizontal = 12.dp)),
         )
     }
 }
@@ -125,16 +140,16 @@ fun ToolboxRightSide(
     modifier: Modifier = Modifier,
     selectedPage: ToolboxPage,
     uiState: ToolboxUiState,
-    onUIEvent: (UIEvent) -> Unit
-){
+    onUIEvent: (UIEvent) -> Unit,
+) {
     Surface(
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (selectedPage) {
             ToolboxPage.Toolbox -> {
                 ScanScreen(
                     scanState = uiState.scanState,
-                    onUIEvent = onUIEvent
+                    onUIEvent = onUIEvent,
                 )
             }
             ToolboxPage.About -> {
@@ -150,7 +165,7 @@ fun ToolboxRightSide(
             ToolboxPage.Downloader -> {
                 DownloadTaskScreen(
                     onUIEvent = onUIEvent,
-                    downloadTasks = uiState.downloadTasks
+                    downloadTasks = uiState.downloadTasks,
                 )
             }
             else -> {

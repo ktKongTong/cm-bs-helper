@@ -17,23 +17,24 @@ import io.ktlab.bshelper.model.enums.EMapDifficulty
 
 @Composable
 fun BSMapDiffLabel(
-    difficulty:EMapDifficulty,
-    characteristic:ECharacteristic = ECharacteristic.Standard,
+    difficulty: EMapDifficulty,
+    characteristic: ECharacteristic = ECharacteristic.Standard,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
 ) {
-    val color = remember {
-        when(difficulty){
-            EMapDifficulty.Easy -> Color(0xFF009f73)
-            EMapDifficulty.Normal -> Color(0xFF1268A1)
-            EMapDifficulty.Hard -> Color(0xFFFFA500)
-            EMapDifficulty.Expert -> Color(0xFFBB86FC)
-            EMapDifficulty.ExpertPlus -> Color(0xFFB52A1C)
+    val color =
+        remember {
+            when (difficulty) {
+                EMapDifficulty.Easy -> Color(0xFF009f73)
+                EMapDifficulty.Normal -> Color(0xFF1268A1)
+                EMapDifficulty.Hard -> Color(0xFFFFA500)
+                EMapDifficulty.Expert -> Color(0xFFBB86FC)
+                EMapDifficulty.ExpertPlus -> Color(0xFFB52A1C)
+            }
         }
-    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 8.dp)
+        modifier = modifier.padding(horizontal = 8.dp),
     ) {
         Text(
             text = characteristic.human,
@@ -41,7 +42,7 @@ fun BSMapDiffLabel(
             modifier = Modifier.padding(start = 4.dp),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
-            softWrap = false
+            softWrap = false,
         )
         Text(
             text = difficulty.human,
@@ -49,7 +50,7 @@ fun BSMapDiffLabel(
             modifier = Modifier.padding(start = 4.dp),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
-            softWrap = false
+            softWrap = false,
         )
     }
 }

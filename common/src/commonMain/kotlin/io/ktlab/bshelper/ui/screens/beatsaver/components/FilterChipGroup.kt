@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FilterChipGroup(
-    options : List<String>,
+    options: List<String>,
     selectedOption: String,
     onOptionSelected: (String) -> Unit = {},
 ) {
@@ -21,12 +21,11 @@ fun FilterChipGroup(
     ) {
         options.map { text ->
             FilterChip(
-
                 elevation = null,
                 modifier = Modifier,
                 selected = (text == selectedOption),
                 onClick = { onOptionSelected(text) },
-                label = { Text(text) }
+                label = { Text(text) },
             )
         }
     }

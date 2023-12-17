@@ -22,13 +22,13 @@ data class PlaylistFilterParam(
     @QueryParam("includeEmpty") val includeEmpty: Boolean? = null,
     @QueryParam("sortOrder") val sortKey: String = "Relevance",
 ) {
-
-    fun mapFeatureTagsMap() : Map<MapFeatureTag,Boolean> {
+    fun mapFeatureTagsMap(): Map<MapFeatureTag, Boolean> {
         return mapOf(
             MapFeatureTag.Curated to curated,
             MapFeatureTag.VerifiedMapper to verified,
         ).filterValues { it != null } as Map<MapFeatureTag, Boolean>
     }
+
     companion object {
         val default = PlaylistFilterParam()
     }

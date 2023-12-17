@@ -11,9 +11,8 @@ import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
 
-
 @Composable
-fun NextStepIconButton(onClick:() -> Unit) {
+fun NextStepIconButton(onClick: () -> Unit) {
     TextButton(onClick = onClick) {
         Icon(Icons.Filled.Check, contentDescription = null)
         Text(text = stringResource(MR.strings.nextStep))

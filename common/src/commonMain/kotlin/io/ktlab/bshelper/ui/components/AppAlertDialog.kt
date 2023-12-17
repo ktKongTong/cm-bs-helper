@@ -12,9 +12,10 @@ import androidx.compose.ui.window.DialogProperties
 
 interface TriggerScope {
     var open: Boolean
-    val onTrigger:()->Unit
+    val onTrigger: () -> Unit
 }
-class AppAlertDialogScope :TriggerScope {
+
+class AppAlertDialogScope : TriggerScope {
     override var open by mutableStateOf(false)
     override val onTrigger: () -> Unit get() = { open = !open }
 }
@@ -37,7 +38,7 @@ fun AppAlertDialog(
     triggerBy(scope)
     if (scope.open) {
         AlertDialog(
-            onDismissRequest = {scope.open = false},
+            onDismissRequest = { scope.open = false },
             dismissButton = {
                 if (onCancel != null) {
                     TextButton(onClick = {
@@ -49,14 +50,17 @@ fun AppAlertDialog(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { scope.open = false;onConfirm() }) {
+                TextButton(onClick = {
+                    scope.open = false
+                    onConfirm()
+                }) {
                     Text(text = "确定")
                 }
             },
             title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Text(text = title)
                 }
@@ -64,15 +68,15 @@ fun AppAlertDialog(
             text = {
                 if (text.isNotEmpty()) {
                     Text(text = text)
-                }else {
+                } else {
                     content()
                 }
             },
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-            )
+            properties =
+                DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                ),
         )
     }
-
 }

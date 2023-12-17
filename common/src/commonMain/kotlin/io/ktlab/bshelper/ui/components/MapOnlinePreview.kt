@@ -4,6 +4,6 @@ import androidx.compose.runtime.Composable
 
 @Composable
 expect fun MapOnlinePreview(
-    onDismiss : () -> Unit,
+    onDismiss: () -> Unit,
     mapId: String,
 )

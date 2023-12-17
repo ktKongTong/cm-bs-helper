@@ -7,17 +7,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BSMapReviewRespDTO(
-    val docs: List<BSMapReviewDTO>
+    val docs: List<BSMapReviewDTO>,
 )
+
 @Serializable
 enum class BSMapReviewSentiment(val value: String) {
     POSITIVE("POSITIVE"),
-    NEGATIVE("NEGATIVE")
+    NEGATIVE("NEGATIVE"),
 }
 
 @Serializable
 data class BSMapReviewDTO(
-
     val creator: BSUserDTO,
     val id: Int,
     val sentiment: BSMapReviewSentiment,

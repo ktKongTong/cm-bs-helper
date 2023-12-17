@@ -32,9 +32,7 @@ fun BeatSaverRoute(
     snackbarHost: @Composable () -> Unit = {},
     globalUiState: GlobalUiState,
     snackbarHostState: SnackbarHostState,
-){
-
-
+) {
     val beatSaverViewModel: BeatSaverViewModel = koinViewModel()
     val uiState by beatSaverViewModel.uiState.collectAsState()
     val showTopAppBar = !isExpandedScreen
@@ -44,108 +42,127 @@ fun BeatSaverRoute(
         snackbarHost = snackbarHost,
         topBar = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-            ){
-                Row (
-                    modifier = Modifier
-                        .widthIn(Dp.Unspecified,300.dp)
+                modifier =
+                    Modifier
                         .fillMaxWidth()
-                ){
+                        .background(MaterialTheme.colorScheme.surface),
+            ) {
+                Row(
+                    modifier =
+                        Modifier
+                            .widthIn(Dp.Unspecified, 300.dp)
+                            .fillMaxWidth(),
+                ) {
                     TextTabs(
                         selectedTab = uiState.tabType,
-                        onClickTab = { beatSaverViewModel.dispatchUiEvents(BeatSaverUIEvent.SwitchTab(it)) }
+                        onClickTab = { beatSaverViewModel.dispatchUiEvents(BeatSaverUIEvent.SwitchTab(it)) },
                     )
                 }
             }
         },
-        modifier = Modifier
-    ){innerPadding ->
-        val contentModifier = Modifier
-            .padding(innerPadding)
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
+        modifier = Modifier,
+    ) { innerPadding ->
+        val contentModifier =
+            Modifier
+                .padding(innerPadding)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
 
         AnimatedContent(
             targetState = uiState.tabType,
             transitionSpec = {
-                (fadeIn() + slideInHorizontally (
-                    animationSpec = tween(400),
-                    initialOffsetX = { if (targetState < initialState) {- it } else { it } }
-                )).togetherWith(
-                    fadeOut() + slideOutHorizontally(
-                                animationSpec = tween(400),
-                                targetOffsetX = { if (targetState < initialState) { it } else { - it } }
-                            )
-                    )
-            }
-        ) {targetState ->
+                (
+                    fadeIn() +
+                        slideInHorizontally(
+                            animationSpec = tween(400),
+                            initialOffsetX = {
+                                if (targetState < initialState) {
+                                    -it
+                                } else {
+                                    it
+                                }
+                            },
+                        )
+                ).togetherWith(
+                    fadeOut() +
+                        slideOutHorizontally(
+                            animationSpec = tween(400),
+                            targetOffsetX = {
+                                if (targetState < initialState) {
+                                    it
+                                } else {
+                                    -it
+                                }
+                            },
+                        ),
+                )
+            },
+        ) { targetState ->
 
-
-        Surface(contentModifier) {
-            val lazyMapGridState = rememberLazyGridState()
-            val mapperLazyGridState = rememberLazyGridState()
-            val playlistLazyGridState = rememberLazyListState()
-            if(uiState.isLoading){
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(2.dp),
-                    strokeCap = StrokeCap.Round,
-                )
-            }
-            // with animation, targetState changes, but still not working
-            when (targetState) {
-                TabType.Map -> BSMapScreen(
-                    uiState = uiState,
-                    snackbarHostState = snackbarHostState,
-                    onUIEvent = beatSaverViewModel::dispatchUiEvents,
-                    lazyGridState = lazyMapGridState,
-                )
-                TabType.Playlist -> BSPlaylistScreen(
-                    uiState = uiState,
-                    snackbarHostState = snackbarHostState,
-                    onUIEvent = beatSaverViewModel::dispatchUiEvents,
-                    lazyListState = playlistLazyGridState,
-                )
-                TabType.Mapper -> { BSMapperScreen(
-                        uiState = uiState,
-                        snackbarHostState = snackbarHostState,
-                        onUIEvent = beatSaverViewModel::dispatchUiEvents,
-                        lazyGridState = mapperLazyGridState,
+            Surface(contentModifier) {
+                val lazyMapGridState = rememberLazyGridState()
+                val mapperLazyGridState = rememberLazyGridState()
+                val playlistLazyGridState = rememberLazyListState()
+                if (uiState.isLoading) {
+                    LinearProgressIndicator(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(2.dp),
+                        strokeCap = StrokeCap.Round,
                     )
                 }
-            }
-            uiState.selectedBSMap?.let {
-
-                AnimatedVisibility(uiState.selectedBSMap!=null) {
-//                transition
-                    Surface(modifier = Modifier.fillMaxSize()) {
-                        uiState.selectedBSMap?.let {
-                            BSMapDetail(
-                                map = uiState.selectedBSMap!!,
-                                onUIEvent = beatSaverViewModel::dispatchUiEvents,
-                                comments = uiState.selectedBSMapReview,
-                            )
-                        }
+                // with animation, targetState changes, but still not working
+                when (targetState) {
+                    TabType.Map ->
+                        BSMapScreen(
+                            uiState = uiState,
+                            snackbarHostState = snackbarHostState,
+                            onUIEvent = beatSaverViewModel::dispatchUiEvents,
+                            lazyGridState = lazyMapGridState,
+                        )
+                    TabType.Playlist ->
+                        BSPlaylistScreen(
+                            uiState = uiState,
+                            snackbarHostState = snackbarHostState,
+                            onUIEvent = beatSaverViewModel::dispatchUiEvents,
+                            lazyListState = playlistLazyGridState,
+                        )
+                    TabType.Mapper -> {
+                        BSMapperScreen(
+                            uiState = uiState,
+                            snackbarHostState = snackbarHostState,
+                            onUIEvent = beatSaverViewModel::dispatchUiEvents,
+                            lazyGridState = mapperLazyGridState,
+                        )
                     }
                 }
-                return@Surface
-            }
-            uiState.selectedBSMapper?.let {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    BSMapperDetail(
-                        uiState = uiState,
-                        snackbarHostState = snackbarHostState,
-                        onUIEvent = beatSaverViewModel::dispatchUiEvents,
-                        mapFlow = uiState.selectedBSMapperMapFlow,
-                        localState = uiState.localState,
-                    )
+                uiState.selectedBSMap?.let {
+                    AnimatedVisibility(uiState.selectedBSMap != null) {
+//                transition
+                        Surface(modifier = Modifier.fillMaxSize()) {
+                            uiState.selectedBSMap?.let {
+                                BSMapDetail(
+                                    map = uiState.selectedBSMap!!,
+                                    onUIEvent = beatSaverViewModel::dispatchUiEvents,
+                                    comments = uiState.selectedBSMapReview,
+                                )
+                            }
+                        }
+                    }
+                    return@Surface
+                }
+                uiState.selectedBSMapper?.let {
+                    Surface(modifier = Modifier.fillMaxSize()) {
+                        BSMapperDetail(
+                            uiState = uiState,
+                            snackbarHostState = snackbarHostState,
+                            onUIEvent = beatSaverViewModel::dispatchUiEvents,
+                            mapFlow = uiState.selectedBSMapperMapFlow,
+                            localState = uiState.localState,
+                        )
+                    }
                 }
             }
-
-
-        }
         }
     }
 }

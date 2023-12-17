@@ -17,12 +17,11 @@ fun main() {
         Window(
             onCloseRequest = ::exitApplication,
             title = "BSHelper",
-            state = WindowState(size = DpSize(1440.dp, 768.dp))
+            state = WindowState(size = DpSize(1440.dp, 768.dp)),
         ) {
             PreComposeApp {
                 BSHelperApp()
             }
-
         }
     }
     exitProcess(0)

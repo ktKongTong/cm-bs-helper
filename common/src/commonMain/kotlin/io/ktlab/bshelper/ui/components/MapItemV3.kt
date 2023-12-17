@@ -30,29 +30,30 @@ fun MapItemV3(
     onAuthorClick: (IMap) -> Unit = {},
     menuArea: @Composable BoxScope.() -> Unit = {},
 ) {
-    Box (
-        modifier = modifier
-            .clip(shape = MaterialTheme.shapes.medium)
-            .combinedClickable(onLongClick = {onLongClick(map)}, onClick = {onClick(map)})
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
+    Box(
+        modifier =
+            modifier
+                .clip(shape = MaterialTheme.shapes.medium)
+                .combinedClickable(onLongClick = { onLongClick(map) }, onClick = { onClick(map) })
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
     ) {
         Column(
 //                modifier = modifier,
-
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             SongNameLabel(songName = map.getSongName())
             FlowRow {
                 MapperLabel(
                     mapperName = map.getAuthor(),
                     onClick = {},
-                    verified = when (map) {
-                        is FSMapVO -> map.isVerified()
-                        is BSMapVO -> map.uploader.verifiedMapper ?: false
-                        else -> false
-                    },
-                    avatarUrl = map.getAvatar()
+                    verified =
+                        when (map) {
+                            is FSMapVO -> map.isVerified()
+                            is BSMapVO -> map.uploader.verifiedMapper ?: false
+                            else -> false
+                        },
+                    avatarUrl = map.getAvatar(),
                 )
                 when (map) {
                     is FSMapVO -> {
@@ -65,17 +66,18 @@ fun MapItemV3(
                     }
                 }
             }
-            if(map.isRelateWithBSMap()) {
+            if (map.isRelateWithBSMap()) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                 ) {
                     when (map) {
                         is FSMapVO -> {
-                            BSThumbUpLabel(map.bsMapWithUploader?.bsMap?.upVotes?:0)
-                            BSThumbDownLabel(map.bsMapWithUploader?.bsMap?.downVotes?:0)
-                            BSRatingLabel(map.bsMapWithUploader?.bsMap?.score?:0.0)
+                            BSThumbUpLabel(map.bsMapWithUploader?.bsMap?.upVotes ?: 0)
+                            BSThumbDownLabel(map.bsMapWithUploader?.bsMap?.downVotes ?: 0)
+                            BSRatingLabel(map.bsMapWithUploader?.bsMap?.score ?: 0.0)
                         }
                         is BSMapVO -> {
                             BSThumbUpLabel(map.map.upVotes)
@@ -87,7 +89,7 @@ fun MapItemV3(
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 BSNPSLabel(nps = map.getMaxNPS())
                 BSDurationLabel(duration = map.getDuration())
@@ -97,51 +99,54 @@ fun MapItemV3(
             }
             when (map) {
                 is FSMapVO -> {
-                    MapTags(tags = map.bsMapWithUploader?.bsMap?.tags?: listOf())
+                    MapTags(tags = map.bsMapWithUploader?.bsMap?.tags ?: listOf())
                 }
                 is BSMapVO -> {
                     MapTags(tags = map.map.tags)
                 }
             }
         }
-        //gradient and transparent map image
+        // gradient and transparent map image
 
         Box(
             Modifier
-            .align(Alignment.CenterEnd)
-            .widthIn(max = 350.dp)
-            .fillMaxHeight()
+                .align(Alignment.CenterEnd)
+                .widthIn(max = 350.dp)
+                .fillMaxHeight(),
         ) {
             AsyncImageWithFallback(
                 source = map.getAvatar(),
-                modifier = Modifier
-                    .clip(shape = MaterialTheme.shapes.medium),
+                modifier =
+                    Modifier
+                        .clip(shape = MaterialTheme.shapes.medium),
                 contentScale = ContentScale.FillWidth,
-                alpha = 0.5f
+                alpha = 0.5f,
             )
-            Canvas(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .align(Alignment.CenterEnd)) {
-                val gradient = Brush.horizontalGradient(
-                    0f to Color.White,
-                    0.5f to Color.Transparent,
-                )
+            Canvas(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .align(Alignment.CenterEnd),
+            ) {
+                val gradient =
+                    Brush.horizontalGradient(
+                        0f to Color.White,
+                        0.5f to Color.Transparent,
+                    )
                 drawRect(brush = gradient)
             }
         }
-        Box (
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(8.dp)
-        ){
-
-
+        Box(
+            modifier =
+                Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(8.dp),
+        ) {
 //            GradientImage(
 //                source = map.getAvatar()
 //            )
             menuArea()
         }
     }
-
 }

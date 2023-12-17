@@ -9,6 +9,7 @@ data class ExportPlaylist(
     @SerialName("pk") val playlistKey: String,
     @SerialName("map") val mapItems: List<MapItem>,
 )
+
 @Serializable
 data class MapItem(
     @SerialName("id") val mapId: String,

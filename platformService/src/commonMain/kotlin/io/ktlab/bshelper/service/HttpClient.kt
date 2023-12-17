@@ -8,7 +8,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 expect class HttpClientModuleProvider(
-    defaultConfigBlock: HttpClientConfig<*>.() -> Unit
+    defaultConfigBlock: HttpClientConfig<*>.() -> Unit,
 ) {
     fun getPlatformSpecificClient(): HttpClient
 }
@@ -20,10 +20,12 @@ class HttpClientModuleProviderBase {
                 retryOnServerErrors(maxRetries = 5)
             }
             install(ContentNegotiation) {
-                json(Json {
+                json(
+                    Json {
 //                    prettyPrint = true
-                    ignoreUnknownKeys = true
-                })
+                        ignoreUnknownKeys = true
+                    },
+                )
             }
         }.getPlatformSpecificClient()
     }

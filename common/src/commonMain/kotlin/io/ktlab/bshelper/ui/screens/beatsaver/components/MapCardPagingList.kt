@@ -1,8 +1,8 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
-//import app.cash.paging.LoadState
-//import io.ktlab.bshelper.paging.LazyPagingItems
-//import io.ktlab.bshelper.paging.itemKey
+// import app.cash.paging.LoadState
+// import io.ktlab.bshelper.paging.LazyPagingItems
+// import io.ktlab.bshelper.paging.itemKey
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -29,8 +29,7 @@ import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.BeatSaverUIEvent
 import io.ktlab.bshelper.viewmodel.LocalState
 
-//import io.ktkt.bshelper.utils.DownloadInfo
-
+// import io.ktkt.bshelper.utils.DownloadInfo
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -46,75 +45,80 @@ fun MapCardPagingList(
     mapPagingItems: LazyPagingItems<IMap>,
     downloadingTask: Map<String, IDownloadTask.MapDownloadTask>,
     onUIEvent: (UIEvent) -> Unit,
-    stickyHeader : @Composable () -> Unit = {},
+    stickyHeader: @Composable () -> Unit = {},
 ) {
     if (mapPagingItems.loadState.refresh is LoadState.Error) {
         LaunchedEffect(key1 = snackbarHostState) {
             snackbarHostState.showSnackbar(
-                (mapPagingItems.loadState.refresh as LoadState.Error).error.message ?: ""
+                (mapPagingItems.loadState.refresh as LoadState.Error).error.message ?: "",
             )
         }
     }
     Box(modifier = modifier.fillMaxSize()) {
         val windowSizeClass = calculateWindowSizeClass().widthSizeClass
-        val size = when(windowSizeClass) {
-            WindowWidthSizeClass.Expanded -> 2
-            else -> 1
-        }
+        val size =
+            when (windowSizeClass) {
+                WindowWidthSizeClass.Expanded -> 2
+                else -> 1
+            }
         Column {
             stickyHeader()
             if (mapPagingItems.loadState.refresh is LoadState.Loading) {
                 LoadingPlaceholder()
-            }else {
+            } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(size),
                     contentPadding = contentPadding,
                     state = state,
                 ) {
-                // https://issuetracker.google.com/issues/259686541
-                // d
-                items(
-                    count = mapPagingItems.itemCount,
-                    key = mapPagingItems.itemKey { (it as BSMapVO).versions.first().version.hash },
-                    span = { GridItemSpan(1) }
-                ) { index ->
-                    val map = mapPagingItems[index]
+                    // https://issuetracker.google.com/issues/259686541
+                    // d
+                    items(
+                        count = mapPagingItems.itemCount,
+                        key = mapPagingItems.itemKey { (it as BSMapVO).versions.first().version.hash },
+                        span = { GridItemSpan(1) },
+                    ) { index ->
+                        val map = mapPagingItems[index]
 //                    require(map != null){ "map should not be null" }
-                    if (map != null) {
-                        val local = remember { localState.targetPlaylist != null &&
-                                localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID()) }
-                        BSMapCard(
-                            modifier = Modifier.fillMaxSize(),
-                            selectedBSMap = selectedBSMap,
-                            map = map,
-                            checked = mapMultiSelected.contains(map),
-                            multiSelectedMode = mapMultiSelectedMode,
-                            local = local,
-                            selectableIPlaylists = localState.selectableLocalPlaylists,
-                            downloadInfo = downloadingTask[map.getID()+localState.targetPlaylist?.id],
-                            onDownloadMap = { targetMap -> onUIEvent(BeatSaverUIEvent.DownloadMap(targetMap)) },
-                            onPlayPreviewMusicSegment = {
-                                onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map))
-                            },
-                            onUIEvent = onUIEvent,
-                            onMapMultiSelected = { onUIEvent(BeatSaverUIEvent.OnMultiSelectMap(it)) },
-                        )
+                        if (map != null) {
+                            val local =
+                                remember {
+                                    localState.targetPlaylist != null &&
+                                        localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID())
+                                }
+                            BSMapCard(
+                                modifier = Modifier.fillMaxSize(),
+                                selectedBSMap = selectedBSMap,
+                                map = map,
+                                checked = mapMultiSelected.contains(map),
+                                multiSelectedMode = mapMultiSelectedMode,
+                                local = local,
+                                selectableIPlaylists = localState.selectableLocalPlaylists,
+                                downloadInfo = downloadingTask[map.getID() + localState.targetPlaylist?.id],
+                                onDownloadMap = { targetMap -> onUIEvent(BeatSaverUIEvent.DownloadMap(targetMap)) },
+                                onPlayPreviewMusicSegment = {
+                                    onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map))
+                                },
+                                onUIEvent = onUIEvent,
+                                onMapMultiSelected = { onUIEvent(BeatSaverUIEvent.OnMultiSelectMap(it)) },
+                            )
+                        }
                     }
-                }
-                item(key = "loading state",{  GridItemSpan(maxCurrentLineSpan)}) {
-                    if (mapPagingItems.loadState.append is LoadState.Loading || mapPagingItems.loadState.refresh is LoadState.Loading) {
-                        LoadingPlaceholder()
-                    } else if (mapPagingItems.loadState.append.endOfPaginationReached) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize().height(48.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = "😲 no more data", style = MaterialTheme.typography.labelLarge)
+                    item(key = "loading state", { GridItemSpan(maxCurrentLineSpan) }) {
+                        if (mapPagingItems.loadState.append is LoadState.Loading || mapPagingItems.loadState.refresh is LoadState.Loading) {
+                            LoadingPlaceholder()
+                        } else if (mapPagingItems.loadState.append.endOfPaginationReached) {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize().height(48.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(text = "😲 no more data", style = MaterialTheme.typography.labelLarge)
+                            }
                         }
                     }
                 }
-            }
             }
         }
     }
@@ -123,9 +127,10 @@ fun MapCardPagingList(
 @Composable
 private fun LoadingPlaceholder() {
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(modifier = Modifier.padding(16.dp).size(48.dp))
     }

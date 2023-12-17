@@ -4,6 +4,7 @@ import io.ktlab.bshelper.model.MapDifficulty
 import io.ktlab.bshelper.model.enums.ECharacteristic
 import io.ktlab.bshelper.model.enums.EMapDifficulty
 import kotlinx.serialization.Serializable
+
 @Serializable
 data class MapDiffDTO(
     val njs: Double,
@@ -24,9 +25,11 @@ data class MapDiffDTO(
     val paritySummary: ParitySummary,
     val maxScore: Long,
     val label: String? = null,
-){
-
-    fun convertToEntity( hash:String, mapId:String):MapDifficulty{
+) {
+    fun convertToEntity(
+        hash: String,
+        mapId: String,
+    ): MapDifficulty {
         return MapDifficulty(
             seconds = seconds,
             hash = hash,
@@ -50,12 +53,13 @@ data class MapDiffDTO(
         )
     }
 }
+
 @Serializable
 data class ParitySummary(
     val errors: Long,
     val warns: Long,
     val resets: Long,
-){
+) {
 //    fun convertToEntity(): RoomParitySummary {
 //        return RoomParitySummary(
 //            errors = errors,

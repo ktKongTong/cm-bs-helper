@@ -1,10 +1,10 @@
 package io.ktlab.bsmg
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-data class FSMapInfo (
+data class FSMapInfo(
     @SerialName("_version") val version: String,
     @SerialName("_songAuthorName") val songAuthorName: String,
     @SerialName("_songFilename") val songFilename: String,
@@ -16,13 +16,15 @@ data class FSMapInfo (
     @SerialName("_environmentName") val environmentName: String,
     @SerialName("_difficultyBeatmapSets") val difficultyBeatmapSets: List<FSMapDiffSet>,
 )
+
 @Serializable
-data class FSMapDiffSet (
+data class FSMapDiffSet(
     @SerialName("_beatmapCharacteristicName") val characteristicName: String,
     @SerialName("_difficultyBeatmaps") val difficultyBeatmaps: List<FSMapDifficulty>,
 )
+
 @Serializable
-data class FSMapDifficulty (
+data class FSMapDifficulty(
     @SerialName("_difficulty") val difficulty: String,
     @SerialName("_difficultyRank") val difficultyRank: Int,
     @SerialName("_beatmapFilename") val beatmapFilename: String,

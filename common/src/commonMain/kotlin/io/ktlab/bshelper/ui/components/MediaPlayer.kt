@@ -25,19 +25,20 @@ import io.ktlab.bshelper.viewmodel.MediaEvent
 fun MediaPlayer(
     media: IMedia,
     currentMediaState: CurrentMediaState,
-    onUIEvent: (GlobalUIEvent) -> Unit
+    onUIEvent: (GlobalUIEvent) -> Unit,
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val angle by infiniteTransition.animateFloat(
         initialValue = 0F,
         targetValue = 360F,
-        animationSpec = infiniteRepeatable(
-            animation = tween(4000, easing = LinearEasing)
-        )
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(4000, easing = LinearEasing),
+            ),
     )
-    val angleState =  if (currentMediaState == CurrentMediaState.Playing) angle else 0F
+    val angleState = if (currentMediaState == CurrentMediaState.Playing) angle else 0F
     val clickEvent = {
-        when(currentMediaState){
+        when (currentMediaState) {
             CurrentMediaState.Playing -> {
                 onUIEvent(GlobalUIEvent.OnMediaEvent(MediaEvent.Pause))
             }
@@ -48,28 +49,31 @@ fun MediaPlayer(
         }
     }
     Box(
-        modifier = Modifier
-            .padding(8.dp)
-            .clip(shape = CircleShape)
-            .size(48.dp)
-    ){
+        modifier =
+            Modifier
+                .padding(8.dp)
+                .clip(shape = CircleShape)
+                .size(48.dp),
+    ) {
         AnimatedVisibility(visible = media != IMedia.None) {
             when (media) {
                 is IMedia.MapAudioPreview -> {
                     AsyncImageWithFallback(
-                        modifier = Modifier
-                            .clickable { clickEvent() }
-                            .rotate(angleState),
-                        source = media.avatarUrl?:"",
+                        modifier =
+                            Modifier
+                                .clickable { clickEvent() }
+                                .rotate(angleState),
+                        source = media.avatarUrl ?: "",
                         fallback = {
                             Image(
                                 painter = painterResource(MR.images.bs_icon),
                                 contentDescription = "default image",
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(CircleShape)
+                                modifier =
+                                    Modifier
+                                        .size(48.dp)
+                                        .clip(CircleShape),
                             )
-                        }
+                        },
                     )
                 }
                 is IMedia.MapPreview -> {
@@ -79,7 +83,7 @@ fun MediaPlayer(
                     Image(
                         painter = painterResource(MR.images.bs_icon),
                         contentDescription = "default image",
-                        modifier = Modifier
+                        modifier = Modifier,
                     )
                 }
             }

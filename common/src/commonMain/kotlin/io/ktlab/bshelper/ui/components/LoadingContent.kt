@@ -19,10 +19,15 @@ fun LoadingContent(
     emptyContent: @Composable () -> Unit,
     loading: Boolean,
     onRefresh: () -> Unit,
-    content: @Composable () -> Unit
-) {val pullRefreshState = rememberPullRefreshState(loading, onRefresh)
+    content: @Composable () -> Unit,
+) {
+    val pullRefreshState = rememberPullRefreshState(loading, onRefresh)
     Box(Modifier.pullRefresh(pullRefreshState)) {
-        if (empty) {emptyContent()} else {content()}
+        if (empty) {
+            emptyContent()
+        } else {
+            content()
+        }
         PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
     }
 }
@@ -30,9 +35,10 @@ fun LoadingContent(
 @Composable
 fun FullScreenLoading() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .wrapContentSize(Alignment.Center),
     ) {
         CircularProgressIndicator()
     }

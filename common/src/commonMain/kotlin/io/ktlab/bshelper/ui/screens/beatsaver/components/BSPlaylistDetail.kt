@@ -45,16 +45,17 @@ fun BSPlaylistDetail(
     uiState: BeatSaverUiState,
     onUIEvent: (UIEvent) -> Unit,
     mapFlow: Flow<PagingData<IMap>>,
-){
+) {
 //    uiState as BeatSaverUiState.PlaylistQuery
     val mapPagingItems = uiState.selectedBSPlaylistDetailMapFlow.collectAsLazyPagingItems()
-    val downloadingTasks = uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value.flatMap {
-        when(it) {
-            is IDownloadTask.MapDownloadTask -> listOf(it)
-            is IDownloadTask.BatchDownloadTask -> it.taskList
-            is IDownloadTask.PlaylistDownloadTask -> it.taskList
-        }
-    }.associateBy { it.downloadTaskModel.relateEntityId!! + it.targetPlaylist.id }
+    val downloadingTasks =
+        uiState.downloadTaskFlow.collectAsState(initial = emptyList()).value.flatMap {
+            when (it) {
+                is IDownloadTask.MapDownloadTask -> listOf(it)
+                is IDownloadTask.BatchDownloadTask -> it.taskList
+                is IDownloadTask.PlaylistDownloadTask -> it.taskList
+            }
+        }.associateBy { it.downloadTaskModel.relateEntityId!! + it.targetPlaylist.id }
     Row {
         MapCardPagingList(
             Modifier,
@@ -76,7 +77,7 @@ fun BSPlaylistDetail(
                     mapFlow = mapFlow,
                     localState = localState,
                 )
-            }
+            },
         )
     }
 }
@@ -93,50 +94,53 @@ fun BSPlaylistHeader(
     multiSelectedMode: Boolean,
     multiSelectedBSMap: Set<IMap>,
     mapFlow: Flow<PagingData<IMap>>,
-){
+) {
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         Column {
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
-            ){
+            ) {
                 IconButton(
                     onClick = { onUIEvent(BeatSaverUIEvent.OnExitSelectedBSPlaylist) },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
                 ) {
                     Icon(
                         Icons.Rounded.ArrowBack,
-                        contentDescription = "back icon"
+                        contentDescription = "back icon",
                     )
                 }
                 Text(text = playlist.getName(), style = MaterialTheme.typography.titleLarge)
             }
 
-            Row (
-                Modifier.height(IntrinsicSize.Max)
-            ){
+            Row(
+                Modifier.height(IntrinsicSize.Max),
+            ) {
                 AsyncImageWithFallback(
-                    modifier = Modifier
-                        .padding(PaddingValues(start = 0.dp, top = 8.dp, end = 8.dp, bottom = 8.dp))
-                        .size(128.dp, 128.dp)
-                        .align(Alignment.Top)
-                        .clip(shape = RoundedCornerShape(10.dp)),
+                    modifier =
+                        Modifier
+                            .padding(PaddingValues(start = 0.dp, top = 8.dp, end = 8.dp, bottom = 8.dp))
+                            .size(128.dp, 128.dp)
+                            .align(Alignment.Top)
+                            .clip(shape = RoundedCornerShape(10.dp)),
                     source = playlist.getAvatar(),
                 )
 
                 Column(
-                    modifier = Modifier
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier =
+                        Modifier
+                            .padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     MapperLabel(
                         mapperName = playlist.getAuthor(),
                         onClick = {},
                         verified = (playlist as BSPlaylistVO).owner.verifiedMapper?.let { true } == true,
-                        avatarUrl = (playlist as BSPlaylistVO).owner.avatar
+                        avatarUrl = (playlist as BSPlaylistVO).owner.avatar,
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -161,9 +165,9 @@ fun BSPlaylistHeader(
                         )
                     }
                 }
-                Column (
-                    Modifier.fillMaxHeight()
-                ){
+                Column(
+                    Modifier.fillMaxHeight(),
+                ) {
                     DropDownPlaylistSelector(
                         onUIEvent = onUIEvent,
                         modifier = Modifier,
@@ -173,10 +177,10 @@ fun BSPlaylistHeader(
                             onUIEvent(BeatSaverUIEvent.ChangeTargetPlaylist(it))
                         },
                     )
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = if (multiSelectedMode) Arrangement.SpaceBetween else Arrangement.End
-                    ){
+                        horizontalArrangement = if (multiSelectedMode) Arrangement.SpaceBetween else Arrangement.End,
+                    ) {
                         if (multiSelectedMode) {
                             Text(text = "已选中: ${multiSelectedBSMap.size}", modifier = Modifier.align(Alignment.CenterVertically))
                         }
@@ -185,7 +189,7 @@ fun BSPlaylistHeader(
                                 TextButton(onClick = {
                                     if (localState.targetPlaylist != null) {
                                         onUIEvent(BeatSaverUIEvent.MultiDownload(localState.targetPlaylist))
-                                    }else {
+                                    } else {
                                         onUIEvent(GlobalUIEvent.ShowSnackBar("请选择目标歌单"))
                                     }
                                 }) {
@@ -197,7 +201,7 @@ fun BSPlaylistHeader(
                             }, modifier = Modifier) {
                                 if (!multiSelectedMode) {
                                     Icon(Icons.Rounded.QueueMusic, contentDescription = stringResource(MR.strings.multi_select))
-                                }else {
+                                } else {
                                     Icon(Icons.Rounded.Cancel, contentDescription = stringResource(MR.strings.cancel_multi_select))
                                 }
                             }

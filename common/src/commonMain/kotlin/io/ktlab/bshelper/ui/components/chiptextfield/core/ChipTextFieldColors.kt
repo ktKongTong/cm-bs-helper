@@ -21,7 +21,7 @@ interface ChipTextFieldColors {
     fun backgroundColor(
         enabled: Boolean,
         isError: Boolean,
-        interactionSource: InteractionSource
+        interactionSource: InteractionSource,
     ): State<Color>
 }
 
@@ -38,14 +38,14 @@ internal class DefaultChipTextFieldColors(
     override fun textColor(
         enabled: Boolean,
         isError: Boolean,
-        interactionSource: InteractionSource
+        interactionSource: InteractionSource,
     ): State<Color> {
         return rememberUpdatedState(
             when {
                 isError -> errorTextColor
                 !enabled -> textColor
                 else -> disabledTextColor
-            }
+            },
         )
     }
 
@@ -58,7 +58,7 @@ internal class DefaultChipTextFieldColors(
     override fun backgroundColor(
         enabled: Boolean,
         isError: Boolean,
-        interactionSource: InteractionSource
+        interactionSource: InteractionSource,
     ): State<Color> {
         return rememberUpdatedState(if (enabled) backgroundColor else disabledBackgroundColor)
     }

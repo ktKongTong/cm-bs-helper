@@ -1,7 +1,7 @@
 package io.ktlab.bsmg.beatmapv3
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class LightColorEventBox(

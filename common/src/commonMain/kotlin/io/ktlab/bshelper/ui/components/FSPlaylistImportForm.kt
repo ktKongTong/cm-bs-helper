@@ -22,8 +22,8 @@ import io.ktlab.bshelper.viewmodel.HomeUIEvent
 @Composable
 fun FSPlaylistImportForm(
     onUIEvent: (UIEvent) -> Unit,
-    selectablePlaylists : List<IPlaylist> = emptyList(),
-    triggerBy : @Composable TriggerScope.() -> Unit =
+    selectablePlaylists: List<IPlaylist> = emptyList(),
+    triggerBy: @Composable TriggerScope.() -> Unit =
         { TextButton(onClick = { onTrigger() }) { Text(text = "导入") } },
 ) {
     var uuid by remember { mutableStateOf("") }
@@ -31,23 +31,27 @@ fun FSPlaylistImportForm(
     var playlist by remember { mutableStateOf<IPlaylist?>(null) }
     AppAlertDialog(
         title = "导入歌单",
-        onConfirm = { uuid.isNotEmpty().takeIf{playlist != null}?.let {
-            onUIEvent(HomeUIEvent.ImportPlaylist(uuid, playlist!!))
-        } },
+        onConfirm = {
+            uuid.isNotEmpty().takeIf { playlist != null }?.let {
+                onUIEvent(HomeUIEvent.ImportPlaylist(uuid, playlist!!))
+            }
+        },
         triggerBy = triggerBy,
-    ){
+    ) {
         var enable by remember { mutableStateOf(true) }
-        Column (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            val focusManager = LocalFocusManager.current
-            OutlinedTextField(
-                modifier = Modifier
+        Column(
+            modifier =
+                Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            val focusManager = LocalFocusManager.current
+            OutlinedTextField(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
                 value = uuid,
                 onValueChange = { uuid = it },
                 label = { Text(text = "key") },
@@ -65,6 +69,5 @@ fun FSPlaylistImportForm(
                 selectedIPlaylist = playlist,
             )
         }
-
     }
 }

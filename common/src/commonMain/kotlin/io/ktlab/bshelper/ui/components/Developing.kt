@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,27 +31,29 @@ fun Developing() {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
                     painter = painterResource(MR.images.developing),
-                    contentDescription = null, // decorative
+                    contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .height(100.dp)
-                        .width(100.dp)
-                        .combinedClickable (onClick = {},
-                            onLongClick = {
-
-                            }
-                        )
+                    modifier =
+                        Modifier
+                            .height(100.dp)
+                            .width(100.dp)
+                            .combinedClickable(
+                                onClick = {},
+                                onLongClick = {
+                                },
+                            ),
                 )
                 Text(
                     stringResource(MR.strings.dev),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .scale(2f)
+                    modifier =
+                        Modifier
+                            .padding(top = 16.dp)
+                            .scale(2f),
                 )
             }
         }

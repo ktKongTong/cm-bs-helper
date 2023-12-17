@@ -24,8 +24,9 @@ fun BSSearchBar(
     val focusManager = LocalFocusManager.current
     Box(modifier.wrapContentHeight()) {
         SearchBar(
-            modifier = Modifier
-                .align(Alignment.TopCenter),
+            modifier =
+                Modifier
+                    .align(Alignment.TopCenter),
             query = query,
             onQueryChange = onQueryChange,
             onSearch = { focusManager.clearFocus() },
@@ -34,7 +35,7 @@ fun BSSearchBar(
             placeholder = { Text(text = "Search") },
             leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = "Search Icon") },
             trailingIcon = {
-                if (query.isNotEmpty()){
+                if (query.isNotEmpty()) {
                     IconButton(onClick = { onClear() }) {
                         Icon(Icons.Rounded.Clear, stringResource(MR.strings.clear))
                     }

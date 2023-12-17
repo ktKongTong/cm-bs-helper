@@ -9,12 +9,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.ui.components.TriggerScope
 
-
-class ExposedDropdownMenuTriggerScope:TriggerScope{
+class ExposedDropdownMenuTriggerScope : TriggerScope {
     override var open by mutableStateOf(false)
     override val onTrigger: () -> Unit
         get() = { open = !open }
-
 }
 
 @Composable
@@ -30,14 +28,15 @@ fun IconExposedDropDownMenu(
     val scope = rememberDropdownMenuTriggerScope()
     IconButton(
         modifier = modifier,
-        onClick = { scope.open = true }) {
+        onClick = { scope.open = true },
+    ) {
         Icon(Icons.Default.MoreVert, contentDescription = "")
     }
     DropdownMenu(
         expanded = scope.open,
         onDismissRequest = { scope.open = false },
-        modifier = Modifier
-    ){
+        modifier = Modifier,
+    ) {
         content(scope)
     }
 }

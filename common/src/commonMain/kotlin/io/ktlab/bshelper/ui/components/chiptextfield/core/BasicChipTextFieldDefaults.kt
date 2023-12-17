@@ -10,9 +10,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object BasicChipTextFieldDefaults {
-    private const val disabledContentAlpha = 0.38f
+    private val disabledContentAlpha = 0.38f
 
-    private val DefaultPlatformTextStyle = PlatformTextStyle(null,null)
+    private val DefaultPlatformTextStyle = PlatformTextStyle(null, null)
     private val DefaultTextStyle = TextStyle.Default.copy(platformStyle = DefaultPlatformTextStyle)
 
     val textStyle: TextStyle = DefaultTextStyle
@@ -61,13 +61,14 @@ object BasicChipTextFieldDefaults {
         errorCursorColor: Color = Color.Red,
         backgroundColor: Color = Color.Transparent,
         disabledBackgroundColor: Color = Color.Transparent,
-    ): ChipTextFieldColors = DefaultChipTextFieldColors(
-        textColor = textColor,
-        disabledTextColor = disabledTextColor,
-        errorTextColor = errorTextColor,
-        cursorColor = cursorColor,
-        errorCursorColor = errorCursorColor,
-        backgroundColor = backgroundColor,
-        disabledBackgroundColor = disabledBackgroundColor,
-    )
+    ): ChipTextFieldColors =
+        DefaultChipTextFieldColors(
+            textColor = textColor,
+            disabledTextColor = disabledTextColor,
+            errorTextColor = errorTextColor,
+            cursorColor = cursorColor,
+            errorCursorColor = errorCursorColor,
+            backgroundColor = backgroundColor,
+            disabledBackgroundColor = disabledBackgroundColor,
+        )
 }

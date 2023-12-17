@@ -3,14 +3,12 @@ package io.ktlab.bsmg.beatmapv2
 import io.ktlab.bsmg.CustomData
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonObject
-
 
 /**
  * @see <a href="https://bsmg.wiki/mapping/difficulty-format-v2.html#v2-base-object">difficulty format v2</a>
  */
 @Serializable
-data class V2BeatMapObject (
+data class V2BeatMapObject(
     val _version: String,
     val _notes: List<Note>,
     val _sliders: List<Sliders>? = null,

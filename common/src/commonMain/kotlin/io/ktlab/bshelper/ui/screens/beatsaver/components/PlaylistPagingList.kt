@@ -26,28 +26,26 @@ import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.LocalState
 
-
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PlaylistPagingList(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     state: LazyGridState = rememberLazyGridState(),
-    lazyListState : LazyListState = rememberLazyListState(),
+    lazyListState: LazyListState = rememberLazyListState(),
     snackbarHostState: SnackbarHostState,
     localState: LocalState,
     mapMultiSelectedMode: Boolean,
-    multiSelectedMaps:Set<IMap> = setOf(),
+    multiSelectedMaps: Set<IMap> = setOf(),
     playlistPagingItems: LazyPagingItems<IPlaylist>,
     downloadingTask: Map<String, IDownloadTask.PlaylistDownloadTask>,
     onUIEvent: (UIEvent) -> Unit,
-    stickyHeader : @Composable () -> Unit = {},
+    stickyHeader: @Composable () -> Unit = {},
 ) {
-
     if (playlistPagingItems.loadState.refresh is LoadState.Error) {
         LaunchedEffect(key1 = snackbarHostState) {
             snackbarHostState.showSnackbar(
-                (playlistPagingItems.loadState.refresh as LoadState.Error).error.message ?: ""
+                (playlistPagingItems.loadState.refresh as LoadState.Error).error.message ?: "",
             )
         }
     }
@@ -57,15 +55,16 @@ fun PlaylistPagingList(
             stickyHeader()
             if (playlistPagingItems.loadState.refresh is LoadState.Loading) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator(modifier = Modifier.padding(16.dp))
                 }
-            }else {
-                LazyColumn (
+            } else {
+                LazyColumn(
                     contentPadding = contentPadding,
                     state = lazyListState,
                 ) {
@@ -78,34 +77,33 @@ fun PlaylistPagingList(
                         playlist?.let {
                             BSPlaylistCard(
                                 playlist = it,
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .fillMaxWidth()
-                                    .wrapContentHeight(),
+                                modifier =
+                                    Modifier
+                                        .padding(8.dp)
+                                        .fillMaxWidth()
+                                        .wrapContentHeight(),
                                 onUIEvent = onUIEvent,
-                                downloadInfo = downloadingTask[it.id]
+                                downloadInfo = downloadingTask[it.id],
                             )
                         }
                     }
                     item {
                         if (playlistPagingItems.loadState.append is LoadState.Loading) {
                             CircularProgressIndicator(modifier = Modifier.padding(16.dp))
-                        }else if(playlistPagingItems.loadState.append.endOfPaginationReached){
-                            Row (
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(48.dp),
+                        } else if (playlistPagingItems.loadState.append.endOfPaginationReached) {
+                            Row(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(48.dp),
                                 horizontalArrangement = Arrangement.Center,
-                            ){
+                            ) {
                                 Text(text = "😲 no more data", style = MaterialTheme.typography.bodyMedium)
                             }
                         }
                     }
                 }
             }
-
-
         }
-
     }
 }

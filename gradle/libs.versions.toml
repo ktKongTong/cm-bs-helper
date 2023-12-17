@@ -3,13 +3,13 @@
 gradle-versions-plugin = "0.48.0"
 version-catalog-update-plugin = "0.8.1"
 android-gradle-plugin = "8.1.1"
-jetbrains-compose-plugin = "1.5.10"
-
+jetbrains-compose-plugin = "1.5.11"
+spotless-plugin = "6.23.2"
 # kotlin & kotlinx
 ksp = "1.9.10-1.0.13"
-kotlin = "1.9.10"
+kotlin = "1.9.21"
 kotlinx-immutable = "0.3.5"
-kotlinx-serialization = "1.6.0"
+kotlinx-serialization = "1.6.2"
 kotlinx-datetime = "0.4.1"
 kotlinx-coroutines =  "1.7.3"
 kotlinx-io = "0.3.0"
@@ -21,7 +21,7 @@ slf4j = "2.0.9"
 # db
 sqldelight = "2.0.0"
 # web client
-ktor = "2.3.6"
+ktor = "2.3.7"
 # multiplatform resources access
 moko-resources = "0.23.0"
 # paging
@@ -45,9 +45,9 @@ kmpalette = "2.2.0"
 # androidx
 androidx-corektx = "1.12.0"
 androidx-appcompat = "1.6.1"
-androidx-activity-compose = "1.7.2"
+androidx-activity-compose = "1.8.2"
 androidx-annotation = "1.7.0"
-androidx-collection = "1.3.0-rc01"
+androidx-collection = "1.3.0"
 
 beatmap-io = "1.0.+"
 [libraries]
@@ -150,7 +150,7 @@ kown = { module = "io.ktlab.mvn:kown", version = "0.0.1-alpha01" }
 # gradle
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions-plugin" }
 version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update-plugin" }
-
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless-plugin" }
 # kotlin
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

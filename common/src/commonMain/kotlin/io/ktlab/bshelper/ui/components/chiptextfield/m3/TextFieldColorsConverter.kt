@@ -15,7 +15,7 @@ fun TextFieldColors.toChipTextFieldColors(): ChipTextFieldColors {
         override fun textColor(
             enabled: Boolean,
             isError: Boolean,
-            interactionSource: InteractionSource
+            interactionSource: InteractionSource,
         ): State<Color> {
             return this@toChipTextFieldColors.textColor(
                 enabled = enabled,
@@ -33,7 +33,7 @@ fun TextFieldColors.toChipTextFieldColors(): ChipTextFieldColors {
         override fun backgroundColor(
             enabled: Boolean,
             isError: Boolean,
-            interactionSource: InteractionSource
+            interactionSource: InteractionSource,
         ): State<Color> {
             return this@toChipTextFieldColors.containerColor(
                 enabled = enabled,

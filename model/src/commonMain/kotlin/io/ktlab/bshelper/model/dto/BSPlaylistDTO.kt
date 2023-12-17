@@ -8,7 +8,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BSPlaylistDTO (
+data class BSPlaylistDTO(
     val createdAt: String,
     val description: String,
     val downloadURL: String,
@@ -24,7 +24,7 @@ data class BSPlaylistDTO (
 )
 
 @Serializable
-enum class PlaylistType(val value:String) {
+enum class PlaylistType(val value: String) {
     Private("Private"),
     Public("Public"),
     System("System"),
@@ -32,7 +32,7 @@ enum class PlaylistType(val value:String) {
 }
 
 @Serializable
-data class BSPlaylistFullDTO (
+data class BSPlaylistFullDTO(
     @Serializable(with = LocalDateTimeAsStringSerializer::class)
     val createdAt: LocalDateTime,
     @Serializable(with = LocalDateTimeAsStringSerializer::class)
@@ -42,7 +42,6 @@ data class BSPlaylistFullDTO (
     @SerialName("name")
     val _name: String,
     val curator: BSUserDTO? = null,
-
     val owner: BSUserDTO,
     val playlistId: Int,
     val playlistImage: String,
@@ -56,7 +55,6 @@ data class BSPlaylistFullDTO (
     @Serializable(with = LocalDateTimeAsStringSerializer::class)
     val updatedAt: LocalDateTime,
 ) {
-
     fun convertToVO(): BSPlaylistVO {
         return BSPlaylistVO(
             BSPlaylist(
@@ -78,8 +76,10 @@ data class BSPlaylistFullDTO (
                 maxNps = stats?.maxNps ?: 0.0,
                 minNps = stats?.minNps ?: 0.0,
                 totalDuration = stats?.totalDuration ?: 0,
-                songsChangedAt = null
-            ), owner.convertToEntity(), curator?.convertToEntity()
+                songsChangedAt = null,
+            ),
+            owner.convertToEntity(),
+            curator?.convertToEntity(),
         )
     }
 }

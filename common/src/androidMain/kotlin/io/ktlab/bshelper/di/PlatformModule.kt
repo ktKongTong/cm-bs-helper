@@ -5,17 +5,17 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal actual object PlatformModule {
-
     actual fun getModules(): List<Module> {
-        val modules = module {
-            single {
-                createClipboardManager(BSHelperClipboardFactory(get()))
+        val modules =
+            module {
+                single {
+                    createClipboardManager(BSHelperClipboardFactory(get()))
+                }
+                single { createMediaPlayer() }
+                single { DBAdapter.createDatabase(DBDriverFactory(get())) }
+                single { StorageService(get()) }
+                single { createDataStore(get()) }
             }
-            single { createMediaPlayer() }
-            single { DBAdapter.createDatabase(DBDriverFactory(get())) }
-            single { StorageService(get()) }
-            single { createDataStore(get()) }
-        }
         return listOf(modules)
     }
 }

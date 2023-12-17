@@ -16,11 +16,10 @@ import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.enums.MapTagType
 import io.ktlab.bshelper.model.enums.MapTag as MapTagEnum
 
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MapTags(
-    tags:List<String>,
+    tags: List<String>,
     modifier: Modifier = Modifier,
 ) {
     FlowRow {
@@ -31,11 +30,9 @@ fun MapTags(
 }
 
 @Composable
-fun MapTag(
-    tag:String
-) {
+fun MapTag(tag: String) {
     MapTagEnum.fromSlug(tag)?.let {
-        when(it.type) {
+        when (it.type) {
             MapTagType.Style -> StyleMapTag(it.human)
             MapTagType.Genre -> GenreMapTag(it.human)
             else -> {}
@@ -44,32 +41,29 @@ fun MapTag(
 }
 
 @Composable
-private fun StyleMapTag(
-    tag:String
-) {
+private fun StyleMapTag(tag: String) {
     Row(
-        modifier = Modifier
-            .padding(horizontal = 2.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(Color.Red, RoundedCornerShape(4.dp))
-            .padding(2.dp)
+        modifier =
+            Modifier
+                .padding(horizontal = 2.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(Color.Red, RoundedCornerShape(4.dp))
+                .padding(2.dp),
     ) {
         Text(text = tag, softWrap = false, maxLines = 1, color = Color.White, style = MaterialTheme.typography.labelSmall)
     }
 }
 
 @Composable
-private fun GenreMapTag(
-    tag:String
-) {
+private fun GenreMapTag(tag: String) {
     Row(
-        modifier = Modifier
-            .padding(horizontal = 2.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(Color(0xFF144599), RoundedCornerShape(4.dp))
-            .padding(2.dp)
-
+        modifier =
+            Modifier
+                .padding(horizontal = 2.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(Color(0xFF144599), RoundedCornerShape(4.dp))
+                .padding(2.dp),
     ) {
-        Text(text = tag, softWrap = false, maxLines = 1, color = Color.White,style = MaterialTheme.typography.labelSmall)
+        Text(text = tag, softWrap = false, maxLines = 1, color = Color.White, style = MaterialTheme.typography.labelSmall)
     }
 }

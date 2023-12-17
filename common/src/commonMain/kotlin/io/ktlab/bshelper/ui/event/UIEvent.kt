@@ -1,9 +1,7 @@
 package io.ktlab.bshelper.ui.event
 import androidx.compose.material3.SnackbarDuration
 
-open class UIEvent {
-
-}
+open class UIEvent
 
 data class SnackBarMessage(
     val id: Long,

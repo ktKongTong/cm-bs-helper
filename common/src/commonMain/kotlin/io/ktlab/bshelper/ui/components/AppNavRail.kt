@@ -22,42 +22,42 @@ fun AppNavRail(
     navigateAction: (String) -> Unit,
     backAction: () -> Unit = {},
     modifier: Modifier = Modifier,
-    header: @Composable ColumnScope.() -> Unit = {}
+    header: @Composable ColumnScope.() -> Unit = {},
 ) {
     NavigationRail(
         header = header,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Spacer(Modifier.weight(1f))
         NavigationRailItem(
             selected = currentRoute == BSHelperDestinations.HOME_ROUTE,
-            onClick = { if(currentRoute != BSHelperDestinations.HOME_ROUTE) navigateAction(BSHelperDestinations.HOME_ROUTE) },
+            onClick = { if (currentRoute != BSHelperDestinations.HOME_ROUTE) navigateAction(BSHelperDestinations.HOME_ROUTE) },
             icon = { Icon(Icons.Filled.Home, stringResource(R.strings.home_title)) },
             label = { Text(stringResource(R.strings.home_title)) },
-            alwaysShowLabel = false
+            alwaysShowLabel = false,
         )
         NavigationRailItem(
             selected = currentRoute == BSHelperDestinations.BEAT_SAVER_ROUTE,
-            onClick = { if(currentRoute != BSHelperDestinations.BEAT_SAVER_ROUTE) navigateAction(BSHelperDestinations.BEAT_SAVER_ROUTE) },
+            onClick = { if (currentRoute != BSHelperDestinations.BEAT_SAVER_ROUTE) navigateAction(BSHelperDestinations.BEAT_SAVER_ROUTE) },
             icon = { Icon(Icons.Filled.Web, stringResource(R.strings.beatsaver_title)) },
             label = { Text(stringResource(R.strings.beatsaver_title)) },
-            alwaysShowLabel = false
+            alwaysShowLabel = false,
         )
         NavigationRailItem(
             selected = currentRoute == BSHelperDestinations.TOOLBOX_ROUTE,
-            onClick = { if(currentRoute != BSHelperDestinations.TOOLBOX_ROUTE)  navigateAction(BSHelperDestinations.TOOLBOX_ROUTE) },
+            onClick = { if (currentRoute != BSHelperDestinations.TOOLBOX_ROUTE) navigateAction(BSHelperDestinations.TOOLBOX_ROUTE) },
             icon = { Icon(Icons.Filled.Settings, stringResource(R.strings.toolbox_title)) },
             label = { Text(stringResource(R.strings.toolbox_title)) },
-            alwaysShowLabel = false
+            alwaysShowLabel = false,
         )
         Spacer(Modifier.weight(1f))
     }
 }
 
-//@Preview("Drawer contents")
-//@Preview("Drawer contents (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//fun PreviewAppNavRail() {
+// @Preview("Drawer contents")
+// @Preview("Drawer contents (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
+// @Composable
+// fun PreviewAppNavRail() {
 //    LBHelperTheme {
 //        AppNavRail(
 //            currentRoute = LBHelperDestinations.HOME_ROUTE,
@@ -66,4 +66,4 @@ fun AppNavRail(
 //            navigateToBSOnline = {}
 //        )
 //    }
-//}
+// }

@@ -1,6 +1,11 @@
 package io.ktlab.bshelper.model.vo
 
-import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.BSMap
+import io.ktlab.bshelper.model.BSMapVersion
+import io.ktlab.bshelper.model.BSUser
+import io.ktlab.bshelper.model.FSMap
+import io.ktlab.bshelper.model.IMap
+import io.ktlab.bshelper.model.MapDifficulty
 import io.ktlab.bshelper.model.enums.EMapDifficulty
 import okio.Path.Companion.toPath
 import kotlin.time.DurationUnit
@@ -18,8 +23,7 @@ class FSMapVO(
     val fsMap: FSMap,
     val difficulties: List<MapDifficulty>? = null,
     val bsMapWithUploader: BsMapWithUploader? = null,
-): IMap
-{
+) : IMap {
     override fun getSongName(): String {
         return bsMapWithUploader?.bsMap?.name ?: fsMap.name
     }
@@ -43,16 +47,18 @@ class FSMapVO(
     }
 
     override fun getAuthorAvatar(): String {
-        return bsMapWithUploader?.uploader?.avatar ?:
-        if (fsMap.relativeCoverFilename.isNotEmpty()) {
-            fsMap.dirName.toPath().resolve(fsMap.relativeCoverFilename).toString()
-        }else ""
+        return bsMapWithUploader?.uploader?.avatar
+            ?: if (fsMap.relativeCoverFilename.isNotEmpty()) {
+                fsMap.dirName.toPath().resolve(fsMap.relativeCoverFilename).toString()
+            } else {
+                ""
+            }
     }
-
 
     fun isCurated(): Boolean {
         return false
     }
+
     fun isVerified(): Boolean {
         return bsMapWithUploader?.uploader?.verifiedMapper ?: false
     }
@@ -76,7 +82,7 @@ class FSMapVO(
             }
 
             return fsMap.duration.toString()
-        }catch (e:Exception) {
+        } catch (e: Exception) {
             return "0"
         }
     }
@@ -98,9 +104,9 @@ class FSMapVO(
                 return MapDiff.build()
             }
             return MapDiff.build().addDiff(
-                difficulties.map { it.difficulty }
+                difficulties.map { it.difficulty },
             )
-        }catch (e:Exception) {
+        } catch (e: Exception) {
             return MapDiff.build()
         }
     }
@@ -111,7 +117,7 @@ class FSMapVO(
                 return bsMapWithUploader.bsMap.bpm.toString()
             }
             return "0"
-        }catch (e:Exception) {
+        } catch (e: Exception) {
             return "0"
         }
     }
@@ -122,7 +128,7 @@ class FSMapVO(
                 return mapOf()
             }
             return difficulties.associate { it.difficulty to it.notes.toString() }
-        }catch (e:Exception) {
+        } catch (e: Exception) {
             return mapOf()
         }
     }
@@ -133,7 +139,7 @@ class FSMapVO(
                 return difficulties.maxOf { it.notes!! }
             }
             return 0
-        } catch (e:Exception) {
+        } catch (e: Exception) {
 //            Log.e("FSMapView",(e.message?:"") + this.toString())
             return 0
         }
@@ -147,7 +153,7 @@ class FSMapVO(
             if (difficulties != null) {
                 return difficulties.maxOf { it.nps!! }
             }
-        }catch (e:Exception) {
+        } catch (e: Exception) {
 //            Log.e("FSMapView",(e.message?:"") + this.toString())
         }
         return 0.0
@@ -160,5 +166,4 @@ class FSMapVO(
     override fun isRelateWithBSMap(): Boolean {
         return bsMapWithUploader != null
     }
-
 }

@@ -7,7 +7,6 @@ import io.ktlab.bshelper.model.enums.MapFeatureTag
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
-
 data class MapFilterParam(
     @QueryParam("q") val queryKey: String = "",
     // Tag query, separated by , (and) or | (or). Excluded tags are prefixed with !.
@@ -43,10 +42,9 @@ data class MapFilterParam(
     @QueryParam("verified") val verified: Boolean? = null,
     @BSMapFeatTag(MapFeatureTag.FullSpread)
     @QueryParam("fullSpread") val fullSpread: Boolean? = null,
-
     @QueryParam("sortOrder") val sortKey: String = "Relevance",
 ) {
-    fun mapFeatureTagsMap() : Map<MapFeatureTag,Boolean> {
+    fun mapFeatureTagsMap(): Map<MapFeatureTag, Boolean> {
         return mapOf(
             MapFeatureTag.AI to automapper,
             MapFeatureTag.Chroma to chroma,
@@ -59,6 +57,7 @@ data class MapFilterParam(
             MapFeatureTag.FullSpread to fullSpread,
         ).filterValues { it != null } as Map<MapFeatureTag, Boolean>
     }
+
     companion object {
         val default = MapFilterParam()
     }

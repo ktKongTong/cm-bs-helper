@@ -2,12 +2,13 @@ package io.ktlab.bshelper.model.enums
 
 import io.ktlab.bshelper.model.IMap
 
-
 enum class SortKey(val human: String, val slug: String) {
     DEFAULT("默认", "default"),
     NPS("NPS", "nps"),
     DURATION("时长", "duration"),
-    NOTES("方块数", "notes");
+    NOTES("方块数", "notes"),
+    ;
+
     //    BLOCKS,
     override fun toString(): String {
         return human
@@ -15,15 +16,18 @@ enum class SortKey(val human: String, val slug: String) {
 
     companion object {
         private val map = entries.associateBy(SortKey::slug)
+
         fun fromSlug(slug: String) = map[slug]
+
         val allSortKeys = entries.toTypedArray()
     }
 }
 
-
 enum class SortType {
     ASC,
-    DESC;
+    DESC,
+    ;
+
     fun reverse(): SortType {
         return if (this == ASC) DESC else ASC
     }
@@ -39,7 +43,7 @@ fun SortKey.getSortKey(): (IMap) -> Comparable<*> {
     }
 }
 
-fun SortType.getCompareByFunction() : (Comparable<*>) -> Comparator<Comparable<*>> {
+fun SortType.getCompareByFunction(): (Comparable<*>) -> Comparator<Comparable<*>> {
     return when (this) {
         SortType.ASC -> { x -> compareBy() }
         SortType.DESC -> { x -> compareBy() }

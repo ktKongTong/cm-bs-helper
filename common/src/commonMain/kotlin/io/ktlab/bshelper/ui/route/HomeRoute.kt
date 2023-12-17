@@ -13,16 +13,16 @@ import moe.tlaster.precompose.koin.koinViewModel
 fun HomeRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
-    snackbarHost : @Composable () -> Unit = {},
+    snackbarHost: @Composable () -> Unit = {},
     snackbarHostState: SnackbarHostState,
     globalUiState: GlobalUiState,
-    homeViewModel:HomeViewModel = koinViewModel<HomeViewModel>()
-){
+    homeViewModel: HomeViewModel = koinViewModel<HomeViewModel>(),
+) {
     val uiState by homeViewModel.uiState.collectAsState()
 //    val uiState = homeViewModel.uiState.collectAsState(homeViewModel.viewModelState.value.toUiState()).value
 //    val homeListLazyListState = rememberLazyListState()
 //    val playlistDetailLazyListStates = when (uiState) {
-////        is HomeUiState.Empty ->  emptyList<Pair<String,String>>()
+// //        is HomeUiState.Empty ->  emptyList<Pair<String,String>>()
 //        else ->emptyList<Pair<String,String>>()
 //    }.associate { playlist ->
 //        key(playlist.first) {
@@ -31,12 +31,12 @@ fun HomeRoute(
 //    }
 //    when (getHomeScreenType(isExpandedScreen, uiState)) {
 //        HomeScreenType.PlaylistWithPlaylistDetails -> {
-            HomeScreen(
-                uiState = uiState,
-                showTopAppBar = isExpandedScreen,
-                onUIEvent = homeViewModel::dispatchUiEvents,
-                snackbarHost = snackbarHost
-            )
+    HomeScreen(
+        uiState = uiState,
+        showTopAppBar = isExpandedScreen,
+        onUIEvent = homeViewModel::dispatchUiEvents,
+        snackbarHost = snackbarHost,
+    )
 //        }
 //        else -> {}
 //    }
@@ -46,22 +46,22 @@ private enum class HomeScreenType {
     PlaylistWithPlaylistDetails,
     Playlist,
     PlaylistDetails,
-    MapDetails
+    MapDetails,
 }
 
-//private fun getHomeScreenType(
+// private fun getHomeScreenType(
 //    isExpandedScreen: Boolean,
 //    uiState: HomeUiState
-//): HomeScreenType = when (isExpandedScreen) {
+// ): HomeScreenType = when (isExpandedScreen) {
 //    false -> {
 //        when (uiState) {
-////            is HomeUiState.Empty -> {
-////                HomeScreenType.PlaylistWithPlaylistDetails
-////            }
+// //            is HomeUiState.Empty -> {
+// //                HomeScreenType.PlaylistWithPlaylistDetails
+// //            }
 //            else -> {
 //                HomeScreenType.PlaylistWithPlaylistDetails
 //            }
 //        }
 //    }
 //    true -> HomeScreenType.PlaylistWithPlaylistDetails
-//}
+// }

@@ -24,9 +24,8 @@ fun MapCardList(
     mapListState: MapListState,
     mapList: List<IMap>,
     onUIEvent: (UIEvent) -> Unit,
-    stickyHeader : @Composable () -> Unit = {},
+    stickyHeader: @Composable () -> Unit = {},
 ) {
-
     val state = rememberLazyListState()
     val mapMultiSelected = mapListState.multiSelectedMapHashMap
     val mapMultiSelectedMode = mapListState.isMapMultiSelectMode
@@ -43,20 +42,20 @@ fun MapCardList(
             }
         }
 //        mapListFilter
-        val mapListFiltered = mapList.filter{true}
+        val mapListFiltered = mapList.filter { true }
         val mapListSorted = mapListFiltered.sortedWith(sortRule.getSortKeyComparator())
         if (mapListSorted.isNotEmpty()) {
-            items(mapListSorted.size){
+            items(mapListSorted.size) {
                 val map = mapListSorted[it]
                 MapCard(
                     map = map,
                     checked = mapMultiSelected.containsKey(map.getID()),
                     multiSelectedMode = mapMultiSelectedMode,
                     onUIEvent = onUIEvent,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
             }
-        }else {
+        } else {
             item {
                 EmptyContent(Modifier.padding(top = 32.dp))
             }

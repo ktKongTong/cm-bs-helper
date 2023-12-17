@@ -13,12 +13,11 @@ import moe.tlaster.precompose.koin.koinViewModel
 fun ToolboxRoute(
     isExpandedScreen: Boolean,
     openDrawer: () -> Unit,
-    snackbarHost : @Composable () -> Unit = {},
+    snackbarHost: @Composable () -> Unit = {},
     snackbarHostState: SnackbarHostState,
     globalUiState: GlobalUiState,
-    toolboxViewModel: ToolboxViewModel = koinViewModel<ToolboxViewModel>()
-){
-
+    toolboxViewModel: ToolboxViewModel = koinViewModel<ToolboxViewModel>(),
+) {
     val uiState by toolboxViewModel.uiState.collectAsState()
     ToolboxScreen(
         uiState = uiState,
@@ -26,6 +25,6 @@ fun ToolboxRoute(
         openDrawer = openDrawer,
         onUIEvent = toolboxViewModel::dispatchUiEvents,
         snackbarHost = snackbarHost,
-        globalUiState = globalUiState
+        globalUiState = globalUiState,
     )
 }

@@ -18,11 +18,10 @@ import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.viewmodel.HomeUIEvent
 
-
 @Composable
 fun FSPlaylistImportFormV2(
     onUIEvent: (UIEvent) -> Unit,
-    selectablePlaylists : List<IPlaylist> = emptyList(),
+    selectablePlaylists: List<IPlaylist> = emptyList(),
     openState: MutableState<Boolean>,
 ) {
     var uuid by remember { mutableStateOf("") }
@@ -30,23 +29,27 @@ fun FSPlaylistImportFormV2(
     var playlist by remember { mutableStateOf<IPlaylist?>(null) }
     AppDialog(
         title = "导入歌单",
-        onConfirm = { uuid.isNotEmpty().takeIf{playlist != null}?.let {
-            onUIEvent(HomeUIEvent.ImportPlaylist(uuid, playlist!!))
-        } },
+        onConfirm = {
+            uuid.isNotEmpty().takeIf { playlist != null }?.let {
+                onUIEvent(HomeUIEvent.ImportPlaylist(uuid, playlist!!))
+            }
+        },
         openState = openState,
-    ){
+    ) {
         var enable by remember { mutableStateOf(true) }
-        Column (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            val focusManager = LocalFocusManager.current
-            OutlinedTextField(
-                modifier = Modifier
+        Column(
+            modifier =
+                Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            val focusManager = LocalFocusManager.current
+            OutlinedTextField(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
                 value = uuid,
                 onValueChange = { uuid = it },
                 label = { Text(text = "key") },
@@ -64,6 +67,5 @@ fun FSPlaylistImportFormV2(
                 selectedIPlaylist = playlist,
             )
         }
-
     }
 }

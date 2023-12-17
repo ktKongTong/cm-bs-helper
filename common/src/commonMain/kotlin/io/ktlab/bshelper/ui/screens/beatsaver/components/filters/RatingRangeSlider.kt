@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.ui.screens.beatsaver.components.TitleLabel
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RatingRangeSlider(
@@ -22,26 +21,32 @@ fun RatingRangeSlider(
     onRatingRangeChange: (Pair<Double?, Double?>) -> Unit,
     step: Int = 20,
 ) {
-    val ratingSliderValue =(ratingSliderValues.first?:limit.first).toFloat()..(ratingSliderValues.second?:limit.second).toFloat()
+    val ratingSliderValue = (ratingSliderValues.first ?: limit.first).toFloat()..(ratingSliderValues.second ?: limit.second).toFloat()
     Column {
         Row {
             PlainTooltipBox(
-                tooltip = { Text("Rating of the map.") }
+                tooltip = { Text("Rating of the map.") },
             ) {
                 TitleLabel("Rating", modifier = Modifier.tooltipAnchor())
             }
-            val text = """${ratingSliderValue.start.takeIf { it>limit.first }?.times(100)?.toInt()?:0}% - ${
+            val text = """${ratingSliderValue.start.takeIf { it > limit.first }?.times(100)?.toInt() ?: 0}% - ${
                 ratingSliderValue.endInclusive.takeIf { it < limit.second }?.times(100)?.toInt() ?: 100}%"""
-            Text(text = text, modifier = Modifier
-                .padding(horizontal = 4.dp)
-                .align(Alignment.CenterVertically),)
+            Text(
+                text = text,
+                modifier =
+                    Modifier
+                        .padding(horizontal = 4.dp)
+                        .align(Alignment.CenterVertically),
+            )
         }
         RangeSlider(
             modifier = Modifier.padding(horizontal = 16.dp),
             value = ratingSliderValue,
-            onValueChange = {range-> onRatingRangeChange(
-                range.start.toDouble().takeIf { it > limit.first } to range.endInclusive.toDouble().takeIf { it < limit.second }
-            ) },
+            onValueChange = { range ->
+                onRatingRangeChange(
+                    range.start.toDouble().takeIf { it > limit.first } to range.endInclusive.toDouble().takeIf { it < limit.second },
+                )
+            },
             valueRange = limit.first.toFloat()..limit.second.toFloat(),
             onValueChangeFinished = {},
             steps = step,

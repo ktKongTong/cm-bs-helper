@@ -16,7 +16,7 @@ fun LocalDateTime.prettyFormat(): String {
         diff > 24 * 60 * 60 -> "${diff / (24 * 60 * 60)} days ago"
         diff > 60 * 60 -> "${diff / (60 * 60)} hours ago"
         diff > 60 -> "${diff / 60} minutes ago"
-        else -> "${diff} seconds ago"
+        else -> "$diff seconds ago"
     }
 }
 

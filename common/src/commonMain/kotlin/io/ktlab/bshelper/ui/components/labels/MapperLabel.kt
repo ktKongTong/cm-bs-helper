@@ -22,8 +22,8 @@ fun MapperLabel(
     mapperName: String,
     avatarUrl: String? = null,
     verified: Boolean = false,
-    onClick : () -> Unit = {},
-    modifier: Modifier = Modifier
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.padding(horizontal = 4.dp),
@@ -40,20 +40,21 @@ fun MapperLabel(
                         Icon(
                             Icons.Rounded.Person,
                             contentDescription = "Avatar",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
                         )
-                    }
+                    },
                 )
             }
             if (verified) {
                 Icon(
                     Icons.Filled.Verified,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .size(12.dp)
-                        .offset(x = 4.dp, y = (4).dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(12.dp)
+                            .offset(x = 4.dp, y = (4).dp),
                     contentDescription = "Verified Mapper Icon",
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         }
@@ -64,7 +65,7 @@ fun MapperLabel(
             style = MaterialTheme.typography.labelMedium,
             onClick = { onClick() },
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

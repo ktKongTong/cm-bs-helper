@@ -21,11 +21,11 @@ import io.ktlab.bshelper.ui.screens.beatsaver.components.IconExposedDropDownMenu
 fun PlaylistCardMenu(
     modifier: Modifier,
     fsPlaylist: FSPlaylist,
-    onExport: ()->Unit,
-    onExportAsBPList: ()->Unit,
-    onDelete: ()->Unit,
-    onEdit: (FSPlaylist)->Unit,
-    onSync: ()->Unit,
+    onExport: () -> Unit,
+    onExportAsBPList: () -> Unit,
+    onDelete: () -> Unit,
+    onEdit: (FSPlaylist) -> Unit,
+    onSync: () -> Unit,
 ) {
     val playlistFormOpenState = remember { mutableStateOf(false) }
     val deleteDialogOpenState = remember { mutableStateOf(false) }
@@ -34,29 +34,44 @@ fun PlaylistCardMenu(
     IconExposedDropDownMenu(modifier) {
         DropdownMenuItem(
             text = { Text(text = "同步") },
-            onClick = {onTrigger(); onSync() },
-            leadingIcon = { Icon(Icons.Default.Sync, contentDescription = "Sync Playlist info") }
+            onClick = {
+                onTrigger()
+                onSync()
+            },
+            leadingIcon = { Icon(Icons.Default.Sync, contentDescription = "Sync Playlist info") },
         )
         DropdownMenuItem(
             text = { Text(text = "编辑") },
-            onClick = { onTrigger();playlistFormOpenState.value = true },
-            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = "Edit Playlist info") }
+            onClick = {
+                onTrigger()
+                playlistFormOpenState.value = true
+            },
+            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = "Edit Playlist info") },
         )
         DropdownMenuItem(
             text = { Text(text = "删除") },
-            onClick = {onTrigger(); deleteDialogOpenState.value = true },
-            leadingIcon = { Icon(Icons.Default.Delete, contentDescription = "Delete Playlist") }
+            onClick = {
+                onTrigger()
+                deleteDialogOpenState.value = true
+            },
+            leadingIcon = { Icon(Icons.Default.Delete, contentDescription = "Delete Playlist") },
         )
 
         DropdownMenuItem(
             text = { Text(text = "导出为 bplist") },
-            onClick = {onTrigger();onExportAsBPList() },
-            leadingIcon = { Icon(Icons.Default.ImportExport, contentDescription = "Export Playlist AS bplist") }
+            onClick = {
+                onTrigger()
+                onExportAsBPList()
+            },
+            leadingIcon = { Icon(Icons.Default.ImportExport, contentDescription = "Export Playlist AS bplist") },
         )
         DropdownMenuItem(
             text = { Text(text = "导出为 key") },
-            onClick = {onTrigger(); onExport() },
-            leadingIcon = { Icon(Icons.Default.ImportExport, contentDescription = "Export Playlist as key") }
+            onClick = {
+                onTrigger()
+                onExport()
+            },
+            leadingIcon = { Icon(Icons.Default.ImportExport, contentDescription = "Export Playlist as key") },
         )
     }
 
@@ -66,7 +81,7 @@ fun PlaylistCardMenu(
         title = "删除歌单",
         text = "确定要删除歌单吗？",
         onConfirm = { onDelete() },
-        openState = deleteDialogOpenState
+        openState = deleteDialogOpenState,
     )
 
     FSPlaylistFormV2(

@@ -7,8 +7,11 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 
 class TriangleShape : Shape {
-
-    override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density,
+    ): Outline {
 //        val path = Path().apply {
 //            moveTo(size.width / 2f, 0f)
 //            lineTo(size.width, size.height)

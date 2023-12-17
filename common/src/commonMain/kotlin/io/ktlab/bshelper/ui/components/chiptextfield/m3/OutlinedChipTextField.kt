@@ -258,12 +258,13 @@ fun <T : Chip> OutlinedChipTextField(
 ) {
     val fieldColors = remember(colors) { colors.toChipTextFieldColors() }
     Box(
-        modifier = modifier
-            .runIf(label != null) { modifier.padding(top = 8.dp) }
-            .background(
-                fieldColors.backgroundColor(enabled, isError, interactionSource).value,
-                shape
-            )
+        modifier =
+            modifier
+                .runIf(label != null) { modifier.padding(top = 8.dp) }
+                .background(
+                    fieldColors.backgroundColor(enabled, isError, interactionSource).value,
+                    shape,
+                ),
     ) {
         BasicChipTextField(
             state = state,
@@ -306,7 +307,7 @@ fun <T : Chip> OutlinedChipTextField(
                             isError,
                             interactionSource,
                             colors,
-                            shape
+                            shape,
                         )
                     },
                 )

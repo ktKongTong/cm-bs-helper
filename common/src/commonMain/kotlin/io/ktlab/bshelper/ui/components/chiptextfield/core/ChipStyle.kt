@@ -20,25 +20,25 @@ interface ChipStyle {
     @Composable
     fun shape(
         enabled: Boolean,
-        interactionSource: InteractionSource
+        interactionSource: InteractionSource,
     ): State<Shape>
 
     @Composable
     fun borderWidth(
         enabled: Boolean,
-        interactionSource: InteractionSource
+        interactionSource: InteractionSource,
     ): State<Dp>
 
     @Composable
     fun borderColor(
         enabled: Boolean,
-        interactionSource: InteractionSource
+        interactionSource: InteractionSource,
     ): State<Color>
 
     @Composable
     fun textColor(
         enabled: Boolean,
-        interactionSource: InteractionSource
+        interactionSource: InteractionSource,
     ): State<Color>
 
     @Composable
@@ -47,7 +47,7 @@ interface ChipStyle {
     @Composable
     fun backgroundColor(
         enabled: Boolean,
-        interactionSource: InteractionSource
+        interactionSource: InteractionSource,
     ): State<Color>
 }
 
@@ -87,7 +87,7 @@ class DefaultChipStyle(
                 !enabled -> disabledBorderWidth
                 focused -> focusedBorderWidth
                 else -> unfocusedBorderWidth
-            }
+            },
         )
     }
 
@@ -102,7 +102,7 @@ class DefaultChipStyle(
                 !enabled -> disabledBorderColor
                 focused -> focusedBorderColor
                 else -> unfocusedBorderColor
-            }
+            },
         )
     }
 
@@ -117,7 +117,7 @@ class DefaultChipStyle(
                 !enabled -> disabledTextColor
                 focused -> focusedTextColor
                 else -> unfocusedTextColor
-            }
+            },
         )
     }
 
@@ -137,7 +137,7 @@ class DefaultChipStyle(
                 !enabled -> disabledBackgroundColor
                 focused -> focusedBackgroundColor
                 else -> unfocusedBackgroundColor
-            }
+            },
         )
     }
 

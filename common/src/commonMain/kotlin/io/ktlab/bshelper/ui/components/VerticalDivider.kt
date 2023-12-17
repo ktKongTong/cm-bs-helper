@@ -9,11 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun VerticalDivider(){
+fun VerticalDivider() {
     Divider(
         thickness = 2.dp,
-        modifier = Modifier.fillMaxHeight()
-            .padding(vertical = 16.dp)
-            .width(1.dp)
+        modifier =
+            Modifier.fillMaxHeight()
+                .padding(vertical = 16.dp)
+                .width(1.dp),
     )
 }

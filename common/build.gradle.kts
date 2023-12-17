@@ -115,7 +115,7 @@ android {
     compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
-    //see https://github.com/icerockdev/moko-resources/issues/510#issuecomment-1700670810
+    // see https://github.com/icerockdev/moko-resources/issues/510#issuecomment-1700670810
     sourceSets["main"].java.srcDirs("build/generated/moko/androidMain/src")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
     defaultConfig {

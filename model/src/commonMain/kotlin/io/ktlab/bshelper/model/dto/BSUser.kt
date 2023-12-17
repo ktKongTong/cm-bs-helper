@@ -1,10 +1,11 @@
 package io.ktlab.bshelper.model.dto
 
-//import io.ktkt.bshelper.data.model.room.BSUser
+// import io.ktkt.bshelper.data.model.room.BSUser
 import io.ktlab.bshelper.model.BSUser
 import io.ktlab.bshelper.model.dto.serializer.LocalDateTimeAsStringSerializer
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
+
 @Serializable
 data class BSUserStats(
     val avgBpm: Double,
@@ -16,8 +17,9 @@ data class BSUserStats(
     val lastUpload: LocalDateTime,
     val totalDownvotes: Int,
     val totalMaps: Int,
-    val totalUpvotes: Int
+    val totalUpvotes: Int,
 )
+
 @Serializable
 data class BSUserWithStatsDTO(
     val id: Int,
@@ -25,7 +27,7 @@ data class BSUserWithStatsDTO(
     val avatar: String,
     val description: String = "",
     val type: String,
-    val stats: BSUserStats
+    val stats: BSUserStats,
 )
 
 @Serializable
@@ -40,7 +42,7 @@ data class BSUserDTO(
     val curator: Boolean,
     val playlistUrl: String,
     val verifiedMapper: Boolean? = null,
-){
+) {
     fun convertToEntity(): BSUser {
         return BSUser(
             id = id,
@@ -52,7 +54,7 @@ data class BSUserDTO(
             admin = admin,
             curator = curator,
             playlistUrl = playlistUrl,
-            verifiedMapper = verifiedMapper
+            verifiedMapper = verifiedMapper,
         )
     }
 }

@@ -14,26 +14,26 @@ import moe.tlaster.precompose.navigation.transition.NavTransition
 fun BSHelperNavGraph(
     isExpandedScreen: Boolean,
     modifier: Modifier = Modifier,
-    navigator:Navigator = rememberNavigator(),
+    navigator: Navigator = rememberNavigator(),
     openDrawer: () -> Unit = {},
-    snackbarHost : @Composable () -> Unit = {},
+    snackbarHost: @Composable () -> Unit = {},
     snackbarHostState: SnackbarHostState,
     globalUiState: GlobalUiState,
     startDestination: String = BSHelperDestinations.HOME_ROUTE,
-){
+) {
     NavHost(
         navigator = navigator,
         initialRoute = startDestination,
         navTransition = NavTransition(),
-        modifier = modifier
+        modifier = modifier,
     ) {
         scene(BSHelperDestinations.HOME_ROUTE) {
             HomeRoute(
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
                 snackbarHost = snackbarHost,
-                globalUiState= globalUiState,
-                snackbarHostState = snackbarHostState
+                globalUiState = globalUiState,
+                snackbarHostState = snackbarHostState,
             )
         }
         scene(BSHelperDestinations.BEAT_SAVER_ROUTE) {
@@ -41,8 +41,8 @@ fun BSHelperNavGraph(
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
                 snackbarHost = snackbarHost,
-                globalUiState= globalUiState,
-                snackbarHostState = snackbarHostState
+                globalUiState = globalUiState,
+                snackbarHostState = snackbarHostState,
             )
         }
         scene(BSHelperDestinations.TOOLBOX_ROUTE) {
@@ -50,8 +50,8 @@ fun BSHelperNavGraph(
                 isExpandedScreen = isExpandedScreen,
                 openDrawer = openDrawer,
                 snackbarHost = snackbarHost,
-                globalUiState= globalUiState,
-                snackbarHostState = snackbarHostState
+                globalUiState = globalUiState,
+                snackbarHostState = snackbarHostState,
             )
         }
     }

@@ -22,38 +22,41 @@ fun PlaylistCard(
     playlist: IPlaylist,
     onClick: (String) -> Unit,
     onUIEvent: (HomeUIEvent) -> Unit = {},
-    selected : Boolean = false
+    selected: Boolean = false,
 ) {
     Card(
         modifier = Modifier.padding(vertical = 4.dp),
         shape = MaterialTheme.shapes.large,
         colors = if (!selected) CardDefaults.outlinedCardColors() else CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
-    ){
+    ) {
         Row(
-            modifier = Modifier.fillMaxWidth().clickable(onClick = { onClick(playlist.id) })
+            modifier = Modifier.fillMaxWidth().clickable(onClick = { onClick(playlist.id) }),
         ) {
             AsyncImageWithFallback(
-                modifier = Modifier
-                    .width(48.dp)
-                    .height(48.dp)
-                    .padding(end = 16.dp),
-                source = playlist.getImage()
+                modifier =
+                    Modifier
+                        .width(48.dp)
+                        .height(48.dp)
+                        .padding(end = 16.dp),
+                source = playlist.getImage(),
             )
-            Column (
-                Modifier.weight(1f, fill = false)
-            ){
+            Column(
+                Modifier.weight(1f, fill = false),
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         text = playlist.title,
                         style = MaterialTheme.typography.labelMedium,
                         maxLines = 1,
                         softWrap = false,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
-                    if ((playlist as FSPlaylistVO).sync == SyncStateEnum.SYNCING) { Text(text = "同步中") }
+                    if ((playlist as FSPlaylistVO).sync == SyncStateEnum.SYNCING) {
+                        Text(text = "同步中")
+                    }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
@@ -62,20 +65,19 @@ fun PlaylistCard(
                     MapAmountIconWIthText(text = playlist.getMapAmount().toString())
                 }
             }
-            Column(
-            ) {
+            Column {
                 PlaylistCardMenu(
-                    modifier = Modifier
-                        .padding(start = 2.dp),
-                    fsPlaylist =(playlist as FSPlaylistVO).toFSPlaylist(),
+                    modifier =
+                        Modifier
+                            .padding(start = 2.dp),
+                    fsPlaylist = (playlist as FSPlaylistVO).toFSPlaylist(),
                     onExport = { onUIEvent(HomeUIEvent.ExportPlaylistAsKey(playlist)) },
                     onDelete = { onUIEvent(HomeUIEvent.DeletePlaylist(playlist)) },
                     onEdit = { onUIEvent(HomeUIEvent.EditPlaylist(playlist, it)) },
                     onSync = { onUIEvent(HomeUIEvent.SyncPlaylist(playlist)) },
-                    onExportAsBPList = { onUIEvent(HomeUIEvent.ExportPlaylistAsBPList(playlist)) }
+                    onExportAsBPList = { onUIEvent(HomeUIEvent.ExportPlaylistAsBPList(playlist)) },
                 )
             }
-
         }
     }
 }
