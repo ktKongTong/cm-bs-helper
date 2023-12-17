@@ -2,7 +2,7 @@
 # plugins
 gradle-versions-plugin = "0.48.0"
 version-catalog-update-plugin = "0.8.1"
-android-gradle-plugin = "8.1.1"
+android-gradle-plugin = "8.2.0"
 jetbrains-compose-plugin = "1.5.11"
 spotless-plugin = "6.23.2"
 # kotlin & kotlinx
