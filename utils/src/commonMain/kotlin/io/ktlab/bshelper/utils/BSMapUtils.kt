@@ -264,7 +264,6 @@ class BSMapUtils {
         @OptIn(ExperimentalSerializationApi::class)
         fun extractMapInfoFromDirV2(mapPath:Path): IExtractedMapInfo {
             val pattern = Regex("^[0-9a-f]{1,5} \\(.+\\)$")
-            println("mapPath: ${mapPath.name}")
             val mapId = if (pattern.matches(mapPath.name)) {
                 mapPath.name.substring(0, mapPath.name.indexOf(" (")).trim()
             } else null

@@ -248,7 +248,6 @@ class PlaylistScannerV2(
                 if(!BSMapUtils.checkIfBSMap(mapDir)) {
                     return@forEach
                 }
-                println(mapDir)
                 val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(mapDir)
                 handleExtractMapInfoAndInsertToDB(extractedMapInfo,fsPlaylist) { emit(scanStateV2.value) }
             }
