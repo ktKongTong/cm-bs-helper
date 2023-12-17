@@ -19,7 +19,7 @@ sealed class ToolboxUIEvent: UIEvent() {
 //    data class SelectPlaylistTobeScan(val playlistScanState: PlaylistScanState) : UIEvent()
 //    data class ScanPlaylistTapped(val dirPath: String? = null) : ToolboxUIEvent()
     data object ScanSelectedPlaylist : UIEvent()
-    data class ScanPlaylist(val dirPath: String? = null) : ToolboxUIEvent()
+    data class ScanPlaylist(val dirPath:String) : ToolboxUIEvent()
     data object ClearScanState : ToolboxUIEvent()
     data object ClearLocalData : ToolboxUIEvent()
     data class UpdateDefaultManageDir(val path:String):ToolboxUIEvent()
@@ -125,7 +125,7 @@ class ToolboxViewModel(
                 onScanSelectedPlaylist()
             }
             is ToolboxUIEvent.ScanPlaylist -> {
-                onScanPlaylist()
+                onScanPlaylist(event.dirPath)
             }
             is ToolboxUIEvent.DeleteAllDownloadTasks -> {
                 localViewModelScope.launch(Dispatchers.IO) {
@@ -198,8 +198,11 @@ class ToolboxViewModel(
 //        }
     }
 
-    private fun onScanPlaylist() {
-        val dirPath = viewModelState.value.userPreferenceState.currentManageDir
+    private fun onScanPlaylist(dirPath: String) {
+        if (dirPath.isEmpty()){
+            globalViewModel.showSnackBar("请选择文件夹")
+            return
+        }
         localViewModelScope.launch {
             playlistRepository.scanPlaylist(dirPath)
                 .flowOn(Dispatchers.IO)

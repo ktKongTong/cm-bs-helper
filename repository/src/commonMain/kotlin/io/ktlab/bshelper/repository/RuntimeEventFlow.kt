@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 sealed interface Event{
-    data class ExceptionEvent(val throwable: Throwable): Event
+    data class ExceptionEvent(val throwable: Throwable,val shortDescription:String ?= null): Event
     data class MessageEvent(val message: String): Event
 }
 

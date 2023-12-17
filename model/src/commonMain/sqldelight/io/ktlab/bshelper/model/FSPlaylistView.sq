@@ -1,11 +1,4 @@
-
--- create a view named FSPlaylistView  has such columns
--- 1. count the number of map in each playlist, which count from FSMap table
--- 2. average nps of each playlist, which count from FSMap,MapDifficulty table
--- 3. max and min nps of each playlist, which count from FSMap,MapDifficulty table
--- now lets create the view
-
-CREATE VIEW FSPlaylistView AS
+CREATE VIEW IF NOT EXISTS FSPlaylistView AS
 SELECT
     p.id AS playlist_id,
     p.basePath AS playlist_basePath,

@@ -93,7 +93,7 @@ fun BSMapperDetail(
             is IDownloadTask.BatchDownloadTask -> it.taskList
             is IDownloadTask.PlaylistDownloadTask -> it.taskList
         }
-    }.associateBy { it.downloadTaskModel.relateEntityId!! }
+    }.associateBy { it.downloadTaskModel.relateEntityId!! + it.targetPlaylist.id }
     Row {
         BSMapperDetailOverview(selectedBSMapper = uiState.selectedBSMapper!!)
         MapCardPagingList(

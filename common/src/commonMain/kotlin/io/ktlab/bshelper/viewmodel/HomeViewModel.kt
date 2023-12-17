@@ -250,12 +250,19 @@ class HomeViewModel(
     private fun onExportPlaylistAsKey(playlist: IPlaylist) {
         viewModelScope.launch {
             val res = playlistRepository.exportPlaylistAsKey(playlist)
-            globalViewModel.showSnackBar(
-                msg = res.successOr("export failed"),
-                actionLabel = "copy",
-                action = {globalViewModel.writeToClipboard(res.successOr(""))},
-                duration = SnackbarDuration.Long
-            )
+            if (res is Result.Success) {
+                globalViewModel.showSnackBar(
+                    msg = res.data,
+                    actionLabel = "copy",
+                    action = {globalViewModel.writeToClipboard(res.data)},
+                    duration = SnackbarDuration.Long
+                )
+            }else {
+                globalViewModel.dispatchUiEvents(
+                    GlobalUIEvent.ReportError(res.errorMsg(), "export playlist as key failed")
+                )
+            }
+
         }
     }
     private fun onExportPlaylistAsBPList(playlist: IPlaylist) {

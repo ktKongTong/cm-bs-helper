@@ -26,7 +26,7 @@ sealed class GlobalUIEvent: UIEvent(){
     data object OnFormDialogDismiss:GlobalUIEvent()
     data class WriteToClipboard(val text:String):GlobalUIEvent()
 //    data class MediaEvent(val media: IMedia):GlobalUIEvent()
-    data class ReportError(val throwable: Throwable):GlobalUIEvent()
+    data class ReportError(val throwable: Throwable,val shortDescription:String?=null):GlobalUIEvent()
     data class PlayMedia(val media: IMedia):GlobalUIEvent()
     data class OnMediaEvent(val event: MediaEvent):GlobalUIEvent()
     data class CreatePlaylist(val playlist:FSPlaylist?):GlobalUIEvent()
@@ -141,7 +141,7 @@ class GlobalViewModel(
         runtimeEventFlow.subscribeEvent { event ->
             when (event) {
                 is Event.ExceptionEvent -> {
-                    dispatchUiEvents(GlobalUIEvent.ReportError(event.throwable))
+                    dispatchUiEvents(GlobalUIEvent.ReportError(event.throwable,event.shortDescription))
                 }
                 is Event.MessageEvent -> {
                     dispatchUiEvents(GlobalUIEvent.ShowSnackBar(event.message))
@@ -174,7 +174,7 @@ class GlobalViewModel(
                     viewModelState.update {
                         it.copy(errorDialogState = ErrorDialogState(
                             title = "Error",
-                            message = event.throwable.stackTraceToString(),
+                            message = (event.shortDescription?:"")+": "+event.throwable.stackTraceToString(),
                             confirmLabel = "确认",
                             cancelLabel = "复制以报告",
                             onConfirm = { clearErrorDialog() },

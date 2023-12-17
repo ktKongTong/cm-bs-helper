@@ -15,6 +15,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -80,8 +81,8 @@ fun MapCardPagingList(
                     val map = mapPagingItems[index]
 //                    require(map != null){ "map should not be null" }
                     if (map != null) {
-                        val local =
-                            localState.targetPlaylist != null && localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID())
+                        val local = remember { localState.targetPlaylist != null &&
+                                localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID()) }
                         BSMapCard(
                             modifier = Modifier.fillMaxSize(),
                             selectedBSMap = selectedBSMap,
@@ -90,7 +91,7 @@ fun MapCardPagingList(
                             multiSelectedMode = mapMultiSelectedMode,
                             local = local,
                             selectableIPlaylists = localState.selectableLocalPlaylists,
-                            downloadInfo = downloadingTask[map.getID()],
+                            downloadInfo = downloadingTask[map.getID()+localState.targetPlaylist?.id],
                             onDownloadMap = { targetMap -> onUIEvent(BeatSaverUIEvent.DownloadMap(targetMap)) },
                             onPlayPreviewMusicSegment = {
                                 onUIEvent(BeatSaverUIEvent.PlayPreviewMusicSegment(map))

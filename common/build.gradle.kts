@@ -54,6 +54,7 @@ kotlin {
                 api(libs.precompose.molecule)
                 implementation("com.github.skydoves:orbital:0.3.3")
                 implementation("com.materialkolor:material-kolor:1.3.0")
+                api("io.github.kevinnzou:compose-webview-multiplatform:1.7.8")
 //                implementation("io.github.dokar3:chiptextfield-m3:0.6.4")
                 implementation(libs.kmpalette.core)
 

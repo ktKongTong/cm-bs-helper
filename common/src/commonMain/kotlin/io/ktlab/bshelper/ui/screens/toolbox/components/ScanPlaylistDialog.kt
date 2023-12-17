@@ -174,35 +174,6 @@ fun StepContent(
         }
 }
 
-@Composable
-fun DirectoryChooser(
-    targetPath: String,
-    onSelectTargetPath: (String) -> Unit = {},
-    onUIEvent: (UIEvent) -> Unit
-) {
-    var showDirPicker by remember { mutableStateOf(false) }
-    OutlinedTextField(
-        value = targetPath,
-        onValueChange = { },
-        enabled = false,
-        label = { Text(text = "目标文件夹") },
-        trailingIcon = {
-            TextButton(onClick = { showDirPicker = true }) {
-                Text(text = "选择文件夹")
-            }
-        }
-    )
-    if (showDirPicker) {
-        BSDirectoryPicker(showDirPicker){ path ->
-            showDirPicker = false
-            if (path != null) {
-                onUIEvent(ToolboxUIEvent.UpdateDefaultManageDir(path))
-                onSelectTargetPath(path)
-            }
-        }
-    }
-
-}
 
 @Composable
 fun ScanPlaylistCard(

@@ -12,7 +12,3 @@ data class SnackBarMessage(
     val action: (() -> Unit)? = null,
     val duration: SnackbarDuration = SnackbarDuration.Short,
 )
-
-class Event {
-
-}

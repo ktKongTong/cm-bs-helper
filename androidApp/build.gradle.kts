@@ -26,6 +26,7 @@ android {
             excludes.add("META-INF/LGPL2.1")
             excludes.add("META-INF/DEPENDENCIES")
             excludes.add("META-INF/gradle/incremental.annotation.processors")
+            excludes.add("META-INF/versions/9/previous-compilation-data.bin")
         }
     }
     kotlin{

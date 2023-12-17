@@ -23,7 +23,6 @@ actual fun MapOnlinePreview(
     mapId: String
 )
 {
-
     val context = LocalContext.current
     val webView by remember(LocalContext.current) { mutableStateOf(WebView(context)) }
     webView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null)

@@ -37,6 +37,7 @@ fun ScanScreen(
 
         var requestPermission by remember { mutableStateOf(false) }
 
+        var targetPath by remember { mutableStateOf("") }
         if (requestPermission) {
             RequestStoragePermission()
         }
@@ -47,12 +48,12 @@ fun ScanScreen(
             Text("扫描曲包", style = MaterialTheme.typography.headlineLarge)
             IconButton(onClick = {
                 onUIEvent(ToolboxUIEvent.ClearLocalData)
+                targetPath = ""
             }) {
                 Icon(Icons.Rounded.Delete, contentDescription = "delete map")
             }
         }
 
-        var targetPath by remember { mutableStateOf("") }
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -71,18 +72,20 @@ fun ScanScreen(
                 Text(text = "扫描")
             }
         }
-        Column (
-            modifier = Modifier
-                .padding( horizontal = 32.dp)
-                .fillMaxWidth()
-                .weight(1f, fill = false),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            Box(modifier = Modifier
-                .fillMaxHeight(0.7f)
-                .weight(1f, fill = false)
+        if(targetPath.isNotEmpty()){
+            Column (
+                modifier = Modifier
+                    .padding( horizontal = 32.dp)
+                    .fillMaxWidth()
+                    .weight(1f, fill = false),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                StepContent(scanState,targetPath,{targetPath = it},onUIEvent)
+                Box(modifier = Modifier
+                    .fillMaxHeight(0.7f)
+                    .weight(1f, fill = false)
+                ) {
+                    StepContent(scanState,targetPath,{targetPath = it},onUIEvent)
+                }
             }
         }
     }
