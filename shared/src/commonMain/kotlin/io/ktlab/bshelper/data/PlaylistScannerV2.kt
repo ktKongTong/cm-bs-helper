@@ -1,5 +1,6 @@
 package io.ktlab.bshelper.data
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.data.api.BeatSaverAPI
 import io.ktlab.bshelper.model.BSHelperDatabase
 import io.ktlab.bshelper.model.FSPlaylist
@@ -31,6 +32,7 @@ import kotlinx.datetime.Instant
 import okio.FileSystem
 import okio.Path.Companion.toPath
 
+private val logger = KotlinLogging.logger {  }
 class PlaylistScannerV2(
     private val bsHelperDAO: BSHelperDatabase,
     private val bsAPI: BeatSaverAPI,
@@ -230,12 +232,15 @@ class PlaylistScannerV2(
                     return@map
                 }
                 if (BSMapUtils.checkIfBSMap(path)) {
+                    logger.debug { "scanPlaylist: ${path.name} is a map" }
                     scanStateV2.update { it.copy(scannedMapCount = it.scannedMapCount + 1, currentMapDir = path.name) }
                     emit(scanStateV2.value)
                     val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(path)
                     customMapInfos.add(extractedMapInfo)
                     return@map
                 }
+
+                logger.debug { "scanPlaylist: ${path.name} is a playlist" }
                 val subPlaylistPath = basePath.toPath().resolve(path.name)
 
                 val fsPlaylist = MutableStateFlow(newFSPlaylist(subPlaylistPath.toString(), name = path.name))

@@ -92,6 +92,8 @@ data class BSMapVO(
     }
 
     fun getFilename(): String {
-        return "${getID()} (${map.songName} - ${map.songAuthorName})"
+        return "${getID()} (${map.songName} - ${map.levelAuthorName})".replace(
+            "[\\\\/:*?\"<>|]".toRegex(),
+            "_")
     }
 }
