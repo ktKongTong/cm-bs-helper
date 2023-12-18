@@ -52,5 +52,9 @@ jobs:
         with:
           name: cm-bs-helper-android
           path: |
-            androidApp/build/outputs/apk/debug/android-debug.apk
+            androidApp/build/outputs/apk/debug/androidApp-debug.apk
 #            androidApp/build/outputs/apk/release/androidApp-release-unsigned.apk
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "androidApp-debug.apk,*.msi"
+          bodyFile: "body.md"
