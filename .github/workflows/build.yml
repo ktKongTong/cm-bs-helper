@@ -55,4 +55,4 @@ jobs:
             androidApp/build/outputs/apk/debug/*.apk
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "androidApp/build/outputs/apk/debug/*.apk,desktopApp/build/compose/binaries/main-release/msi/*.msi"
+          artifacts: "androidApp/build/outputs/apk/debug/*.apk,desktopApp/build/compose/binaries/main-release/msi/*.msi,cm-bs-helper-*"
