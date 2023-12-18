@@ -4,7 +4,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import com.jogamp.common.os.Platform
 import io.ktlab.bshelper.di.AppModule
 import io.ktlab.bshelper.ui.BSHelperApp
 import org.koin.core.logger.Level

@@ -1,6 +1,7 @@
 [versions]
 # plugins
 gradle-versions-plugin = "0.48.0"
+material-kolor = "1.3.0"
 version-catalog-update-plugin = "0.8.1"
 android-gradle-plugin = "8.1.1"
 jetbrains-compose-plugin = "1.5.11"
@@ -28,8 +29,8 @@ moko-resources = "0.23.0"
 # paging
 cash-paging = "3.3.0-alpha02-0.4.0"
 # data store
-androidx-datastore-core-okio = "1.1.0-alpha05"
-androidx-datastore-preferences-core = "1.1.0-alpha05"
+androidx-datastore-core-okio = "1.1.0-alpha07"
+androidx-datastore-preferences-core = "1.1.0-alpha07"
 # navigation
 precompose = "1.5.7"
 # di
@@ -54,6 +55,8 @@ beatmap-io = "1.0.+"
 logback-android = "3.0.0"
 logback-jvm = "1.3.5"
 logback-core = "1.3.5"
+kown = "0.0.1-alpha17"
+jlayer = "1.0.2"
 [libraries]
 # kotlin & kotlinx
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -137,7 +140,7 @@ kmpalette-extensions-libres = { module = "com.kmpalette:extensions-libres", vers
 kmpalette-extensions-network = { module = "com.kmpalette:extensions-network", version.ref = "kmpalette" }
 kmpalette-extensions-resources = { module = "com.kmpalette:extensions-resources", version.ref = "kmpalette" }
 kmpalette-extensions-file = { module = "com.kmpalette:extensions-file", version.ref = "kmpalette" }
-
+material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "material-kolor" }
 # io
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 
@@ -151,9 +154,8 @@ androidx-collection = { module = "androidx.collection:collection", version.ref =
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-corektx" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
-
-kown = { module = "io.ktlab.mvn:kown", version = "0.0.1-alpha01" }
-jlayer = { module = "com.github.umjammer:jlayer", version = "1.0.2" }
+jlayer = { module = "com.github.umjammer:jlayer", version.ref = "jlayer" }
+kown = { module = "io.ktlab.mvn:kown", version.ref = "kown" }
 [plugins]
 # gradle
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions-plugin" }

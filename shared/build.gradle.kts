@@ -77,7 +77,7 @@ kotlin {
                 api(libs.precompose.viewmodel)
                 api(libs.precompose.molecule)
                 implementation(libs.kmpalette.core)
-                implementation("com.materialkolor:material-kolor:1.3.0")
+                implementation(libs.material.kolor)
 //                implementation(libs.kmpalette)
                 // resources
                 api(libs.moko.resources)
@@ -132,12 +132,12 @@ kotlin {
                 // see https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.1.1
                 implementation(libs.kotlinx.coroutines.swing)
 
+                implementation(libs.jlayer)
                 implementation(libs.sqldelight.jvm.driver)
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.kotlin.logging.jvm)
                 implementation(libs.slf4j.api)
                 implementation(libs.logback.classic)
-                implementation(libs.jlayer)
             }
         }
     }

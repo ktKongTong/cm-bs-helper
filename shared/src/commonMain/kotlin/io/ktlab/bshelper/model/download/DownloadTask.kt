@@ -2,14 +2,14 @@ package io.ktlab.bshelper.model.download
 
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
-import io.ktlab.kown.model.DownloadTaskBO
+import io.ktlab.kown.model.DownloadTaskVO
 
 sealed interface IDownloadTask {
     val taskType: DownloadTaskType
     val targetPlaylist: IPlaylist
 
     data class MapDownloadTask(
-        val downloadTaskModel: DownloadTaskBO,
+        val downloadTaskModel: DownloadTaskVO,
         var relateMap: IMap,
         override val targetPlaylist: IPlaylist,
         override val taskType: DownloadTaskType = DownloadTaskType.Map,

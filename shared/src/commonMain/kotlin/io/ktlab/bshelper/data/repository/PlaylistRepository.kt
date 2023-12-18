@@ -82,16 +82,17 @@ class PlaylistRepository(
         if (!FileSystem.SYSTEM.exists(manageDir)) {
             return Result.Error(Exception("manage dir not exist"))
         }
+        val safePlaylistName = playlistName.replace("[\\\\/:*?\"<>|]".toRegex(), "_")
         try {
-            FileSystem.SYSTEM.createDirectory(manageDir.resolve(playlistName))
+            FileSystem.SYSTEM.createDirectory(manageDir.resolve(safePlaylistName))
         } catch (e: Exception) {
-            return Result.Error(Exception("create playlist dir failed, playlist name already exist"))
+            return Result.Error(Exception("failed to create playlist dir ${e.message}"))
         }
-        val basePath = manageDir.resolve(playlistName).toString()
+        val basePath = manageDir.resolve(safePlaylistName).toString()
         val fSPlaylist =
             FSPlaylist(
                 id = basePath,
-                name = playlistName,
+                name = safePlaylistName,
                 description = description ?: "custom create playlist",
                 bsPlaylistId = bsPlaylistId,
                 basePath = basePath,

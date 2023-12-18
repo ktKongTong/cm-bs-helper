@@ -1,5 +1,6 @@
 package io.ktlab.bshelper.data.repository
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.data.Event
 import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.api.BeatSaverAPI
@@ -28,6 +29,7 @@ import kotlinx.datetime.Clock
 import okio.FileSystem
 import okio.Path.Companion.toPath
 
+private val logger = KotlinLogging.logger {}
 class DownloaderRepository(
     storageService: StorageService,
     private val playlistRepository: PlaylistRepository,
@@ -61,7 +63,7 @@ class DownloaderRepository(
 
     private fun onCompleteAction(targetPlaylist: IPlaylist): (DownloadTaskBO) -> Unit {
         return { task ->
-
+            logger.debug { "executing onCompleteAction: ${task.taskId}" }
             val zipFile = task.dirPath.toPath().resolve(task.filename)
             val targetPath = targetPlaylist.getTargetPath().toPath().resolve(task.title)
             UnzipUtility.unzip(zipFile.toString(), targetPath.toString())
@@ -286,7 +288,7 @@ class DownloaderRepository(
     fun getDownloadTaskFlow(): Flow<List<IDownloadTask>> =
         downloader
             .getAllDownloadTaskFlow()
-            .map { it.map { it.copyTask() } }
+//            .map { it.map { it.copyTask() } }
             .map outer@{
                 try {
                     val mapIds = it.mapNotNull { it.relateEntityId }

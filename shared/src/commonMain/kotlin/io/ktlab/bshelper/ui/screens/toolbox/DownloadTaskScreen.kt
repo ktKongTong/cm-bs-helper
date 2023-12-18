@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
@@ -48,11 +52,7 @@ fun DownloadTaskScreen(
                 EmptyContent()
             }
         }
-//        val sortedDownloadTasks = downloadTasks
         items(downloadTasks.size) {
-            // 对象没变化，不会重新渲染
-            // 如何强制渲染？
-            val task = downloadTasks[it]
             key(it) {
                 DownloadTaskCard(
                     downloadTask = downloadTasks[it],
