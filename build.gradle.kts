@@ -3,11 +3,10 @@ plugins {
     alias(libs.plugins.gradle.versions)
     alias(libs.plugins.version.catalog.update)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.build.config)
+    alias(libs.plugins.build.config) apply false
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.android) apply false
-
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jetbrains.compose) apply false
@@ -15,9 +14,6 @@ plugins {
 
 group = "io.ktlab"
 version = "1.0-SNAPSHOT"
-
-
-
 
 allprojects {
     repositories {
@@ -46,15 +42,6 @@ allprojects {
             target("**/*.java")
             targetExclude("*/build/**/*.java")
         }
-    }
-    apply(plugin = "com.github.gmazzo.buildconfig")
-    buildConfig {
-        packageName("io.ktlab.bshelper")
-        buildConfigField("APP_NAME", project.name)
-        buildConfigField("APP_VERSION", project.version.toString())
-        buildConfigField("BUILD_TIME", System.currentTimeMillis())
-        buildConfigField("TOOL_API_URL", "https://kv-store-five.vercel.app")
-        buildConfigField("BS_API_URL", "https://api.beatsaver.com")
     }
 }
 

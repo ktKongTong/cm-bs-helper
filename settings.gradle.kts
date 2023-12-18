@@ -14,12 +14,7 @@ plugins {
 rootProject.name = "cm-bs-helper"
 
 include(
-    ":common",
+    ":shared",
     ":androidApp",
     ":desktopApp",
-    ":bsmg",
-    ":platformService",
-    ":model",
-    ":repository",
-    ":utils",
 )
