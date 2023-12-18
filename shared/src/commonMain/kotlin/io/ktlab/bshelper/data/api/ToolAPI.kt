@@ -3,6 +3,7 @@ package io.ktlab.bshelper.data.api
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.BuildConfig
 import io.ktlab.bshelper.model.dto.ExportPlaylist
+import io.ktlab.bshelper.model.dto.GitHubLatestRelease
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.dto.response.KVSetResponse
@@ -57,6 +58,19 @@ class ToolAPI(private val httpClient: HttpClient) {
             APIRespResult.Success(resp.content)
         } catch (e: Exception) {
             logger.error { "getKV: key:$key, url:$url, error:${e.message}" }
+            APIRespResult.Error(e)
+        }
+    }
+
+    suspend fun getLatestVersion(): APIRespResult<String> {
+        val url = "https://api.github.com/repos/ktKongTong/cm-bs-helper/releases/latest"
+        return try {
+            logger.debug { "getLatestVersion: url:$url" }
+            val response = httpClient.get(url)
+            val resp = response.body<GitHubLatestRelease>()
+            APIRespResult.Success(resp.tagName)
+        } catch (e: Exception) {
+            logger.error { "getLatestVersion: error, url:$url, error:${e.message}" }
             APIRespResult.Error(e)
         }
     }

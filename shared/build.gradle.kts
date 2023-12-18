@@ -111,6 +111,7 @@ kotlin {
 
                 implementation(libs.sqldelight.coroutines.extensions)
                 implementation(libs.okio)
+                implementation(libs.semver)
             }
         }
         val androidMain by getting {

@@ -3,12 +3,17 @@ package io.ktlab.bshelper.ui.viewmodel
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.text.AnnotatedString
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.z4kn4fein.semver.toVersion
+import io.github.z4kn4fein.semver.toVersionOrNull
+import io.ktlab.bshelper.BuildConfig
 import io.ktlab.bshelper.data.Event
 import io.ktlab.bshelper.data.RuntimeEventFlow
+import io.ktlab.bshelper.data.api.ToolAPI
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
 import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.UserPreference
+import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.platform.IBSClipBoardManager
 import io.ktlab.bshelper.platform.MediaPlayer
 import io.ktlab.bshelper.ui.event.SnackBarMessage
@@ -132,6 +137,7 @@ class GlobalViewModel(
     private val clipboardManager: IBSClipBoardManager,
     private val playlistRepository: PlaylistRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
+    private val toolAPI: ToolAPI,
 ) : ViewModel() {
 
     private val viewModelState =
@@ -300,7 +306,26 @@ class GlobalViewModel(
     }
 
     private fun onCheckVersion() {
-        showSnackBar("版本更新检查还没做呢！")
+        //
+        viewModelScope.launch(Dispatchers.IO) {
+            val res = toolAPI.getLatestVersion()
+            when(res) {
+                is APIRespResult.Success -> {
+                    val latestVersion = res.data
+                    val currentVersion = BuildConfig.APP_VERSION
+                    latestVersion.toVersionOrNull()?.let {
+                        if (it > currentVersion.toVersion()) {
+                            showSnackBar("有新版本可用：$latestVersion, 可访问: https://github.com/ktKongTong/cm-bs-helper/releases 获取最新版本")
+                        } else {
+                            showSnackBar("当前已是最新版本")
+                        }
+                    }
+                }
+                is APIRespResult.Error -> {
+                    showSnackBar("当前已是最新版本")
+                }
+            }
+        }
     }
 
     fun showSnackBar(
