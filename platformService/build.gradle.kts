@@ -38,8 +38,6 @@ kotlin {
                 implementation(libs.androidx.datastore.preferences.core)
                 // logger
                 implementation(libs.kotlin.logging)
-                implementation(libs.slf4j.api)
-                implementation(libs.slf4j.log4j)
                 // ktor
                 implementation(libs.ktor.serialization.kotlinx.json)
                 implementation(libs.ktor.client.core)
@@ -49,6 +47,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.androidx.core.ktx)
+                implementation(libs.logback.android)
                 implementation(libs.sqldelight.android.driver)
                 implementation(libs.ktor.client.okhttp)
             }
@@ -56,6 +55,8 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(libs.ktor.client.okhttp)
+                implementation(libs.logback.classic)
+                implementation(libs.kotlin.logging.jvm)
                 implementation(libs.sqldelight.jvm.driver)
             }
         }

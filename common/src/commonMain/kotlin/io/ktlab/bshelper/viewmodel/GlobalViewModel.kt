@@ -155,7 +155,7 @@ class GlobalViewModel(
             runtimeEventFlow.sendEvent(Event.ExceptionEvent(throwable))
         }
     init {
-        logger.debug { "GlobalViewModelInit" }
+        logger.debug { "init GlobalViewModel" }
         viewModelScope.launch {
             userPreferenceRepository.getUserPreference().collect {
                 logger.debug { "userPreference Update" }
@@ -165,6 +165,7 @@ class GlobalViewModel(
             }
         }
         runtimeEventFlow.subscribeEvent { event ->
+            logger.debug { "runtime event:$event" }
             when (event) {
                 is Event.ExceptionEvent -> {
                     dispatchUiEvents(GlobalUIEvent.ReportError(event.throwable, event.shortDescription))

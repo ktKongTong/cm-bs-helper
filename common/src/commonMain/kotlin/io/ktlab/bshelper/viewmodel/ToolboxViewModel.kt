@@ -1,5 +1,6 @@
 package io.ktlab.bshelper.viewmodel
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.model.UserPreference
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.PlaylistScanState
@@ -10,7 +11,12 @@ import io.ktlab.bshelper.repository.UserPreferenceRepository
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
@@ -65,7 +71,7 @@ data class ToolboxViewModelState constructor(
             downloadTasks = downloadTasks,
         )
 }
-
+private val logger = KotlinLogging.logger {}
 class ToolboxViewModel(
     private val globalViewModel: GlobalViewModel,
     private val playlistRepository: PlaylistRepository,
@@ -90,6 +96,7 @@ class ToolboxViewModel(
             )
 
     init {
+        logger.debug { "init ToolboxViewModel" }
         localViewModelScope.observeUserPreference()
         localViewModelScope.observeDownloadTasks()
     }

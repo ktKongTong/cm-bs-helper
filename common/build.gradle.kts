@@ -71,7 +71,6 @@ kotlin {
                 implementation(libs.koin.compose)
                 // logger
                 implementation(libs.kotlin.logging)
-                implementation(libs.slf4j.api)
                 // dataStore
                 implementation(libs.androidx.datastore.preferences.core)
                 // beatmap-io
@@ -81,8 +80,8 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.koin.androidx.compose)
-                implementation(libs.kotlin.logging.jvm)
-                implementation(libs.slf4j.log4j)
+                implementation(libs.slf4j.api)
+                implementation(libs.logback.android)
                 implementation(compose.preview)
             }
         }
@@ -94,8 +93,10 @@ kotlin {
                 implementation(compose.preview)
                 // see https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.1.1
                 implementation(libs.kotlinx.coroutines.swing)
-                implementation(libs.slf4j.log4j)
+
                 implementation(libs.kotlin.logging.jvm)
+                implementation(libs.slf4j.api)
+                implementation(libs.logback.classic)
             }
         }
     }

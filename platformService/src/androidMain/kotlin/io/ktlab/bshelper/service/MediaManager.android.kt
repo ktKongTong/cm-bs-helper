@@ -1,7 +1,7 @@
 package io.ktlab.bshelper.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import android.media.MediaPlayer as AndroidIMediaPlayer
-
 actual interface MediaPlayer {
     actual fun play()
 
@@ -30,6 +30,7 @@ actual interface MediaPlayer {
     )
 }
 
+private val logger = KotlinLogging.logger {}
 class AndroidMediaPlayer : MediaPlayer {
     private val player = AndroidIMediaPlayer()
 
@@ -82,15 +83,16 @@ class AndroidMediaPlayer : MediaPlayer {
         onPrepared: () -> Unit,
         onCompletion: () -> Unit,
     ) {
+        logger.debug { "loadAndPlay: url=$url" }
         try {
             player.stop()
         } catch (e: Exception) {
-            e.printStackTrace()
+            logger.error { "loadAndPlay:stop player error: ${e.stackTraceToString()}" }
         }
         try {
             player.reset()
         } catch (e: Exception) {
-            e.printStackTrace()
+            logger.error { "loadAndPlay:reset player error: ${e.stackTraceToString()}" }
         }
         player.setDataSource(url)
         player.prepareAsync()
@@ -101,6 +103,10 @@ class AndroidMediaPlayer : MediaPlayer {
         player.setOnPreparedListener {
             player.start()
             onPrepared()
+        }
+        player.setOnErrorListener { mp, what, extra ->
+            logger.error { "loadAndPlay error: what=$what, extra=$extra" }
+            false
         }
     }
 }

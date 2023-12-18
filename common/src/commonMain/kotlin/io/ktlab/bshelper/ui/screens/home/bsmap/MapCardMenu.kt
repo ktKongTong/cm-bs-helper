@@ -53,8 +53,6 @@ fun MapCardMenu(
             DropdownMenuItem(
                 text = { Text(text = "移动") },
                 onClick = {
-//                    Toast.makeText(context, "🥹 sorry! not yet implemented! please use multi move first", Toast.LENGTH_SHORT).show()
-//                    onMove()
                     expanded = false
                 },
                 leadingIcon = {
