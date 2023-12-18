@@ -16,7 +16,7 @@ sqldelight {
         }
     }
 }
-val gitDescribe: String by lazy {
+val commitShortId: String by lazy {
     val stdout = ByteArrayOutputStream()
     rootProject.exec {
         commandLine("git","rev-parse", "--short", "HEAD")
@@ -27,7 +27,6 @@ val gitDescribe: String by lazy {
 
 buildConfig {
     packageName("io.ktlab.bshelper")
-    val commitShortId = gitDescribe
     buildConfigField("APP_NAME", rootProject.name)
     buildConfigField("APP_VERSION", rootProject.version.toString())
     buildConfigField("BUILD_TIME", System.currentTimeMillis())

@@ -1,9 +1,18 @@
+import java.io.ByteArrayOutputStream
+
 plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.compose)
 }
-
+val commitShortId: String by lazy {
+    val stdout = ByteArrayOutputStream()
+    rootProject.exec {
+        commandLine("git","rev-parse", "--short", "HEAD")
+        standardOutput = stdout
+    }
+    stdout.toString().trim()
+}
 android {
     namespace = "io.ktlab.bshelper"
     compileSdk = 34
@@ -24,6 +33,7 @@ android {
         minSdk = 29
         versionCode = 1
         versionName = rootProject.version.toString()
+        setProperty("archivesBaseName", "${rootProject.name}_v${versionName}_$commitShortId")
     }
 
     compileOptions {
