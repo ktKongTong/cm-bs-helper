@@ -1,12 +1,30 @@
 package io.ktlab.bshelper.ui.screens.toolbox
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.Help
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -16,6 +34,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
 import io.ktlab.bshelper.ui.components.Developing
 import io.ktlab.bshelper.ui.event.UIEvent
+import io.ktlab.bshelper.ui.viewmodel.GlobalUIEvent
 import io.ktlab.bshelper.ui.viewmodel.GlobalUiState
 import io.ktlab.bshelper.ui.viewmodel.ToolboxUiState
 
@@ -81,7 +100,6 @@ fun ToolboxScreen(
 }
 
 enum class ToolboxPage {
-    None,
     Toolbox,
     Settings,
     About,
@@ -116,7 +134,7 @@ fun ToolboxLeftSide(
                     unselectedContainerColor = Color.Transparent,
                 ),
             label = { Text(stringResource(MR.strings.settings)) },
-            icon = { Icon(Icons.Filled.Settings, null) },
+            icon = { Icon(Icons.Rounded.Settings, null) },
             selected = selectedPage == ToolboxPage.Settings,
             onClick = { onSelectedPage(ToolboxPage.Settings) },
             modifier = Modifier.padding(PaddingValues(vertical = 2.dp, horizontal = 12.dp)),
@@ -127,9 +145,21 @@ fun ToolboxLeftSide(
                     unselectedContainerColor = Color.Transparent,
                 ),
             label = { Text(stringResource(MR.strings.downloader)) },
-            icon = { Icon(Icons.Filled.Download, null) },
+            icon = { Icon(Icons.Rounded.Download, null) },
             selected = selectedPage == ToolboxPage.Downloader,
             onClick = { onSelectedPage(ToolboxPage.Downloader) },
+            modifier = Modifier.padding(PaddingValues(vertical = 2.dp, horizontal = 12.dp)),
+        )
+
+        NavigationDrawerItem(
+            colors =
+            NavigationDrawerItemDefaults.colors(
+                unselectedContainerColor = Color.Transparent,
+            ),
+            label = { Text(stringResource(MR.strings.about)) },
+            icon = { Icon(Icons.Rounded.Help, null) },
+            selected = selectedPage == ToolboxPage.About,
+            onClick = { onSelectedPage(ToolboxPage.About) },
             modifier = Modifier.padding(PaddingValues(vertical = 2.dp, horizontal = 12.dp)),
         )
     }
@@ -153,7 +183,7 @@ fun ToolboxRightSide(
                 )
             }
             ToolboxPage.About -> {
-                Developing()
+                AboutScreen(onCheckVersion = { onUIEvent(GlobalUIEvent.CheckVersion) })
             }
             ToolboxPage.Settings -> {
                 Developing()
@@ -167,9 +197,6 @@ fun ToolboxRightSide(
                     onUIEvent = onUIEvent,
                     downloadTasks = uiState.downloadTasks,
                 )
-            }
-            else -> {
-                Developing()
             }
         }
     }

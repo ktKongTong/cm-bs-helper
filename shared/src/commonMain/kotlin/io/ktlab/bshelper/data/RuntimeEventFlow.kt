@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.data.repository
+package io.ktlab.bshelper.data
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob

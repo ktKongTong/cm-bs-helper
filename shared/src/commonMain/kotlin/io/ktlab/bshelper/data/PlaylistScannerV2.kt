@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.data.repository
+package io.ktlab.bshelper.data
 
 import io.ktlab.bshelper.data.api.BeatSaverAPI
 import io.ktlab.bshelper.model.BSHelperDatabase

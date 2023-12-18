@@ -1,7 +1,11 @@
 package io.ktlab.bshelper.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -80,11 +84,11 @@ fun MediaPlayer(
                     // a map preview component
                 }
                 is IMedia.None -> {
-                    Image(
-                        painter = painterResource(MR.images.bs_icon),
-                        contentDescription = "default image",
-                        modifier = Modifier,
-                    )
+//                    Image(
+//                        painter = painterResource(MR.images.bs_icon),
+//                        contentDescription = "default image",
+//                        modifier = Modifier,
+//                    )
                 }
             }
         }

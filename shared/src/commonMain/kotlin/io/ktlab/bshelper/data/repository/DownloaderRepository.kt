@@ -1,5 +1,7 @@
 package io.ktlab.bshelper.data.repository
 
+import io.ktlab.bshelper.data.Event
+import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.api.BeatSaverAPI
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
@@ -115,7 +117,6 @@ class DownloaderRepository(
             batchDownloadMap(targetPlaylist, maps)
         }
     }
-//    fun downloadMapByMapIds
 
     suspend fun createPlaylistAndDownloadBSPlaylist(bsPlaylist: BSPlaylistVO) {
         // check if playlist exist

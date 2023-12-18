@@ -1,5 +1,13 @@
 package io.ktlab.bshelper.platform
 
+import javazoom.jl.decoder.JavaLayerException
+import javazoom.jl.player.Player
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.withContext
+import java.net.URL
+
+
 actual interface MediaPlayer {
     actual fun play()
 
@@ -21,7 +29,7 @@ actual interface MediaPlayer {
 
     actual fun isStopped(): Boolean
 
-    actual fun loadAndPlay(
+    actual suspend fun loadAndPlay(
         url: String,
         onPrepared: () -> Unit,
         onCompletion: () -> Unit,
@@ -29,8 +37,8 @@ actual interface MediaPlayer {
 }
 
 class DesktopMediaPlayerImpl : MediaPlayer {
+    var player: Player? = null
     override fun play() {
-        TODO()
     }
 
     override fun pause() {
@@ -68,13 +76,31 @@ class DesktopMediaPlayerImpl : MediaPlayer {
     override fun isStopped(): Boolean {
         TODO()
     }
-
-    override fun loadAndPlay(
+    private val mutex = Mutex()
+    override suspend fun loadAndPlay(
         url: String,
         onPrepared: () -> Unit,
         onCompletion: () -> Unit,
     ) {
-        TODO()
+        withContext(Dispatchers.IO) {
+            player?.close()
+            mutex.lock()
+            try {
+                val urlConnection = URL(url).openConnection()
+                urlConnection.connect()
+                player = Player(urlConnection.getInputStream())
+                onPrepared()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            try {
+                player!!.play()
+                onCompletion()
+            } catch (e: JavaLayerException) {
+                e.printStackTrace()
+            }
+            mutex.unlock()
+        }
     }
 }
 

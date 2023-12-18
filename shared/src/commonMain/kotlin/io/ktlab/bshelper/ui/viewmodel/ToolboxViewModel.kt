@@ -1,13 +1,12 @@
 package io.ktlab.bshelper.ui.viewmodel
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktlab.bshelper.model.UserPreference
-import io.ktlab.bshelper.model.download.IDownloadTask
-import io.ktlab.bshelper.model.vo.PlaylistScanState
-import io.ktlab.bshelper.model.vo.ScanStateV2
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
+import io.ktlab.bshelper.model.UserPreference
+import io.ktlab.bshelper.model.download.IDownloadTask
+import io.ktlab.bshelper.model.vo.ScanStateV2
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,9 +21,6 @@ import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 
 sealed class ToolboxUIEvent : UIEvent() {
-//    data class SelectPlaylistTobeScan(val playlistScanState: PlaylistScanState) : UIEvent()
-//    data class ScanPlaylistTapped(val dirPath: String? = null) : ToolboxUIEvent()
-    data object ScanSelectedPlaylist : UIEvent()
 
     data class ScanPlaylist(val dirPath: String) : ToolboxUIEvent()
 
@@ -115,11 +111,8 @@ class ToolboxViewModel(
 
     private fun CoroutineScope.observeDownloadTasks() {
         launch {
-            downloaderRepository.getDownloadTaskFlow().collect { res ->
-                viewModelState.update { state ->
-                    state.copy(
-                        downloadTasks = res,
-                    )
+            downloaderRepository.getDownloadTaskFlow().flowOn(Dispatchers.IO).collect { res ->
+                viewModelState.update { state -> state.copy(downloadTasks = res)
                 }
             }
         }
@@ -127,6 +120,9 @@ class ToolboxViewModel(
 
     fun dispatchUiEvents(event: UIEvent) {
         when (event) {
+            is GlobalUIEvent -> {
+                globalViewModel.dispatchUiEvents(event)
+            }
             is ToolboxUIEvent.ClearScanState -> {
                 viewModelState.update { state ->
                     state.copy(scanState = ScanStateV2.getDefaultInstance())
@@ -136,9 +132,6 @@ class ToolboxViewModel(
                 localViewModelScope.launch(Dispatchers.IO) {
                     playlistRepository.clear()
                 }
-            }
-            is ToolboxUIEvent.ScanSelectedPlaylist -> {
-                onScanSelectedPlaylist()
             }
             is ToolboxUIEvent.ScanPlaylist -> {
                 onScanPlaylist(event.dirPath)
@@ -180,40 +173,6 @@ class ToolboxViewModel(
             }
             else -> {}
         }
-    }
-
-    private fun onScanSelectedPlaylist() {
-//        localViewModelScope.launch {
-//            playlistRepository.scanFSMapInPlaylists(viewModelState.value.scanState)
-//                .flowOn(Dispatchers.IO)
-//                .collect{
-//                    viewModelState.update { state ->
-//                        state.copy(scanState = state.scanState.copy(
-//                            state = if (it.state == GlobalScanStateEnum.SCAN_COMPLETE) GlobalScanStateEnum.SCAN_COMPLETE else GlobalScanStateEnum.SCANNING_MAPS,
-//                            playlistStates = it.playlistStates,
-//                        ))
-//                    }
-//                }
-//        }
-    }
-
-    private fun onSelectPlaylistToBeScan(playlistScanState: PlaylistScanState) {
-//        viewModelState.value.scanState.playlistStates.find {
-//            it.value.playlistId == playlistScanState.playlistId
-//        }?.update { state ->
-//            state.copy(state = if (state.state== PlaylistScanStateEnum.SELECTED_BUT_NOT_START)
-//                PlaylistScanStateEnum.UNSELECTED
-//            else PlaylistScanStateEnum.SELECTED_BUT_NOT_START)
-//        }
-//        }
-//        viewModelState.update { state ->
-//
-//            state.copy(scanState = state.scanState.copy(
-//                playlistStates = state.scanState.playlistStates.filter {
-//                    it.value.playlistId == playlistScanState.playlistId
-//                }.),
-//            )
-//        }
     }
 
     private fun onScanPlaylist(dirPath: String) {

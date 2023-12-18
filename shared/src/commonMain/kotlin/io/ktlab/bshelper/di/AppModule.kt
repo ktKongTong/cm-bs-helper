@@ -1,13 +1,13 @@
 package io.ktlab.bshelper.di
 
+import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.api.BeatSaverAPI
 import io.ktlab.bshelper.data.api.ToolAPI
+import io.ktlab.bshelper.data.repository.BSAPIRepository
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.FSMapRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
-import io.ktlab.bshelper.data.repository.RuntimeEventFlow
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
-import io.ktlab.bshelper.repository.*
 import io.ktlab.bshelper.platform.HttpClientModuleProviderBase
 import io.ktlab.bshelper.ui.viewmodel.BeatSaverViewModel
 import io.ktlab.bshelper.ui.viewmodel.GlobalViewModel
@@ -19,7 +19,7 @@ object AppModule {
     private val sysServiceModule =
         module {
             single { RuntimeEventFlow() }
-            single {
+            factory {
                 HttpClientModuleProviderBase().configureClient()
             }
             single {
@@ -29,10 +29,13 @@ object AppModule {
                 ToolAPI(get())
             }
             single {
-                PlaylistRepository(get(), get(), get(), get())
+                BSAPIRepository(get())
             }
             single {
-                FSMapRepository(get(), get())
+                PlaylistRepository(get(), get(),get(), get(), get())
+            }
+            single {
+                FSMapRepository(get(),get(), get())
             }
             single {
                 UserPreferenceRepository(get())

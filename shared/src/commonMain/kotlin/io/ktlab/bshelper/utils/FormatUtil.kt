@@ -1,9 +1,13 @@
 package io.ktlab.bshelper.utils
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
+import java.time.format.DateTimeFormatter
 
 // format to human friendly style
 // like: 1 year ago, 1 month ago, 1 day ago, 1 hour ago, 1 minute ago, 1 second ago
@@ -18,6 +22,16 @@ fun LocalDateTime.prettyFormat(): String {
         diff > 60 -> "${diff / 60} minutes ago"
         else -> "$diff seconds ago"
     }
+}
+
+fun Long.asMillisecondToLocalDateTime():LocalDateTime {
+    return Instant.fromEpochMilliseconds(this)
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+}
+
+fun LocalDateTime.format(pattern:String = "yyyy-MM-dd HH:mm:ss"): String {
+    val formatter = DateTimeFormatter.ofPattern(pattern)
+    return this.toJavaLocalDateTime().format(formatter)
 }
 
 fun Long.countPrettyFormat(): String {

@@ -23,7 +23,7 @@ android {
 //        compileSdkPreview = "UpsideDownCake"
         minSdk = 29
         versionCode = 1
-        versionName = "0.0.1"
+        versionName = rootProject.version.toString()
     }
 
     compileOptions {

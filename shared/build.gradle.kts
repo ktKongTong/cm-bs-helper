@@ -1,3 +1,4 @@
+import java.io.ByteArrayOutputStream
 
 plugins {
     alias(libs.plugins.android.library)
@@ -15,12 +16,22 @@ sqldelight {
         }
     }
 }
+val gitDescribe: String by lazy {
+    val stdout = ByteArrayOutputStream()
+    rootProject.exec {
+        commandLine("git","rev-parse", "--short", "HEAD")
+        standardOutput = stdout
+    }
+    stdout.toString().trim()
+}
 
 buildConfig {
     packageName("io.ktlab.bshelper")
-    buildConfigField("APP_NAME", project.name)
-    buildConfigField("APP_VERSION", project.version.toString())
+    val commitShortId = gitDescribe
+    buildConfigField("APP_NAME", rootProject.name)
+    buildConfigField("APP_VERSION", rootProject.version.toString())
     buildConfigField("BUILD_TIME", System.currentTimeMillis())
+    buildConfigField("COMMIT_ID", commitShortId)
     buildConfigField("TOOL_API_URL", "https://kv-store-five.vercel.app")
     buildConfigField("BS_API_URL", "https://api.beatsaver.com")
 }
@@ -126,6 +137,7 @@ kotlin {
                 implementation(libs.kotlin.logging.jvm)
                 implementation(libs.slf4j.api)
                 implementation(libs.logback.classic)
+                implementation(libs.jlayer)
             }
         }
     }

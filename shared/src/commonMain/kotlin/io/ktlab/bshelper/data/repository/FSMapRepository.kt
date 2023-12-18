@@ -1,23 +1,15 @@
 package io.ktlab.bshelper.data.repository
 
-import app.cash.paging.Pager
-import app.cash.paging.PagingConfig
-import app.cash.paging.PagingData
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.data.api.BeatSaverAPI
-import io.ktlab.bshelper.data.api.paging.BSMapByUserPagingSource
-import io.ktlab.bshelper.data.api.paging.BSMapPagingSource
-import io.ktlab.bshelper.data.api.paging.BSPlaylistDetailPagingSource
 import io.ktlab.bshelper.model.BSHelperDatabase
 import io.ktlab.bshelper.model.FSMap
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
-import io.ktlab.bshelper.model.dto.response.APIRespResult
-import io.ktlab.bshelper.model.dto.response.BSMapReviewDTO
 import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
@@ -37,6 +29,7 @@ private val logger = KotlinLogging.logger{}
 class FSMapRepository(
     private val bsHelperDAO: BSHelperDatabase,
     private val bsAPI: BeatSaverAPI,
+    private val bsAPIRepository: BSAPIRepository
 ) {
     fun getFlowMapsByPlaylistId(playlistId: String): Flow<Result<List<IMap>>> =
         flow {
@@ -193,31 +186,6 @@ class FSMapRepository(
             .mapToVO()
     }
 
-    fun getPagingBSMapByPlaylistId(playlistId: String): Flow<PagingData<IMap>> {
-        return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = {
-                BSPlaylistDetailPagingSource(bsAPI, playlistId)
-            },
-        ).flow
-    }
-
-    fun getPagingBSMap(mapFilterParam: MapFilterParam): Flow<PagingData<IMap>> {
-        return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = {
-                BSMapPagingSource(bsAPI, mapFilterParam)
-            },
-        ).flow
-    }
-
-    fun getPagingBSMapByBSUserId(id: Int): Flow<PagingData<IMap>> {
-        return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = { BSMapByUserPagingSource(bsAPI, id) },
-        ).flow
-    }
-
     suspend fun deleteFSMapsByPath(
         playlistId: String,
         fsMaps: List<FSMap>,
@@ -276,7 +244,11 @@ class FSMapRepository(
         return bsMapVOs.map { it.map.mapId to it }.toMap() + localMap
     }
 
-    suspend fun getBSMapReviewsById(mapId: String): APIRespResult<List<BSMapReviewDTO>> {
-        return bsAPI.getMapReview(mapId)
-    }
+    suspend fun getBSMapReviewsById(mapId: String) = bsAPI.getMapReview(mapId)
+
+    fun getPagingBSMapByPlaylistId(playlistId: String) = bsAPIRepository.getPagingBSMapByPlaylistId(playlistId)
+
+    fun getPagingBSMap(mapFilterParam: MapFilterParam) = bsAPIRepository.getPagingBSMap(mapFilterParam)
+
+    fun getPagingBSMapByBSUserId(id: Int) = bsAPIRepository.getPagingBSMapByBSUserId(id)
 }

@@ -3,17 +3,18 @@ package io.ktlab.bshelper.ui.viewmodel
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.text.AnnotatedString
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktlab.bshelper.data.Event
+import io.ktlab.bshelper.data.RuntimeEventFlow
+import io.ktlab.bshelper.data.repository.PlaylistRepository
+import io.ktlab.bshelper.data.repository.UserPreferenceRepository
 import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.UserPreference
-import io.ktlab.bshelper.data.repository.Event
-import io.ktlab.bshelper.data.repository.PlaylistRepository
-import io.ktlab.bshelper.data.repository.RuntimeEventFlow
-import io.ktlab.bshelper.data.repository.UserPreferenceRepository
 import io.ktlab.bshelper.platform.IBSClipBoardManager
 import io.ktlab.bshelper.platform.MediaPlayer
 import io.ktlab.bshelper.ui.event.SnackBarMessage
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -32,6 +33,7 @@ sealed class GlobalUIEvent : UIEvent() {
     data class ShowFormDialog(val formDialogState: FormDialogState) : GlobalUIEvent()
 
     data object OnFormDialogDismiss : GlobalUIEvent()
+    data object CheckVersion : GlobalUIEvent()
 
     data class WriteToClipboard(val text: String) : GlobalUIEvent()
 
@@ -82,6 +84,8 @@ data class GlobalViewModelState(
     val userPreference: UserPreference,
 ) {
     fun toUiState(): GlobalUiState {
+
+        logger.debug { "ui changed $currentMedia" }
         return GlobalUiState(
             isLoading = isLoading,
             snackBarMessages = snackBarMessages,
@@ -181,6 +185,9 @@ class GlobalViewModel(
 
     fun dispatchUiEvents(event: UIEvent) {
         when (event) {
+            is GlobalUIEvent.CheckVersion -> {
+                onCheckVersion()
+            }
             is GlobalUIEvent.ShowSnackBar -> {
                 showSnackBar(msg = event.message)
             }
@@ -260,16 +267,18 @@ class GlobalViewModel(
             vmState.copy(currentMedia = media, currentMediaState = CurrentMediaState.Stopped)
         }
         if (media is IMedia.MapAudioPreview) {
-            viewModelScope.launch(exceptionHandler) {
+            viewModelScope.launch(exceptionHandler+Dispatchers.IO) {
                 mediaPlayer.loadAndPlay(
                     media.url,
                     {
                         viewModelState.update { vmState ->
-                            vmState.copy(currentMediaState = CurrentMediaState.Playing)
+                            logger.debug { "mediaPlayer prepared url:${media.url}" }
+                            vmState.copy(currentMediaState = CurrentMediaState.Playing, currentMedia = media)
                         }
                     },
                     {
                         viewModelState.update { vmState ->
+                            logger.debug { "mediaPlayer completion url:${media.url}" }
                             vmState.copy(currentMediaState = CurrentMediaState.Stopped, currentMedia = IMedia.None)
                         }
                     },
@@ -288,6 +297,10 @@ class GlobalViewModel(
         clipboardManager.setText(AnnotatedString(text))
         showSnackBar(msg = "已复制到剪贴板")
 //        clipboardManager.setPrimaryClip(ClipData.newPlainText(label,text))
+    }
+
+    private fun onCheckVersion() {
+        showSnackBar("版本更新检查还没做呢！")
     }
 
     fun showSnackBar(

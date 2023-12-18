@@ -23,7 +23,7 @@ actual interface MediaPlayer {
 
     actual fun isStopped(): Boolean
 
-    actual fun loadAndPlay(
+    actual suspend fun loadAndPlay(
         url: String,
         onPrepared: () -> Unit,
         onCompletion: () -> Unit,
@@ -78,7 +78,7 @@ class AndroidMediaPlayer : MediaPlayer {
         return !player.isPlaying
     }
 
-    override fun loadAndPlay(
+    override suspend fun loadAndPlay(
         url: String,
         onPrepared: () -> Unit,
         onCompletion: () -> Unit,

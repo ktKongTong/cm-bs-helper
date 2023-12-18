@@ -21,7 +21,7 @@ expect interface MediaPlayer {
 
     fun isStopped(): Boolean
 
-    fun loadAndPlay(
+    suspend fun loadAndPlay(
         url: String,
         onPrepared: () -> Unit,
         onCompletion: () -> Unit,

@@ -153,7 +153,7 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 
 kown = { module = "io.ktlab.mvn:kown", version = "0.0.1-alpha01" }
-
+jlayer = { module = "com.github.umjammer:jlayer", version = "1.0.2" }
 [plugins]
 # gradle
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions-plugin" }

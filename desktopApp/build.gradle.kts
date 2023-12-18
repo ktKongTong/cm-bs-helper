@@ -24,7 +24,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "CM-BS-Helper"
+            packageName = rootProject.name
             packageVersion = "1.0.0"
             // see https://github.com/cashapp/sqldelight/issues/2151
             // https://github.com/JetBrains/compose-multiplatform/issues/381

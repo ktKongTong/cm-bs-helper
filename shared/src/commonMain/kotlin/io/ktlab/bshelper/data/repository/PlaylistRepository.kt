@@ -1,44 +1,32 @@
 package io.ktlab.bshelper.data.repository
 
-import app.cash.paging.Pager
-import app.cash.paging.PagingConfig
-import app.cash.paging.PagingData
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import io.ktlab.bshelper.data.PlaylistScannerV2
 import io.ktlab.bshelper.data.api.BeatSaverAPI
 import io.ktlab.bshelper.data.api.ToolAPI
 import io.ktlab.bshelper.model.BSHelperDatabase
 import io.ktlab.bshelper.model.FSPlaylist
-import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.UserPreference
-import io.ktlab.bshelper.model.dto.BSUserWithStatsDTO
 import io.ktlab.bshelper.model.dto.ExportPlaylist
 import io.ktlab.bshelper.model.dto.MapItem
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
-import io.ktlab.bshelper.model.dto.response.BSMapperDetailDTO
 import io.ktlab.bshelper.model.enums.SyncStateEnum
 import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
 import io.ktlab.bshelper.model.vo.ScanStateV2
-import io.ktlab.bshelper.data.api.paging.BSMapperPagingSource
-import io.ktlab.bshelper.data.api.paging.BSPlaylistDetailPagingSource
-import io.ktlab.bshelper.data.api.paging.BSPlaylistPagingSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import okio.FileSystem
 import okio.Path.Companion.toPath
@@ -46,8 +34,9 @@ import okio.Path.Companion.toPath
 class PlaylistRepository(
     private val userPreferenceRepository: UserPreferenceRepository,
     private val bsHelperDAO: BSHelperDatabase,
-    private val bsAPI: BeatSaverAPI,
+    bsAPI: BeatSaverAPI,
     private val toolAPI: ToolAPI,
+    private val bsAPIRepository: BSAPIRepository,
 ) {
     private val playlistJob = Job()
     private val repositoryScope = CoroutineScope(Dispatchers.IO + playlistJob)
@@ -55,7 +44,6 @@ class PlaylistRepository(
     private val playlistScanner = PlaylistScannerV2(bsHelperDAO, bsAPI)
 
     private lateinit var preference: UserPreference
-    private val mutex = Mutex()
 
     init {
         repositoryScope.launch {
@@ -116,6 +104,16 @@ class PlaylistRepository(
         return Result.Success(fSPlaylist)
     }
 
+    fun insertBSPlaylist(bSPlaylist: BSPlaylistVO) {
+        bsHelperDAO.transaction {
+            bsHelperDAO.bSPlaylistQueries.insert(bSPlaylist.playlist)
+            bsHelperDAO.bSUserQueries.insert(bSPlaylist.owner)
+            if (bSPlaylist.curator != null) {
+                bsHelperDAO.bSUserQueries.insert(bSPlaylist.curator!!)
+            }
+        }
+    }
+
     fun deletePlaylistById(id: String) {
         bsHelperDAO.transaction {
             bsHelperDAO.fSPlaylistQueries.deleteById(id)
@@ -123,16 +121,14 @@ class PlaylistRepository(
         }
     }
 
-//    fun adjustPlaylistMapCntByPlaylistId(playlistId:String,amount:Int = 1){
-//        runBlocking {
-//            mutex.lock()
-//            bsHelperDAO.fSPlaylistQueries.transaction {
-//                bsHelperDAO.fSPlaylistQueries.adjustPlaylistMapCntByPlaylistId(amount,playlistId)
-//            }
-//            mutex.unlock()
-//        }
-//    }
+    fun clear() {
+        bsHelperDAO.transaction {
+            bsHelperDAO.fSMapQueries.deleteAllFSMap()
+            bsHelperDAO.fSPlaylistQueries.deleteAll()
+        }
+    }
 
+    // query
     fun getPlaylistById(id: String): Result<IPlaylist> =
         bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectByIds(listOf(id))
             .executeAsList().map {
@@ -147,33 +143,11 @@ class PlaylistRepository(
                 FSPlaylistVO.convertDBOToVO(it)
             }
 
-    fun insertBSPlaylist(bSPlaylist: BSPlaylistVO) {
-        bsHelperDAO.transaction {
-            bsHelperDAO.bSPlaylistQueries.insert(bSPlaylist.playlist)
-            bsHelperDAO.bSUserQueries.insert(bSPlaylist.owner)
-            if (bSPlaylist.curator != null) {
-                bsHelperDAO.bSUserQueries.insert(bSPlaylist.curator!!)
-            }
-        }
-    }
 
     fun getBSPlaylistByIds(ids: List<Int>): List<IPlaylist> =
         bsHelperDAO.bSPlaylistQueries.selectByIds(ids)
             .executeAsList().mapToVO()
 
-    suspend fun getBSPlaylistById(id: String): Result<IPlaylist> =
-        withContext(Dispatchers.IO) {
-            return@withContext try {
-                Result.Success((bsAPI.getPlaylistDetail(id) as APIRespResult.Success).data.playlist.convertToVO())
-            } catch (e: Exception) {
-                Result.Error(Exception("no such playlist with id:$id"))
-            }
-        }
-
-//        bsHelperDAO.fSPlaylistQueries.selectByIds(ids)
-//        .executeAsList().map {
-//            FSPlaylistVO.convertDBOToVO(it)
-//        }
     fun getAllPlaylistByManageDir(manageDir: String): Flow<Result<List<IPlaylist>>> =
         bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectAllPlaylist()
             .asFlow()
@@ -196,39 +170,13 @@ class PlaylistRepository(
                 Result.Error(Exception(it.message))
             }
 
-    fun getPagingBSPlaylist(playlistFilterParam: PlaylistFilterParam): Flow<PagingData<IPlaylist>> {
-        return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = {
-                BSPlaylistPagingSource(bsAPI, playlistFilterParam)
-            },
-        ).flow
-    }
-
-    fun getPagingBSUser(): Flow<PagingData<BSUserWithStatsDTO>> {
-        return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = {
-                BSMapperPagingSource(bsAPI)
-            },
-        ).flow
-    }
-
-    suspend fun getBSUserDetail(id: Int): Result<BSMapperDetailDTO> {
-        when (val res = bsAPI.getMapperDetail(id)) {
-            is APIRespResult.Success -> {
-                return Result.Success(res.data)
-            }
-            is APIRespResult.Error -> {
-                return Result.Error(res.exception)
-            }
-        }
-    }
-
+    // fs scan
     suspend fun scanSinglePlaylist(basePath: String) = playlistScanner.scanSinglePlaylist(basePath)
 
     fun scanPlaylist(basePath: String): Flow<ScanStateV2> = playlistScanner.scanPlaylist(basePath)
 
+
+    // api ops
     suspend fun exportPlaylistAsKey(playlist: IPlaylist): Result<String> {
         val mapItems =
             bsHelperDAO
@@ -289,45 +237,14 @@ class PlaylistRepository(
         }
     }
 
-    fun clear() {
-        bsHelperDAO.transaction {
-            bsHelperDAO.fSMapQueries.deleteAllFSMap()
-            bsHelperDAO.fSPlaylistQueries.deleteAll()
-        }
-    }
 
-    fun getPlaylistDetailPagingMaps(playlistId: String): Flow<PagingData<IMap>> {
-        return Pager(
-            config = PagingConfig(pageSize = 100, enablePlaceholders = false),
-            pagingSourceFactory = {
-                BSPlaylistDetailPagingSource(bsAPI, playlistId)
-            },
-        ).flow
-    }
+    fun getPagingBSPlaylist(param: PlaylistFilterParam) = bsAPIRepository.getPagingBSPlaylist(param)
 
-    // most less than 100, todo: need improve
-    suspend fun getPlaylistDetailAllMaps(playlistId: String): List<IMap> {
-        var page = 0
-        val res = listOf<IMap>()
-        val maps =
-            bsAPI.getPlaylistDetail(playlistId, page).let { resp ->
-                resp as APIRespResult.Success
-                resp.data.maps.map { it.map.convertToVO() }
-            }
-        while (maps.size == 100) {
-            page++
-            val newMaps =
-                bsAPI.getPlaylistDetail(playlistId, page).let { resp ->
-                    resp as APIRespResult.Success
-                    resp.data.maps.map { it.map.convertToVO() }
-                }
-            maps.plus(newMaps)
-        }
-        return maps
-    }
+    fun getPlaylistDetailPagingMaps(playlistId: String) = bsAPIRepository.getPlaylistDetailPagingMaps(playlistId)
 
-    private fun <A, B> List<A>.pmap(f: suspend (A) -> B): List<B> =
-        runBlocking {
-            map { async(Dispatchers.Default) { f(it) } }.map { it.await() }
-        }
+    fun getPagingBSUser() = bsAPIRepository.getPagingBSUser()
+
+    suspend fun getBSUserDetail(id: Int) = bsAPIRepository.getBSUserDetail(id)
+
+    suspend fun getPlaylistDetailAllMaps(playlistId: String) = bsAPIRepository.getPlaylistDetailAllMaps(playlistId)
 }
