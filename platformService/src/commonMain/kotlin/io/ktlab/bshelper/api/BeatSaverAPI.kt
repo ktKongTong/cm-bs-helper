@@ -1,6 +1,7 @@
 package io.ktlab.bshelper.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktlab.bshelper.BuildConfig
 import io.ktlab.bshelper.model.annotation.QueryParam
 import io.ktlab.bshelper.model.dto.BSMapDTO
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
@@ -35,7 +36,7 @@ class BeatSaverAPI(private val httpClient: HttpClient) {
             ignoreUnknownKeys = true
         }
 
-    private val basePath = "https://api.beatsaver.com"
+    private val basePath = BuildConfig.BS_API_URL
     init {
         logger.info { "init BeatSaverAPI, basePath = $basePath" }
     }
@@ -44,7 +45,6 @@ class BeatSaverAPI(private val httpClient: HttpClient) {
         queryParam?.let {
             it::class.members.forEach { member ->
                 val anno = member.findAnnotation<QueryParam>()
-
                 if (anno != null) {
                     val v = member.call(it)
                     if (v != null) {

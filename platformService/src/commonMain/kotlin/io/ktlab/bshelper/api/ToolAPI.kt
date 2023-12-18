@@ -1,11 +1,11 @@
 package io.ktlab.bshelper.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktlab.bshelper.BuildConfig
 import io.ktlab.bshelper.model.dto.ExportPlaylist
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.dto.response.KVSetResponse
-import io.ktlab.bshelper.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -23,7 +23,7 @@ class ToolAPI(private val httpClient: HttpClient) {
             ignoreUnknownKeys = true
         }
 
-    private val basePath = Constants.TOOL_BASE_URL
+    private val basePath = BuildConfig.TOOL_API_URL
     init {
         logger.info { "init ToolAPI, basePath = $basePath" }
     }
