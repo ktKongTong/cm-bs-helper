@@ -108,7 +108,8 @@ fun AboutScreen(
                     Text("""
                         因为我写的各种各样的花式bug，运行时可能产生预料之外的行为。
                         一般的报错会进行提示，但有的时候提示并没有用。这种情况下，可以清除数据重试，
-                        当然，也碰到会无法处理的错误，如果你愿意，可以通过邮箱/GitHub 联系我。
+                        也可以查看文件夹，io.ktlab.bshelper/files/log/ 下的日志文件，可能会有帮助。
+                        当然，也可能碰到会无法处理的错误，如果你愿意，可以通过邮箱/GitHub 联系我。
                         在时间充裕的情况下，我应该会跟进处理的。
                         此处附 GitHub 链接： https://github.com/ktKongTong/cm-bs-helper
                     """.trimIndent(),

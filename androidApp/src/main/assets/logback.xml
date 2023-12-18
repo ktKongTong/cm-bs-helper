@@ -3,16 +3,27 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://tony19.github.io/logback-android/xml https://cdn.jsdelivr.net/gh/tony19/logback-android/logback.xsd"
 >
+    <property name="LOG_DIR" value="${EXT_DIR:-${DATA_DIR}}/logs" />
+    <timestamp key="datetime" datePattern="yyyy'-'MMdd'-'HH':'mm':'ss"/>
     <appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">
-        <tagEncoder>
-            <pattern>%logger{12}</pattern>
-        </tagEncoder>
         <encoder>
-            <pattern>[%-20thread] %msg</pattern>
+            <pattern>[%d{yyyyMMdd-HH:mm:ss}][%thread][%-5level][%logger{36}][%msg]%n</pattern>
         </encoder>
     </appender>
-
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${datetime}.log</file>
+        <encoder>
+            <pattern>[%d{yyyyMMdd-HH:mm:ss}][%thread][%-5level][%logger{36}][%msg]%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>5</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
     <root level="DEBUG">
         <appender-ref ref="logcat" />
+        <appender-ref ref="FILE" />
     </root>
 </configuration>
