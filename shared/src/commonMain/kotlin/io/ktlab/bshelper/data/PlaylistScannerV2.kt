@@ -245,8 +245,7 @@ class PlaylistScannerV2(
 
                 val fsPlaylist = MutableStateFlow(newFSPlaylist(subPlaylistPath.toString(), name = path.name))
                 val files = FileSystem.SYSTEM.listOrNull(path)
-                val playlistScanStateV2 =
-                    MutableStateFlow(
+                val playlistScanStateV2 = MutableStateFlow(
                         PlaylistScanStateV2(
                             playlistName = subPlaylistPath.name,
                             playlistPath = subPlaylistPath.toString(),
@@ -255,11 +254,7 @@ class PlaylistScannerV2(
                             errorStates = listOf(),
                         ),
                     )
-                scanStateV2.update {
-                    it.copy(
-                        playlistScanList = it.playlistScanList + playlistScanStateV2,
-                    )
-                }
+                scanStateV2.update { it.copy(playlistScanList = it.playlistScanList + playlistScanStateV2) }
                 files?.forEach { mapDir ->
                     scanStateV2.update {
                         it.copy(

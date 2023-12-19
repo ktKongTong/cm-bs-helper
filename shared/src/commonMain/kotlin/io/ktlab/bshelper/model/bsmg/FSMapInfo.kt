@@ -6,10 +6,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FSMapInfo(
     @SerialName("_version") val version: String,
+    @SerialName("_songName") val songName: String,
+    @SerialName("_songSubName") val songSubName: String,
     @SerialName("_songAuthorName") val songAuthorName: String,
     @SerialName("_songFilename") val songFilename: String,
     @SerialName("_coverImageFilename") val coverFilename: String,
-    @SerialName("_songName") val songName: String,
+    @SerialName("_levelAuthorName") val levelAuthorName: String,
     @SerialName("_beatsPerMinute") val bpm: Double,
     @SerialName("_previewStartTime") val previewStartTime: Double,
     @SerialName("_previewDuration") val previewDuration: Double,

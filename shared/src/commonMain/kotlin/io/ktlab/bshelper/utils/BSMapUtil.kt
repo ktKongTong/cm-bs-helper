@@ -19,25 +19,6 @@ import okio.Path
 import okio.blackholeSink
 import okio.buffer
 import okio.source
-import java.io.File
-
-fun newFSPlaylist(
-    basePath: String,
-    name: String = "",
-    topPlaylist: Boolean = false,
-): FSPlaylist {
-    return FSPlaylist(
-        id = basePath,
-        name = name,
-        description = "",
-        sync = SyncStateEnum.SYNCED,
-        bsPlaylistId = null,
-        basePath = basePath,
-        syncTimestamp = Clock.System.now().epochSeconds,
-        customTags = "",
-        topPlaylist = topPlaylist,
-    )
-}
 
 fun newFSPlaylist(
     name: String = "",
@@ -54,6 +35,26 @@ fun newFSPlaylist(
         syncTimestamp = Clock.System.now().epochSeconds,
         customTags = customTags,
         topPlaylist = false,
+    )
+}
+fun newFSPlaylist(
+    basePath: String,
+    name: String = "",
+    bsPlaylistId: Int? = null,
+    description: String? = null,
+    topPlaylist: Boolean = false,
+    customTags: String? = null,
+): FSPlaylist {
+    return FSPlaylist(
+        id = basePath,
+        name = name,
+        description = description,
+        sync = SyncStateEnum.SYNCED,
+        bsPlaylistId = bsPlaylistId,
+        basePath = basePath,
+        syncTimestamp = Clock.System.now().epochSeconds,
+        customTags = customTags,
+        topPlaylist = topPlaylist,
     )
 }
 
@@ -81,29 +82,19 @@ class BSMapUtils {
             }
         }
 
-        fun checkIfBSMap(file: File): Boolean {
-            if (!file.isDirectory) {
-                return false
-            }
-            return file.listFiles()?.any { it != null && it.name.lowercase() == "info.dat" } ?: false
-        }
-
         private fun mapDigest(path: Path): Pair<String, ScannerException?> {
-//            val path = infoFilePath
             val files = FileSystem.SYSTEM.list(path)
-            val infoFile =
-                files.find { it.name.lowercase() == "info.dat" }
+            val infoFile = files.find { it.name.lowercase() == "info.dat" }
                     ?: return "" to ScannerException.FileMissingException("Info.dat or info.dat not found", mapDir = path.toString())
             HashingSink.sha1(blackholeSink()).use { sink ->
-                val paths =
-                    infoFile.toFile().source().buffer().use inner@{ source ->
+                val paths = infoFile.toFile().source().buffer().use inner@{ source ->
                         val copySink = Buffer()
                         source.readAll(copySink)
                         val str = copySink.copy().readUtf8()
                         copySink.readAll(sink)
-                        val infoc = json.decodeFromString<FSMapInfo>(str)
+                        val info = json.decodeFromString<FSMapInfo>(str)
                         val paths =
-                            infoc.difficultyBeatmapSets.flatMap { bms ->
+                            info.difficultyBeatmapSets.flatMap { bms ->
                                 bms.difficultyBeatmaps.map { df ->
                                     path.resolve(df.beatmapFilename) to bms.characteristicName + df.difficulty
                                 }
@@ -199,8 +190,6 @@ class BSMapUtils {
                     mapPath = mapPath,
                     name = info.songName,
                     infoFilename = infoFilePath.name,
-                    songFilename = info.songFilename,
-                    coverFilename = info.coverFilename,
                     v2MapObjectMap = v2DifficultyMap,
                     v3MapObjectMap = v3DifficultyMap,
                 )
@@ -210,8 +199,6 @@ class BSMapUtils {
                     mapPath = mapPath,
                     name = info.songName,
                     infoFilename = infoFilePath.name,
-                    songFilename = info.songFilename,
-                    coverFilename = info.coverFilename,
                     mapInfo = info,
                     v2MapObjectMap = v2DifficultyMap,
                     v3MapObjectMap = v3DifficultyMap,

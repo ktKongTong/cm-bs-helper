@@ -8,7 +8,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,23 +19,22 @@ import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.viewmodel.HomeUIEvent
 
 @Composable
-fun FSPlaylistImportForm(
+fun FSPlaylistImportFormV2(
     onUIEvent: (UIEvent) -> Unit,
     selectablePlaylists: List<IPlaylist> = emptyList(),
-    triggerBy: @Composable TriggerScope.() -> Unit =
-        { TextButton(onClick = { onTrigger() }) { Text(text = "导入") } },
+    openState: MutableState<Boolean>,
 ) {
     var uuid by remember { mutableStateOf("") }
 
     var playlist by remember { mutableStateOf<IPlaylist?>(null) }
-    AppAlertDialog(
+    AppDialog(
         title = "导入歌单",
         onConfirm = {
             uuid.isNotEmpty().takeIf { playlist != null }?.let {
                 onUIEvent(HomeUIEvent.ImportPlaylist(uuid, playlist!!))
             }
         },
-        triggerBy = triggerBy,
+        openState = openState,
     ) {
         var enable by remember { mutableStateOf(true) }
         Column(

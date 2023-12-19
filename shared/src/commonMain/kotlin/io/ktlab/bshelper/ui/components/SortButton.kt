@@ -1,11 +1,37 @@
 package io.ktlab.bshelper.ui.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Square
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.WidthNormal
+import androidx.compose.material.icons.rounded.Speed
+import androidx.compose.material.icons.rounded.Square
+import androidx.compose.material.icons.rounded.Timer
+import androidx.compose.material.icons.rounded.WidthNormal
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.DpOffset
@@ -65,10 +91,10 @@ fun SortButton(
             ) {
                 val icons =
                     listOf(
-                        Icons.Default.WidthNormal,
-                        Icons.Default.Timer,
-                        Icons.Default.Speed,
-                        Icons.Default.Square,
+                        Icons.Rounded.WidthNormal,
+                        Icons.Rounded.Timer,
+                        Icons.Rounded.Speed,
+                        Icons.Rounded.Square,
                     )
                 SortKey.allSortKeys.forEachIndexed { index, it ->
                     DropdownMenuItem(
@@ -84,11 +110,9 @@ fun SortButton(
         }
     }
 }
-
+@Preview
 @Composable
 fun SortButtonPreview() {
-//    SortButton(sortRule = SortKey.NPS to SortType.ASC, onChangeMapListSortRule = {})
-    Text("Hello")
     Box(Modifier.clip(RoundedCornerShape(10.dp))) {
 //        ExposedDropdownMenuBox()
         DropdownMenu(

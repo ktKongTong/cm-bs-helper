@@ -4,10 +4,10 @@ import io.beatmaps.common.beatsaber.BSDifficulty
 import io.beatmaps.common.beatsaber.BSDifficultyV3
 import io.ktlab.bshelper.model.FSMap
 import io.ktlab.bshelper.model.MapDifficulty
-import io.ktlab.bshelper.model.enums.ECharacteristic
-import io.ktlab.bshelper.model.enums.EMapDifficulty
 import io.ktlab.bshelper.model.bsmg.FSMapDifficulty
 import io.ktlab.bshelper.model.bsmg.FSMapInfo
+import io.ktlab.bshelper.model.enums.ECharacteristic
+import io.ktlab.bshelper.model.enums.EMapDifficulty
 import okio.Path
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -88,8 +88,6 @@ sealed interface IExtractedMapInfo {
         val mapPath: Path,
         val name: String,
         val infoFilename: String? = null,
-        val songFilename: String? = null,
-        val coverFilename: String? = null,
         val mapInfo: FSMapInfo,
         val v2MapObjectMap: Map<String, BSDifficulty>? = null,
         val v3MapObjectMap: Map<String, BSDifficultyV3>? = null,
@@ -118,11 +116,11 @@ sealed interface IExtractedMapInfo {
                 previewDuration = mapInfo.previewDuration.toDuration(DurationUnit.SECONDS),
                 bpm = mapInfo.bpm,
                 songName = mapInfo.songName,
-                songSubname = "mapInfo.songSubname",
+                songSubname = mapInfo.songSubName,
                 songAuthorName = mapInfo.songAuthorName,
-                levelAuthorName = "mapInfo.levelAuthorName",
-                relativeCoverFilename = coverFilename ?: "",
-                relativeSongFilename = songFilename ?: "",
+                levelAuthorName = mapInfo.levelAuthorName,
+                relativeCoverFilename = mapInfo.coverFilename,
+                relativeSongFilename = mapInfo.songFilename,
                 relativeInfoFilename = infoFilename ?: "",
                 dirName = mapPath.name,
                 playlistBasePath = mapPath.parent.toString(),
@@ -140,8 +138,6 @@ sealed interface IExtractedMapInfo {
         val mapInfo: FSMapInfo,
         val name: String,
         val infoFilename: String? = null,
-        val songFilename: String? = null,
-        val coverFilename: String? = null,
         val v2MapObjectMap: Map<String, BSDifficulty>? = null,
         val v3MapObjectMap: Map<String, BSDifficultyV3>? = null,
     ) : IExtractedMapInfo {
@@ -169,11 +165,11 @@ sealed interface IExtractedMapInfo {
                 previewDuration = mapInfo.previewDuration.toDuration(DurationUnit.SECONDS),
                 bpm = mapInfo.bpm,
                 songName = mapInfo.songName,
-                songSubname = "mapInfo.songSubname",
+                songSubname = mapInfo.songSubName,
                 songAuthorName = mapInfo.songAuthorName,
-                levelAuthorName = "mapInfo.levelAuthorName",
-                relativeCoverFilename = coverFilename ?: "",
-                relativeSongFilename = songFilename ?: "",
+                levelAuthorName = mapInfo.levelAuthorName,
+                relativeCoverFilename = mapInfo.coverFilename,
+                relativeSongFilename = mapInfo.songFilename,
                 relativeInfoFilename = infoFilename ?: "",
                 dirName = mapPath.name,
                 playlistBasePath = mapPath.parent.toString(),

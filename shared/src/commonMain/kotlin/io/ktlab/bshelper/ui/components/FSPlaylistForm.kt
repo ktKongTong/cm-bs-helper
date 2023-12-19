@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.FSPlaylist
@@ -30,16 +29,16 @@ private fun isValidFilename(filename: String): Boolean {
 }
 
 @Composable
-fun FSPlaylistForm(
+fun FSPlaylistFormV2(
     fsPlaylist: FSPlaylist? = null,
     checkIfExist: (String) -> Boolean = { false },
     onSubmitFSPlaylist: (FSPlaylist?) -> Unit = {},
-    triggerBy: @Composable TriggerScope.() -> Unit = {},
+    openState: MutableState<Boolean>,
 ) {
     var description by remember { mutableStateOf(fsPlaylist?.description ?: "") }
     var customTags by remember { mutableStateOf(fsPlaylist?.customTags?.split(",")?.toSet() ?: setOf()) }
     var name by remember { mutableStateOf(fsPlaylist?.name ?: "") }
-    AppAlertDialog(
+    AppDialog(
         title = fsPlaylist?.let { "编辑歌单信息" } ?: "新建歌单",
         onConfirm = {
             onSubmitFSPlaylist(
@@ -48,7 +47,7 @@ fun FSPlaylistForm(
                     ?: newFSPlaylist(name = name, customTags = customTags.joinToString(","), description = description),
             )
         },
-        triggerBy = triggerBy,
+        openState = openState,
     ) {
         Column {
             Row(
@@ -59,20 +58,13 @@ fun FSPlaylistForm(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                val focusManager = LocalFocusManager.current
-                var focusTimes by remember { mutableStateOf(0) }
                 OutlinedTextField(
                     modifier =
                         Modifier
-                            .fillMaxWidth()
-                            .onFocusChanged { focusTimes += 1 },
+                            .fillMaxWidth(),
                     value = name,
                     onValueChange = { name = it },
                     supportingText = {
-                        // if not focus before edit, not show error
-                        if (focusTimes <= 1) {
-                            return@OutlinedTextField
-                        }
                         if (!isValidFilename(name)) {
                             Text(text = "歌单名不合法")
                         } else if (name.isEmpty()) {

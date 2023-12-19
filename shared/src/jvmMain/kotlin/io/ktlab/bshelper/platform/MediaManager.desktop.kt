@@ -42,15 +42,15 @@ class DesktopMediaPlayerImpl : MediaPlayer {
     }
 
     override fun pause() {
-        TODO()
+        player?.close()
     }
 
     override fun stop() {
-        TODO()
+        player?.close()
     }
 
     override fun release() {
-        TODO()
+        player?.close()
     }
 
     override fun seekTo(position: Long) {
