@@ -223,7 +223,7 @@ class PlaylistScannerV2(
             scanStateV2.update { it.copy(state = ScanStateEventEnum.SCANNING, totalDirCount = playlistDirs.size) }
             emit(scanStateV2.value)
             // create a custom playlist if not exist
-            val playlist = MutableStateFlow(newFSPlaylist(basePath, name = "Custom Top Playlist", topPlaylist = true))
+            val playlist = MutableStateFlow(newFSPlaylist(manageDir.toString(), name = "Custom Top Playlist", topPlaylist = true))
             val customMapInfos = mutableListOf<IExtractedMapInfo>()
             playlistDirs.map { path ->
                 scanStateV2.update { it.copy(scannedDirCount = it.scannedDirCount + 1, currentPlaylistDir = path.name) }
