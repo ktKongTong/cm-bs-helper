@@ -6,7 +6,7 @@ import io.ktlab.bshelper.model.dto.ExportPlaylist
 import io.ktlab.bshelper.model.dto.GitHubLatestRelease
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.response.APIRespResult
-import io.ktlab.bshelper.model.dto.response.KVSetResponse
+import io.ktlab.bshelper.model.dto.response.ToolAPIResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -28,8 +28,8 @@ class ToolAPI(private val httpClient: HttpClient) {
     init {
         logger.info { "init ToolAPI, basePath = $basePath" }
     }
-    suspend fun setKV(setRequest: KVSetRequest<ExportPlaylist>): APIRespResult<KVSetResponse> {
-        val url = "$basePath/api"
+    suspend fun setKV(setRequest: KVSetRequest<ExportPlaylist>): APIRespResult<String> {
+        val url = "$basePath/key"
         return try {
             logger.debug { "setKV: url:$url, body:$setRequest" }
             val response =
@@ -37,11 +37,11 @@ class ToolAPI(private val httpClient: HttpClient) {
                     contentType(ContentType.Application.Json)
                     setBody(setRequest)
                 }
-            val resp = response.body<KVSetResponse>()
-            if (resp.key == null) {
+            val resp = response.body<ToolAPIResponse<String>>()
+            if (resp.data == null) {
                 return APIRespResult.Error(Exception(resp.message))
             }
-            APIRespResult.Success(resp)
+            APIRespResult.Success(resp.data)
         } catch (e: Exception) {
             logger.error { "setKV: url:$url, body:$setRequest, error:${e.message}" }
             APIRespResult.Error(e)
@@ -50,12 +50,15 @@ class ToolAPI(private val httpClient: HttpClient) {
 
     suspend fun getKV(key: String): APIRespResult<ExportPlaylist> {
 
-        val url = "$basePath/api/$key"
+        val url = "$basePath/key/$key"
         return try {
             logger.debug { "getKV: key:$key, url:$url" }
             val response = httpClient.get(url)
-            val resp = response.body<ToolAPIResp>()
-            APIRespResult.Success(resp.content)
+            val resp = response.body<ToolAPIResponse<ExportPlaylist>>()
+            if (resp.data == null) {
+                return APIRespResult.Error(Exception(resp.message))
+            }
+            APIRespResult.Success(resp.data)
         } catch (e: Exception) {
             logger.error { "getKV: key:$key, url:$url, error:${e.message}" }
             APIRespResult.Error(e)
@@ -79,5 +82,6 @@ class ToolAPI(private val httpClient: HttpClient) {
 @Serializable
 data class ToolAPIResp(
     val message: String,
-    val content: ExportPlaylist,
+    val data: ExportPlaylist? = null,
+    val status: Int,
 )

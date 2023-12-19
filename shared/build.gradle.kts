@@ -31,7 +31,10 @@ buildConfig {
     buildConfigField("APP_VERSION", rootProject.version.toString())
     buildConfigField("BUILD_TIME", System.currentTimeMillis())
     buildConfigField("COMMIT_ID", commitShortId)
-    buildConfigField("TOOL_API_URL", "https://kv-store-five.vercel.app")
+    buildConfigField("THEME_COLOR", 0xFF0b57d0)
+    buildConfigField("TOOL_API_URL", "https://bshelper.api.ktlab.io")
+    buildConfigField("BS_IMG_PROXY", "https://bshelper.img.ktlab.io")
+    buildConfigField("List<kotlin.text.Regex>","BS_IMG_PATTERNS", arrayOf("Regex(\"https://eu.cdn.beatsaver.com\")"))
     buildConfigField("BS_API_URL", "https://api.beatsaver.com")
 }
 kotlin {
@@ -66,7 +69,7 @@ kotlin {
                 implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
-
+//                implementation("com.github.skydoves:colorpicker-compose:1.0.7")
                 // third party compose
                 implementation(libs.wsc.multiplatform)
                 implementation(libs.mpfilepicker)
@@ -111,6 +114,9 @@ kotlin {
                 implementation(libs.sqldelight.coroutines.extensions)
                 implementation(libs.okio)
                 implementation(libs.semver)
+                implementation("com.russhwolf:multiplatform-settings:1.1.1")
+                implementation("com.russhwolf:multiplatform-settings-coroutines:1.1.1")
+                implementation("com.russhwolf:multiplatform-settings-serialization:1.1.1")
             }
         }
         val androidMain by getting {

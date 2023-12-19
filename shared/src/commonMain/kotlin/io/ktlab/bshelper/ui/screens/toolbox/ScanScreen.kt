@@ -2,19 +2,36 @@ package io.ktlab.bshelper.ui.screens.toolbox
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.vo.ScanStateEventEnum
 import io.ktlab.bshelper.model.vo.ScanStateV2
+import io.ktlab.bshelper.ui.LocalUserPreference
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.toolbox.components.DirectoryChooser
 import io.ktlab.bshelper.ui.viewmodel.ToolboxUIEvent
@@ -30,12 +47,12 @@ fun ScanScreen(
     scanState: ScanStateV2,
     onUIEvent: (UIEvent) -> Unit,
 ) {
+
+    val userPreference = LocalUserPreference.current
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
         var requestPermission by remember { mutableStateOf(false) }
-
-        var targetPath by remember { mutableStateOf("") }
         if (requestPermission) {
             RequestStoragePermission()
         }
@@ -46,7 +63,6 @@ fun ScanScreen(
             Text("扫描曲包", style = MaterialTheme.typography.headlineLarge)
             IconButton(onClick = {
                 onUIEvent(ToolboxUIEvent.ClearLocalData)
-                targetPath = ""
             }) {
                 Icon(Icons.Rounded.Delete, contentDescription = "delete map")
             }
@@ -58,19 +74,25 @@ fun ScanScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             val isStoragePermissionGranted = isStoragePermissionGranted()
-            DirectoryChooser(targetPath, { targetPath = it }, onUIEvent)
+            DirectoryChooser(
+                targetPath = userPreference.currentManageDir,
+                onSelectTargetPath = { path ->
+                    onUIEvent(ToolboxUIEvent.UpdateManageDir(path))
+                },
+                onUIEvent = onUIEvent,
+            )
             TextButton(onClick = {
                 // TODO: check if storage permission is granted
                 if (!isStoragePermissionGranted) {
                     requestPermission = true
                     return@TextButton
                 }
-                onUIEvent(ToolboxUIEvent.ScanPlaylist(targetPath))
+                onUIEvent(ToolboxUIEvent.ScanPlaylist(userPreference.currentManageDir))
             }) {
                 Text(text = "扫描")
             }
         }
-        if (targetPath.isNotEmpty()) {
+        if (userPreference.currentManageDir.isNotEmpty()) {
             Column(
                 modifier =
                     Modifier
@@ -85,7 +107,7 @@ fun ScanScreen(
                             .fillMaxHeight(0.7f)
                             .weight(1f, fill = false),
                 ) {
-                    StepContent(scanState, targetPath, { targetPath = it }, onUIEvent)
+                    StepContent(scanState, userPreference.currentManageDir, onUIEvent)
                 }
             }
         }
@@ -96,7 +118,6 @@ fun ScanScreen(
 fun StepContent(
     scanState: ScanStateV2,
     targetPath: String,
-    onSelectTargetPath: (String) -> Unit,
     onUIEvent: (UIEvent) -> Unit,
 ) {
     if (scanState.state == ScanStateEventEnum.SCANNING ||

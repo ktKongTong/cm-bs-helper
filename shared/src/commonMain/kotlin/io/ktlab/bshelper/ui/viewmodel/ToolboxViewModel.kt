@@ -4,7 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
-import io.ktlab.bshelper.model.UserPreference
+import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.ScanStateV2
 import io.ktlab.bshelper.ui.event.UIEvent
@@ -28,7 +28,6 @@ sealed class ToolboxUIEvent : UIEvent() {
 
     data object ClearLocalData : ToolboxUIEvent()
 
-    data class UpdateDefaultManageDir(val path: String) : ToolboxUIEvent()
     //    data class MapMultiSelectTapped : ToolboxUIEvent()
 
     data object DeleteAllDownloadTasks : ToolboxUIEvent()
@@ -43,19 +42,22 @@ sealed class ToolboxUIEvent : UIEvent() {
 
     data class RetryDownloadMap(val downloadTask: IDownloadTask) : ToolboxUIEvent()
 
+    data class UpdateDefaultManageDir(val path: String) : ToolboxUIEvent()
     data class UpdateManageDir(val path: String) : ToolboxUIEvent()
+    data class UpdateThemeColor(val color: Long) : ToolboxUIEvent()
+    data class TempUpdateThemeColor(val color: Long) : ToolboxUIEvent()
 }
 
 data class ToolboxUiState(
     val isLoading: Boolean,
     val scanState: ScanStateV2,
-    val userPreferenceState: UserPreference,
+    val userPreferenceState: UserPreferenceV2,
     val downloadTasks: List<IDownloadTask> = emptyList(),
 )
 
 data class ToolboxViewModelState constructor(
     val isLoading: Boolean = false,
-    val userPreferenceState: UserPreference,
+    val userPreferenceState: UserPreferenceV2,
     val scanState: ScanStateV2 = ScanStateV2(),
     val downloadTasks: List<IDownloadTask> = emptyList(),
 ) {
@@ -79,7 +81,7 @@ class ToolboxViewModel(
         MutableStateFlow(
             ToolboxViewModelState(
                 isLoading = true,
-                userPreferenceState = UserPreference.getDefaultUserPreference(),
+                userPreferenceState = UserPreferenceV2.getDefaultUserPreference(),
             ),
         )
     val uiState =
@@ -134,7 +136,14 @@ class ToolboxViewModel(
                 }
             }
             is ToolboxUIEvent.ScanPlaylist -> {
-                onScanPlaylist(event.dirPath)
+                if(event.dirPath.isEmpty()) {
+                    globalViewModel.showSnackBar("请先选择文件夹")
+                    return
+                }
+
+                globalViewModel.showSnackBar("扫描会清除当前数据库内已扫描到的数据，继续吗？", "继续") {
+                    onScanPlaylist(event.dirPath)
+                }
             }
             is ToolboxUIEvent.DeleteAllDownloadTasks -> {
                 localViewModelScope.launch(Dispatchers.IO) {
@@ -166,9 +175,20 @@ class ToolboxViewModel(
                     downloaderRepository.resume(event.downloadTask)
                 }
             }
-            is ToolboxUIEvent.UpdateDefaultManageDir -> {
+            is ToolboxUIEvent.UpdateManageDir -> {
                 localViewModelScope.launch {
-                    userPreferenceRepository.updateUserPreference(viewModelState.value.userPreferenceState.copy(event.path))
+                    userPreferenceRepository.updateCurrentManageDir(event.path)
+//                    userPreferenceRepository.updateUserPreference(viewModelState.value.userPreferenceState.copy(event.path))
+                }
+            }
+            is ToolboxUIEvent.UpdateThemeColor -> {
+                localViewModelScope.launch {
+                    userPreferenceRepository.updateThemeColor(event.color)
+                }
+            }
+            is ToolboxUIEvent.TempUpdateThemeColor -> {
+                viewModelState.update {
+                    it.copy(userPreferenceState = it.userPreferenceState.copy(themeColor = event.color))
                 }
             }
             else -> {}
@@ -181,6 +201,7 @@ class ToolboxViewModel(
             return
         }
         localViewModelScope.launch {
+            playlistRepository.clear()
             playlistRepository.scanPlaylist(dirPath)
                 .flowOn(Dispatchers.IO)
                 .collect {

@@ -12,7 +12,7 @@ import io.ktlab.bshelper.data.api.ToolAPI
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
 import io.ktlab.bshelper.model.FSPlaylist
-import io.ktlab.bshelper.model.UserPreference
+import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.platform.IBSClipBoardManager
 import io.ktlab.bshelper.platform.MediaPlayer
@@ -86,7 +86,7 @@ data class GlobalViewModelState(
     val currentMedia: IMedia,
     val currentMediaState: CurrentMediaState,
     val errorDialogState: ErrorDialogState? = null,
-    val userPreference: UserPreference,
+    val userPreference: UserPreferenceV2,
 ) {
     fun toUiState(): GlobalUiState {
 
@@ -126,7 +126,7 @@ data class GlobalUiState(
     val currentMedia: IMedia,
     val currentMediaState: CurrentMediaState = CurrentMediaState.Stopped,
     val errorDialogState: ErrorDialogState? = null,
-    val userPreference: UserPreference,
+    val userPreference: UserPreferenceV2,
 )
 
 private val logger = KotlinLogging.logger {}
@@ -147,7 +147,7 @@ class GlobalViewModel(
                 snackBarMessages = emptyList(),
                 currentMedia = IMedia.None,
                 currentMediaState = CurrentMediaState.Stopped,
-                userPreference = UserPreference.getDefaultUserPreference(),
+                userPreference = UserPreferenceV2.getDefaultUserPreference(),
             ),
         )
     val uiState =

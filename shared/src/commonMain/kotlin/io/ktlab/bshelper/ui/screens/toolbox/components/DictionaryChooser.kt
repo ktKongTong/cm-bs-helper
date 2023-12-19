@@ -3,7 +3,11 @@ package io.ktlab.bshelper.ui.screens.toolbox.components
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.viewmodel.ToolboxUIEvent
 
@@ -29,7 +33,7 @@ fun DirectoryChooser(
         BSDirectoryPicker(showDirPicker) { path ->
             showDirPicker = false
             if (path != null) {
-                onUIEvent(ToolboxUIEvent.UpdateDefaultManageDir(path))
+                onUIEvent(ToolboxUIEvent.UpdateManageDir(path))
                 onSelectTargetPath(path)
             }
         }

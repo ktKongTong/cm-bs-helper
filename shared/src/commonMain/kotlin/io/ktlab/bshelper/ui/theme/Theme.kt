@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.materialkolor.AnimatedDynamicMaterialTheme
 import com.materialkolor.PaletteStyle
+import io.ktlab.bshelper.BuildConfig
 
 private val DarkColorPalette =
     darkColorScheme(
@@ -31,7 +32,7 @@ private val LightColorPalette =
 //    secondary = PurpleGrey40,
 //    tertiary = Pink40
     )
-val defaultThemeSeedColor = Color(0xFF0b57d0)
+val defaultThemeSeedColor = Color(BuildConfig.THEME_COLOR)
 
 @Composable
 fun BSHelperTheme(

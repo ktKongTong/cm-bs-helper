@@ -9,7 +9,7 @@ import io.ktlab.bshelper.model.BSHelperDatabase
 import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
-import io.ktlab.bshelper.model.UserPreference
+import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.dto.ExportPlaylist
 import io.ktlab.bshelper.model.dto.MapItem
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import okio.FileSystem
+import okio.Path
 import okio.Path.Companion.toPath
 
 class PlaylistRepository(
@@ -43,7 +44,7 @@ class PlaylistRepository(
 
     private val playlistScanner = PlaylistScannerV2(bsHelperDAO, bsAPI)
 
-    private lateinit var preference: UserPreference
+    private lateinit var preference: UserPreferenceV2
 
     init {
         repositoryScope.launch {
@@ -110,7 +111,7 @@ class PlaylistRepository(
             bsHelperDAO.bSPlaylistQueries.insert(bSPlaylist.playlist)
             bsHelperDAO.bSUserQueries.insert(bSPlaylist.owner)
             if (bSPlaylist.curator != null) {
-                bsHelperDAO.bSUserQueries.insert(bSPlaylist.curator!!)
+                bsHelperDAO.bSUserQueries.insert(bSPlaylist.curator)
             }
         }
     }
@@ -191,10 +192,10 @@ class PlaylistRepository(
         if (res is APIRespResult.Error) {
             return Result.Error(res.exception)
         }
-        return Result.Success((res as APIRespResult.Success).data.key!!)
+        return Result.Success((res as APIRespResult.Success).data)
     }
 
-    suspend fun exportPlaylistAsBPList(playlist: IPlaylist): Result<String> {
+    suspend fun exportPlaylistAsBPList(playlist: IPlaylist, targetDir:Path?=null): Result<String> {
         val mapItems =
             bsHelperDAO
                 .fSMapQueries
@@ -204,6 +205,7 @@ class PlaylistRepository(
                 .map { MapItem(it.fsMap.mapId) }
         val exportPlaylist = ExportPlaylist(playlist.title, playlist.id, mapItems)
         // save to download dir
+
         TODO()
 //        if (res is APIRespResult.Error){
 //            return Result.Error(res.exception)

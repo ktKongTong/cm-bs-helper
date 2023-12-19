@@ -1,5 +1,6 @@
 package io.ktlab.bshelper.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -27,6 +28,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,6 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.ktlab.bshelper.model.ThemeMode
+import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.ui.components.AppDrawer
 import io.ktlab.bshelper.ui.components.AppNavRail
 import io.ktlab.bshelper.ui.components.BSHelperSnackbarHost
@@ -45,7 +49,6 @@ import io.ktlab.bshelper.ui.route.BSHelperDestinations
 import io.ktlab.bshelper.ui.route.BSHelperNavGraph
 import io.ktlab.bshelper.ui.route.BSHelperNavigationActions
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
-import io.ktlab.bshelper.ui.theme.defaultThemeSeedColor
 import io.ktlab.bshelper.ui.viewmodel.ErrorDialogState
 import io.ktlab.bshelper.ui.viewmodel.GlobalUIEvent
 import io.ktlab.bshelper.ui.viewmodel.GlobalViewModel
@@ -58,38 +61,38 @@ import org.koin.compose.KoinContext
 
 val LocalUIEventHandler = staticCompositionLocalOf<((UIEvent) -> Unit)> { {} }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
+val LocalUserPreference = compositionLocalOf<UserPreferenceV2>{ error("No user preference provided") }
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun BSHelperApp() {
     PreComposeApp {
         KoinContext {
             val globalViewModel = koinViewModel<GlobalViewModel>()
             val globalUiState by globalViewModel.uiState.collectAsState()
-            val color = globalUiState.userPreference.getThemeColor()?.let { Color(it) } ?: defaultThemeSeedColor
-            BSHelperTheme(color) {
-                val navigator = rememberNavigator()
-                val navigationActions = remember(navigator) { BSHelperNavigationActions(navigator) }
-                val navigateAction = fun(navDestination: String) {
-                    when (navDestination) {
-                        BSHelperDestinations.HOME_ROUTE -> navigationActions.navigateToHome()
-                        BSHelperDestinations.BEAT_SAVER_ROUTE -> navigationActions.navigateToBeatSaver()
-                        BSHelperDestinations.TOOLBOX_ROUTE -> navigationActions.navigateToToolbox()
+            val color = globalUiState.userPreference.themeColor.let { Color(it) }
+            // TODO: provider some global state
+            // like sizeInfo, sizeClass, platform info
+            CompositionLocalProvider(LocalUIEventHandler provides globalViewModel::dispatchUiEvents) {
+            CompositionLocalProvider(LocalUserPreference provides globalUiState.userPreference) {
+                val isDarkMode = globalUiState.userPreference.themeMode == ThemeMode.DARK || isSystemInDarkTheme()
+                BSHelperTheme(color, darkTheme = isDarkMode) {
+                    val navigator = rememberNavigator()
+                    val navigationActions = remember(navigator) { BSHelperNavigationActions(navigator) }
+                    val navigateAction = fun(navDestination: String) {
+                        when (navDestination) {
+                            BSHelperDestinations.HOME_ROUTE -> navigationActions.navigateToHome()
+                            BSHelperDestinations.BEAT_SAVER_ROUTE -> navigationActions.navigateToBeatSaver()
+                            BSHelperDestinations.TOOLBOX_ROUTE -> navigationActions.navigateToToolbox()
+                        }
                     }
-                }
-
-                val windowSizeClass = calculateWindowSizeClass().widthSizeClass
-                val coroutineScope = rememberCoroutineScope()
-
-                val navBackStackEntry = navigator.currentEntry.collectAsState(null)
-                val currentRoute = navBackStackEntry.value?.route?.route ?: BSHelperDestinations.HOME_ROUTE
-
-                val isExpandedScreen =
-                    (windowSizeClass == WindowWidthSizeClass.Expanded) || (windowSizeClass == WindowWidthSizeClass.Medium)
-                val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
-
-                // TODO: provider some global state
-                // like sizeInfo, sizeClass, platform info
-                CompositionLocalProvider(LocalUIEventHandler provides globalViewModel::dispatchUiEvents) {
+                    val windowSizeClass = calculateWindowSizeClass().widthSizeClass
+                    val coroutineScope = rememberCoroutineScope()
+                    val navBackStackEntry = navigator.currentEntry.collectAsState(null)
+                    val currentRoute = navBackStackEntry.value?.route?.route ?: BSHelperDestinations.HOME_ROUTE
+                    val isExpandedScreen =
+                        (windowSizeClass == WindowWidthSizeClass.Expanded) || (windowSizeClass == WindowWidthSizeClass.Medium)
+                    val sizeAwareDrawerState = rememberSizeAwareDrawerState(isExpandedScreen)
                     ModalNavigationDrawer(
                         drawerContent = {
                             AppDrawer(
@@ -135,8 +138,9 @@ fun BSHelperApp() {
                             )
                         }
                     }
-                }
 
+                }
+            }
             }
         }
     }

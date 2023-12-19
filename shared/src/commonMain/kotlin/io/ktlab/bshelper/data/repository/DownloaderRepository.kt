@@ -6,7 +6,7 @@ import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.api.BeatSaverAPI
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
-import io.ktlab.bshelper.model.UserPreference
+import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
@@ -38,7 +38,7 @@ class DownloaderRepository(
     private val runtimeEventFlow: RuntimeEventFlow,
     private val userPreferenceRepository: UserPreferenceRepository,
 ) {
-    private lateinit var preference: UserPreference
+    private lateinit var preference: UserPreferenceV2
 
     private val downloadJob = Job()
     private val repositoryScope = CoroutineScope(Dispatchers.IO + downloadJob)

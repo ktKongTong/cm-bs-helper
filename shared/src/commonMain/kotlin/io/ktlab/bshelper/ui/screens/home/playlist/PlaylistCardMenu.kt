@@ -76,7 +76,13 @@ fun PlaylistCardMenu(
     }
 
     //
-
+    // open dir chooser
+    AppDialog(
+        title = "歌单",
+        text = "确定要删除歌单吗？",
+        onConfirm = { onDelete() },
+        openState = deleteDialogOpenState,
+    )
     AppDialog(
         title = "删除歌单",
         text = "确定要删除歌单吗？",

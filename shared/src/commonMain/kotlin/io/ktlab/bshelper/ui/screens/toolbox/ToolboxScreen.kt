@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
-import io.ktlab.bshelper.ui.components.Developing
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.viewmodel.GlobalUIEvent
 import io.ktlab.bshelper.ui.viewmodel.GlobalUiState
@@ -186,11 +185,7 @@ fun ToolboxRightSide(
                 AboutScreen(onCheckVersion = { onUIEvent(GlobalUIEvent.CheckVersion) })
             }
             ToolboxPage.Settings -> {
-                Developing()
-//                SettingScreen(
-//                    userPreference = uiState.userPreferenceState,
-//                    onUIEvent = onUIEvent
-//                )
+                SettingScreen(onUIEvent)
             }
             ToolboxPage.Downloader -> {
                 DownloadTaskScreen(

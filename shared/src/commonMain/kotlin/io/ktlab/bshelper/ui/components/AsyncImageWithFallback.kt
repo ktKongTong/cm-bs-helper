@@ -35,8 +35,6 @@ fun AsyncImageWithFallback(
         DefaultImage(modifier, contentScale, alpha)
     },
 ) {
-    val proxiedSource = source
-//        .replace(Url(source).host, "beatsaver.wgzeyu.vip/cdn")
 
     when (type) {
 //        "base64" -> {
@@ -50,6 +48,10 @@ fun AsyncImageWithFallback(
 //            )
 //        }
         "network" -> {
+            //
+//            val current = LocalUserPreference.current
+//            val proxiedSource = source.replace(URL(source).host, current.currentImageSource)
+            val proxiedSource = source.replace(Regex("eu\\.cdn?+\\.beatsaver\\.com"), "bshelper.img.ktlab.io")
             KamelImage(
                 modifier = modifier,
                 resource = asyncPainterResource(proxiedSource),

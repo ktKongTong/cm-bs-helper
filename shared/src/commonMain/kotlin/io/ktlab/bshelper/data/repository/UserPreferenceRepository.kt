@@ -1,55 +1,40 @@
 package io.ktlab.bshelper.data.repository
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import io.ktlab.bshelper.model.UserPreference
+import io.ktlab.bshelper.model.BSAPIProvider
+import io.ktlab.bshelper.model.ThemeMode
+import io.ktlab.bshelper.model.UserPreferenceV2
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class UserPreferenceRepository(
-    private val dataStore: DataStore<Preferences>,
+    private val dataStore: DataStore<UserPreferenceV2>,
 ) {
-    companion object {
-        const val DEFAULT_CURRENT_MANAGE_DIR = ""
+//    companion object {
+//        const val DEFAULT_CURRENT_MANAGE_DIR = ""
+//    }
+//    private val currentManageDirKey = stringPreferencesKey("currentManageDir")
+//    private val currentThemeColorKey = stringPreferencesKey("currentThemeColor")
+//    private val currentThemeModeKey = stringPreferencesKey("currentThemeMode")
+    private val preferenceFlow: Flow<UserPreferenceV2> = dataStore.data
+
+    fun getUserPreference(): Flow<UserPreferenceV2> = preferenceFlow
+
+    suspend fun updateCurrentManageDir(currentManageDir: String) {
+        dataStore.updateData { it.copy(currentManageDir = currentManageDir) }
     }
 
-    private val currentManageDirKey = stringPreferencesKey("currentManageDir")
-    private val currentThemeColorKey = stringPreferencesKey("currentThemeColor")
-    private val currentThemeModeKey = stringPreferencesKey("currentThemeMode")
-    private val preferenceFlow: Flow<UserPreference> =
-        dataStore.data.map {
-            UserPreference(
-                it[currentManageDirKey] ?: DEFAULT_CURRENT_MANAGE_DIR,
-                it[currentThemeColorKey] ?: "",
-                it[currentThemeModeKey] ?: "",
-            )
-        }
-
-    fun getUserPreference(): Flow<UserPreference> = preferenceFlow
-
-    suspend fun changeCurrentManageDir(currentManageDir: String) {
-        dataStore.edit {
-            it[currentManageDirKey] = currentManageDir
-        }
+    suspend fun updateThemeColor(themeColor: Long) {
+        dataStore.updateData { it.copy(themeColor = themeColor) }
     }
 
-    suspend fun changeCurrentThemeColor(currentThemeColor: String) {
-        dataStore.edit {
-            it[currentThemeColorKey] = currentThemeColor
-        }
+    suspend fun updateThemeMode(themeMode: ThemeMode) {
+        dataStore.updateData { it.copy(themeMode = themeMode) }
+    }
+    suspend fun updateBSAPI(bsApiProvider: BSAPIProvider) {
+        dataStore.updateData { it.copy(bsApiProvider = bsApiProvider) }
     }
 
-    suspend fun changeCurrentThemeMode(currentThemeMode: String) {
-        dataStore.edit {
-            it[currentThemeModeKey] = currentThemeMode
-        }
-    }
-
-    suspend fun updateUserPreference(userPreference: UserPreference) {
-        dataStore.edit {
-            it[currentManageDirKey] = userPreference.currentManageDir
-        }
+    suspend fun updateUserPreference(userPreference: UserPreferenceV2) {
+        dataStore.updateData {userPreference }
     }
 }
