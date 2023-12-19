@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.ui.components.AppDialog
+import io.ktlab.bshelper.ui.components.DirectoryChooserV2
 import io.ktlab.bshelper.ui.components.FSPlaylistFormV2
 import io.ktlab.bshelper.ui.screens.beatsaver.components.IconExposedDropDownMenu
 
@@ -22,15 +23,14 @@ fun PlaylistCardMenu(
     modifier: Modifier,
     fsPlaylist: FSPlaylist,
     onExport: () -> Unit,
-    onExportAsBPList: () -> Unit,
+    onExportAsBPList: (String) -> Unit,
     onDelete: () -> Unit,
     onEdit: (FSPlaylist) -> Unit,
     onSync: () -> Unit,
 ) {
     val playlistFormOpenState = remember { mutableStateOf(false) }
     val deleteDialogOpenState = remember { mutableStateOf(false) }
-    // will cause embedded composable error
-    // outer closed then inner also closed
+    val exportDialogOpenState = remember { mutableStateOf(false) }
     IconExposedDropDownMenu(modifier) {
         DropdownMenuItem(
             text = { Text(text = "同步") },
@@ -61,7 +61,7 @@ fun PlaylistCardMenu(
             text = { Text(text = "导出为 bplist") },
             onClick = {
                 onTrigger()
-                onExportAsBPList()
+                exportDialogOpenState.value = true
             },
             leadingIcon = { Icon(Icons.Default.ImportExport, contentDescription = "Export Playlist AS bplist") },
         )
@@ -75,14 +75,22 @@ fun PlaylistCardMenu(
         )
     }
 
-    //
+
+    val targetPath = remember { mutableStateOf("") }
     // open dir chooser
     AppDialog(
-        title = "歌单",
-        text = "确定要删除歌单吗？",
-        onConfirm = { onDelete() },
-        openState = deleteDialogOpenState,
-    )
+        title = "导出",
+        onConfirm = { onExportAsBPList(targetPath.value) },
+        openState = exportDialogOpenState,
+    ){
+        DirectoryChooserV2(
+            targetPath = targetPath.value,
+            onSelectTargetPath = { path ->
+                targetPath.value = path
+            },
+            onUIEvent = {},
+        )
+    }
     AppDialog(
         title = "删除歌单",
         text = "确定要删除歌单吗？",

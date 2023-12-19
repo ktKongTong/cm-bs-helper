@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
+import okio.Path.Companion.toPath
 
 data class HomeViewModelState(
     val playlists: List<IPlaylist> = emptyList(),
@@ -123,7 +124,7 @@ sealed class HomeUIEvent : UIEvent() {
 
     data class ExportPlaylistAsKey(val playlist: IPlaylist) : HomeUIEvent()
 
-    data class ExportPlaylistAsBPList(val playlist: IPlaylist) : HomeUIEvent()
+    data class ExportPlaylistAsBPList(val playlist: IPlaylist,val targetPath:String) : HomeUIEvent()
 
     data class DeletePlaylist(val targetPlaylist: IPlaylist) : HomeUIEvent()
 
@@ -226,7 +227,11 @@ class HomeViewModel(
                 onImportPlaylist(event.key, event.targetPlaylist)
             }
             is HomeUIEvent.ExportPlaylistAsBPList -> {
-                onExportPlaylistAsBPList(event.playlist)
+                if (event.targetPath.isBlank()) {
+                    globalViewModel.showSnackBar(msg = "请先选择文件夹")
+                    return
+                }
+                onExportPlaylistAsBPList(event.playlist,event.targetPath)
             }
             is HomeUIEvent.PlayPreviewMusicSegment -> {
                 viewModelScope.launch(Dispatchers.IO) {
@@ -336,9 +341,9 @@ class HomeViewModel(
         }
     }
 
-    private fun onExportPlaylistAsBPList(playlist: IPlaylist) {
+    private fun onExportPlaylistAsBPList(playlist: IPlaylist, targetPath:String) {
         viewModelScope.launch {
-            val res = playlistRepository.exportPlaylistAsBPList(playlist)
+            val res = playlistRepository.exportPlaylistAsBPList(playlist,targetPath.toPath())
             globalViewModel.showSnackBar(msg = res.successOr("export failed"))
         }
     }

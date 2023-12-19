@@ -33,7 +33,7 @@ import io.ktlab.bshelper.model.vo.ScanStateEventEnum
 import io.ktlab.bshelper.model.vo.ScanStateV2
 import io.ktlab.bshelper.ui.LocalUserPreference
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.screens.toolbox.components.DirectoryChooser
+import io.ktlab.bshelper.ui.components.DirectoryChooser
 import io.ktlab.bshelper.ui.viewmodel.ToolboxUIEvent
 
 @Composable

@@ -19,10 +19,9 @@ import kotlinx.serialization.json.Json
 
 private val logger = KotlinLogging.logger {}
 class ToolAPI(private val httpClient: HttpClient) {
-    private val json =
-        Json {
-            ignoreUnknownKeys = true
-        }
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
 
     private val basePath = BuildConfig.TOOL_API_URL
     init {
@@ -38,6 +37,7 @@ class ToolAPI(private val httpClient: HttpClient) {
                     setBody(setRequest)
                 }
             val resp = response.body<ToolAPIResponse<String>>()
+
             if (resp.data == null) {
                 return APIRespResult.Error(Exception(resp.message))
             }
@@ -54,11 +54,11 @@ class ToolAPI(private val httpClient: HttpClient) {
         return try {
             logger.debug { "getKV: key:$key, url:$url" }
             val response = httpClient.get(url)
-            val resp = response.body<ToolAPIResponse<ExportPlaylist>>()
+            val resp = response.body<ToolAPIResponse<KVSetRequest<ExportPlaylist>>>()
             if (resp.data == null) {
                 return APIRespResult.Error(Exception(resp.message))
             }
-            APIRespResult.Success(resp.data)
+            APIRespResult.Success(resp.data.value)
         } catch (e: Exception) {
             logger.error { "getKV: key:$key, url:$url, error:${e.message}" }
             APIRespResult.Error(e)

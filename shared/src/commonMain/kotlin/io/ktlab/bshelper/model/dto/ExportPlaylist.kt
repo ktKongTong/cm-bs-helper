@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ExportPlaylist(
     @SerialName("pn") val playlistName: String,
-    @SerialName("pk") val playlistKey: String,
+//    @SerialName("pk") val playlistKey: String,
     @SerialName("map") val mapItems: List<MapItem>,
 )
 

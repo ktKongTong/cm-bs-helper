@@ -26,7 +26,7 @@ object AppModule {
                 BeatSaverAPI(get())
             }
             single {
-                ToolAPI(get())
+                ToolAPI(HttpClientModuleProviderBase().configureToolAPIClient())
             }
             single {
                 BSAPIRepository(get())

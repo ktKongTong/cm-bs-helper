@@ -10,6 +10,8 @@ import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.UserPreferenceV2
+import io.ktlab.bshelper.model.bsmg.BPList
+import io.ktlab.bshelper.model.bsmg.BPListSong
 import io.ktlab.bshelper.model.dto.ExportPlaylist
 import io.ktlab.bshelper.model.dto.MapItem
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
@@ -28,6 +30,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
@@ -187,14 +190,14 @@ class PlaylistRepository(
                 .executeAsList()
                 .mapToVO()
                 .map { MapItem(it.fsMap.mapId) }
-        val exportPlaylist = ExportPlaylist(playlist.title, playlist.id, mapItems)
+        val exportPlaylist = ExportPlaylist(playlist.title, mapItems)
         val res = toolAPI.setKV(KVSetRequest(value = exportPlaylist, timeout = 60 * 60 * 24 * 7))
         if (res is APIRespResult.Error) {
             return Result.Error(res.exception)
         }
         return Result.Success((res as APIRespResult.Success).data)
     }
-
+    private val json = Json { prettyPrint = true;ignoreUnknownKeys = true }
     suspend fun exportPlaylistAsBPList(playlist: IPlaylist, targetDir:Path?=null): Result<String> {
         val mapItems =
             bsHelperDAO
@@ -202,15 +205,29 @@ class PlaylistRepository(
                 .getAllByPlaylistId(playlist.id)
                 .executeAsList()
                 .mapToVO()
-                .map { MapItem(it.fsMap.mapId) }
-        val exportPlaylist = ExportPlaylist(playlist.title, playlist.id, mapItems)
-        // save to download dir
-
-        TODO()
-//        if (res is APIRespResult.Error){
-//            return Result.Error(res.exception)
-//        }
-//        return Result.Success((res as APIRespResult.Success).data.key!!)
+                .map { BPListSong(
+                    key = it.fsMap.mapId,
+                    songName = "${it.fsMap.songName} - ${it.fsMap.songAuthorName}",
+                    hash = it.fsMap.hash,
+                ) }
+        val p = (playlist as FSPlaylistVO)
+        p.bsPlaylist?.playlist?.name
+        val bpList = BPList(
+            playlistAuthor = "custom created by BSHelper",
+            playlistTitle = p.bsPlaylist?.playlist?.name ?: playlist.title,
+            songs = mapItems,
+        )
+        val filename = "${playlist.title}.bplist"
+        try {
+            val dir = targetDir ?: preference.currentManageDir.toPath()
+            FileSystem.SYSTEM.createDirectory(dir)
+            FileSystem.SYSTEM.write(dir.resolve(filename)) {
+                writeUtf8(json.encodeToString(BPList.serializer(), bpList))
+            }
+            return Result.Success(dir.resolve(filename).toString() + "has been created")
+        } catch (e: Exception) {
+            return Result.Error(e)
+        }
     }
 
     suspend fun importPlaylistByKey(
