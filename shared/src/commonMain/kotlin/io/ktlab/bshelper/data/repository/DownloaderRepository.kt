@@ -66,9 +66,15 @@ class DownloaderRepository(
             logger.debug { "executing onCompleteAction: ${task.taskId}" }
             val zipFile = task.dirPath.toPath().resolve(task.filename)
             val targetPath = targetPlaylist.getTargetPath().toPath().resolve(task.title)
-            UnzipUtility.unzip(zipFile.toString(), targetPath.toString())
-            FileSystem.SYSTEM.delete(zipFile)
-            mapRepository.activeFSMapByMapId(task.relateEntityId!!, targetPlaylist.id)
+            try {
+                UnzipUtility.unzip(zipFile.toString(), targetPath.toString())
+                FileSystem.SYSTEM.delete(zipFile)
+                mapRepository.activeFSMapByMapId(task.relateEntityId!!, targetPlaylist.id)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                runtimeEventFlow.sendEvent(Event.ExceptionEvent(e))
+            }
+
         }
     }
 

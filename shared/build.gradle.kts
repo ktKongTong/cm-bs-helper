@@ -115,9 +115,6 @@ kotlin {
                 implementation(libs.sqldelight.coroutines.extensions)
                 implementation(libs.okio)
                 implementation(libs.semver)
-                implementation("com.russhwolf:multiplatform-settings:1.1.1")
-                implementation("com.russhwolf:multiplatform-settings-coroutines:1.1.1")
-                implementation("com.russhwolf:multiplatform-settings-serialization:1.1.1")
             }
         }
         val androidMain by getting {

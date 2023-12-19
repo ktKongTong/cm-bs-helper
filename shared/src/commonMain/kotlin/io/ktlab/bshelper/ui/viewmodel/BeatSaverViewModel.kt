@@ -2,6 +2,7 @@ package io.ktlab.bshelper.ui.viewmodel
 
 import app.cash.paging.PagingData
 import app.cash.paging.cachedIn
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.FSMapRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
@@ -34,7 +35,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
-
+private val logger = KotlinLogging.logger {}
 data class LocalState(
     val localMapIdSet: Set<Pair<String, String>> = emptySet(),
     val selectableLocalPlaylists: List<IPlaylist> = emptyList(),
@@ -632,6 +633,7 @@ class BeatSaverViewModel(
     }
 
     private fun onDownloadPlaylist(playlist: IPlaylist) {
+        logger.debug { "onDownloadPlaylist: $playlist" }
         val targetPlaylist = viewModelState.value.selectedFSPlaylist
         if (targetPlaylist == null) {
             globalViewModel.showSnackBar(
@@ -645,6 +647,8 @@ class BeatSaverViewModel(
             )
             return
         }
+
+        logger.debug { "download to $targetPlaylist" }
         viewModelScope.launch(Dispatchers.IO) {
             downloaderRepository.downloadBSPlaylist(targetPlaylist, playlist as BSPlaylistVO)
         }
