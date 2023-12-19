@@ -12,6 +12,7 @@ import dev.icerock.moko.resources.compose.painterResource
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import io.ktlab.bshelper.MR
+import io.ktlab.bshelper.ui.LocalUserPreference
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 private fun getTypeBySource(source: String): String {
@@ -49,9 +50,8 @@ fun AsyncImageWithFallback(
 //        }
         "network" -> {
             //
-//            val current = LocalUserPreference.current
-//            val proxiedSource = source.replace(URL(source).host, current.currentImageSource)
-            val proxiedSource = source.replace(Regex("eu\\.cdn?+\\.beatsaver\\.com"), "bshelper.img.ktlab.io")
+            val current = LocalUserPreference.current
+            val proxiedSource = current.getProxiedImageSource(source)
             KamelImage(
                 modifier = modifier,
                 resource = asyncPainterResource(proxiedSource),

@@ -21,10 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.BuildConfig
+import io.ktlab.bshelper.model.ImageSource
 import io.ktlab.bshelper.ui.LocalUserPreference
 import io.ktlab.bshelper.ui.components.AppDialog
-import io.ktlab.bshelper.ui.event.UIEvent
+import io.ktlab.bshelper.ui.components.ChipDropDownSelector
 import io.ktlab.bshelper.ui.components.DirectoryChooser
+import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.viewmodel.ToolboxUIEvent
 
 @Composable
@@ -74,6 +76,27 @@ fun SettingScreen(
                    onUIEvent(ToolboxUIEvent.UpdateManageDir(path))
                },
                onUIEvent = onUIEvent,
+           )
+       }
+
+
+       Row(
+           Modifier.fillMaxWidth(),
+           verticalAlignment = Alignment.CenterVertically,
+           horizontalArrangement = Arrangement.SpaceBetween,
+       ) {
+           Column(
+               verticalArrangement = Arrangement.SpaceEvenly,
+           ){
+               Text("修改图片源", style = MaterialTheme.typography.titleLarge)
+                Text("在国内网络条件下，bs图片源可用性不高，使用代理图片源可能有帮助（目前可用性也不高）", style = MaterialTheme.typography.bodySmall)
+           }
+           Spacer(Modifier.weight(1f,false))
+           val list = listOf(ImageSource.BS,ImageSource.PROXY).map { it.value }
+           ChipDropDownSelector(
+                options = list,
+                selectedOption = if (userPreference.imageSource == ImageSource.BS) list[0] else list[1],
+                onSelectedOptionChange = { onUIEvent(ToolboxUIEvent.UpdateImageSource(ImageSource.fromValue(it))) },
            )
        }
    }

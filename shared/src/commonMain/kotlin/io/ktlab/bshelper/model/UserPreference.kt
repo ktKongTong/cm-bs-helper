@@ -15,8 +15,18 @@ import java.io.OutputStream
 enum class ThemeMode {
     LIGHT, DARK, SYSTEM
 }
-enum class ImageSource {
-    BS, PROXY,CUSTOM
+enum class ImageSource(val value:String) {
+    BS("BeatSaver"), PROXY("Proxy"),CUSTOM("Custom");
+    companion object {
+        fun fromValue(value: String): ImageSource {
+            return when(value) {
+                "BeatSaver" -> BS
+                "Proxy" -> PROXY
+                "Custom" -> CUSTOM
+                else -> BS
+            }
+        }
+    }
 }
 
 

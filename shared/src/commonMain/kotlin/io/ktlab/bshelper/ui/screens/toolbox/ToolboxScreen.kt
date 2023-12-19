@@ -88,7 +88,7 @@ fun ToolboxScreen(
             ToolboxRightSide(
                 modifier =
                     Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth().padding(start = 8.dp, end = 8.dp),
                 selectedPage = selectedPage,
                 uiState = uiState,
                 onUIEvent = onUIEvent,

@@ -2,6 +2,7 @@ package io.ktlab.bshelper.data.repository
 
 import androidx.datastore.core.DataStore
 import io.ktlab.bshelper.model.BSAPIProvider
+import io.ktlab.bshelper.model.ImageSource
 import io.ktlab.bshelper.model.ThemeMode
 import io.ktlab.bshelper.model.UserPreferenceV2
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +34,9 @@ class UserPreferenceRepository(
     suspend fun updateBSAPI(bsApiProvider: BSAPIProvider) {
         dataStore.updateData { it.copy(bsApiProvider = bsApiProvider) }
     }
-
+    suspend fun updateImageSource(type:ImageSource,source: String?) {
+        dataStore.updateData { it.copy(imageSource = type) }
+    }
     suspend fun updateUserPreference(userPreference: UserPreferenceV2) {
         dataStore.updateData {userPreference }
     }

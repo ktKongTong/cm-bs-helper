@@ -32,12 +32,12 @@ buildConfig {
     buildConfigField("BUILD_TIME", System.currentTimeMillis())
     buildConfigField("COMMIT_ID", commitShortId)
     buildConfigField("THEME_COLOR", 0xFF0b57d0)
-//    buildConfigField("TOOL_API_URL", "https://bs-helper.api.ktlab.io")
-    buildConfigField("TOOL_API_URL", "http://localhost:64933")
+    buildConfigField("TOOL_API_URL", "https://bs-helper.api.ktlab.io")
     buildConfigField("BS_IMG_PROXY", "https://bs-helper.img.ktlab.io")
     buildConfigField("List<kotlin.text.Regex>","BS_IMG_PATTERNS", arrayOf("Regex(\"https://eu.cdn.beatsaver.com\")"))
     buildConfigField("BS_API_URL", "https://api.beatsaver.com")
 }
+
 kotlin {
     jvmToolchain(17)
     androidTarget("android")

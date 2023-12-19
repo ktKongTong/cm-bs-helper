@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
+import io.ktlab.bshelper.model.ImageSource
 import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.ScanStateV2
@@ -45,6 +46,7 @@ sealed class ToolboxUIEvent : UIEvent() {
     data class UpdateDefaultManageDir(val path: String) : ToolboxUIEvent()
     data class UpdateManageDir(val path: String) : ToolboxUIEvent()
     data class UpdateThemeColor(val color: Long) : ToolboxUIEvent()
+    data class UpdateImageSource(val type:ImageSource,val source: String?=null) : ToolboxUIEvent()
     data class TempUpdateThemeColor(val color: Long) : ToolboxUIEvent()
 }
 
@@ -184,6 +186,11 @@ class ToolboxViewModel(
             is ToolboxUIEvent.UpdateThemeColor -> {
                 localViewModelScope.launch {
                     userPreferenceRepository.updateThemeColor(event.color)
+                }
+            }
+            is ToolboxUIEvent.UpdateImageSource -> {
+                localViewModelScope.launch {
+                    userPreferenceRepository.updateImageSource(event.type,event.source)
                 }
             }
             is ToolboxUIEvent.TempUpdateThemeColor -> {

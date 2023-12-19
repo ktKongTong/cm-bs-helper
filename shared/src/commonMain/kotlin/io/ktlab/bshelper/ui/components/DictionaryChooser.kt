@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.toolbox.components.BSDirectoryPicker
@@ -55,6 +56,7 @@ fun DirectoryChooserV2(
     var showDirPicker by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
     ){
         OutlinedTextField(
             value = targetPath,
