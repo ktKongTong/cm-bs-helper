@@ -6,23 +6,19 @@ import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.api.BeatSaverAPI
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
-import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.platform.DBAdapter
 import io.ktlab.bshelper.platform.StorageService
-import io.ktlab.bshelper.utils.UnzipUtility
+import io.ktlab.bshelper.utils.unzip
 import io.ktlab.kown.KownDownloader
 import io.ktlab.kown.model.DownloadListener
 import io.ktlab.kown.model.DownloadTaskBO
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
@@ -38,18 +34,6 @@ class DownloaderRepository(
     private val runtimeEventFlow: RuntimeEventFlow,
     private val userPreferenceRepository: UserPreferenceRepository,
 ) {
-    private lateinit var preference: UserPreferenceV2
-
-    private val downloadJob = Job()
-    private val repositoryScope = CoroutineScope(Dispatchers.IO + downloadJob)
-
-    init {
-        repositoryScope.launch {
-            userPreferenceRepository.getUserPreference().collect {
-                preference = it
-            }
-        }
-    }
 
     private val tmpPath = storageService.getTempDir()
 
@@ -67,7 +51,7 @@ class DownloaderRepository(
             val zipFile = task.dirPath.toPath().resolve(task.filename)
             val targetPath = targetPlaylist.getTargetPath().toPath().resolve(task.title)
             try {
-                UnzipUtility.unzip(zipFile.toString(), targetPath.toString())
+                unzip(zipFile.toString(), targetPath.toString())
                 FileSystem.SYSTEM.delete(zipFile)
                 mapRepository.activeFSMapByMapId(task.relateEntityId!!, targetPlaylist.id)
             } catch (e: Exception) {
@@ -129,7 +113,7 @@ class DownloaderRepository(
     suspend fun createPlaylistAndDownloadBSPlaylist(bsPlaylist: BSPlaylistVO) {
         // check if playlist exist
         if (playlistRepository.isPlaylistExist(bsPlaylist.title)) {
-            val playlistId = preference.currentManageDir.toPath().resolve(bsPlaylist.title).toString()
+            val playlistId = userPreferenceRepository.getCurrentUserPreference().currentManageDir.toPath().resolve(bsPlaylist.title).toString()
             playlistRepository.getPlaylistById(playlistId).takeIf { it is Result.Success }?.let {
                 val playlist = (it as Result.Success).data
                 runtimeEventFlow.sendEvent(Event.MessageEvent("playlist ${playlist.title} exist, start download"))
@@ -280,13 +264,13 @@ class DownloaderRepository(
     fun remove(downloadTask: IDownloadTask) {
         when (downloadTask) {
             is IDownloadTask.MapDownloadTask -> {
-//                downloader.removeById(downloadTask.downloadTaskModel.taskId)
+                downloader.removeById(downloadTask.downloadTaskModel.taskId)
             }
             is IDownloadTask.BatchDownloadTask -> {
-//                downloader.removeByTag(downloadTask.tag)
+                downloader.removeByTag(downloadTask.tag)
             }
             is IDownloadTask.PlaylistDownloadTask -> {
-//                downloader.removeByTag(downloadTask.tag)
+                downloader.removeByTag(downloadTask.tag)
             }
         }
     }
@@ -294,7 +278,6 @@ class DownloaderRepository(
     fun getDownloadTaskFlow(): Flow<List<IDownloadTask>> =
         downloader
             .getAllDownloadTaskFlow()
-//            .map { it.map { it.copyTask() } }
             .map outer@{
                 try {
                     val mapIds = it.mapNotNull { it.relateEntityId }

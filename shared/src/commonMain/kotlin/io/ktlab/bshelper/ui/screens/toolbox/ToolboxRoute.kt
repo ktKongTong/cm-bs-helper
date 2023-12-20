@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.ui.route
+package io.ktlab.bshelper.ui.screens.toolbox
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -23,8 +23,6 @@ fun ToolboxRoute(
         uiState = uiState,
         showTopAppBar = !isExpandedScreen,
         openDrawer = openDrawer,
-        onUIEvent = toolboxViewModel::dispatchUiEvents,
         snackbarHost = snackbarHost,
-        globalUiState = globalUiState,
     )
 }

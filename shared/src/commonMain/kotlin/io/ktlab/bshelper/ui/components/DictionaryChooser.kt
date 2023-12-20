@@ -14,8 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.screens.toolbox.components.BSDirectoryPicker
-import io.ktlab.bshelper.ui.viewmodel.ToolboxUIEvent
+import io.ktlab.bshelper.ui.event.ToolboxUIEvent
 
 @Composable
 fun DirectoryChooser(

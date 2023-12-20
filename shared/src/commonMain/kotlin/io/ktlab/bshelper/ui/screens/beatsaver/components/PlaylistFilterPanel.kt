@@ -19,7 +19,7 @@ import io.ktlab.bshelper.ui.components.buttons.QueryTextButton
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.beatsaver.components.filters.DateRangeSelector
 import io.ktlab.bshelper.ui.screens.beatsaver.components.filters.NPSRangeSlider
-import io.ktlab.bshelper.ui.viewmodel.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn

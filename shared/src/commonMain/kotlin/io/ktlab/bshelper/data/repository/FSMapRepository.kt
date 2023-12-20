@@ -79,40 +79,7 @@ class FSMapRepository(
     fun deleteAll() {
         bsHelperDAO.transaction {
             bsHelperDAO.fSMapQueries.deleteAllFSMap()
-//            bsHelperDAO.bSMapQueries.deleteAll()
-//            bsHelperDAO.bSMapVersionQueries.deleteAll()
-//            bsHelperDAO.bSUserQueries.deleteAll()
             bsHelperDAO.fSPlaylistQueries.deleteAll()
-        }
-    }
-
-    suspend fun deleteLocalAll() {
-//        fsMapDao.deleteAll()
-    }
-
-    suspend fun insertBSMap(bsMap: BSMapVO) {
-        bsHelperDAO.transaction {
-            bsHelperDAO.bSMapQueries.insert(bsMap.map)
-            bsHelperDAO.bSUserQueries.insert(bsMap.uploader)
-            bsMap.versions.map {
-                bsHelperDAO.bSMapVersionQueries.insert(it.version)
-                it.diffs.map {
-                    bsHelperDAO.mapDifficultyQueries.insert(it)
-                }
-            }
-        }
-    }
-
-    suspend fun insertFSMap(bsMap: BSMapVO) {
-        bsHelperDAO.transaction {
-            bsHelperDAO.bSMapQueries.insert(bsMap.map)
-            bsHelperDAO.bSUserQueries.insert(bsMap.uploader)
-            bsMap.versions.map {
-                bsHelperDAO.bSMapVersionQueries.insert(it.version)
-                it.diffs.map {
-                    bsHelperDAO.mapDifficultyQueries.insert(it)
-                }
-            }
         }
     }
 

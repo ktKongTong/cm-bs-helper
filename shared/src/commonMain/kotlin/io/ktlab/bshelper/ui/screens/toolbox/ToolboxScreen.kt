@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.stringResource
 import io.ktlab.bshelper.MR
+import io.ktlab.bshelper.ui.LocalUIEventHandler
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.viewmodel.GlobalUIEvent
-import io.ktlab.bshelper.ui.viewmodel.GlobalUiState
+import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.viewmodel.ToolboxUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,12 +44,10 @@ fun ToolboxScreen(
     showTopAppBar: Boolean,
     snackbarHost: @Composable () -> Unit = {},
     openDrawer: () -> Unit,
-    onUIEvent: (UIEvent) -> Unit,
-    globalUiState: GlobalUiState,
-//    onSnackBarShown: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val topAppBarState = rememberTopAppBarState()
+    val onUIEvent = LocalUIEventHandler.current
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
     Scaffold(
         snackbarHost = snackbarHost,
@@ -70,11 +68,7 @@ fun ToolboxScreen(
         Row(contentModifier) {
             var selectedPage by remember {
                 mutableStateOf(
-                    if (!showTopAppBar) {
-                        ToolboxPage.Toolbox
-                    } else {
-                        ToolboxPage.Toolbox
-                    },
+                    if (!showTopAppBar) { ToolboxPage.Toolbox } else { ToolboxPage.Toolbox },
                 )
             }
             ToolboxLeftSide(

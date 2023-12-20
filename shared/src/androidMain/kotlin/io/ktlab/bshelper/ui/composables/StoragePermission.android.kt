@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.ui.screens.toolbox
+package io.ktlab.bshelper.ui.composables
 
 import android.Manifest
 import android.content.Context
@@ -34,7 +34,6 @@ actual fun RequestStoragePermission() {
             ActivityResultContracts.RequestMultiplePermissions(),
         ) { isGranted: Map<String, @JvmSuppressWildcards Boolean> ->
         }
-//    HsvColorPicker()
     LaunchedEffect(key1 = true) {
         val storagePermission = checkIfStoragePermissionGranted(context)
         if (!storagePermission) {

@@ -24,7 +24,7 @@ import io.ktlab.bshelper.ui.components.MapOnlinePreview
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistCard
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
-import io.ktlab.bshelper.ui.viewmodel.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 
 @Composable
 fun BSMapCard(

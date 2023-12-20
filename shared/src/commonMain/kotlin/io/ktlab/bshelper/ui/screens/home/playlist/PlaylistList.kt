@@ -1,26 +1,35 @@
 package io.ktlab.bshelper.ui.screens.home.playlist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.IPlaylist
+import io.ktlab.bshelper.ui.LocalUIEventHandler
 import io.ktlab.bshelper.ui.components.BSSearchBar
 import io.ktlab.bshelper.ui.components.EmptyContent
 import io.ktlab.bshelper.ui.components.FSPlaylistFormV2
 import io.ktlab.bshelper.ui.components.FSPlaylistImportFormV2
-import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.beatsaver.components.IconExposedDropDownMenu
-import io.ktlab.bshelper.ui.viewmodel.GlobalUIEvent
-import io.ktlab.bshelper.ui.viewmodel.HomeUIEvent
+import io.ktlab.bshelper.ui.event.GlobalUIEvent
+import io.ktlab.bshelper.ui.event.HomeUIEvent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -30,9 +39,9 @@ fun PlaylistList(
     state: LazyListState = rememberLazyListState(),
     playlists: List<IPlaylist>,
     selectedPlaylist: IPlaylist?,
-    onUIEvent: (UIEvent) -> Unit,
     stickyHeader: @Composable () -> Unit = {},
 ) {
+    val onUIEvent = LocalUIEventHandler.current
     var query by remember { mutableStateOf("") }
     LazyColumn(
         modifier =

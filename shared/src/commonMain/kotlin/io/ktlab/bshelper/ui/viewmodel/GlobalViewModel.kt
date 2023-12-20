@@ -11,12 +11,12 @@ import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.api.ToolAPI
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
-import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.platform.IBSClipBoardManager
 import io.ktlab.bshelper.platform.MediaPlayer
-import io.ktlab.bshelper.ui.event.SnackBarMessage
+import io.ktlab.bshelper.ui.event.EventBus
+import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -29,28 +29,6 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import java.util.*
-
-sealed class GlobalUIEvent : UIEvent() {
-    data class ShowSnackBar(val message: String) : GlobalUIEvent()
-
-    data class SnackBarShown(val msgId: Long) : GlobalUIEvent()
-
-    data class ShowFormDialog(val formDialogState: FormDialogState) : GlobalUIEvent()
-
-    data object OnFormDialogDismiss : GlobalUIEvent()
-    data object CheckVersion : GlobalUIEvent()
-
-    data class WriteToClipboard(val text: String) : GlobalUIEvent()
-
-//    data class MediaEvent(val media: IMedia):GlobalUIEvent()
-    data class ReportError(val throwable: Throwable, val shortDescription: String? = null) : GlobalUIEvent()
-
-    data class PlayMedia(val media: IMedia) : GlobalUIEvent()
-
-    data class OnMediaEvent(val event: MediaEvent) : GlobalUIEvent()
-
-    data class CreatePlaylist(val playlist: FSPlaylist?) : GlobalUIEvent()
-}
 
 sealed class IMedia {
     data class MapAudioPreview(
@@ -110,7 +88,13 @@ data class FormDialogState(
     val onConfirm: (() -> Unit)? = null,
     val onCancel: (() -> Unit)? = null,
 )
-
+data class SnackBarMessage(
+    val id: Long,
+    val message: String,
+    val actionLabel: String? = null,
+    val action: (() -> Unit)? = null,
+    val duration: SnackbarDuration = SnackbarDuration.Short,
+)
 data class ErrorDialogState(
     val title: String,
     val message: String,
@@ -165,7 +149,11 @@ class GlobalViewModel(
             runtimeEventFlow.sendEvent(Event.ExceptionEvent(throwable))
         }
     init {
+
         logger.debug { "init GlobalViewModel" }
+        viewModelScope.launch {
+            EventBus.subscribe<GlobalUIEvent> { dispatchUiEvents(it) }
+        }
         viewModelScope.launch {
             userPreferenceRepository.getUserPreference().collect {
                 logger.debug { "userPreference Update" }

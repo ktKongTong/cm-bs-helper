@@ -82,7 +82,7 @@ class BSMapUtils {
             }
         }
 
-        private fun mapDigest(path: Path): Pair<String, ScannerException?> {
+        fun mapDigest(path: Path): Pair<String, ScannerException?> {
             val files = FileSystem.SYSTEM.list(path)
             val infoFile = files.find { it.name.lowercase() == "info.dat" }
                     ?: return "" to ScannerException.FileMissingException("Info.dat or info.dat not found", mapDir = path.toString())

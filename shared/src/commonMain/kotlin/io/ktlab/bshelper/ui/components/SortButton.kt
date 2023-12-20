@@ -1,6 +1,5 @@
 package io.ktlab.bshelper.ui.components
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -110,32 +109,4 @@ fun SortButton(
         }
     }
 }
-@Preview
-@Composable
-fun SortButtonPreview() {
-    Box(Modifier.clip(RoundedCornerShape(10.dp))) {
-//        ExposedDropdownMenuBox()
-        DropdownMenu(
-            expanded = true,
-            onDismissRequest = { },
-            offset = DpOffset(8.dp, (-12).dp),
-            properties = PopupProperties(focusable = false),
-            modifier = Modifier,
-        ) {
-            val icons =
-                listOf(
-                    Icons.Default.WidthNormal,
-                    Icons.Default.Timer,
-                    Icons.Default.Speed,
-                    Icons.Default.Square,
-                )
-            SortKey.allSortKeys.forEachIndexed { index, it ->
-                DropdownMenuItem(
-                    text = { Text(text = it.toString()) },
-                    onClick = {},
-                    leadingIcon = { Icon(icons[index], contentDescription = it.slug) },
-                )
-            }
-        }
-    }
-}
+

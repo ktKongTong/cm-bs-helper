@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.enums.getSortKeyComparator
+import io.ktlab.bshelper.ui.LocalUIEventHandler
 import io.ktlab.bshelper.ui.components.EmptyContent
-import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.viewmodel.MapListState
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -23,9 +23,9 @@ fun MapCardList(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     mapListState: MapListState,
     mapList: List<IMap>,
-    onUIEvent: (UIEvent) -> Unit,
     stickyHeader: @Composable () -> Unit = {},
 ) {
+    val onUIEvent = LocalUIEventHandler.current
     val state = rememberLazyListState()
     val mapMultiSelected = mapListState.multiSelectedMapHashMap
     val mapMultiSelectedMode = mapListState.isMapMultiSelectMode

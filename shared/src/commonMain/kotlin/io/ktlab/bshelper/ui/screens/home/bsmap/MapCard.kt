@@ -21,12 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.IMap
-import io.ktlab.bshelper.model.fakeFSMapVO
 import io.ktlab.bshelper.ui.components.MapItemV2
 import io.ktlab.bshelper.ui.components.MapOnlinePreview
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
-import io.ktlab.bshelper.ui.viewmodel.HomeUIEvent
+import io.ktlab.bshelper.ui.event.HomeUIEvent
 
 @Composable
 fun MapCard(

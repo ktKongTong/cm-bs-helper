@@ -18,7 +18,7 @@ import androidx.paging.LoadState
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.compose.itemKey
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapperOverview
-import io.ktlab.bshelper.ui.viewmodel.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 import io.ktlab.bshelper.ui.viewmodel.BeatSaverUiState
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)

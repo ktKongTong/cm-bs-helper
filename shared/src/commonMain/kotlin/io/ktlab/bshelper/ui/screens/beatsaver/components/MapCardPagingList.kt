@@ -26,7 +26,7 @@ import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.viewmodel.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 import io.ktlab.bshelper.ui.viewmodel.LocalState
 
 // import io.ktkt.bshelper.utils.DownloadInfo

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.viewmodel.ToolboxUIEvent
+import io.ktlab.bshelper.ui.event.ToolboxUIEvent
 import io.ktlab.kown.model.*
 import kotlinx.datetime.Instant
 

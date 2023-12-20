@@ -1,14 +1,33 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.QueueMusic
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -24,14 +43,17 @@ import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
-import io.ktlab.bshelper.ui.components.DropDownPlaylistSelector
-import io.ktlab.bshelper.ui.components.labels.*
+import io.ktlab.bshelper.ui.components.labels.BSDurationLabel
+import io.ktlab.bshelper.ui.components.labels.BSNPSRangeLabel
+import io.ktlab.bshelper.ui.components.labels.BSThumbDownLabel
+import io.ktlab.bshelper.ui.components.labels.BSThumbUpLabel
+import io.ktlab.bshelper.ui.components.labels.MapperLabel
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.utils.prettyFormat
-import io.ktlab.bshelper.ui.viewmodel.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 import io.ktlab.bshelper.ui.viewmodel.BeatSaverUiState
-import io.ktlab.bshelper.ui.viewmodel.GlobalUIEvent
+import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.viewmodel.LocalState
+import io.ktlab.bshelper.utils.prettyFormat
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -138,7 +160,9 @@ fun BSPlaylistHeader(
                 ) {
                     MapperLabel(
                         mapperName = playlist.getAuthor(),
-                        onClick = {},
+                        onClick = {
+                              onUIEvent(BeatSaverUIEvent.OnSelectedBSMapper((playlist as BSPlaylistVO).playlist.ownerId))
+                        },
                         verified = (playlist as BSPlaylistVO).owner.verifiedMapper?.let { true } == true,
                         avatarUrl = (playlist as BSPlaylistVO).owner.avatar,
                     )
@@ -166,17 +190,17 @@ fun BSPlaylistHeader(
                     }
                 }
                 Column(
-                    Modifier.fillMaxHeight(),
+                    Modifier.fillMaxHeight().padding(4.dp),
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    DropDownPlaylistSelector(
-                        onUIEvent = onUIEvent,
-                        modifier = Modifier,
-                        selectablePlaylists = localState.selectableLocalPlaylists,
-                        selectedIPlaylist = localState.targetPlaylist,
-                        onSelectedPlaylist = {
-                            onUIEvent(BeatSaverUIEvent.ChangeTargetPlaylist(it))
-                        },
-                    )
+                    val playlistVO = (playlist as BSPlaylistVO)
+                    Row(
+                        modifier = Modifier.verticalScroll(rememberScrollState()),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(text = "${playlistVO.playlist.description}", style = MaterialTheme.typography.bodyMedium)
+                    }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = if (multiSelectedMode) Arrangement.SpaceBetween else Arrangement.End,

@@ -22,7 +22,7 @@ import io.ktlab.bshelper.model.enums.SyncStateEnum
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
 import io.ktlab.bshelper.ui.components.MapAmountIconWIthText
-import io.ktlab.bshelper.ui.viewmodel.HomeUIEvent
+import io.ktlab.bshelper.ui.event.HomeUIEvent
 
 @Composable
 fun PlaylistCard(

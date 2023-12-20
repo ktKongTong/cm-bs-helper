@@ -1,10 +1,9 @@
-package io.ktlab.bshelper.ui.route
+package io.ktlab.bshelper.ui.screens.home
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import io.ktlab.bshelper.ui.screens.home.HomeScreen
 import io.ktlab.bshelper.ui.viewmodel.GlobalUiState
 import io.ktlab.bshelper.ui.viewmodel.HomeViewModel
 import moe.tlaster.precompose.koin.koinViewModel
@@ -34,7 +33,6 @@ fun HomeRoute(
     HomeScreen(
         uiState = uiState,
         showTopAppBar = isExpandedScreen,
-        onUIEvent = homeViewModel::dispatchUiEvents,
         snackbarHost = snackbarHost,
     )
 //        }

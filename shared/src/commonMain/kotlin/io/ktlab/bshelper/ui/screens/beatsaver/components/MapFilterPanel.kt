@@ -25,7 +25,7 @@ import io.ktlab.bshelper.ui.screens.beatsaver.components.filters.DateRangeSelect
 import io.ktlab.bshelper.ui.screens.beatsaver.components.filters.DurationRangeSlider
 import io.ktlab.bshelper.ui.screens.beatsaver.components.filters.NPSRangeSlider
 import io.ktlab.bshelper.ui.screens.beatsaver.components.filters.RatingRangeSlider
-import io.ktlab.bshelper.ui.viewmodel.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn

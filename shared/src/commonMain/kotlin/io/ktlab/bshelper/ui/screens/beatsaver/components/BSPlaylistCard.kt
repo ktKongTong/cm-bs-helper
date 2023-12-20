@@ -18,7 +18,7 @@ import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
 import io.ktlab.bshelper.ui.components.labels.*
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.viewmodel.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

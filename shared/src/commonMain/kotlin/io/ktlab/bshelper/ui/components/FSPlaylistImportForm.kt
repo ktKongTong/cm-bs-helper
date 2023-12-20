@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.viewmodel.HomeUIEvent
+import io.ktlab.bshelper.ui.event.HomeUIEvent
 
 @Composable
 fun FSPlaylistImportFormV2(

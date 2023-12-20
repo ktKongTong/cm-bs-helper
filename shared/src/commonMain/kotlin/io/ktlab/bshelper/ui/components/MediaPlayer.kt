@@ -20,8 +20,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
 import io.ktlab.bshelper.MR
+import io.ktlab.bshelper.ui.LocalUIEventHandler
 import io.ktlab.bshelper.ui.viewmodel.CurrentMediaState
-import io.ktlab.bshelper.ui.viewmodel.GlobalUIEvent
+import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.viewmodel.IMedia
 import io.ktlab.bshelper.ui.viewmodel.MediaEvent
 
@@ -29,8 +30,8 @@ import io.ktlab.bshelper.ui.viewmodel.MediaEvent
 fun MediaPlayer(
     media: IMedia,
     currentMediaState: CurrentMediaState,
-    onUIEvent: (GlobalUIEvent) -> Unit,
 ) {
+    val onUIEvent = LocalUIEventHandler.current
     val infiniteTransition = rememberInfiniteTransition()
     val angle by infiniteTransition.animateFloat(
         initialValue = 0F,

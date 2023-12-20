@@ -24,7 +24,7 @@ import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.ui.components.*
 import io.ktlab.bshelper.ui.components.labels.MapDiffLabel
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.viewmodel.ToolboxUIEvent
+import io.ktlab.bshelper.ui.event.ToolboxUIEvent
 import io.ktlab.kown.model.KownTaskStatus
 import kotlinx.datetime.Instant
 

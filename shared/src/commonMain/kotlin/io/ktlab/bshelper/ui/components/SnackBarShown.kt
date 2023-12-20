@@ -7,7 +7,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktlab.bshelper.ui.event.SnackBarMessage
+import io.ktlab.bshelper.ui.viewmodel.SnackBarMessage
 
 private val logger = KotlinLogging.logger {}
 @Composable

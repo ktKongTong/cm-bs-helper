@@ -2,7 +2,14 @@ package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
@@ -12,7 +19,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.QueueMusic
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -29,14 +42,13 @@ import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.dto.response.BSMapperDetailDTO
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
-import io.ktlab.bshelper.ui.components.DropDownPlaylistSelector
 import io.ktlab.bshelper.ui.components.labels.BSThumbDownLabel
 import io.ktlab.bshelper.ui.components.labels.BSThumbUpLabel
 import io.ktlab.bshelper.ui.components.labels.MapAmountLabel
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.viewmodel.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 import io.ktlab.bshelper.ui.viewmodel.BeatSaverUiState
-import io.ktlab.bshelper.ui.viewmodel.GlobalUIEvent
+import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.viewmodel.LocalState
 import kotlinx.coroutines.flow.Flow
 
@@ -121,15 +133,6 @@ fun BSMapperDetail(
                             )
                         }
                         Column {
-                            DropDownPlaylistSelector(
-                                onUIEvent = onUIEvent,
-                                modifier = Modifier,
-                                selectablePlaylists = localState.selectableLocalPlaylists,
-                                selectedIPlaylist = localState.targetPlaylist,
-                                onSelectedPlaylist = {
-                                    onUIEvent(BeatSaverUIEvent.ChangeTargetPlaylist(it))
-                                },
-                            )
                             val multiSelectedMode = uiState.multiSelectMode
                             val multiSelectedBSMap = uiState.multiSelectedBSMap
                             Row(

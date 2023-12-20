@@ -1,7 +1,11 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -15,10 +19,11 @@ import io.ktlab.bshelper.ui.viewmodel.TabType
 
 @Composable
 fun TextTabs(
+    modifier: Modifier = Modifier,
     selectedTab: TabType,
     onClickTab: (TabType) -> Unit,
 ) {
-    Column {
+    Column(modifier = modifier) {
         TabRow(
             selectedTabIndex = TabType.getIndexOf(selectedTab),
             indicator = { tabPositions ->

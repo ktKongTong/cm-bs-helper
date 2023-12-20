@@ -1,9 +1,23 @@
 package io.ktlab.bshelper.ui.screens.home
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -19,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.successOr
 import io.ktlab.bshelper.ui.components.EmptyContent
-import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.home.bsmap.MapCardList
 import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistDetailCardTop
 import io.ktlab.bshelper.ui.screens.home.playlist.PlaylistList
@@ -31,7 +44,6 @@ fun HomeScreen(
     uiState: HomeUiState,
     showTopAppBar: Boolean,
     snackbarHost: @Composable () -> Unit = {},
-    onUIEvent: (UIEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val topAppBarState = rememberTopAppBarState()
@@ -49,7 +61,6 @@ fun HomeScreen(
             is HomeUiState.Playlist -> {
                 HomeContent(
                     uiState,
-                    onUIEvent,
                     contentModifier,
                 )
             }
@@ -60,7 +71,6 @@ fun HomeScreen(
 @Composable
 fun HomeContent(
     uiState: HomeUiState,
-    onUIEvent: (UIEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // todo:
@@ -84,7 +94,6 @@ fun HomeContent(
             state = homeListLazyListState,
             playlists = uiState.playlists,
             selectedPlaylist = uiState.selectedPlaylist,
-            onUIEvent = onUIEvent,
         )
         AnimatedVisibility(
             uiState.selectedPlaylist != null,
@@ -98,7 +107,6 @@ fun HomeContent(
         ) {
             HomeRightPart(
                 uiState = uiState,
-                onUIEvent = onUIEvent,
                 modifier = Modifier.fillMaxHeight(),
             )
         }
@@ -109,7 +117,6 @@ fun HomeContent(
 fun HomeRightPart(
     uiState: HomeUiState.Playlist,
     modifier: Modifier,
-    onUIEvent: (UIEvent) -> Unit,
 ) {
     Box(modifier) {
         if (uiState.isMapEmpty()) {
@@ -160,7 +167,6 @@ fun HomeRightPart(
                                 .padding(horizontal = 16.dp)
                                 .fillMaxSize(),
                         mapListState = uiState.mapListState,
-                        onUIEvent = onUIEvent,
                         mapList = mapList,
                         stickyHeader = {
                             PlaylistDetailCardTop(
@@ -172,7 +178,6 @@ fun HomeRightPart(
                                 mapListState = uiState.mapListState,
                                 mapList = mapList,
                                 selectablePlaylists = uiState.playlists.filter { it.id != detailPlaylist.id },
-                                onUIEvent = onUIEvent,
                             )
                         },
                     )

@@ -1,3 +1,4 @@
+import org.jetbrains.compose.ExperimentalComposeLibrary
 import java.io.ByteArrayOutputStream
 
 plugins {
@@ -50,7 +51,7 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        @OptIn(ExperimentalComposeLibrary::class) val commonMain by getting {
             dependencies {
                 implementation("net.lingala.zip4j:zip4j:2.11.5")
                 implementation(libs.kown)
@@ -60,7 +61,6 @@ kotlin {
                 implementation(libs.kotlin.reflect)
                 // coroutines
                 implementation(libs.kotlinx.coroutines.core)
-
                 // compose
                 api(compose.runtime)
                 api(compose.preview)
@@ -115,6 +115,7 @@ kotlin {
                 implementation(libs.sqldelight.coroutines.extensions)
                 implementation(libs.okio)
                 implementation(libs.semver)
+                // test
             }
         }
         val androidMain by getting {
@@ -131,17 +132,33 @@ kotlin {
             // see https://github.com/icerockdev/moko-resources/issues/477
             dependsOn(commonMain)
             dependencies {
-                implementation(compose.desktop.common)
+//                implementation(compose.desktop.common)
+                implementation(compose.desktop.macos_arm64)
                 implementation(compose.preview)
                 // see https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.1.1
                 implementation(libs.kotlinx.coroutines.swing)
-
                 implementation(libs.jlayer)
                 implementation(libs.sqldelight.jvm.driver)
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.kotlin.logging.jvm)
                 implementation(libs.slf4j.api)
                 implementation(libs.logback.classic)
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+                implementation(compose.desktop.uiTestJUnit4)
+                implementation(libs.mockk)
+                implementation(libs.kotest.runner.junit5)
+                implementation(libs.kotest.assertions.core)
+                implementation(libs.kotest.property)
+                implementation(libs.junit.jupiter)
+                implementation(libs.junit.vintage.engine)
+                implementation(compose.desktop.uiTestJUnit4)
+                implementation(compose.desktop.currentOs)
             }
         }
     }

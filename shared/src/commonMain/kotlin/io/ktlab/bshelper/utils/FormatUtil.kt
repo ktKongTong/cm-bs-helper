@@ -47,10 +47,3 @@ fun Long.countPrettyFormat(): String {
         else -> "$this"
     }
 }
-
-fun String.asValidFileName(): String {
-    val illegalChars = Regex("[/;\\\\:*?\"<>|\\s]")
-    val replacement = "_"
-    val result = replace(illegalChars, replacement)
-    return result
-}

@@ -32,15 +32,12 @@ import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.vo.ScanStateEventEnum
 import io.ktlab.bshelper.model.vo.ScanStateV2
 import io.ktlab.bshelper.ui.LocalUserPreference
-import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.components.DirectoryChooser
-import io.ktlab.bshelper.ui.viewmodel.ToolboxUIEvent
+import io.ktlab.bshelper.ui.composables.RequestStoragePermission
+import io.ktlab.bshelper.ui.composables.isStoragePermissionGranted
+import io.ktlab.bshelper.ui.event.UIEvent
+import io.ktlab.bshelper.ui.event.ToolboxUIEvent
 
-@Composable
-expect fun isStoragePermissionGranted(): Boolean
-
-@Composable
-expect fun RequestStoragePermission()
 
 @Composable
 fun ScanScreen(
@@ -52,10 +49,7 @@ fun ScanScreen(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        var requestPermission by remember { mutableStateOf(false) }
-        if (requestPermission) {
-            RequestStoragePermission()
-        }
+        RequestStoragePermission()
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -84,7 +78,6 @@ fun ScanScreen(
             TextButton(onClick = {
                 // TODO: check if storage permission is granted
                 if (!isStoragePermissionGranted) {
-                    requestPermission = true
                     return@TextButton
                 }
                 onUIEvent(ToolboxUIEvent.ScanPlaylist(userPreference.currentManageDir))

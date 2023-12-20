@@ -27,7 +27,7 @@ import io.ktlab.bshelper.ui.components.ResizeTwoColumnHeightRow
 import io.ktlab.bshelper.ui.components.labels.*
 import io.ktlab.bshelper.ui.components.labels.MapperLabel
 import io.ktlab.bshelper.utils.prettyFormat
-import io.ktlab.bshelper.ui.viewmodel.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

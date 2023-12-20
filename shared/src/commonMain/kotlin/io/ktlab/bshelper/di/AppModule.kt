@@ -48,12 +48,9 @@ object AppModule {
     private val viewModelModule =
         module {
             single<GlobalViewModel> { GlobalViewModel(get(), get(), get(), get(), get(),get()) }
-            single<HomeViewModel> { HomeViewModel(get(), get(), get(), get(), get()) }
-            single<ToolboxViewModel> { ToolboxViewModel(get(), get(), get(), get()) }
-            single<BeatSaverViewModel> { BeatSaverViewModel(get(), get(), get(), get(), get()) }
-//        factory<BeatSaverViewModel> {
-//            (playlistId:String?) -> BeatSaverViewModel(get(),get(),get(),get(),get(),playlistId)
-//        }
+            single<HomeViewModel> { HomeViewModel( get(), get(), get(), get()) }
+            single<ToolboxViewModel> { ToolboxViewModel( get(), get(), get()) }
+            single<BeatSaverViewModel> { BeatSaverViewModel(get(), get(), get(), get()) }
         }
 
     /**

@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.ui.screens.toolbox.components
+package io.ktlab.bshelper.ui.components
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts

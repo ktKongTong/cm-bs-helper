@@ -44,13 +44,14 @@ import io.ktlab.bshelper.ui.components.AppNavRail
 import io.ktlab.bshelper.ui.components.BSHelperSnackbarHost
 import io.ktlab.bshelper.ui.components.MediaPlayer
 import io.ktlab.bshelper.ui.components.SnackBarShown
+import io.ktlab.bshelper.ui.event.EventBus
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.route.BSHelperDestinations
 import io.ktlab.bshelper.ui.route.BSHelperNavGraph
 import io.ktlab.bshelper.ui.route.BSHelperNavigationActions
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
 import io.ktlab.bshelper.ui.viewmodel.ErrorDialogState
-import io.ktlab.bshelper.ui.viewmodel.GlobalUIEvent
+import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.viewmodel.GlobalViewModel
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.PreComposeApp
@@ -74,15 +75,19 @@ fun BSHelperApp() {
     PreComposeApp {
         KoinContext {
             val globalViewModel = koinViewModel<GlobalViewModel>()
+//            val eventBus = koinEventBus()
             val globalUiState by globalViewModel.uiState.collectAsState()
             val color = globalUiState.userPreference.themeColor.let { Color(it) }
             // TODO: provider some global state
             // like sizeInfo, sizeClass, platform info
+
+            val coroutineScope = rememberCoroutineScope()
+            val dispatchUIEvent = remember { fun(it: UIEvent) { coroutineScope.launch { EventBus.publish(it) } } }
             val windowSizeClass = calculateWindowSizeClass().widthSizeClass
             val isExpandedScreen = windowSizeClass.isExpandedScreen()
-            CompositionLocalProvider(LocalUIEventHandler provides globalViewModel::dispatchUiEvents) {
+            CompositionLocalProvider(LocalUIEventHandler provides dispatchUIEvent) {
             CompositionLocalProvider(LocalUserPreference provides globalUiState.userPreference) {
-                CompositionLocalProvider(LocalSizeClass provides windowSizeClass) {
+            CompositionLocalProvider(LocalSizeClass provides windowSizeClass) {
                     val isDarkMode = globalUiState.userPreference.themeMode == ThemeMode.DARK || isSystemInDarkTheme()
                     BSHelperTheme(color, darkTheme = isDarkMode) {
                         val navigator = rememberNavigator()
@@ -94,7 +99,6 @@ fun BSHelperApp() {
                                 BSHelperDestinations.TOOLBOX_ROUTE -> navigationActions.navigateToToolbox()
                             }
                         }
-                        val coroutineScope = rememberCoroutineScope()
                         val navBackStackEntry = navigator.currentEntry.collectAsState(null)
                         val currentRoute = navBackStackEntry.value?.route?.route ?: BSHelperDestinations.HOME_ROUTE
 
@@ -117,11 +121,7 @@ fun BSHelperApp() {
                                         navigateAction = navigateAction,
                                         backAction = { },
                                         header = {
-                                            MediaPlayer(
-                                                globalUiState.currentMedia,
-                                                globalUiState.currentMediaState,
-                                                globalViewModel::dispatchUiEvents,
-                                            )
+                                            MediaPlayer(globalUiState.currentMedia, globalUiState.currentMediaState)
                                         },
                                     )
                                 }
@@ -138,9 +138,7 @@ fun BSHelperApp() {
                                 SnackBarShown(
                                     snackbarHostState = snackbarHostState,
                                     snackBarMessages = globalUiState.snackBarMessages,
-                                    onSnackBarShown = {
-                                        globalViewModel.dispatchUiEvents(GlobalUIEvent.SnackBarShown(it))
-                                    },
+                                    onSnackBarShown = { dispatchUIEvent(GlobalUIEvent.SnackBarShown(it)) },
                                 )
                             }
                         }

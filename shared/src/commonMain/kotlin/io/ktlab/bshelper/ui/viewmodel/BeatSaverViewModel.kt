@@ -20,6 +20,9 @@ import io.ktlab.bshelper.model.dto.response.successOr
 import io.ktlab.bshelper.model.successOr
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.EventBus
+import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -276,54 +279,7 @@ data class BeatSaverViewModelState(
 //    }
 }
 
-sealed class BeatSaverUIEvent : UIEvent() {
-    data class OnMultiSelectMap(val map: IMap) : BeatSaverUIEvent()
-
-    data class ChangeMultiSelectMode(val checked: Boolean) : BeatSaverUIEvent()
-
-    data class ChangeTargetPlaylist(val playlist: IPlaylist?) : BeatSaverUIEvent()
-
-    data class OnSelectBSPlaylist(val playlist: IPlaylist) : BeatSaverUIEvent()
-
-    data class OnSelectBSMap(val map: IMap) : BeatSaverUIEvent()
-
-    data class OnSelectedBSMapper(val mapperId: Int) : BeatSaverUIEvent()
-
-    data class MapTapped(val map: IMap) : BeatSaverUIEvent()
-
-    data class MapLongTapped(val map: IMap) : BeatSaverUIEvent()
-
-    data object OnExitBSMapper : BeatSaverUIEvent()
-
-    data object OnExitSelectedBSMap : BeatSaverUIEvent()
-
-    data object OnExitSelectedBSPlaylist : BeatSaverUIEvent()
-
-    data class UpdateMapFilterParam(val mapQueryState: MapFilterParam) : BeatSaverUIEvent()
-
-    data class SearchMapWithFilter(val mapQueryState: MapFilterParam) : BeatSaverUIEvent()
-
-    data class UpdatePlaylistFilterParam(val playlistQueryState: PlaylistFilterParam) : BeatSaverUIEvent()
-
-    data class SearchPlaylistWithFilter(val playlistQueryState: PlaylistFilterParam? = null) : BeatSaverUIEvent()
-
-    data class SwitchTab(val tabType: TabType) : BeatSaverUIEvent()
-
-    data class DownloadMap(val bsMap: IMap) : BeatSaverUIEvent()
-
-    data class MultiDownload(val targetPlaylist: IPlaylist) : BeatSaverUIEvent()
-
-    data class PauseDownload(val downloadTask: IDownloadTask) : BeatSaverUIEvent()
-
-    data class ResumeDownload(val downloadTask: IDownloadTask) : BeatSaverUIEvent()
-
-    data class DownloadPlaylist(val playlist: IPlaylist) : BeatSaverUIEvent()
-
-    data class PlayPreviewMusicSegment(val map: IMap) : BeatSaverUIEvent()
-}
-
 class BeatSaverViewModel(
-    private val globalViewModel: GlobalViewModel,
     private val playlistRepository: PlaylistRepository,
     private val mapRepository: FSMapRepository,
     private val downloaderRepository: DownloaderRepository,
@@ -352,6 +308,7 @@ class BeatSaverViewModel(
             )
 
     init {
+        viewModelScope.launch { EventBus.subscribe<BeatSaverUIEvent> { dispatchUiEvents(it) } }
         viewModelScope.listenLocalMapFlow()
         viewModelScope.listenLocalPlaylistFlow()
     }
@@ -387,7 +344,7 @@ class BeatSaverViewModel(
                             }
                         }
                         is Result.Error -> {
-                            globalViewModel.showSnackBar("获取playlist失败")
+                            EventBus.publish(GlobalUIEvent.ShowSnackBar("获取playlist失败"))
                         }
                     }
                 }
@@ -412,9 +369,6 @@ class BeatSaverViewModel(
 
     fun dispatchUiEvents(event: UIEvent) {
         when (event) {
-            is GlobalUIEvent -> {
-                globalViewModel.dispatchUiEvents(event)
-            }
             is BeatSaverUIEvent.SwitchTab -> {
                 viewModelState.update {
                     it.copy(
@@ -467,13 +421,15 @@ class BeatSaverViewModel(
             }
 
             is BeatSaverUIEvent.PlayPreviewMusicSegment -> {
-                globalViewModel.playMedia(
-                    IMedia.MapAudioPreview(
-                        id = event.map.getID(),
-                        url = event.map.getMusicPreviewURL(),
-                        avatarUrl = event.map.getAvatar(),
-                    ),
-                )
+                viewModelScope.launch {
+                    EventBus.publish(GlobalUIEvent.PlayMedia(
+                        IMedia.MapAudioPreview(
+                            id = event.map.getID(),
+                            url = event.map.getMusicPreviewURL(),
+                            avatarUrl = event.map.getAvatar(),
+                        )
+                    ))
+                }
             }
             // bs item event
             is BeatSaverUIEvent.OnSelectedBSMapper -> {
@@ -494,7 +450,7 @@ class BeatSaverViewModel(
                         }
                         is Result.Error -> {
                             viewModelState.update { it.copy(isLoading = false) }
-                            globalViewModel.showSnackBar("获取mapper失败,${res.exception.message}")
+                            EventBus.publish(GlobalUIEvent.ShowSnackBar("获取mapper失败,${res.exception.message}"))
                         }
                     }
                 }
@@ -589,7 +545,7 @@ class BeatSaverViewModel(
 
     private fun onMapMultiSelected(bsMap: IMap) {
         if (viewModelState.value.selectedFSPlaylist == null) {
-            globalViewModel.showSnackBar("请先选择目标歌单")
+            viewModelScope.launch { EventBus.publish(GlobalUIEvent.ShowSnackBar("请先选择目标歌单")) }
             return
         } else if (viewModelState.value.localMapIdSet.contains(viewModelState.value.selectedFSPlaylist!!.id to bsMap.getID())) {
             return
@@ -608,7 +564,7 @@ class BeatSaverViewModel(
 
     private fun onMultiSelectChecked(checked: Boolean) {
         if (viewModelState.value.selectedFSPlaylist == null) {
-            globalViewModel.showSnackBar("请先选择目标歌单")
+            viewModelScope.launch { EventBus.publish(GlobalUIEvent.ShowSnackBar("请先选择目标歌单")) }
             return
         }
         viewModelState.update {
@@ -636,15 +592,19 @@ class BeatSaverViewModel(
         logger.debug { "onDownloadPlaylist: $playlist" }
         val targetPlaylist = viewModelState.value.selectedFSPlaylist
         if (targetPlaylist == null) {
-            globalViewModel.showSnackBar(
-                "将自动创建歌单 ${playlist.title} 作为目标歌单, 要这样做吗？",
-                actionLabel = "确定",
-                action = {
-                    viewModelScope.launch(Dispatchers.IO) {
-                        downloaderRepository.createPlaylistAndDownloadBSPlaylist(playlist as BSPlaylistVO)
-                    }
-                },
-            )
+            viewModelScope.launch {
+                EventBus.publish(
+                    GlobalUIEvent.ShowSnackBar(
+                    "将自动创建歌单 ${playlist.title} 作为目标歌单, 要这样做吗？",
+                        actionLabel = "确定",
+                        action = {
+                            viewModelScope.launch(Dispatchers.IO) {
+                                downloaderRepository.createPlaylistAndDownloadBSPlaylist(playlist as BSPlaylistVO)
+                            }
+                    })
+                )
+            }
+
             return
         }
 
@@ -678,7 +638,7 @@ class BeatSaverViewModel(
             return
         }
         if (viewModelState.value.selectedFSPlaylist == null) {
-            globalViewModel.showSnackBar("请先选择目标歌单")
+            viewModelScope.launch { EventBus.publish(GlobalUIEvent.ShowSnackBar("请先选择目标歌单")) }
             return
         }
         viewModelScope.launch(Dispatchers.IO) {

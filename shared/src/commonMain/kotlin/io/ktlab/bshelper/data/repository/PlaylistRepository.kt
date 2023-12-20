@@ -9,7 +9,6 @@ import io.ktlab.bshelper.model.BSHelperDatabase
 import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
-import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.bsmg.BPList
 import io.ktlab.bshelper.model.bsmg.BPListSong
 import io.ktlab.bshelper.model.dto.ExportPlaylist
@@ -22,13 +21,12 @@ import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
 import io.ktlab.bshelper.model.vo.ScanStateV2
-import kotlinx.coroutines.CoroutineScope
+import io.ktlab.bshelper.utils.asValidFilename
+import io.ktlab.bshelper.utils.newDirEvenIfDirExist
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import okio.FileSystem
@@ -42,23 +40,11 @@ class PlaylistRepository(
     private val toolAPI: ToolAPI,
     private val bsAPIRepository: BSAPIRepository,
 ) {
-    private val playlistJob = Job()
-    private val repositoryScope = CoroutineScope(Dispatchers.IO + playlistJob)
 
     private val playlistScanner = PlaylistScannerV2(bsHelperDAO, bsAPI)
 
-    private lateinit var preference: UserPreferenceV2
-
-    init {
-        repositoryScope.launch {
-            userPreferenceRepository.getUserPreference().collect {
-                preference = it
-            }
-        }
-    }
-
     fun isPlaylistExist(playlistName: String): Boolean {
-        val manageDir = preference.currentManageDir.toPath()
+        val manageDir = userPreferenceRepository.getCurrentUserPreference().currentManageDir.toPath()
         if (!FileSystem.SYSTEM.exists(manageDir)) {
             return false
         }
@@ -68,8 +54,9 @@ class PlaylistRepository(
 
     // todo: EditPlaylist
     fun editPlaylist(playlist: FSPlaylist) {
-        // if name changed, rename dir
-        val manageDir = preference.currentManageDir.toPath()
+        // if name changed, rename dir?
+
+        val manageDir = userPreferenceRepository.getCurrentUserPreference().currentManageDir.toPath()
         if (!FileSystem.SYSTEM.exists(manageDir)) {
             return
         }
@@ -82,17 +69,18 @@ class PlaylistRepository(
         description: String? = null,
         customTags: String? = null,
     ): Result<FSPlaylist> {
-        val manageDir = preference.currentManageDir.toPath()
+        val manageDir = userPreferenceRepository.getCurrentUserPreference().currentManageDir.toPath()
         if (!FileSystem.SYSTEM.exists(manageDir)) {
             return Result.Error(Exception("manage dir not exist"))
         }
-        val safePlaylistName = playlistName.replace("[\\\\/:*?\"<>|]".toRegex(), "_")
+        val safePlaylistName = playlistName.asValidFilename()
+        val path: Path
         try {
-            FileSystem.SYSTEM.createDirectory(manageDir.resolve(safePlaylistName))
+            path = newDirEvenIfDirExist(manageDir.resolve(safePlaylistName))
         } catch (e: Exception) {
             return Result.Error(Exception("failed to create playlist dir ${e.message}"))
         }
-        val basePath = manageDir.resolve(safePlaylistName).toString()
+        val basePath = path.toString()
         val fSPlaylist =
             FSPlaylist(
                 id = basePath,
@@ -219,7 +207,7 @@ class PlaylistRepository(
         )
         val filename = "${playlist.title}.bplist"
         try {
-            val dir = targetDir ?: preference.currentManageDir.toPath()
+            val dir = targetDir ?: userPreferenceRepository.getCurrentUserPreference().currentManageDir.toPath()
             FileSystem.SYSTEM.createDirectory(dir)
             FileSystem.SYSTEM.write(dir.resolve(filename)) {
                 writeUtf8(json.encodeToString(BPList.serializer(), bpList))

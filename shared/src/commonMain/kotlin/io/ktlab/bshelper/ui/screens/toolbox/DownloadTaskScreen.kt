@@ -19,7 +19,7 @@ import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.components.EmptyContent
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.toolbox.components.DownloadTaskCard
-import io.ktlab.bshelper.ui.viewmodel.ToolboxUIEvent
+import io.ktlab.bshelper.ui.event.ToolboxUIEvent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

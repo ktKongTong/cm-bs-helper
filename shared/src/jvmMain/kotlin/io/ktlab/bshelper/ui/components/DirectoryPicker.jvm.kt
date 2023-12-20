@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.ui.screens.toolbox.components
+package io.ktlab.bshelper.ui.components
 
 import androidx.compose.runtime.Composable
 import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker

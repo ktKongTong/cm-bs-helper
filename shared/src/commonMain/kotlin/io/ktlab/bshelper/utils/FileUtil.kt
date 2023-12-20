@@ -1,13 +1,18 @@
 package io.ktlab.bshelper.utils
 
+import okio.FileSystem
+import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
 import okio.source
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
-fun String.asValidFilename(filename: String): String {
-    return filename.replace("[\\\\/:*?\"<>|]".toRegex(), "_")
+fun String.asValidFilename(): String  = this.replace(Regex("[\\\\/:*?\"<>|]"), "_")
+
+fun String.isValidFilename(): Boolean {
+    return this.isNotEmpty() && this.isNotBlank() && this.length < 255 &&
+            !this.matches(Regex("[^\\\\/:*?\"<>|]+")) && !this.startsWith(".")
 }
 
 @OptIn(ExperimentalEncodingApi::class)
@@ -17,3 +22,20 @@ fun encodeImageToBase64(imagePath: String): String {
     }
 }
 
+// if dir exist add (1), (2), (3), ... to the end of the directory name
+fun newDirEvenIfDirExist(path: Path) : Path {
+    var dir = path
+    var i = 1
+    while (FileSystem.SYSTEM.exists(dir)) {
+        dir.parent?.let {
+            dir = it.resolve("${dir.name} (${i++})")
+        }
+    }
+    FileSystem.SYSTEM.createDirectory(dir)
+    return dir
+}
+
+fun checkDirExist(path: String): Boolean {
+    val dir = path.toPath().toFile()
+    return dir.exists()
+}

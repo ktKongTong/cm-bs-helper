@@ -5,7 +5,6 @@ import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.FSMapRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
-import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
@@ -15,7 +14,9 @@ import io.ktlab.bshelper.model.enums.SortType
 import io.ktlab.bshelper.model.errorMsg
 import io.ktlab.bshelper.model.successOr
 import io.ktlab.bshelper.model.vo.FSMapVO
-import io.ktlab.bshelper.ui.event.SnackBarMessage
+import io.ktlab.bshelper.ui.event.EventBus
+import io.ktlab.bshelper.ui.event.GlobalUIEvent
+import io.ktlab.bshelper.ui.event.HomeUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +39,6 @@ data class HomeViewModelState(
     val isPlaylistOpen: Boolean = false,
     val mapListState: MapListState,
     val isLoading: Boolean = false,
-    val snackBarMessages: List<SnackBarMessage> = emptyList(),
     val searchInput: String = "",
 ) {
     fun toUiState(): HomeUiState {
@@ -56,7 +56,6 @@ data class HomeViewModelState(
             mapListState = mapListState,
             isLoading = isLoading,
             searchInput = searchInput,
-            snackBarMessages = snackBarMessages,
         )
     }
 }
@@ -75,16 +74,13 @@ data class MapListState(
 
 sealed interface HomeUiState {
     val isLoading: Boolean
-    val snackBarMessages: List<SnackBarMessage>
     val searchInput: String
-
     data class Playlist(
         val playlists: List<IPlaylist> = emptyList(),
         val selectedPlaylist: IPlaylist? = null,
         val isPlaylistOpen: Boolean,
         val mapListState: MapListState,
         override val isLoading: Boolean,
-        override val snackBarMessages: List<SnackBarMessage> = emptyList(),
         override val searchInput: String,
     ) : HomeUiState {
         fun isMapEmpty(): Boolean {
@@ -93,59 +89,13 @@ sealed interface HomeUiState {
     }
 }
 
-sealed class HomeUIEvent : UIEvent() {
-    data class PlaylistTapped(val playlistId: String) : HomeUIEvent()
-
-    data class MapTapped(val mapId: String) : HomeUIEvent()
-
-    data class ChangeMapListSortRule(val sortRule: Pair<SortKey, SortType>) : HomeUIEvent()
-
-    data class MapMultiSelected(val map: IMap) : HomeUIEvent()
-
-    data class ChangeMultiSelectMode(val checked: Boolean) : HomeUIEvent()
-
-    data class MultiDeleteAction(val mapSet: Set<IMap>) : HomeUIEvent()
-
-    data class MultiMoveAction(val mapSet: Set<IMap>, val targetPlaylist: IPlaylist) : HomeUIEvent()
-
-    data class MultiMapFullChecked(val mapMap: Map<String, IMap>) : HomeUIEvent()
-
-    data class MultiMapOppoChecked(val mapMap: Map<String, IMap>) : HomeUIEvent()
-
-    data class PlayPreviewMusicSegment(val map: IMap) : HomeUIEvent()
-
-    data class CreateNewPlaylist(val name: String, val description: String? = null, val customTags: String? = null) : HomeUIEvent()
-
-    data class MergePlaylist(val targetPlaylist: IPlaylist) : HomeUIEvent()
-
-    data class BuildBPList(val targetPlaylist: IPlaylist) : HomeUIEvent()
-
-    data class SharePlaylist(val targetPlaylist: IPlaylist) : HomeUIEvent()
-
-    data class ExportPlaylistAsKey(val playlist: IPlaylist) : HomeUIEvent()
-
-    data class ExportPlaylistAsBPList(val playlist: IPlaylist,val targetPath:String) : HomeUIEvent()
-
-    data class DeletePlaylist(val targetPlaylist: IPlaylist) : HomeUIEvent()
-
-    data class EditPlaylist(val targetPlaylist: IPlaylist, val resPlaylist: FSPlaylist) : HomeUIEvent()
-
-    data class SyncPlaylist(val targetPlaylist: IPlaylist) : HomeUIEvent()
-
-    data class ImportPlaylist(val key: String, val targetPlaylist: IPlaylist) : HomeUIEvent()
-//    data class DividePlaylist(val targetPlaylist:IPlaylist):HomeUIEvent()
-}
-
 class HomeViewModel(
-    private val globalViewModel: GlobalViewModel,
     private val playlistRepository: PlaylistRepository,
     private val mapRepository: FSMapRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
     private val downloaderRepository: DownloaderRepository,
 ) :
     ViewModel() {
-    private val localViewModelScope = viewModelScope
-
     private val viewModelState =
         MutableStateFlow(
             HomeViewModelState(
@@ -167,20 +117,18 @@ class HomeViewModel(
         viewModelState
             .map(HomeViewModelState::toUiState)
             .stateIn(
-                localViewModelScope,
+                viewModelScope,
                 SharingStarted.Eagerly,
                 viewModelState.value.toUiState(),
             )
 
     init {
+        viewModelScope.launch { EventBus.subscribe<HomeUIEvent> { dispatchUiEvents(it) } }
         refreshPlayLists()
     }
 
     fun dispatchUiEvents(event: UIEvent) {
         when (event) {
-            is GlobalUIEvent.ShowSnackBar -> {
-                globalViewModel.showSnackBar(msg = event.message)
-            }
             is HomeUIEvent.DeletePlaylist -> {
                 deletePlaylist(event.targetPlaylist)
             }
@@ -228,24 +176,25 @@ class HomeViewModel(
             }
             is HomeUIEvent.ExportPlaylistAsBPList -> {
                 if (event.targetPath.isBlank()) {
-                    globalViewModel.showSnackBar(msg = "请先选择文件夹")
+                    viewModelScope.launch {
+                        EventBus.publish(GlobalUIEvent.ShowSnackBar("请先选择文件夹"))
+                    }
                     return
                 }
                 onExportPlaylistAsBPList(event.playlist,event.targetPath)
             }
             is HomeUIEvent.PlayPreviewMusicSegment -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    globalViewModel.playMedia(
-                        IMedia.MapAudioPreview(
-                            id = event.map.getID(),
-                            url = event.map.getMusicPreviewURL(),
-                            avatarUrl = event.map.getAvatar(),
+                    EventBus.publish(
+                        GlobalUIEvent.PlayMedia(
+                            IMedia.MapAudioPreview(
+                                id = event.map.getID(),
+                                url = event.map.getMusicPreviewURL(),
+                                avatarUrl = event.map.getAvatar(),
+                            ),
                         ),
                     )
                 }
-            }
-            is GlobalUIEvent -> {
-                globalViewModel.dispatchUiEvents(event)
             }
             is HomeUIEvent.CreateNewPlaylist -> {
                 onCreateNewPlaylist(event.name, event.description, event.customTags)
@@ -253,17 +202,10 @@ class HomeViewModel(
         }
     }
 
-    fun copyToClipboard(
-        text: String,
-        label: String = "",
-    ) {
-//        clipboardManager.setPrimaryClip(ClipData.newPlainText(label,text))
-    }
-
     private fun refreshPlayLists(managerDir: String = "") {
         val managerPath = managerDir.ifEmpty { viewModelState.value.userPreferenceState.currentManageDir }
         viewModelState.update { it.copy(isLoading = true) }
-        localViewModelScope.launch {
+        viewModelScope.launch {
             playlistRepository
                 .let {
                     if (managerPath.isEmpty()) {
@@ -281,10 +223,12 @@ class HomeViewModel(
                             }
                         }
                         is Result.Error -> {
-                            globalViewModel.showSnackBar(
-                                msg = "error loading playlists",
-                                actionLabel = "retry",
-                                action = { refreshPlayLists(managerPath) },
+                            EventBus.publish(
+                                GlobalUIEvent.ShowSnackBar(
+                                    message = "error loading playlists",
+                                    actionLabel = "retry",
+                                    action = { refreshPlayLists(managerPath) },
+                                ),
                             )
                         }
                     }
@@ -305,7 +249,7 @@ class HomeViewModel(
     }
 
     private fun interactedWithPlaylistDetails() =
-        localViewModelScope.launch {
+        viewModelScope.launch {
             val playlistId = viewModelState.value.selectedPlaylistId ?: return@launch
             val flow = mapRepository.getFlowMapsByPlaylistId(playlistId).flowOn(Dispatchers.IO)
             viewModelState.update {
@@ -327,15 +271,22 @@ class HomeViewModel(
         viewModelScope.launch {
             val res = playlistRepository.exportPlaylistAsKey(playlist)
             if (res is Result.Success) {
-                globalViewModel.showSnackBar(
-                    msg = res.data,
-                    actionLabel = "copy",
-                    action = { globalViewModel.writeToClipboard(res.data) },
-                    duration = SnackbarDuration.Long,
+                EventBus.publish(
+                    GlobalUIEvent.ShowSnackBar(
+                        message = "export playlist as key succeed",
+                        actionLabel = "copy",
+                        action = {
+                            viewModelScope.launch { EventBus.publish(GlobalUIEvent.WriteToClipboard(res.data)) }
+                        },
+                        duration = SnackbarDuration.Long,
+                    ),
                 )
             } else {
-                globalViewModel.dispatchUiEvents(
-                    GlobalUIEvent.ReportError(res.errorMsg(), "export playlist as key failed"),
+                EventBus.publish(
+                    GlobalUIEvent.ReportError(
+                        res.errorMsg(),
+                        "export playlist as key failed"
+                    ),
                 )
             }
         }
@@ -344,7 +295,7 @@ class HomeViewModel(
     private fun onExportPlaylistAsBPList(playlist: IPlaylist, targetPath:String) {
         viewModelScope.launch {
             val res = playlistRepository.exportPlaylistAsBPList(playlist,targetPath.toPath())
-            globalViewModel.showSnackBar(msg = res.successOr("export failed"))
+            EventBus.publish(GlobalUIEvent.ShowSnackBar(res.successOr("export failed")))
         }
     }
 
@@ -356,11 +307,15 @@ class HomeViewModel(
             val res = playlistRepository.importPlaylistByKey(key, targetPlaylist)
             when (res) {
                 is Result.Success -> {
-                    globalViewModel.showSnackBar(msg = "将导入 ${res.data.size} 个 map 至 ${targetPlaylist.title}")
+                    EventBus.publish(
+                        GlobalUIEvent.ShowSnackBar(
+                            message = "将导入 ${res.data.size} 个 map 至 ${targetPlaylist.title}",
+                        ),
+                    )
                     downloaderRepository.downloadMapByMapIds(targetPlaylist, res.data)
                 }
                 is Result.Error -> {
-                    globalViewModel.showSnackBar(msg = "import failed")
+                    EventBus.publish(GlobalUIEvent.ShowSnackBar(message = "import failed"))
                 }
             }
         }
@@ -427,12 +382,16 @@ class HomeViewModel(
                     .flowOn(Dispatchers.IO)
                     .collect {
                         if (it is Result.Success) {
-                            globalViewModel.showSnackBar(
-                                msg = "move ${mapToBeMoved.size} maps to ${targetPlaylist.title} succeed",
+                            EventBus.publish(
+                                GlobalUIEvent.ShowSnackBar(
+                                    message = "move ${mapToBeMoved.size} maps to ${targetPlaylist.title} succeed",
+                                ),
                             )
                         } else {
-                            globalViewModel.showSnackBar(
-                                msg = "move ${mapToBeMoved.size} maps to ${targetPlaylist.title} failed",
+                            EventBus.publish(
+                                GlobalUIEvent.ShowSnackBar(
+                                    message = "move ${mapToBeMoved.size} maps to ${targetPlaylist.title} failed",
+                                )
                             )
                         }
                     }

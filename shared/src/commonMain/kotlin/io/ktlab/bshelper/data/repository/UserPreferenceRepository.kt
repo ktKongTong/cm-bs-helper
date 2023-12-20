@@ -5,7 +5,11 @@ import io.ktlab.bshelper.model.BSAPIProvider
 import io.ktlab.bshelper.model.ImageSource
 import io.ktlab.bshelper.model.ThemeMode
 import io.ktlab.bshelper.model.UserPreferenceV2
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 class UserPreferenceRepository(
     private val dataStore: DataStore<UserPreferenceV2>,
@@ -18,7 +22,27 @@ class UserPreferenceRepository(
 //    private val currentThemeModeKey = stringPreferencesKey("currentThemeMode")
     private val preferenceFlow: Flow<UserPreferenceV2> = dataStore.data
 
+    private val preferenceJob = Job()
+    private val repositoryScope = CoroutineScope(Dispatchers.IO + preferenceJob)
+
+    private lateinit  var _preference:UserPreferenceV2
+
+    init {
+        repositoryScope.launch {
+            preferenceFlow.collect {
+                _preference = it
+            }
+        }
+    }
+    init {
+        dataStore.data
+        preferenceFlow
+    }
     fun getUserPreference(): Flow<UserPreferenceV2> = preferenceFlow
+
+    fun getCurrentUserPreference(): UserPreferenceV2 {
+        return _preference
+    }
 
     suspend fun updateCurrentManageDir(currentManageDir: String) {
         dataStore.updateData { it.copy(currentManageDir = currentManageDir) }

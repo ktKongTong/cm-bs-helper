@@ -27,7 +27,7 @@ import io.ktlab.bshelper.ui.components.AppDialog
 import io.ktlab.bshelper.ui.components.ChipDropDownSelector
 import io.ktlab.bshelper.ui.components.DirectoryChooser
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.viewmodel.ToolboxUIEvent
+import io.ktlab.bshelper.ui.event.ToolboxUIEvent
 
 @Composable
 fun SettingScreen(

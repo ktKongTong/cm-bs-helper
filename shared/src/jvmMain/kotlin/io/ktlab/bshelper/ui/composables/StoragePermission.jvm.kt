@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.ui.screens.toolbox
+package io.ktlab.bshelper.ui.composables
 
 import androidx.compose.runtime.Composable
 
