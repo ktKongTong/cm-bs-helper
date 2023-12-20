@@ -18,9 +18,9 @@ import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.enums.SyncStateEnum
 import io.ktlab.bshelper.model.mapper.mapToVO
+import io.ktlab.bshelper.model.scanner.ScanStateV2
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
-import io.ktlab.bshelper.model.vo.ScanStateV2
 import io.ktlab.bshelper.utils.asValidFilename
 import io.ktlab.bshelper.utils.newDirEvenIfDirExist
 import kotlinx.coroutines.Dispatchers

@@ -5,7 +5,7 @@ import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
 import io.ktlab.bshelper.model.download.IDownloadTask
-import io.ktlab.bshelper.model.vo.ScanStateV2
+import io.ktlab.bshelper.model.scanner.ScanStateV2
 import io.ktlab.bshelper.ui.event.EventBus
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.ToolboxUIEvent

@@ -2,11 +2,24 @@ package io.ktlab.bshelper.platform
 
 import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
-import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.BSHelperDatabase
+import io.ktlab.bshelper.model.BSMap
+import io.ktlab.bshelper.model.BSMapVersion
+import io.ktlab.bshelper.model.BSPlaylist
+import io.ktlab.bshelper.model.BSUser
+import io.ktlab.bshelper.model.FSMap
+import io.ktlab.bshelper.model.FSPlaylist
+import io.ktlab.bshelper.model.ManageFolder
+import io.ktlab.bshelper.model.MapDifficulty
 import io.ktlab.bshelper.model.enums.ECharacteristic
 import io.ktlab.bshelper.model.enums.EMapDifficulty
+import io.ktlab.bshelper.model.enums.GameType
 import io.ktlab.bshelper.model.enums.SyncStateEnum
-import kotlinx.datetime.*
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
@@ -64,8 +77,20 @@ object DBAdapter {
                     ownerIdAdapter = longOfIntAdapter,
                     curatorIdAdapter = longOfIntAdapter,
                 ),
+            ManageFolderAdapter = ManageFolder.Adapter(
+                createdAtAdapter = stringOfLocalDateTimeAdapter,
+                updatedAtAdapter = stringOfLocalDateTimeAdapter,
+                gameTypeAdapter = stringOfGameTypeAdapter,
+            )
         )
     }
+
+    private val stringOfGameTypeAdapter =
+        object : ColumnAdapter<GameType, String> {
+            override fun decode(databaseValue: String) = GameType.from(databaseValue)
+
+            override fun encode(value: GameType) = value.name
+        }
 
     private val datetimeOfLongAdapter =
         object : ColumnAdapter<LocalDateTime, Long> {

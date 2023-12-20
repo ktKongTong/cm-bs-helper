@@ -77,6 +77,38 @@ class ToolAPI(private val httpClient: HttpClient) {
             APIRespResult.Error(e)
         }
     }
+
+    suspend fun checkHealthy() : APIRespResult<String> {
+        val url = "$basePath/healthy"
+        return try {
+            logger.debug { "checkHealthy: url:$url" }
+            val response = httpClient.get(url)
+            val resp = response.body<ToolAPIResp>()
+            if (resp.status != 200) {
+                return APIRespResult.Error(Exception(resp.message))
+            }
+            APIRespResult.Success(resp.message)
+        } catch (e: Exception) {
+            logger.error { "checkHealthy: error, url:$url, error:${e.message}" }
+            APIRespResult.Error(e)
+        }
+    }
+    // onstartUp, check version, check healthy, check changelog
+    suspend fun getRecentVersionChangeLog() : APIRespResult<String> {
+        val url = "$basePath/changelog"
+        return try {
+            logger.debug { "getRecentVersionChangeLog: url:$url" }
+            val response = httpClient.get(url)
+            val resp = response.body<ToolAPIResp>()
+            if (resp.status != 200) {
+                return APIRespResult.Error(Exception(resp.message))
+            }
+            APIRespResult.Success(resp.message)
+        } catch (e: Exception) {
+            logger.error { "getRecentVersionChangeLog: error, url:$url, error:${e.message}" }
+            APIRespResult.Error(e)
+        }
+    }
 }
 
 @Serializable

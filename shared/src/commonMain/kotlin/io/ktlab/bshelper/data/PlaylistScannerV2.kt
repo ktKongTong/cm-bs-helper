@@ -10,9 +10,9 @@ import io.ktlab.bshelper.model.mapper.convertToBSMapVersionDBO
 import io.ktlab.bshelper.model.mapper.convertToMapDifficulties
 import io.ktlab.bshelper.model.scanner.IExtractedMapInfo
 import io.ktlab.bshelper.model.scanner.ScannerException
-import io.ktlab.bshelper.model.vo.PlaylistScanStateV2
-import io.ktlab.bshelper.model.vo.ScanStateEventEnum
-import io.ktlab.bshelper.model.vo.ScanStateV2
+import io.ktlab.bshelper.model.scanner.PlaylistScanStateV2
+import io.ktlab.bshelper.model.scanner.ScanStateEventEnum
+import io.ktlab.bshelper.model.scanner.ScanStateV2
 import io.ktlab.bshelper.utils.BSMapUtils
 import io.ktlab.bshelper.utils.newFSPlaylist
 import kotlinx.coroutines.CoroutineScope

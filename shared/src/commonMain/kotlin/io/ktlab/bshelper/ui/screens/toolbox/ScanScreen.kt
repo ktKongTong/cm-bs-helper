@@ -29,8 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.ktlab.bshelper.model.vo.ScanStateEventEnum
-import io.ktlab.bshelper.model.vo.ScanStateV2
+import io.ktlab.bshelper.model.scanner.ScanStateEventEnum
+import io.ktlab.bshelper.model.scanner.ScanStateV2
 import io.ktlab.bshelper.ui.LocalUserPreference
 import io.ktlab.bshelper.ui.components.DirectoryChooser
 import io.ktlab.bshelper.ui.composables.RequestStoragePermission
