@@ -7,6 +7,7 @@ import io.ktlab.bshelper.data.api.BeatSaverAPI
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.download.IDownloadTask
+import io.ktlab.bshelper.model.enums.GameType
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.platform.DBAdapter
@@ -38,6 +39,8 @@ class DownloaderRepository(
     private val tmpPath = storageService.getTempDir()
     private val currentManageFolderId
     get() = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.id
+    private val currentGameType
+        get() = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.gameType
     private val downloader =
         KownDownloader.new()
             .setRetryCount(3)
@@ -46,7 +49,7 @@ class DownloaderRepository(
             .setDataBaseDriver(DBAdapter.getDriver())
             .build()
 
-    private fun onCompleteAction(targetPlaylist: IPlaylist): (DownloadTaskBO) -> Unit {
+    private fun onCompleteAction(targetPlaylist: IPlaylist,gameType: GameType?): (DownloadTaskBO) -> Unit {
         return { task ->
             logger.debug { "executing onCompleteAction: ${task.taskId}" }
             val zipFile = task.dirPath.toPath().resolve(task.filename)
@@ -55,6 +58,12 @@ class DownloaderRepository(
                 unzip(zipFile.toString(), targetPath.toString())
                 FileSystem.SYSTEM.delete(zipFile)
                 mapRepository.activeFSMapByMapId(task.relateEntityId!!, targetPlaylist.id)
+                if (gameType == GameType.AudioTrip) {
+                    FileSystem.SYSTEM.list(targetPath).find { it.name.endsWith(".egg") }?.let {
+                        val newFilename = it.name.replace(".egg", ".ogg")
+                        FileSystem.SYSTEM.atomicMove(it, targetPath.resolve(newFilename))
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 runtimeEventFlow.sendEvent(Event.ExceptionEvent(e))
@@ -69,7 +78,7 @@ class DownloaderRepository(
     ) {
         val title = map.getFilename()
         val timestamp = Clock.System.now().epochSeconds
-        val callback = onCompleteAction(targetPlaylist)
+        val callback = onCompleteAction(targetPlaylist,currentGameType)
         downloader.newRequestBuilder(map.getDownloadURL(), tmpPath.toString(), "$title.zip")
             .setTag("single__.__${currentManageFolderId}__.__${timestamp}__.__${targetPlaylist.id}")
             .setRelateEntityId(map.map.mapId)
@@ -90,7 +99,7 @@ class DownloaderRepository(
                 .setTag(tag)
                 .setRelateEntityId(it.map.mapId)
                 .setTitle(title)
-                .setDownloadListener(DownloadListener(onCompleted = onCompleteAction(targetPlaylist)))
+                .setDownloadListener(DownloadListener(onCompleted = onCompleteAction(targetPlaylist,currentGameType)))
                 .build()
         }.let {
             downloader.enqueue(it)
@@ -172,7 +181,7 @@ class DownloaderRepository(
                         .setTag("playlist-${bsPlaylist.id}__.__${currentManageFolderId}__.__${timestamp}__.__${targetPlaylist.id}")
                         .setRelateEntityId(it.getID())
                         .setTitle(title)
-                        .setDownloadListener(DownloadListener(onCompleted = onCompleteAction(targetPlaylist)))
+                        .setDownloadListener(DownloadListener(onCompleted = onCompleteAction(targetPlaylist,currentGameType)))
                         .build()
                 }.let {
                     downloader.enqueue(it)
@@ -200,7 +209,7 @@ class DownloaderRepository(
                             val playlist = (it as Result.Success).data
                             downloader.retryById(
                                 downloadTask.downloadTaskModel.taskId,
-                                DownloadListener(onCompleted = onCompleteAction(playlist)),
+                                DownloadListener(onCompleted = onCompleteAction(playlist,currentGameType)),
                             )
                         }
                     }
@@ -211,17 +220,16 @@ class DownloaderRepository(
                     ?.let {
                         playlistRepository.getPlaylistById(it,manageDirId).takeIf { it is Result.Success }?.let {
                             val playlist = (it as Result.Success).data
-                            downloader.retryByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(playlist)))
+                            downloader.retryByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(playlist,currentGameType)))
                         }
                     }
             }
             is IDownloadTask.PlaylistDownloadTask -> {
                 downloadTask.tag.split("__.__").lastOrNull()
-
                     ?.let {
                         playlistRepository.getPlaylistById(it,manageDirId).takeIf { it is Result.Success }?.let {
                             val playlist = (it as Result.Success).data
-                            downloader.retryByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(playlist)))
+                            downloader.retryByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(playlist,currentGameType)))
                         }
                     }
             }
@@ -261,14 +269,14 @@ class DownloaderRepository(
             is IDownloadTask.MapDownloadTask -> {
                 downloader.resumeById(
                     downloadTask.downloadTaskModel.taskId,
-                    DownloadListener(onCompleted = onCompleteAction(downloadTask.targetPlaylist)),
+                    DownloadListener(onCompleted = onCompleteAction(downloadTask.targetPlaylist,currentGameType)),
                 )
             }
             is IDownloadTask.BatchDownloadTask -> {
-                downloader.resumeByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(downloadTask.targetPlaylist)))
+                downloader.resumeByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(downloadTask.targetPlaylist,currentGameType)))
             }
             is IDownloadTask.PlaylistDownloadTask -> {
-                downloader.resumeByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(downloadTask.targetPlaylist)))
+                downloader.resumeByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(downloadTask.targetPlaylist,currentGameType)))
             }
         }
     }

@@ -25,6 +25,7 @@ fun ChipDropDownSelector(
     options: List<String>,
     selectedOption: String,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onSelectedOptionChange: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -38,7 +39,7 @@ fun ChipDropDownSelector(
             modifier = modifier.menuAnchor(),
             label = { Text(selectedOption) },
             selected = false,
-            onClick = { expanded = true },
+            onClick = { if(enabled) expanded = true },
 //            leadingIcon = {Icon(Icons.Rounded.Check, "Checked Icon")},
             trailingIcon = { Icon(Icons.Rounded.ExpandMore, "ExpandMore Icon") },
         )

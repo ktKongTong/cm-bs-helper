@@ -113,7 +113,11 @@ fun ScanDialog(
                     onUIEvent = onUIEvent,
                 )
 
-                val list = listOf(GameType.LightBand, GameType.BeatSaberLike).map { it.human }
+                val list = listOf(
+                    GameType.LightBand,
+                    GameType.BeatKungFu,
+                    GameType.AudioTrip,
+                    GameType.BeatSaberLike).map { it.human }
                     Row (
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
@@ -123,6 +127,7 @@ fun ScanDialog(
                             options = list,
                             selectedOption = if (currentGameType == GameType.LightBand) list[0] else list[1],
                             onSelectedOptionChange = { currentGameType = GameType.fromHuman(it) },
+                            enabled = if(scanStateV2.state == ScanStateEventEnum.NOT_START) true else false,
                         )
                     }
                     Column(
