@@ -2,8 +2,8 @@ package io.ktlab.bshelper.data.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.BuildConfig
+import io.ktlab.bshelper.model.AppVersionChangeLog
 import io.ktlab.bshelper.model.dto.ExportPlaylist
-import io.ktlab.bshelper.model.dto.GitHubLatestRelease
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.dto.response.ToolAPIResponse
@@ -66,12 +66,16 @@ class ToolAPI(private val httpClient: HttpClient) {
     }
 
     suspend fun getLatestVersion(): APIRespResult<String> {
-        val url = "https://api.github.com/repos/ktKongTong/cm-bs-helper/releases/latest"
+//        val url = "https://api.github.com/repos/ktKongTong/cm-bs-helper/releases/latest"
+        val url = "$basePath/release/latest"
         return try {
             logger.debug { "getLatestVersion: url:$url" }
             val response = httpClient.get(url)
-            val resp = response.body<GitHubLatestRelease>()
-            APIRespResult.Success(resp.tagName)
+            val resp = response.body<ToolAPIResp<String>>()
+            if (resp.code != 200) {
+                return APIRespResult.Error(Exception(resp.message))
+            }
+            APIRespResult.Success(resp.data!!)
         } catch (e: Exception) {
             logger.error { "getLatestVersion: error, url:$url, error:${e.message}" }
             APIRespResult.Error(e)
@@ -83,8 +87,8 @@ class ToolAPI(private val httpClient: HttpClient) {
         return try {
             logger.debug { "checkHealthy: url:$url" }
             val response = httpClient.get(url)
-            val resp = response.body<ToolAPIResp>()
-            if (resp.status != 200) {
+            val resp = response.body<ToolAPIResp<ExportPlaylist>>()
+            if (resp.code != 200) {
                 return APIRespResult.Error(Exception(resp.message))
             }
             APIRespResult.Success(resp.message)
@@ -94,16 +98,16 @@ class ToolAPI(private val httpClient: HttpClient) {
         }
     }
     // onstartUp, check version, check healthy, check changelog
-    suspend fun getRecentVersionChangeLog() : APIRespResult<String> {
-        val url = "$basePath/changelog"
+    suspend fun getRecentVersionChangeLog() : APIRespResult<List<AppVersionChangeLog>> {
+        val url = "$basePath/release/changelog"
         return try {
             logger.debug { "getRecentVersionChangeLog: url:$url" }
             val response = httpClient.get(url)
-            val resp = response.body<ToolAPIResp>()
-            if (resp.status != 200) {
+            val resp = response.body<ToolAPIResp<List<AppVersionChangeLog>>>()
+            if (resp.code != 200) {
                 return APIRespResult.Error(Exception(resp.message))
             }
-            APIRespResult.Success(resp.message)
+            APIRespResult.Success(resp.data!!)
         } catch (e: Exception) {
             logger.error { "getRecentVersionChangeLog: error, url:$url, error:${e.message}" }
             APIRespResult.Error(e)
@@ -112,8 +116,8 @@ class ToolAPI(private val httpClient: HttpClient) {
 }
 
 @Serializable
-data class ToolAPIResp(
+data class ToolAPIResp<T>(
     val message: String,
-    val data: ExportPlaylist? = null,
-    val status: Int,
+    val data: T? = null,
+    val code: Int,
 )

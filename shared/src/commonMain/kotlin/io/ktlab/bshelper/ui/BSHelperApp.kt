@@ -1,12 +1,15 @@
 package io.ktlab.bshelper.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -17,6 +20,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -30,13 +34,17 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.ktlab.bshelper.BuildConfig
+import io.ktlab.bshelper.model.AppVersionChangeLog
 import io.ktlab.bshelper.model.ThemeMode
 import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.ui.components.AppDrawer
@@ -44,6 +52,7 @@ import io.ktlab.bshelper.ui.components.AppNavRail
 import io.ktlab.bshelper.ui.components.BSHelperSnackbarHost
 import io.ktlab.bshelper.ui.components.MediaPlayer
 import io.ktlab.bshelper.ui.components.SnackBarShown
+import io.ktlab.bshelper.ui.composables.OpenInBrowser
 import io.ktlab.bshelper.ui.event.EventBus
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
@@ -51,6 +60,7 @@ import io.ktlab.bshelper.ui.route.BSHelperDestinations
 import io.ktlab.bshelper.ui.route.BSHelperNavGraph
 import io.ktlab.bshelper.ui.route.BSHelperNavigationActions
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
+import io.ktlab.bshelper.ui.viewmodel.AppVersionDialogState
 import io.ktlab.bshelper.ui.viewmodel.ErrorDialogState
 import io.ktlab.bshelper.ui.viewmodel.GlobalViewModel
 import kotlinx.coroutines.launch
@@ -136,6 +146,7 @@ fun BSHelperApp() {
                                     snackbarHostState = snackbarHostState,
                                     globalUiState = globalUiState,
                                 )
+                                AppVersionReportDialog(appVersionDialogState = globalUiState.appVersionDialogState)
                                 ErrorReportDialog(errorDialogState = globalUiState.errorDialogState)
                                 SnackBarShown(
                                     snackbarHostState = snackbarHostState,
@@ -152,7 +163,67 @@ fun BSHelperApp() {
         }
     }
 }
+@Composable
+private fun ChangeLogItem(
+    changeLog: AppVersionChangeLog,
+){
+    Column(
+        Modifier.fillMaxWidth().padding(16.dp,8.dp)
+    ) {
+        Row (
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            Column {
+                Text(text = changeLog.version, style = MaterialTheme.typography.titleLarge)
+                Text(text = changeLog.date, style = MaterialTheme.typography.labelSmall)
+            }
+            Spacer(modifier = Modifier.weight(1f,false))
+            val show = remember { mutableStateOf(false) }
+            if(show.value) {
+                OpenInBrowser(changeLog.url)
+            }
+            TextButton(onClick = { show.value = true }) { Text("前去下载") }
+        }
+        Text(text = changeLog.releaseNote, style = MaterialTheme.typography.bodySmall)
+    }
+}
 
+@Composable
+private fun AppVersionReportDialog(appVersionDialogState: AppVersionDialogState?) {
+    if(appVersionDialogState == null){
+        return
+    }
+    AlertDialog(
+        onDismissRequest = {
+            appVersionDialogState.onCancel?.let { it() }
+        },
+        title = { Column {
+            Text(text = appVersionDialogState.title)
+            Text(text = BuildConfig.APP_VERSION, style = MaterialTheme.typography.labelSmall)
+        } },
+        text = {
+            Column(
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState())
+                        .heightIn(max = 400.dp),
+            ) {
+                appVersionDialogState.changeLogs.forEach {
+                    ChangeLogItem(it)
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { appVersionDialogState.onConfirm?.let { it() } },
+            ) { Text(appVersionDialogState.confirmLabel!!) }
+        },
+        dismissButton = {},
+    )
+}
 @Composable
 private fun ErrorReportDialog(errorDialogState: ErrorDialogState?) {
     if (errorDialogState == null) {

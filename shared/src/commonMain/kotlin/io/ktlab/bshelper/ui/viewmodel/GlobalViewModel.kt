@@ -13,10 +13,12 @@ import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.ManageFolderRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
+import io.ktlab.bshelper.model.AppVersionChangeLog
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.dto.response.APIRespResult
+import io.ktlab.bshelper.model.dto.response.successOr
 import io.ktlab.bshelper.platform.IBSClipBoardManager
 import io.ktlab.bshelper.platform.MediaPlayer
 import io.ktlab.bshelper.ui.event.EventBus
@@ -24,6 +26,7 @@ import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -68,6 +71,7 @@ data class GlobalViewModelState(
     val currentMedia: IMedia,
     val currentMediaState: CurrentMediaState,
     val errorDialogState: ErrorDialogState? = null,
+    val appVersionDialogState: AppVersionDialogState?,
     val userPreference: UserPreferenceV2,
     val manageDirs: List<SManageFolder>
 ) {
@@ -82,6 +86,7 @@ data class GlobalViewModelState(
             userPreference = userPreference,
             errorDialogState = errorDialogState,
             manageDirs = manageDirs,
+            appVersionDialogState = appVersionDialogState,
         )
     }
 }
@@ -109,13 +114,21 @@ data class ErrorDialogState(
     val onConfirm: (() -> Unit)? = null,
     val onCancel: (() -> Unit)? = null,
 )
-
+data class AppVersionDialogState(
+    val title: String,
+    val changeLogs: List<AppVersionChangeLog>,
+    val confirmLabel: String? = null,
+    val cancelLabel: String? = null,
+    val onConfirm: (() -> Unit)? = null,
+    val onCancel: (() -> Unit)? = null,
+)
 data class GlobalUiState(
     val isLoading: Boolean,
     val snackBarMessages: List<SnackBarMessage> = emptyList(),
     val currentMedia: IMedia,
     val currentMediaState: CurrentMediaState = CurrentMediaState.Stopped,
     val errorDialogState: ErrorDialogState? = null,
+    val appVersionDialogState: AppVersionDialogState?,
     val userPreference: UserPreferenceV2,
     val manageDirs: List<SManageFolder>
 )
@@ -142,6 +155,7 @@ class GlobalViewModel(
                 currentMediaState = CurrentMediaState.Stopped,
                 userPreference = UserPreferenceV2.getDefaultUserPreference(),
                 manageDirs = emptyList(),
+                appVersionDialogState = null,
             ),
         )
     val uiState =
@@ -178,6 +192,45 @@ class GlobalViewModel(
                         }
                     }
                 }
+            }
+        }
+        viewModelScope.launch {
+//            val healthCheck = async { toolAPI.checkHealthy() }
+//            when(val res = healthCheck.await()) {
+//                is APIRespResult.Success -> {
+//                    logger.debug { "health check success" }
+//                }
+//                is APIRespResult.Error -> {
+//                    logger.error { "health check error ${res.exception.message}" }
+////                    showSnackBar("健康检查失败, ${res.exception.message}")
+//                }
+//            }
+            val latest = async { toolAPI.getLatestVersion() }
+            val changeLogs = async { toolAPI.getRecentVersionChangeLog() }
+            when(val res = latest.await()) {
+                is APIRespResult.Success -> {
+                    val latestVersion = res.data
+                    val currentVersion = BuildConfig.APP_VERSION
+                    latestVersion.replace("v","").toVersionOrNull()?.let {
+                        logger.debug { "latestVersion:$latestVersion, currentVersion:$currentVersion" }
+                        if (it > currentVersion.toVersion()) {
+                            val ans = changeLogs.await()
+                            showSnackBar("有新版本可用：$latestVersion",
+                                actionLabel = "查看详情",
+                                action = {
+                                    viewModelState.update {
+                                        it.copy(appVersionDialogState = AppVersionDialogState(
+                                            title = "更新日志",
+                                            changeLogs = ans.successOr(emptyList()),
+                                            confirmLabel = "确认",
+                                            onConfirm = { viewModelState.update { it.copy(appVersionDialogState = null) } },
+                                        ))
+                                    }
+                                })
+                        }
+                    }
+                }
+                else -> {}
             }
         }
 
