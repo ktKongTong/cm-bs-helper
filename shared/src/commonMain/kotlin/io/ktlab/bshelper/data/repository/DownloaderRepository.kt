@@ -58,12 +58,6 @@ class DownloaderRepository(
                 unzip(zipFile.toString(), targetPath.toString())
                 FileSystem.SYSTEM.delete(zipFile)
                 mapRepository.activeFSMapByMapId(task.relateEntityId!!, targetPlaylist.id)
-                if (gameType == GameType.AudioTrip) {
-                    FileSystem.SYSTEM.list(targetPath).find { it.name.endsWith(".egg") }?.let {
-                        val newFilename = it.name.replace(".egg", ".ogg")
-                        FileSystem.SYSTEM.atomicMove(it, targetPath.resolve(newFilename))
-                    }
-                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 runtimeEventFlow.sendEvent(Event.ExceptionEvent(e))

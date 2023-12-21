@@ -116,7 +116,6 @@ fun ScanDialog(
                 val list = listOf(
                     GameType.LightBand,
                     GameType.BeatKungFu,
-                    GameType.AudioTrip,
                     GameType.BeatSaberLike).map { it.human }
                     Row (
                         horizontalArrangement = Arrangement.SpaceBetween,

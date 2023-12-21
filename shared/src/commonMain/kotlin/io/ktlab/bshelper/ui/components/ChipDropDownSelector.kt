@@ -36,7 +36,7 @@ fun ChipDropDownSelector(
     ) {
         FilterChip(
             elevation = null,
-            modifier = modifier.menuAnchor(),
+            modifier = if(enabled) modifier.menuAnchor() else modifier,
             label = { Text(selectedOption) },
             selected = false,
             onClick = { if(enabled) expanded = true },
