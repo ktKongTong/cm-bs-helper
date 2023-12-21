@@ -28,7 +28,7 @@ sealed class GlobalUIEvent : UIEvent() {
 
     data class CreatePlaylist(val playlist: FSPlaylist?) : GlobalUIEvent()
 
-    data class UpdateManageFolder(val manageFolder: SManageFolder) : GlobalUIEvent()
+    data class UpdateManageFolder(val manageFolder: SManageFolder?) : GlobalUIEvent()
 
     data class DeleteManageFolder(val manageFolder: SManageFolder) : GlobalUIEvent()
 

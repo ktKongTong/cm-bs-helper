@@ -38,7 +38,7 @@ object AppModule {
             single {
                 FSMapRepository(get(),get(), get())
             }
-            single { ManageFolderRepository(get(), get(), get()) }
+            single { ManageFolderRepository(get(), get(), get(),get()) }
 
             single {
                 UserPreferenceRepository(get())
@@ -52,7 +52,7 @@ object AppModule {
         module {
             single<GlobalViewModel> { GlobalViewModel(get(), get(), get(), get(), get(),get(),get(),get()) }
             single<HomeViewModel> { HomeViewModel( get(), get(), get(), get()) }
-            single<ToolboxViewModel> { ToolboxViewModel( get(), get(), get()) }
+            single<ToolboxViewModel> { ToolboxViewModel( get(), get(), get(), get()) }
             single<BeatSaverViewModel> { BeatSaverViewModel(get(), get(), get(), get()) }
         }
 

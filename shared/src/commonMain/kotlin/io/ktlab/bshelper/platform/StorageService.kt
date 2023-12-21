@@ -6,4 +6,7 @@ expect class StorageService {
     fun getTempDir(): Path
 
     fun getDownloadDir(): Path
+
+    fun getBackupDir(): Path
+    fun getBackupDir(dir:Path): Path
 }

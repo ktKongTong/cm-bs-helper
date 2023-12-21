@@ -1,6 +1,7 @@
 package io.ktlab.bshelper.ui.viewmodel
 
 import androidx.compose.material3.SnackbarDuration
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.FSMapRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
@@ -88,7 +89,7 @@ sealed interface HomeUiState {
         }
     }
 }
-
+private val logger = KotlinLogging.logger {}
 class HomeViewModel(
     private val playlistRepository: PlaylistRepository,
     private val mapRepository: FSMapRepository,
@@ -127,7 +128,9 @@ class HomeViewModel(
 
         viewModelScope.launch {
             userPreferenceRepository.getUserPreference().flowOn(Dispatchers.IO).collect {
+                logger.debug { "user preference changed, manageFolder:${it.currentManageFolder},current:${viewModelState.value.userPreferenceState.currentManageFolder}" }
                 if (it.currentManageFolder != viewModelState.value.userPreferenceState.currentManageFolder) {
+                    logger.debug { "user preference changed, refresh playlist" }
                     refreshPlayLists()
                 }
                 viewModelState.update { state -> state.copy(userPreferenceState = it) }
@@ -221,6 +224,7 @@ class HomeViewModel(
     private fun refreshPlayLists(managerDir: String = "") {
         val manageDirId = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.id
         if (manageDirId == null) {
+            viewModelState.update { it.copy(playlists = emptyList()) }
             return
         }
         viewModelState.update { it.copy(isLoading = true) }

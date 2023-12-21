@@ -179,6 +179,7 @@ fun ToolboxRightSide(
                     scanState = uiState.scanState,
                     onUIEvent = onUIEvent,
                     manageFolders = uiState.manageDirs,
+                    backups = uiState.backups,
                 )
             }
             ToolboxPage.Downloader -> {

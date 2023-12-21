@@ -252,12 +252,14 @@ class GlobalViewModel(
                 }
             }
             is GlobalUIEvent.UpdateManageFolder -> {
+                logger.debug { "update manage folder ${event.manageFolder}" }
                 viewModelScope.launch(exceptionHandler) {
                     viewModelState.value.userPreference.currentManageFolder?.let {
                         downloaderRepository.pauseAllByManageFolderId(it.id)
                     }
                     userPreferenceRepository.updateCurrentManageFolder(event.manageFolder)
                 }
+                logger.debug { "update manage folder over" }
             }
             is GlobalUIEvent.DeleteManageFolder -> {
                 viewModelScope.launch(exceptionHandler) {

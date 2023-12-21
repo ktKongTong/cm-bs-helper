@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.model.scanner.ScanStateV2
 import io.ktlab.bshelper.ui.LocalUIEventHandler
+import io.ktlab.bshelper.ui.composables.RequestStoragePermission
 import io.ktlab.bshelper.ui.screens.toolbox.components.ScanDialog
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -30,6 +31,8 @@ fun Scanner(
     scanState: ScanStateV2,
     manageFolders:List<SManageFolder>
 ) {
+
+    RequestStoragePermission()
     val onUIEvent = LocalUIEventHandler.current
     val openState = remember { mutableStateOf(false) }
     Row(

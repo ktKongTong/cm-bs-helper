@@ -12,7 +12,7 @@ actual class StorageService {
     private var appDir: Path = homeDir.toPath().resolve(".bshelper")
     private var configDir: Path = appDir.resolve("config")
     private var tmpDir: Path = appDir.resolve("tmp")
-
+    private var backupDir: Path = appDir.resolve("backup")
     init {
         logger.debug { "Init StorageService app dir:${appDir}" }
         synchronized(this) {
@@ -28,6 +28,10 @@ actual class StorageService {
                 logger.debug { "tmpDir dir not exist, create it: $tmpDir" }
                 FileSystem.SYSTEM.createDirectory(tmpDir, mustCreate = true)
             }
+            if (!FileSystem.SYSTEM.exists(backupDir)) {
+                logger.debug { "backupDir dir not exist, create it: $backupDir" }
+                FileSystem.SYSTEM.createDirectory(backupDir, mustCreate = true)
+            }
         }
     }
 
@@ -42,4 +46,13 @@ actual class StorageService {
     actual fun getDownloadDir(): Path {
         return tmpDir
     }
+
+    actual fun getBackupDir(): Path {
+        return backupDir
+    }
+
+    actual fun getBackupDir(dir: Path): Path {
+        return backupDir
+    }
+
 }

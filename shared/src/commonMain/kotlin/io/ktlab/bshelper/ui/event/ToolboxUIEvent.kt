@@ -1,6 +1,8 @@
 package io.ktlab.bshelper.ui.event
 
 import io.ktlab.bshelper.model.ImageSource
+import io.ktlab.bshelper.model.ManageFolderBackup
+import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.enums.GameType
 
@@ -23,9 +25,10 @@ sealed class ToolboxUIEvent : UIEvent() {
 
     data class RetryDownloadMap(val downloadTask: IDownloadTask) : ToolboxUIEvent()
 
-    data class UpdateManageDir(val path: String) : ToolboxUIEvent()
-
     data class UpdateThemeColor(val color: Long) : ToolboxUIEvent()
 
     data class UpdateImageSource(val type: ImageSource, val source: String?=null) : ToolboxUIEvent()
+
+    data class BackUpManageFolder(val manageFolder: SManageFolder) : ToolboxUIEvent()
+    data class RestoreManageFolder(val backup: ManageFolderBackup) : ToolboxUIEvent()
 }

@@ -184,11 +184,13 @@ class DownloaderRepository(
     }
 
     fun pauseAllByManageFolderId(id:Long) {
+        logger.debug { "pauseAllByManageFolderId $id" }
         downloader.pauseByTagMatched {
             if (it == null) return@pauseByTagMatched false
             val manageFolderId = it.split("__.__").getOrNull(1)?.toLongOrNull()
             return@pauseByTagMatched manageFolderId == id
         }
+        logger.debug { "pauseAllByManageFolderId $id over" }
     }
 
     fun retry(downloadTask: IDownloadTask) {

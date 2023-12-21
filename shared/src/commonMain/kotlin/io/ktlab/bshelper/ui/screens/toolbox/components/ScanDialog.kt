@@ -27,7 +27,6 @@ import io.ktlab.bshelper.model.scanner.ScanStateEventEnum
 import io.ktlab.bshelper.model.scanner.ScanStateV2
 import io.ktlab.bshelper.ui.components.ChipDropDownSelector
 import io.ktlab.bshelper.ui.components.DirectoryChooser
-import io.ktlab.bshelper.ui.composables.RequestStoragePermission
 import io.ktlab.bshelper.ui.composables.isStoragePermissionGranted
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.ToolboxUIEvent
@@ -43,7 +42,6 @@ fun ScanDialog(
 ) {
     if (openState.value) {
 
-        RequestStoragePermission()
 
         var currentGameType by remember { mutableStateOf(GameType.LightBand) }
         var currentManageDir by remember { mutableStateOf("") }

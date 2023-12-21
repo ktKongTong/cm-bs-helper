@@ -12,9 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.ktlab.bshelper.model.ManageFolderBackup
 import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.model.scanner.ScanStateV2
 import io.ktlab.bshelper.ui.event.UIEvent
+import io.ktlab.bshelper.ui.screens.toolbox.components.settings.BackUp
 import io.ktlab.bshelper.ui.screens.toolbox.components.settings.ClearAllData
 import io.ktlab.bshelper.ui.screens.toolbox.components.settings.ColorPickerRow
 import io.ktlab.bshelper.ui.screens.toolbox.components.settings.Feedback
@@ -27,7 +29,8 @@ import io.ktlab.bshelper.ui.screens.toolbox.components.settings.Scanner
 fun ToolScreen(
     scanState: ScanStateV2,
     onUIEvent: (UIEvent) -> Unit,
-    manageFolders:List<SManageFolder>
+    manageFolders:List<SManageFolder>,
+    backups:List<ManageFolderBackup>
 ) {
     Column (
         modifier = Modifier
@@ -43,7 +46,9 @@ fun ToolScreen(
         ManageFolderSetup(manageFolders)
         ClearAllData()
         Row { Text("其他", style = MaterialTheme.typography.headlineLarge) }
+        BackUp(manageFolders,backups)
         Feedback()
+
     }
 }
 

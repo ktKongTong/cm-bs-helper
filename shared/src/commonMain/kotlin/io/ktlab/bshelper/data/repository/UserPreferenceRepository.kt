@@ -1,6 +1,7 @@
 package io.ktlab.bshelper.data.repository
 
 import androidx.datastore.core.DataStore
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.model.BSAPIProvider
 import io.ktlab.bshelper.model.ImageSource
 import io.ktlab.bshelper.model.SManageFolder
@@ -11,6 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+
+private val logger = KotlinLogging.logger {}
 
 class UserPreferenceRepository(
     private val dataStore: DataStore<UserPreferenceV2>,

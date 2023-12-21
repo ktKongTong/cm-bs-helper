@@ -1,6 +1,5 @@
 package io.ktlab.bshelper.model
 
-import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
 import io.ktlab.bshelper.BuildConfig
 import kotlinx.coroutines.Dispatchers
@@ -81,10 +80,13 @@ object UserPreferencesSerializer : Serializer<UserPreferenceV2> {
 
     override suspend fun readFrom(input: InputStream): UserPreferenceV2 {
         try {
-            return Json.decodeFromString(
+            return Json{
+                ignoreUnknownKeys = true
+            }.decodeFromString(
                 UserPreferenceV2.serializer(), input.readBytes().decodeToString())
         } catch (serialization: SerializationException) {
-            throw CorruptionException("Unable to read UserPrefs", serialization)
+            throw serialization
+//            throw CorruptionException("Unable to read UserPrefs", serialization)
         }
     }
 

@@ -2,8 +2,10 @@ package io.ktlab.bshelper.ui.viewmodel
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.data.repository.DownloaderRepository
+import io.ktlab.bshelper.data.repository.ManageFolderRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
+import io.ktlab.bshelper.model.ManageFolderBackup
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.model.UserPreferenceV2
@@ -35,7 +37,8 @@ data class ToolboxUiState(
     val scanState: ScanStateV2,
     val downloadTaskFlow: Flow<List<IDownloadTask>>,
     val userPreference: UserPreferenceV2,
-    val manageDirs: List<SManageFolder>
+    val manageDirs: List<SManageFolder>,
+    val backups: List<ManageFolderBackup>,
 )
 
 data class ToolboxViewModelState(
@@ -44,7 +47,8 @@ data class ToolboxViewModelState(
     val downloadTasks: List<IDownloadTask> = emptyList(),
     val downloadTaskFlow: Flow<List<IDownloadTask>> = emptyFlow(),
     val userPreference: UserPreferenceV2,
-    val manageDirs: List<SManageFolder>
+    val manageDirs: List<SManageFolder>,
+    val backups: List<ManageFolderBackup> = emptyList(),
 ) {
     fun toUiState(): ToolboxUiState =
         ToolboxUiState(
@@ -53,6 +57,7 @@ data class ToolboxViewModelState(
             downloadTaskFlow = downloadTaskFlow,
             userPreference = userPreference,
             manageDirs = manageDirs,
+            backups = backups,
         )
 }
 private val logger = KotlinLogging.logger {}
@@ -60,6 +65,7 @@ class ToolboxViewModel(
     private val playlistRepository: PlaylistRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
     private val downloaderRepository: DownloaderRepository,
+    private val manageFolderRepository: ManageFolderRepository,
 ) : ViewModel() {
     private val viewModelState =
         MutableStateFlow(ToolboxViewModelState(
@@ -78,6 +84,16 @@ class ToolboxViewModel(
 
     init {
         logger.debug { "init ToolboxViewModel" }
+
+        viewModelScope.launch {
+            val res = manageFolderRepository.getAllBackup()
+            viewModelState.update { vmState ->
+                vmState.copy(
+                    backups = res,
+                )
+            }
+        }
+
         viewModelScope.launch { EventBus.subscribe<ToolboxUIEvent> { dispatchUiEvents(it) } }
 
         viewModelScope.launch {
@@ -178,7 +194,41 @@ class ToolboxViewModel(
                     userPreferenceRepository.updateImageSource(event.type,event.source)
                 }
             }
-            else -> {}
+            is ToolboxUIEvent.BackUpManageFolder -> {
+                // todo fix potential bug
+                viewModelScope.launch {
+                    logger.debug { "backUpManageFolder ${event.manageFolder}" }
+                    if(event.manageFolder == viewModelState.value.userPreference.currentManageFolder) {
+                        val updated = viewModelState.value.manageDirs.filter { it.id != event.manageFolder.id }.firstOrNull()
+                        EventBus.publish(GlobalUIEvent.UpdateManageFolder(updated))
+                        logger.debug { "bakup updateManageFolder" }
+                    }
+                    val res = manageFolderRepository.backUpManageFolder(event.manageFolder)
+                    logger.debug { "backUpManageFolder ${event.manageFolder}" }
+                    val backups = manageFolderRepository.getAllBackup()
+                    viewModelState.update { vmState ->
+                        vmState.copy(
+                            backups = backups,
+                        )
+                    }
+                }
+            }
+
+            is ToolboxUIEvent.RestoreManageFolder -> {
+                viewModelScope.launch {
+                    manageFolderRepository.restoreFromBackup(event.backup)
+                    if(viewModelState.value.userPreference.currentManageFolder == null) {
+                        EventBus.publish(GlobalUIEvent.UpdateManageFolder(event.backup.manageFolder))
+                    }
+                    val backups = manageFolderRepository.getAllBackup()
+                    viewModelState.update { vmState ->
+                        vmState.copy(
+                            backups = backups,
+                        )
+                    }
+                }
+            }
+
         }
     }
 
