@@ -18,6 +18,10 @@ data class BSPlaylistVO(
     override val title: String
         get() = getName()
 
+    override fun getMangerFolderId(): Long {
+        return 0
+    }
+
     override fun getAvatar(): String {
         return playlist.playlistImage
     }

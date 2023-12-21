@@ -19,3 +19,6 @@ SELECT * FROM `BSUser`;
 insert:
 INSERT OR REPLACE
 INTO BSUser (id, name, avatar, description, type, admin, curator, playlistUrl, verifiedMapper) VALUES ?;
+
+deleteAll:
+DELETE FROM BSUser;

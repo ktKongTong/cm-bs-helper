@@ -52,3 +52,6 @@ INSERT OR REPLACE INTO BSPlaylist (
     minNps,
     totalDuration
 ) VALUES ?;
+
+deleteAll:
+DELETE FROM BSPlaylist;

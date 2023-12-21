@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS `MapDifficulty` (
 
 selectAll:
 SELECT * FROM `MapDifficulty`;
-
+deleteAll:
+DELETE FROM `MapDifficulty`;
 insert:
 INSERT OR REPLACE
 INTO `MapDifficulty` (

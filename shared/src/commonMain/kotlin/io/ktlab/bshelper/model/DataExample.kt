@@ -118,6 +118,7 @@ val fakeFSMap =
         playlistId = "Playlist123",
         active = true,
         mapId = "Map123",
+        manageFolderId = 1,
     )
 
 // val difficulties: List<MapDifficulty>? = null,

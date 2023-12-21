@@ -57,6 +57,11 @@ selectAllByBasePath:
 SELECT * FROM `FSPlaylist`
 WHERE basePath = ? AND (sync = "SYNCED" OR sync = "SYNCING");
 
+deleteAll:
+DELETE FROM `FSPlaylist`;
+deleteByManageFolderId:
+DELETE FROM `FSPlaylist`
+WHERE manageDirId = ?;
 
 deleteByBasePath:
 DELETE FROM `FSPlaylist`
@@ -68,9 +73,6 @@ WHERE id = ?;
 deleteByIds:
 DELETE FROM `FSPlaylist`
 WHERE id IN ?;
-deleteAll:
-DELETE FROM `FSPlaylist`;
--- DELETE FROM `FSMap`;
 
 deleteAllByBasePath:
 DELETE FROM `FSPlaylist`

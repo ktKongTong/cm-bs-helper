@@ -55,20 +55,24 @@ class ManageFolderRepository(
 
     suspend fun deleteManageFolder(manageFolder:SManageFolder) {
         bsHelperDAO.transaction {
-//            downloaderRepository.removeAllMatch {
-////                it.contains()
-//            }
-
-
+            downloaderRepository.removeAllByManageFolderId(manageFolder.id)
             bsHelperDAO.manageFolderQueries.deleteById(manageFolder.id)
-            // delete all playlist in this manage folder
-            bsHelperDAO.fSPlaylistQueries.deleteByBasePath(manageFolder.path)
-//            bsHelperDAO.fSMapQueries.getAllFSMapByPlaylistId()
-
+            bsHelperDAO.fSMapQueries.deleteAllFSMapByManageFolderId(manageFolder.id)
+            bsHelperDAO.fSPlaylistQueries.deleteByManageFolderId(manageFolder.id)
         }
     }
 
     fun clearAllData() {
-        TODO("Not yet implemented")
+        bsHelperDAO.transaction {
+            downloaderRepository.removeAllMatch { true }
+            bsHelperDAO.manageFolderQueries.deleteAll()
+            bsHelperDAO.fSMapQueries.deleteAllFSMap()
+            bsHelperDAO.fSPlaylistQueries.deleteAll()
+            bsHelperDAO.bSMapVersionQueries.deleteAll()
+            bsHelperDAO.mapDifficultyQueries.deleteAll()
+            bsHelperDAO.bSMapQueries.deleteAll()
+            bsHelperDAO.bSUserQueries.deleteAll()
+            bsHelperDAO.bSPlaylistQueries.deleteAll()
+        }
     }
 }

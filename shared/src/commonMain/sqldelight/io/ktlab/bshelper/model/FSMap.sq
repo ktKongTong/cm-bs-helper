@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS FSMap (
 --     absolute path to playlist
     playlistBasePath TEXT NOT NULL,
     playlistId TEXT NOT NULL,
+    manageFolderId INTEGER NOT NULL,
     active INTEGER AS Boolean NOT NULL DEFAULT 0,
 --     beatsaver
     mapId TEXT NOT NULL,
@@ -43,6 +44,7 @@ FSMap.relativeCoverFilename AS relativeCoverPath,
 FSMap.relativeSongFilename AS relativeSongPath,
 FSMap.relativeInfoFilename AS relativeInfoPath,
 FSMap.playlistBasePath AS playlistBasePath,
+FSMap.manageFolderId AS manageFolderId,
 FSMap.hash AS hash,
 FSMap.playlistId AS playlistId,
 FSMap.active AS active,
@@ -70,8 +72,9 @@ relativeSongFilename,
 relativeInfoFilename,
 dirName,
 playlistBasePath,
-hash,
+manageFolderId,
 playlistId,
+hash,
 active,
 previewStartTime,
 previewDuration,
@@ -100,7 +103,8 @@ AND active = 1;
 deleteAllFSMap:
 DELETE FROM FSMap;
 
-
+deleteAllFSMapByManageFolderId:
+DELETE FROM FSMap WHERE manageFolderId = ?;
 
 deleteFSMapByPlaylistId:
 DELETE FROM FSMap WHERE playlistId = ?;

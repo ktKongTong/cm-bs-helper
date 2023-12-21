@@ -107,7 +107,7 @@ sealed interface IExtractedMapInfo {
             return difficultyDBOList
         }
 
-        fun generateFSMapDBO(playlistId: String): FSMap {
+        fun generateFSMapDBO(playlistId: String,manageFolderId:Long): FSMap {
             return FSMap(
                 hash = hash,
                 name = name,
@@ -127,6 +127,7 @@ sealed interface IExtractedMapInfo {
                 playlistId = playlistId,
                 active = true,
                 mapId = "",
+                manageFolderId=manageFolderId
             )
         }
     }
@@ -156,7 +157,7 @@ sealed interface IExtractedMapInfo {
             return difficultyDBOList
         }
 
-        fun generateFSMapDBO(playlistId: String): FSMap {
+        fun generateFSMapDBO(playlistId: String,manageFolderId:Long): FSMap {
             return FSMap(
                 hash = hash,
                 name = name,
@@ -176,6 +177,7 @@ sealed interface IExtractedMapInfo {
                 playlistId = playlistId,
                 active = true,
                 mapId = mapId,
+                manageFolderId=manageFolderId,
             )
         }
     }
@@ -191,7 +193,7 @@ sealed interface IExtractedMapInfo {
             return emptyList()
         }
 
-        fun generateFSMapDBO(playlistId: String): FSMap {
+        fun generateFSMapDBO(playlistId: String,manageFolderId:Long): FSMap {
 //            when (exception) {
 //                is ScannerException.JSONFileTooLargeException
 //            }
@@ -214,6 +216,7 @@ sealed interface IExtractedMapInfo {
                 playlistId = playlistId,
                 active = true,
                 mapId = mapId ?: "",
+                manageFolderId=manageFolderId
             )
         }
     }

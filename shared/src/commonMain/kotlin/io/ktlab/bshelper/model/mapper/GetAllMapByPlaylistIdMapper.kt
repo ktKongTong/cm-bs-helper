@@ -1,6 +1,11 @@
 package io.ktlab.bshelper.model.mapper
 
-import io.ktlab.bshelper.model.*
+import io.ktlab.bshelper.model.BSMap
+import io.ktlab.bshelper.model.BSMapVersion
+import io.ktlab.bshelper.model.BSUser
+import io.ktlab.bshelper.model.FSMap
+import io.ktlab.bshelper.model.GetAllByPlaylistId
+import io.ktlab.bshelper.model.MapDifficulty
 import io.ktlab.bshelper.model.vo.BsMapWithUploader
 import io.ktlab.bshelper.model.vo.FSMapVO
 
@@ -31,6 +36,7 @@ fun List<GetAllByPlaylistId>.mapToVO(): List<FSMapVO> =
                         bpm = first.bpm,
                         songName = first.songName,
                         active = first.active,
+                        manageFolderId = first.manageFolderId,
                     )
 
                 val difficulties =

@@ -9,6 +9,7 @@ import io.ktlab.bshelper.BuildConfig
 import io.ktlab.bshelper.data.Event
 import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.api.ToolAPI
+import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.ManageFolderRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
@@ -128,6 +129,7 @@ class GlobalViewModel(
     private val playlistRepository: PlaylistRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
     private val manageFolderRepository: ManageFolderRepository,
+    private val downloaderRepository: DownloaderRepository,
     private val toolAPI: ToolAPI,
 ) : ViewModel() {
 
@@ -251,6 +253,9 @@ class GlobalViewModel(
             }
             is GlobalUIEvent.UpdateManageFolder -> {
                 viewModelScope.launch(exceptionHandler) {
+                    viewModelState.value.userPreference.currentManageFolder?.let {
+                        downloaderRepository.pauseAllByManageFolderId(it.id)
+                    }
                     userPreferenceRepository.updateCurrentManageFolder(event.manageFolder)
                 }
             }
@@ -263,6 +268,7 @@ class GlobalViewModel(
             }
             is GlobalUIEvent.ClearAllData -> {
                 viewModelScope.launch(exceptionHandler) {
+                    userPreferenceRepository.updateCurrentManageFolder(null)
                     manageFolderRepository.clearAllData()
                 }
             }

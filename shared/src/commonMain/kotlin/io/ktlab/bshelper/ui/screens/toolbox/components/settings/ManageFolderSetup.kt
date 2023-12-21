@@ -2,6 +2,7 @@ package io.ktlab.bshelper.ui.screens.toolbox.components.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,7 +43,10 @@ fun ManageFolderSetup(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text("修改管理目录", style = MaterialTheme.typography.titleLarge)
+            Column {
+                Text("修改管理目录", style = MaterialTheme.typography.titleLarge)
+                Text("会暂停当前管理目录下的所有下载任务", style = MaterialTheme.typography.bodySmall)
+            }
             Spacer(Modifier.weight(1f,false))
             ChipDropDownSelectorV2(
                 modifier = Modifier.widthIn(min=100.dp),

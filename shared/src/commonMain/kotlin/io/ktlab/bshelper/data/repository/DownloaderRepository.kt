@@ -36,7 +36,8 @@ class DownloaderRepository(
 ) {
 
     private val tmpPath = storageService.getTempDir()
-
+    private val currentManageFolderId
+    get() = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.id
     private val downloader =
         KownDownloader.new()
             .setRetryCount(3)
@@ -70,7 +71,7 @@ class DownloaderRepository(
         val timestamp = Clock.System.now().epochSeconds
         val callback = onCompleteAction(targetPlaylist)
         downloader.newRequestBuilder(map.getDownloadURL(), tmpPath.toString(), "$title.zip")
-            .setTag("single__.__${timestamp}__.__${targetPlaylist.id}")
+            .setTag("single__.__${currentManageFolderId}__.__${timestamp}__.__${targetPlaylist.id}")
             .setRelateEntityId(map.map.mapId)
             .setTitle(title)
             .build()
@@ -82,7 +83,7 @@ class DownloaderRepository(
         mapList: List<BSMapVO>,
     ) {
         val timestamp = Clock.System.now().epochSeconds
-        val tag = "batch__.__${timestamp}__.__${targetPlaylist.id}"
+        val tag = "batch__.__${currentManageFolderId}__.__${timestamp}__.__${targetPlaylist.id}"
         mapList.map {
             val title = it.getFilename()
             downloader.newRequestBuilder(it.getDownloadURL(), tmpPath.toString(), "$title.zip")
@@ -100,8 +101,9 @@ class DownloaderRepository(
         targetPlaylist: IPlaylist,
         mapIdList: List<String>,
     ) {
+        require(currentManageFolderId != null)
         val timestamp = Clock.System.now().epochSeconds
-        val tag = "batch.$timestamp.import.${targetPlaylist.id}"
+        val tag = "batch__.__${currentManageFolderId}__.__${timestamp}__.__import__.__${targetPlaylist.id}"
         mapIdList.chunked(50).map {
             val maps = mapRepository.getBSMapByIds(it).values.toList()
 
@@ -112,7 +114,7 @@ class DownloaderRepository(
 
     suspend fun createPlaylistAndDownloadBSPlaylist(bsPlaylist: BSPlaylistVO) {
         // check if playlist exist
-        val manageDirId = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.id!!
+        val manageDirId = currentManageFolderId!!
         if (playlistRepository.isPlaylistExist(bsPlaylist.title)) {
             val playlistId = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.path!!.toPath().resolve(bsPlaylist.title).toString()
             playlistRepository.getPlaylistById(playlistId,manageDirId).takeIf { it is Result.Success }?.let {
@@ -167,7 +169,7 @@ class DownloaderRepository(
                     val timestamp = Clock.System.now().epochSeconds
 //                val callback = onCompleteAction(targetPlaylist)
                     downloader.newRequestBuilder(it.getDownloadURL(), tmpPath.toString(), "$title.zip")
-                        .setTag("playlist-${bsPlaylist.id}__.__${timestamp}__.__${targetPlaylist.id}")
+                        .setTag("playlist-${bsPlaylist.id}__.__${currentManageFolderId}__.__${timestamp}__.__${targetPlaylist.id}")
                         .setRelateEntityId(it.getID())
                         .setTitle(title)
                         .setDownloadListener(DownloadListener(onCompleted = onCompleteAction(targetPlaylist)))
@@ -175,6 +177,14 @@ class DownloaderRepository(
                 }.let {
                     downloader.enqueue(it)
                 }
+        }
+    }
+
+    fun pauseAllByManageFolderId(id:Long) {
+        downloader.pauseByTagMatched {
+            if (it == null) return@pauseByTagMatched false
+            val manageFolderId = it.split("__.__").getOrNull(1)?.toLongOrNull()
+            return@pauseByTagMatched manageFolderId == id
         }
     }
 
@@ -277,13 +287,22 @@ class DownloaderRepository(
         }
     }
 
-    fun removeAllMatch(tag:(String)->Boolean) {
-//        downloader.removeByTag(tag)
+    fun removeAllMatch(match:(String?)->Boolean) {
+        downloader.removeByTagMatched(match)
+    }
+    fun removeAllByManageFolderId(id:Long) {
+        downloader.removeByTagMatched {
+            if (it == null) return@removeByTagMatched false
+            val manageFolderId = it.split("__.__").getOrNull(1)?.toLongOrNull()
+            return@removeByTagMatched manageFolderId == id
+        }
     }
 
     fun getDownloadTaskFlow(): Flow<List<IDownloadTask>> =
         downloader
-            .getAllDownloadTaskFlow()
+            .getAllDownloadTaskFlowByTagMatched {
+                it != null && it.split("__.__").getOrNull(1)?.toLongOrNull() == currentManageFolderId
+            }
             .map outer@{
                 try {
                     val mapIds = it.mapNotNull { it.relateEntityId }

@@ -29,3 +29,6 @@ INTO `BSMapVersion`
 `previewURL`
 )
 VALUES ?;
+
+deleteAll:
+DELETE FROM `BSMapVersion`;

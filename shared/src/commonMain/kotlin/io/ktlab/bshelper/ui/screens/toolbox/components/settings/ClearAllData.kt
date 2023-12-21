@@ -17,13 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.ui.LocalUIEventHandler
-import io.ktlab.bshelper.ui.LocalUserPreference
 import io.ktlab.bshelper.ui.components.AppDialog
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
 
 @Composable
 fun ClearAllData() {
-    val userPreference = LocalUserPreference.current
     val onUIEvent = LocalUIEventHandler.current
     val openState = remember { mutableStateOf(false) }
     Row(

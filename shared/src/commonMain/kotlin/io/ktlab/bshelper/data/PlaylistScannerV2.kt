@@ -299,14 +299,14 @@ class PlaylistScannerV2(
             is IExtractedMapInfo.LocalMapInfo -> {
                 val diffDBOList = extractedMapInfo.generateMapDifficultyInfo()
                 bsHelperDAO.transaction {
-                    bsHelperDAO.fSMapQueries.insert(extractedMapInfo.generateFSMapDBO(fsPlaylist.value.id))
+                    bsHelperDAO.fSMapQueries.insert(extractedMapInfo.generateFSMapDBO(fsPlaylist.value.id,fsPlaylist.value.manageDirId))
                     diffDBOList.forEach { bsHelperDAO.mapDifficultyQueries.insert(it) }
                 }
             }
             is IExtractedMapInfo.BSMapInfo -> {
                 val diffDBOList = extractedMapInfo.generateMapDifficultyInfo()
                 bsHelperDAO.transaction {
-                    bsHelperDAO.fSMapQueries.insert(extractedMapInfo.generateFSMapDBO(fsPlaylist.value.id))
+                    bsHelperDAO.fSMapQueries.insert(extractedMapInfo.generateFSMapDBO(fsPlaylist.value.id,fsPlaylist.value.manageDirId))
                     diffDBOList.forEach { bsHelperDAO.mapDifficultyQueries.insert(it) }
                 }
                 // send to server to get map info
@@ -316,7 +316,7 @@ class PlaylistScannerV2(
                 when (extractedMapInfo.exception) {
                     is ScannerException.JSONFileTooLargeException -> {
                         bsHelperDAO.transaction {
-                            bsHelperDAO.fSMapQueries.insert(extractedMapInfo.generateFSMapDBO(fsPlaylist.value.id))
+                            bsHelperDAO.fSMapQueries.insert(extractedMapInfo.generateFSMapDBO(fsPlaylist.value.id,fsPlaylist.value.manageDirId))
                         }
                         mapIdOrHashIdChannel.send(extractedMapInfo.hash)
                     }

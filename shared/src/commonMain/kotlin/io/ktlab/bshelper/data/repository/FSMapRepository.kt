@@ -132,6 +132,7 @@ class FSMapRepository(
                         hash = it.versions.firstOrNull()?.version?.hash ?: "",
                         playlistId = targetPlaylist.id,
                         active = false,
+                        manageFolderId = targetPlaylist.getMangerFolderId(),
                     ),
                 )
             }

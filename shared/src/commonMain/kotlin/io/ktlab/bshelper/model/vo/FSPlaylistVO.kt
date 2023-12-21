@@ -50,6 +50,9 @@ data class FSPlaylistVO(
         )
     }
 
+    override fun getMangerFolderId(): Long {
+        return manageDirId
+    }
     override fun getAvatar(): String {
         bsPlaylist?.let {
             return it.owner.avatar

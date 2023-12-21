@@ -5,7 +5,7 @@ import kotlin.time.Duration
 interface IPlaylist {
     val id: String
     val title: String
-
+    fun getMangerFolderId(): Long
     fun getAvatar(): String
 
     fun getName(): String
