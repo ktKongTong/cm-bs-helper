@@ -94,6 +94,9 @@ WHERE mapId = ? AND playlistId = ?;
 getAllFSMapId:
 SELECT mapId,playlistId FROM FSMap WHERE active = 1;
 
+getAllFSMapIdByManageFolderId:
+SELECT mapId,playlistId FROM FSMap WHERE active = 1 AND manageFolderId = ?;
+
 moveFSMapToPlaylist:
 UPDATE FSMap
 SET playlistId = ?,playlistBasePath = ?

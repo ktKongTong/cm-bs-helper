@@ -18,8 +18,10 @@ import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -31,8 +33,7 @@ import moe.tlaster.precompose.viewmodel.viewModelScope
 data class ToolboxUiState(
     val isLoading: Boolean,
     val scanState: ScanStateV2,
-    val downloadTasks: List<IDownloadTask> = emptyList(),
-
+    val downloadTaskFlow: Flow<List<IDownloadTask>>,
     val userPreference: UserPreferenceV2,
     val manageDirs: List<SManageFolder>
 )
@@ -41,6 +42,7 @@ data class ToolboxViewModelState(
     val isLoading: Boolean = false,
     val scanState: ScanStateV2 = ScanStateV2(),
     val downloadTasks: List<IDownloadTask> = emptyList(),
+    val downloadTaskFlow: Flow<List<IDownloadTask>> = emptyFlow(),
     val userPreference: UserPreferenceV2,
     val manageDirs: List<SManageFolder>
 ) {
@@ -48,7 +50,7 @@ data class ToolboxViewModelState(
         ToolboxUiState(
             isLoading = isLoading,
             scanState = scanState,
-            downloadTasks = downloadTasks,
+            downloadTaskFlow = downloadTaskFlow,
             userPreference = userPreference,
             manageDirs = manageDirs,
         )
@@ -77,6 +79,19 @@ class ToolboxViewModel(
     init {
         logger.debug { "init ToolboxViewModel" }
         viewModelScope.launch { EventBus.subscribe<ToolboxUIEvent> { dispatchUiEvents(it) } }
+
+        viewModelScope.launch {
+            userPreferenceRepository.getUserPreference().flowOn(Dispatchers.IO)
+                .collect {
+                    viewModelState.update { vmState ->
+                        vmState.copy(
+                            userPreference = it,
+                            downloadTaskFlow = downloaderRepository.getDownloadTaskFlow().flowOn(Dispatchers.IO),
+                        )
+                    }
+                }
+        }
+
         viewModelScope.observeDownloadTasks()
         viewModelScope.launch {
             playlistRepository.getAllManageFolder().collect {

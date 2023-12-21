@@ -178,14 +178,22 @@ class FSMapRepository(
             .asFlow()
             .mapToList(Dispatchers.IO)
             .map {
-
                 it.map { item -> Pair(item.playlistId, item.mapId) }.toSet()
             }
             .catch {
-//            Log()
                 emit(setOf())
             }
-
+    fun getLocalMapIdSetByManageFolderId(manageFolderId:Long): Flow<Set<Pair<String, String>>> =
+        bsHelperDAO.fSMapQueries
+            .getAllFSMapIdByManageFolderId(manageFolderId)
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+            .map {
+                it.map { item -> Pair(item.playlistId, item.mapId) }.toSet()
+            }
+            .catch {
+                emit(setOf())
+            }
     fun getLocalMapIdSetByPlaylist(playlistId: String): Flow<Set<Pair<String, String>>> =
         bsHelperDAO.fSMapQueries
             .getAllFSMapId()
@@ -195,7 +203,6 @@ class FSMapRepository(
                 it.map { item -> Pair(item.playlistId, item.mapId) }.toSet()
             }
             .catch {
-//            Log()
                 emit(setOf())
             }
 

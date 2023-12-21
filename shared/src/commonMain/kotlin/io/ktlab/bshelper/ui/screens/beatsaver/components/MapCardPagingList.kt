@@ -26,7 +26,6 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -83,7 +82,6 @@ fun MapCardPagingList(
                     state = state,
                 ) {
                     // https://issuetracker.google.com/issues/259686541
-                    // d
                     items(
                         count = mapPagingItems.itemCount,
                         key = mapPagingItems.itemKey { (it as BSMapVO).versions.first().version.hash },
@@ -92,11 +90,9 @@ fun MapCardPagingList(
                         val map = mapPagingItems[index]
 //                    require(map != null){ "map should not be null" }
                         if (map != null) {
-                            val local =
-                                remember {
-                                    localState.targetPlaylist != null &&
-                                        localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID())
-                                }
+                            val local = localState.targetPlaylist != null &&
+                                    localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID())
+
                             val selectablePlaylists = localState.selectableLocalPlaylistFlow.collectAsState(emptyList())
                             BSMapCard(
                                 modifier = Modifier.fillMaxSize(),
