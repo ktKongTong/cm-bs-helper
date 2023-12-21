@@ -2,9 +2,10 @@ package io.ktlab.bshelper.ui.event
 
 import io.ktlab.bshelper.model.ImageSource
 import io.ktlab.bshelper.model.download.IDownloadTask
+import io.ktlab.bshelper.model.enums.GameType
 
 sealed class ToolboxUIEvent : UIEvent() {
-    data class ScanPlaylist(val dirPath: String) : ToolboxUIEvent()
+    data class ScanPlaylist(val dirPath: String,val gameType: GameType) : ToolboxUIEvent()
 
     data object ClearScanState : ToolboxUIEvent()
 

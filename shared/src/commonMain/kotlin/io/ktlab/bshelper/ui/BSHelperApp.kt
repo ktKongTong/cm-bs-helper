@@ -45,13 +45,13 @@ import io.ktlab.bshelper.ui.components.BSHelperSnackbarHost
 import io.ktlab.bshelper.ui.components.MediaPlayer
 import io.ktlab.bshelper.ui.components.SnackBarShown
 import io.ktlab.bshelper.ui.event.EventBus
+import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.route.BSHelperDestinations
 import io.ktlab.bshelper.ui.route.BSHelperNavGraph
 import io.ktlab.bshelper.ui.route.BSHelperNavigationActions
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
 import io.ktlab.bshelper.ui.viewmodel.ErrorDialogState
-import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.viewmodel.GlobalViewModel
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.PreComposeApp
@@ -120,6 +120,8 @@ fun BSHelperApp() {
                                         currentRoute = currentRoute,
                                         navigateAction = navigateAction,
                                         backAction = { },
+                                        currentManageFolder = globalUiState.userPreference.currentManageFolder,
+                                        manageFolders = globalUiState.manageDirs,
                                         header = {
                                             MediaPlayer(globalUiState.currentMedia, globalUiState.currentMediaState)
                                         },

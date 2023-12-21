@@ -9,10 +9,10 @@ import io.ktlab.bshelper.model.mapper.convertToBSMapDBO
 import io.ktlab.bshelper.model.mapper.convertToBSMapVersionDBO
 import io.ktlab.bshelper.model.mapper.convertToMapDifficulties
 import io.ktlab.bshelper.model.scanner.IExtractedMapInfo
-import io.ktlab.bshelper.model.scanner.ScannerException
 import io.ktlab.bshelper.model.scanner.PlaylistScanStateV2
 import io.ktlab.bshelper.model.scanner.ScanStateEventEnum
 import io.ktlab.bshelper.model.scanner.ScanStateV2
+import io.ktlab.bshelper.model.scanner.ScannerException
 import io.ktlab.bshelper.utils.BSMapUtils
 import io.ktlab.bshelper.utils.newFSPlaylist
 import kotlinx.coroutines.CoroutineScope
@@ -112,6 +112,7 @@ class PlaylistScannerV2(
 
     suspend fun scanSinglePlaylist(
         basePath: String,
+        manageDirId: Long,
         topPlaylist: Boolean = false,
     ) { //    : Flow<ScanStateV2> = flow
         val playlist = bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectByIds(listOf(basePath)).executeAsOneOrNull()
@@ -156,9 +157,9 @@ class PlaylistScannerV2(
                     .filter { !BSMapUtils.checkIfBSMap(it) }
             addedPlaylist.forEach {
                 val fsPlaylist =
-                    MutableStateFlow(newFSPlaylist(basePath, name = it.name).copy(sync = SyncStateEnum.SYNCING, syncTimestamp = 0L))
+                    MutableStateFlow(newFSPlaylist(basePath, manageDirId, name = it.name).copy(sync = SyncStateEnum.SYNCING, syncTimestamp = 0L))
                 bsHelperDAO.fSPlaylistQueries.insertAnyway(fsPlaylist.value)
-                scanSinglePlaylist(fsPlaylist.value.basePath)
+                scanSinglePlaylist(fsPlaylist.value.basePath, manageDirId)
             }
         }
         // remove not exist map
@@ -168,7 +169,7 @@ class PlaylistScannerV2(
             }
         bsHelperDAO.fSMapQueries.deleteFSMapByMapPathsAndPlaylistId(deletedMap.map { it.dirName }, playlist.playlist_id)
         scanStateV2.update { it.copy(state = ScanStateEventEnum.SCANNING, totalDirCount = allDirs.size) }
-        val fsPlaylist = MutableStateFlow(newFSPlaylist(basePath, name = playlist.playlist_name, topPlaylist = topPlaylist))
+        val fsPlaylist = MutableStateFlow(newFSPlaylist(basePath, name = playlist.playlist_name, manageDirId = manageDirId, topPlaylist = topPlaylist))
         val playlistScanStateV2 =
             MutableStateFlow(
                 PlaylistScanStateV2(
@@ -216,14 +217,15 @@ class PlaylistScannerV2(
         bsHelperDAO.fSPlaylistQueries.updateSyncState(SyncStateEnum.SYNCED, Clock.System.now().epochSeconds, basePath)
     }
 
-    fun scanPlaylist(basePath: String): Flow<ScanStateV2> =
+    fun scanPlaylist(basePath: String, manageDirId:Long): Flow<ScanStateV2> =
         flow {
+            // createManageDirIdFirst
             val manageDir = basePath.toPath()
             val playlistDirs = FileSystem.SYSTEM.list(manageDir)
             scanStateV2.update { it.copy(state = ScanStateEventEnum.SCANNING, totalDirCount = playlistDirs.size) }
             emit(scanStateV2.value)
             // create a custom playlist if not exist
-            val playlist = MutableStateFlow(newFSPlaylist(manageDir.toString(), name = "Custom Top Playlist", topPlaylist = true))
+            val playlist = MutableStateFlow(newFSPlaylist(manageDir.toString(), name = manageDir.name, manageDirId = manageDirId, topPlaylist = true))
             val customMapInfos = mutableListOf<IExtractedMapInfo>()
             playlistDirs.map { path ->
                 scanStateV2.update { it.copy(scannedDirCount = it.scannedDirCount + 1, currentPlaylistDir = path.name) }
@@ -243,7 +245,7 @@ class PlaylistScannerV2(
                 logger.debug { "scanPlaylist: ${path.name} is a playlist" }
                 val subPlaylistPath = basePath.toPath().resolve(path.name)
 
-                val fsPlaylist = MutableStateFlow(newFSPlaylist(subPlaylistPath.toString(), name = path.name))
+                val fsPlaylist = MutableStateFlow(newFSPlaylist(subPlaylistPath.toString(),manageDirId, name = path.name))
                 val files = FileSystem.SYSTEM.listOrNull(path)
                 val playlistScanStateV2 = MutableStateFlow(
                         PlaylistScanStateV2(

@@ -3,6 +3,7 @@ package io.ktlab.bshelper.data.repository
 import androidx.datastore.core.DataStore
 import io.ktlab.bshelper.model.BSAPIProvider
 import io.ktlab.bshelper.model.ImageSource
+import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.model.ThemeMode
 import io.ktlab.bshelper.model.UserPreferenceV2
 import kotlinx.coroutines.CoroutineScope
@@ -34,20 +35,15 @@ class UserPreferenceRepository(
             }
         }
     }
-    init {
-        dataStore.data
-        preferenceFlow
-    }
+
     fun getUserPreference(): Flow<UserPreferenceV2> = preferenceFlow
 
     fun getCurrentUserPreference(): UserPreferenceV2 {
         return _preference
     }
-
-    suspend fun updateCurrentManageDir(currentManageDir: String) {
-        dataStore.updateData { it.copy(currentManageDir = currentManageDir) }
+    suspend fun updateCurrentManageFolder(currentManageFolder: SManageFolder?) {
+        dataStore.updateData { it.copy(currentManageFolder = currentManageFolder) }
     }
-
     suspend fun updateThemeColor(themeColor: Long) {
         dataStore.updateData { it.copy(themeColor = themeColor) }
     }

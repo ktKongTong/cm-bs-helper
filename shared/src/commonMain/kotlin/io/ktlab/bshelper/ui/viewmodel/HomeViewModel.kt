@@ -8,7 +8,7 @@ import io.ktlab.bshelper.data.repository.UserPreferenceRepository
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
-import io.ktlab.bshelper.model.UserPreference
+import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.enums.SortKey
 import io.ktlab.bshelper.model.enums.SortType
 import io.ktlab.bshelper.model.errorMsg
@@ -34,7 +34,7 @@ import okio.Path.Companion.toPath
 data class HomeViewModelState(
     val playlists: List<IPlaylist> = emptyList(),
     val selectedPlaylistId: String? = null,
-    val userPreferenceState: UserPreference,
+    val userPreferenceState: UserPreferenceV2,
     val selectedMapId: String? = null,
     val isPlaylistOpen: Boolean = false,
     val mapListState: MapListState,
@@ -101,7 +101,7 @@ class HomeViewModel(
             HomeViewModelState(
                 isLoading = true,
                 isPlaylistOpen = false,
-                userPreferenceState = UserPreference.getDefaultUserPreference(),
+                userPreferenceState = UserPreferenceV2.getDefaultUserPreference(),
                 mapListState =
                     MapListState(
                         isMapOpen = false,
@@ -124,6 +124,15 @@ class HomeViewModel(
 
     init {
         viewModelScope.launch { EventBus.subscribe<HomeUIEvent> { dispatchUiEvents(it) } }
+
+        viewModelScope.launch {
+            userPreferenceRepository.getUserPreference().flowOn(Dispatchers.IO).collect {
+                if (it.currentManageFolder != viewModelState.value.userPreferenceState.currentManageFolder) {
+                    refreshPlayLists()
+                }
+                viewModelState.update { state -> state.copy(userPreferenceState = it) }
+            }
+        }
         refreshPlayLists()
     }
 
@@ -138,8 +147,15 @@ class HomeViewModel(
 //                }
             }
             is HomeUIEvent.SyncPlaylist -> {
+                val id = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.id
+                if (id == null) {
+                    viewModelScope.launch {
+                        EventBus.publish(GlobalUIEvent.ShowSnackBar("意外错误，ManageDirId 不应为空，可能因修改配置文件所导致"))
+                    }
+                    return
+                }
                 viewModelScope.launch(Dispatchers.IO) {
-                    playlistRepository.scanSinglePlaylist(event.targetPlaylist.getTargetPath())
+                    playlistRepository.scanSinglePlaylist(event.targetPlaylist.getTargetPath(),id)
                 }
             }
             is HomeUIEvent.PlaylistTapped -> {
@@ -203,17 +219,13 @@ class HomeViewModel(
     }
 
     private fun refreshPlayLists(managerDir: String = "") {
-        val managerPath = managerDir.ifEmpty { viewModelState.value.userPreferenceState.currentManageDir }
+        val manageDirId = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.id
+        if (manageDirId == null) {
+            return
+        }
         viewModelState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            playlistRepository
-                .let {
-                    if (managerPath.isEmpty()) {
-                        it.getAllPlaylist()
-                    } else {
-                        it.getAllPlaylistByManageDir(managerPath)
-                    }
-                }
+            playlistRepository.getAllPlaylistByManageDirId(manageDirId)
                 .flowOn(Dispatchers.IO)
                 .collect {
                     when (it) {
@@ -227,7 +239,7 @@ class HomeViewModel(
                                 GlobalUIEvent.ShowSnackBar(
                                     message = "error loading playlists",
                                     actionLabel = "retry",
-                                    action = { refreshPlayLists(managerPath) },
+                                    action = { refreshPlayLists() },
                                 ),
                             )
                         }

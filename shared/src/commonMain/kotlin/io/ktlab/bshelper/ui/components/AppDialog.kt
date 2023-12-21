@@ -15,9 +15,13 @@ import androidx.compose.ui.window.DialogProperties
 fun AppDialog(
     title: String,
     text: String = "",
-    onConfirm: () -> Unit = {},
+    onConfirm: (() -> Unit)? = null,
     onCancel: (() -> Unit)? = null,
     openState: MutableState<Boolean>,
+    properties:DialogProperties = DialogProperties(
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
+    ),
     content: @Composable () -> Unit = {},
 ) {
     if (openState.value) {
@@ -34,11 +38,13 @@ fun AppDialog(
                 }
             },
             confirmButton = {
-                TextButton(onClick = {
-                    openState.value = false
-                    onConfirm()
-                }) {
-                    Text(text = "确定")
+                if(onConfirm!=null) {
+                    TextButton(onClick = {
+                        openState.value = false
+                        onConfirm()
+                    }) {
+                        Text(text = "确定")
+                    }
                 }
             },
             title = {
@@ -56,11 +62,7 @@ fun AppDialog(
                     content()
                 }
             },
-            properties =
-                DialogProperties(
-                    dismissOnBackPress = true,
-                    dismissOnClickOutside = true,
-                ),
+            properties = properties,
         )
     }
 }

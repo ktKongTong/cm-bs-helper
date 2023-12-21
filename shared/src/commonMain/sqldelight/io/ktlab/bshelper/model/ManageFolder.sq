@@ -1,20 +1,27 @@
 import io.ktlab.bshelper.model.enums.GameType;
 import kotlinx.datetime.LocalDateTime;
+import kotlin.Boolean;
 CREATE TABLE IF NOT EXISTS ManageFolder (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     path TEXT NOT NULL,
     gameType TEXT AS GameType NOT NULL,
-    createdAt TEXT AS LocalDateTime,
-    updatedAt TEXT AS LocalDateTime
+    active INTEGER AS Boolean NOT NULL DEFAULT 0,
+    createdAt TEXT AS LocalDateTime NOT NULL,
+    updatedAt TEXT AS LocalDateTime NOT NULL
 );
 
 insertAnyWay:
-INSERT OR REPLACE INTO ManageFolder ( name, path, gameType, createdAt, updatedAt) VALUES ?;
+INSERT OR REPLACE INTO ManageFolder (id, name, path, gameType, createdAt, updatedAt) VALUES ?;
 
+updateActiveById:
+UPDATE ManageFolder SET active = ? WHERE id = ?;
 
 selectAll:
-SELECT * FROM ManageFolder;
+SELECT * FROM ManageFolder WHERE active = 1;
+
+selectByPath:
+SELECT * FROM ManageFolder WHERE path = ?;
 
 deleteById:
 DELETE FROM ManageFolder WHERE id = ?;

@@ -39,8 +39,7 @@ sealed interface BSAPIProvider {
 
 @Serializable
 data class UserPreferenceV2(
-    val currentManageDir: String = "",
-    val currentManageDirId: Long? = null,
+    val currentManageFolder: SManageFolder? = null,
     val themeColor:Long = BuildConfig.THEME_COLOR,
     val themeMode: ThemeMode,
     val imageSource: ImageSource,

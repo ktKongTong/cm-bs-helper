@@ -2,6 +2,7 @@ package io.ktlab.bshelper.ui.event
 
 import androidx.compose.material3.SnackbarDuration
 import io.ktlab.bshelper.model.FSPlaylist
+import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.ui.viewmodel.IMedia
 import io.ktlab.bshelper.ui.viewmodel.MediaEvent
 
@@ -26,4 +27,10 @@ sealed class GlobalUIEvent : UIEvent() {
     data class OnMediaEvent(val event: MediaEvent) : GlobalUIEvent()
 
     data class CreatePlaylist(val playlist: FSPlaylist?) : GlobalUIEvent()
+
+    data class UpdateManageFolder(val manageFolder: SManageFolder) : GlobalUIEvent()
+
+    data class DeleteManageFolder(val manageFolder: SManageFolder) : GlobalUIEvent()
+
+    data object ClearAllData : GlobalUIEvent()
 }

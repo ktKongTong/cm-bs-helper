@@ -14,31 +14,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.event.ToolboxUIEvent
 
 @Composable
 fun DirectoryChooser(
     targetPath: String,
+    enabled: Boolean = true,
     onSelectTargetPath: (String) -> Unit = {},
+    supportingText: @Composable () -> Unit = {},
     onUIEvent: (UIEvent) -> Unit,
 ) {
     var showDirPicker by remember { mutableStateOf(false) }
     OutlinedTextField(
         value = targetPath,
         onValueChange = { },
-        enabled = false,
+        enabled = enabled,
         label = { Text(text = "目标文件夹") },
         trailingIcon = {
             TextButton(onClick = { showDirPicker = true }) {
                 Text(text = "选择文件夹")
             }
         },
+        supportingText = supportingText
     )
     if (showDirPicker) {
         BSDirectoryPicker(showDirPicker) { path ->
             showDirPicker = false
             if (path != null) {
-                onUIEvent(ToolboxUIEvent.UpdateManageDir(path))
+//                onUIEvent(ToolboxUIEvent.UpdateManageDir(path))
                 onSelectTargetPath(path)
             }
         }

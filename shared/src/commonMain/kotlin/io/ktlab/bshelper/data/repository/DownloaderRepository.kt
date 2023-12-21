@@ -112,9 +112,10 @@ class DownloaderRepository(
 
     suspend fun createPlaylistAndDownloadBSPlaylist(bsPlaylist: BSPlaylistVO) {
         // check if playlist exist
+        val manageDirId = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.id!!
         if (playlistRepository.isPlaylistExist(bsPlaylist.title)) {
-            val playlistId = userPreferenceRepository.getCurrentUserPreference().currentManageDir.toPath().resolve(bsPlaylist.title).toString()
-            playlistRepository.getPlaylistById(playlistId).takeIf { it is Result.Success }?.let {
+            val playlistId = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.path!!.toPath().resolve(bsPlaylist.title).toString()
+            playlistRepository.getPlaylistById(playlistId,manageDirId).takeIf { it is Result.Success }?.let {
                 val playlist = (it as Result.Success).data
                 runtimeEventFlow.sendEvent(Event.MessageEvent("playlist ${playlist.title} exist, start download"))
                 downloadBSPlaylist(playlist, bsPlaylist)
@@ -124,7 +125,7 @@ class DownloaderRepository(
         val res = playlistRepository.createNewPlaylist(bsPlaylist.playlist.name, bsPlaylist.playlist.id)
         when (res) {
             is Result.Success -> {
-                when (val playlist = playlistRepository.getPlaylistById(res.data.id)) {
+                when (val playlist = playlistRepository.getPlaylistById(res.data.id,manageDirId)) {
                     is Result.Success -> {
                         runtimeEventFlow.sendEvent(Event.MessageEvent("create playlist ${playlist.data.title} success"))
                         downloadBSPlaylist(playlist.data, bsPlaylist)
@@ -178,13 +179,14 @@ class DownloaderRepository(
     }
 
     fun retry(downloadTask: IDownloadTask) {
+        val manageDirId = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.id!!
         when (downloadTask) {
             is IDownloadTask.MapDownloadTask -> {
                 val tag = downloadTask.downloadTaskModel.tag
                 tag?.split("__.__")?.lastOrNull()
 
                     ?.let {
-                        playlistRepository.getPlaylistById(it).takeIf { it is Result.Success }?.let {
+                        playlistRepository.getPlaylistById(it,manageDirId).takeIf { it is Result.Success }?.let {
                             val playlist = (it as Result.Success).data
                             downloader.retryById(
                                 downloadTask.downloadTaskModel.taskId,
@@ -197,7 +199,7 @@ class DownloaderRepository(
                 downloadTask.tag.split("__.__").lastOrNull()
 
                     ?.let {
-                        playlistRepository.getPlaylistById(it).takeIf { it is Result.Success }?.let {
+                        playlistRepository.getPlaylistById(it,manageDirId).takeIf { it is Result.Success }?.let {
                             val playlist = (it as Result.Success).data
                             downloader.retryByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(playlist)))
                         }
@@ -207,7 +209,7 @@ class DownloaderRepository(
                 downloadTask.tag.split("__.__").lastOrNull()
 
                     ?.let {
-                        playlistRepository.getPlaylistById(it).takeIf { it is Result.Success }?.let {
+                        playlistRepository.getPlaylistById(it,manageDirId).takeIf { it is Result.Success }?.let {
                             val playlist = (it as Result.Success).data
                             downloader.retryByTag(downloadTask.tag, DownloadListener(onCompleted = onCompleteAction(playlist)))
                         }
@@ -273,6 +275,10 @@ class DownloaderRepository(
                 downloader.removeByTag(downloadTask.tag)
             }
         }
+    }
+
+    fun removeAllMatch(tag:(String)->Boolean) {
+//        downloader.removeByTag(tag)
     }
 
     fun getDownloadTaskFlow(): Flow<List<IDownloadTask>> =

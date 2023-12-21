@@ -10,6 +10,7 @@ import io.ktlab.bshelper.data.repository.UserPreferenceRepository
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.IPlaylist
 import io.ktlab.bshelper.model.Result
+import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.dto.BSUserWithStatsDTO
 import io.ktlab.bshelper.model.dto.request.MapFilterParam
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -41,7 +43,7 @@ import moe.tlaster.precompose.viewmodel.viewModelScope
 private val logger = KotlinLogging.logger {}
 data class LocalState(
     val localMapIdSet: Set<Pair<String, String>> = emptySet(),
-    val selectableLocalPlaylists: List<IPlaylist> = emptyList(),
+    val selectableLocalPlaylistFlow: Flow<List<IPlaylist>> = emptyFlow(),
     val targetPlaylist: IPlaylist? = null,
 )
 
@@ -160,8 +162,6 @@ data class BeatSaverViewModelState(
     //
     val tabType: TabType = TabType.Map,
     val isLoading: Boolean = false,
-    // 本地歌单
-    val localPlaylists: List<IPlaylist> = emptyList(),
     // 本地MapID
     val localMapIdSet: Set<Pair<String, String>> = emptySet(),
     val localMapIdFlow: Flow<Set<Pair<String, String>>>,
@@ -176,7 +176,7 @@ data class BeatSaverViewModelState(
     val playlistDetailMapFlow: Flow<PagingData<IMap>>? = null,
     val downloadTaskFlow: Flow<List<IDownloadTask>>? = null,
     //    可选择的目标歌单
-    val selectableLocalPlaylists: List<IPlaylist>,
+    val selectableLocalPlaylistFlow: Flow<List<IPlaylist>>,
     //    已选择的目标歌单
     val selectedFSPlaylist: IPlaylist? = null,
     val multiSelectMode: Boolean = false,
@@ -199,7 +199,7 @@ data class BeatSaverViewModelState(
             localState =
                 LocalState(
                     localMapIdSet = localMapIdSet,
-                    selectableLocalPlaylists = selectableLocalPlaylists,
+                    selectableLocalPlaylistFlow = selectableLocalPlaylistFlow,
                     targetPlaylist = selectedFSPlaylist,
                 ),
             downloadTaskFlow = downloadTaskFlow ?: emptyFlow(),
@@ -295,7 +295,7 @@ class BeatSaverViewModel(
                 downloadTaskFlow = downloaderRepository.getDownloadTaskFlow().flowOn(Dispatchers.IO),
                 localMapIdSet = emptySet(),
                 localMapIdFlow = emptyFlow(),
-                selectableLocalPlaylists = emptyList(),
+                selectableLocalPlaylistFlow = emptyFlow(),
             ),
         )
     val uiState =
@@ -306,11 +306,29 @@ class BeatSaverViewModel(
                 SharingStarted.Eagerly,
                 viewModelState.value.toUiState(),
             )
-
+    private var manageFolder :SManageFolder? = null
     init {
         viewModelScope.launch { EventBus.subscribe<BeatSaverUIEvent> { dispatchUiEvents(it) } }
         viewModelScope.listenLocalMapFlow()
-        viewModelScope.listenLocalPlaylistFlow()
+
+        viewModelScope.launch {
+            userPreferenceRepository.getUserPreference()
+            .filter {
+                logger.debug { it.currentManageFolder }
+                it.currentManageFolder != manageFolder
+            }
+            .collect{prefer ->
+                if (prefer.currentManageFolder == null) return@collect
+                manageFolder = prefer.currentManageFolder
+                viewModelState.update {
+                    it.copy(
+                        selectableLocalPlaylistFlow = playlistRepository.getAllPlaylistByManageDirId(prefer.currentManageFolder.id).map { it.successOr(emptyList()) }.flowOn(Dispatchers.IO),
+                    )
+                }
+            }
+        }
+
+//        viewModelScope.listenLocalPlaylistFlow()
     }
 
     private fun CoroutineScope.listenLocalMapFlow() {
@@ -329,7 +347,9 @@ class BeatSaverViewModel(
     }
 
     private fun CoroutineScope.listenLocalPlaylistFlow() {
+
         launch {
+
             playlistRepository.getAllPlaylist()
                 .flowOn(Dispatchers.IO)
                 .collect { res ->
@@ -338,7 +358,7 @@ class BeatSaverViewModel(
                         is Result.Success -> {
                             viewModelState.update {
                                 it.copy(
-                                    selectableLocalPlaylists = res.successOr(emptyList()),
+//                                    selectableLocalPlaylists = res.successOr(emptyList()),
                                     isLoading = false,
                                 )
                             }

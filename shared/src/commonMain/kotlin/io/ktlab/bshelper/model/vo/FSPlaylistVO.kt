@@ -32,6 +32,8 @@ data class FSPlaylistVO(
     override val id: String,
     override val title: String,
     val bsPlaylist: BSPlaylistVO?,
+    val manageDirId:Long,
+    val topPlaylist: Boolean,
 ) : IPlaylist {
     fun toFSPlaylist(): FSPlaylist {
         return FSPlaylist(
@@ -43,7 +45,8 @@ data class FSPlaylistVO(
             syncTimestamp = syncTimestamp,
             basePath = basePath,
             bsPlaylistId = bsPlaylistId,
-            topPlaylist = false,
+            manageDirId = manageDirId,
+            topPlaylist = topPlaylist,
         )
     }
 
@@ -140,6 +143,8 @@ data class FSPlaylistVO(
                 maxNps = dbo.max_nps,
                 avgNps = dbo.avg_nps,
                 bsPlaylist = buildBSPlaylist(dbo),
+                topPlaylist = dbo.playlist_topPlaylist,
+                manageDirId = dbo.manageDirId,
             )
         }
 

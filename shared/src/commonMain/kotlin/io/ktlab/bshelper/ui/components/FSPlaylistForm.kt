@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.FSPlaylist
+import io.ktlab.bshelper.ui.LocalUserPreference
 import io.ktlab.bshelper.ui.components.chiptextfield.core.Chip
 import io.ktlab.bshelper.ui.components.chiptextfield.core.rememberChipTextFieldState
 import io.ktlab.bshelper.ui.components.chiptextfield.m3.OutlinedChipTextField
@@ -45,13 +46,14 @@ fun FSPlaylistFormV2(
     var description by remember { mutableStateOf(fsPlaylist?.description ?: "") }
     var customTags by remember { mutableStateOf(fsPlaylist?.customTags?.split(",")?.toSet() ?: setOf()) }
     var name by remember { mutableStateOf(fsPlaylist?.name ?: "") }
+    val userPreference = LocalUserPreference.current
     AppDialog(
         title = fsPlaylist?.let { "编辑歌单信息" } ?: "新建歌单",
         onConfirm = {
             onSubmitFSPlaylist(
                 fsPlaylist
                     ?.copy(name = name, customTags = customTags.joinToString(","), description = description)
-                    ?: newFSPlaylist(name = name, customTags = customTags.joinToString(","), description = description),
+                    ?: newFSPlaylist(name = name, customTags = customTags.joinToString(","), description = description, manageDirId = userPreference.currentManageFolder?.id!!),
             )
         },
         openState = openState,

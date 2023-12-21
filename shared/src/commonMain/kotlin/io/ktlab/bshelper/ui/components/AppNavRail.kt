@@ -13,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.icerock.moko.resources.compose.stringResource
+import io.ktlab.bshelper.model.SManageFolder
+import io.ktlab.bshelper.ui.LocalUIEventHandler
 import io.ktlab.bshelper.ui.route.BSHelperDestinations
 import io.ktlab.bshelper.MR as R
 
@@ -20,10 +22,13 @@ import io.ktlab.bshelper.MR as R
 fun AppNavRail(
     currentRoute: String,
     navigateAction: (String) -> Unit,
+    currentManageFolder: SManageFolder? = null,
+    manageFolders:List<SManageFolder>,
     backAction: () -> Unit = {},
     modifier: Modifier = Modifier,
     header: @Composable ColumnScope.() -> Unit = {},
 ) {
+    val onUIEvent = LocalUIEventHandler.current
     NavigationRail(
         header = header,
         modifier = modifier,
@@ -51,6 +56,16 @@ fun AppNavRail(
             alwaysShowLabel = false,
         )
         Spacer(Modifier.weight(1f))
+//        val list = listOf(GameType.LightBand, GameType.BeatSaberLike).map { it.human }
+//        if(currentManageFolder != null) {
+//            ChipDropDownSelector(
+//                options = manageFolders.map { it.name },
+//                selectedOption =  currentManageFolder.name,
+//                onSelectedOptionChange = {str->
+//                    manageFolders.find { it.name == str }?.let { onUIEvent(GlobalUIEvent.UpdateManageFolder(it)) }
+//                }
+//            )
+//        }
     }
 }
 

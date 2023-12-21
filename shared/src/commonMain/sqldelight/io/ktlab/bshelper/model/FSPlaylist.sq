@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `FSPlaylist` (
     basePath TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT DEFAULT NULL,
+    manageDirId INTEGER NOT NULL,
     topPlaylist INTEGER AS Boolean NOT NULL DEFAULT 0,
     customTags TEXT DEFAULT NULL,
     bsPlaylistId Integer AS Int DEFAULT NULL,
@@ -21,6 +22,8 @@ INSERT INTO `FSPlaylist` (
     id,
     name,
     description,
+    manageDirId,
+    topPlaylist,
     bsPlaylistId,
     basePath,
     sync,
@@ -32,11 +35,18 @@ INSERT OR REPLACE INTO `FSPlaylist` (
     id,
     name,
     description,
+    manageDirId,
+    topPlaylist,
     bsPlaylistId,
     basePath,
     sync,
     syncTimestamp
 ) VALUES ?;
+
+selectByIdsAndManageDirId:
+SELECT *
+FROM FSPlaylist
+WHERE id IN ? AND manageDirId = ?;
 
 selectByIds:
 SELECT *

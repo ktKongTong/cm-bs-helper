@@ -38,10 +38,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.ui.LocalUIEventHandler
 import io.ktlab.bshelper.ui.components.DropDownPlaylistSelectorV2
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapDetail
 import io.ktlab.bshelper.ui.screens.beatsaver.components.BSMapperDetail
 import io.ktlab.bshelper.ui.screens.beatsaver.components.TextTabs
-import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 import io.ktlab.bshelper.ui.viewmodel.BeatSaverViewModel
 import io.ktlab.bshelper.ui.viewmodel.TabType
 import moe.tlaster.precompose.koin.koinViewModel
@@ -83,10 +83,11 @@ fun BeatSaverRoute(
                             .padding(8.dp),
                         verticalArrangement = Arrangement.Center,
                     ) {
+                        val selectablePlaylists = uiState.localState.selectableLocalPlaylistFlow.collectAsState(emptyList())
                         DropDownPlaylistSelectorV2(
                             onUIEvent = onUIEvent,
                             modifier = Modifier.padding(8.dp),
-                            selectablePlaylists = uiState.localState.selectableLocalPlaylists,
+                            selectablePlaylists = selectablePlaylists.value,
                             selectedIPlaylist = uiState.localState.targetPlaylist,
                             onSelectedPlaylist = { onUIEvent(BeatSaverUIEvent.ChangeTargetPlaylist(it)) },
                         )

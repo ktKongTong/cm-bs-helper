@@ -4,7 +4,12 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
+import io.ktlab.bshelper.model.Result
+import io.ktlab.bshelper.model.SManageFolder
+import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.download.IDownloadTask
+import io.ktlab.bshelper.model.enums.GameType
+import io.ktlab.bshelper.model.scanner.ScanStateEventEnum
 import io.ktlab.bshelper.model.scanner.ScanStateV2
 import io.ktlab.bshelper.ui.event.EventBus
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
@@ -12,6 +17,7 @@ import io.ktlab.bshelper.ui.event.ToolboxUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
@@ -26,18 +32,25 @@ data class ToolboxUiState(
     val isLoading: Boolean,
     val scanState: ScanStateV2,
     val downloadTasks: List<IDownloadTask> = emptyList(),
+
+    val userPreference: UserPreferenceV2,
+    val manageDirs: List<SManageFolder>
 )
 
 data class ToolboxViewModelState(
     val isLoading: Boolean = false,
     val scanState: ScanStateV2 = ScanStateV2(),
     val downloadTasks: List<IDownloadTask> = emptyList(),
+    val userPreference: UserPreferenceV2,
+    val manageDirs: List<SManageFolder>
 ) {
     fun toUiState(): ToolboxUiState =
         ToolboxUiState(
             isLoading = isLoading,
             scanState = scanState,
             downloadTasks = downloadTasks,
+            userPreference = userPreference,
+            manageDirs = manageDirs,
         )
 }
 private val logger = KotlinLogging.logger {}
@@ -47,7 +60,11 @@ class ToolboxViewModel(
     private val downloaderRepository: DownloaderRepository,
 ) : ViewModel() {
     private val viewModelState =
-        MutableStateFlow(ToolboxViewModelState(isLoading = true))
+        MutableStateFlow(ToolboxViewModelState(
+            isLoading = true,
+            userPreference = userPreferenceRepository.getCurrentUserPreference(),
+            manageDirs = emptyList()
+        ))
     val uiState =
         viewModelState
             .map(ToolboxViewModelState::toUiState)
@@ -61,6 +78,21 @@ class ToolboxViewModel(
         logger.debug { "init ToolboxViewModel" }
         viewModelScope.launch { EventBus.subscribe<ToolboxUIEvent> { dispatchUiEvents(it) } }
         viewModelScope.observeDownloadTasks()
+        viewModelScope.launch {
+            playlistRepository.getAllManageFolder().collect {
+                viewModelState.update { vmState ->
+                    when(it) {
+                        is Result.Success -> {
+                            vmState.copy(manageDirs = it.data)
+                        }
+                        is Result.Error -> {
+                            EventBus.publish(GlobalUIEvent.ShowSnackBar("获取管理目录失败, ${it.exception.message}"))
+                            vmState.copy(manageDirs = emptyList())
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun CoroutineScope.observeDownloadTasks() {
@@ -89,11 +121,7 @@ class ToolboxViewModel(
                     viewModelScope.launch { EventBus.publish(GlobalUIEvent.ShowSnackBar("请先选择文件夹")) }
                     return
                 }
-                viewModelScope.launch { EventBus.publish(
-                    GlobalUIEvent.ShowSnackBar("扫描会清除当前数据库内已扫描到的数据，继续吗？", "继续") {
-                        onScanPlaylist(event.dirPath)
-                    }
-                ) }
+                onScanPlaylist(event.dirPath,event.gameType)
             }
             is ToolboxUIEvent.DeleteAllDownloadTasks -> {
                 viewModelScope.launch(Dispatchers.IO) {
@@ -125,12 +153,6 @@ class ToolboxViewModel(
                     downloaderRepository.resume(event.downloadTask)
                 }
             }
-            is ToolboxUIEvent.UpdateManageDir -> {
-                viewModelScope.launch {
-                    userPreferenceRepository.updateCurrentManageDir(event.path)
-//                    userPreferenceRepository.updateUserPreference(viewModelState.value.userPreferenceState.copy(event.path))
-                }
-            }
             is ToolboxUIEvent.UpdateThemeColor -> {
                 viewModelScope.launch {
                     userPreferenceRepository.updateThemeColor(event.color)
@@ -145,20 +167,38 @@ class ToolboxViewModel(
         }
     }
 
-    private fun onScanPlaylist(dirPath: String) {
+    private fun onScanPlaylist(dirPath: String,gameType: GameType) {
         if (dirPath.isEmpty()) {
             viewModelScope.launch { EventBus.publish(GlobalUIEvent.ShowSnackBar("请选择文件夹")) }
             return
         }
+
         viewModelScope.launch {
-            playlistRepository.clear()
-            playlistRepository.scanPlaylist(dirPath)
-                .flowOn(Dispatchers.IO)
-                .collect {
-                    viewModelState.update { state ->
-                        state.copy(scanState = it)
-                    }
+            val res = playlistRepository.createManageDir(dirPath,gameType)
+            when(res) {
+                is Result.Success -> {
+                    logger.debug { "createManageDir success" }
+                    playlistRepository.scanPlaylist(dirPath,res.data.id)
+                        .flowOn(Dispatchers.IO)
+                        .collect {
+                            if (it.state == ScanStateEventEnum.SCAN_COMPLETE) {
+                                playlistRepository.updateActiveManageDirById(true,res.data.id)
+                                viewModelState.update { state -> state.copy(scanState = it) }
+                                if (userPreferenceRepository.getCurrentUserPreference().currentManageFolder == null) {
+                                    userPreferenceRepository.updateCurrentManageFolder(res.data.copy(active = true))
+                                }
+                                this.cancel()
+                            }else {
+                                viewModelState.update { state -> state.copy(scanState = it) }
+                            }
+                        }
                 }
+                is Result.Error -> {
+                    logger.debug { "createManageDir error" }
+                    viewModelScope.launch { EventBus.publish(GlobalUIEvent.ReportError(res.exception,"创建管理目录失败")) }
+                }
+            }
+
         }
     }
 }

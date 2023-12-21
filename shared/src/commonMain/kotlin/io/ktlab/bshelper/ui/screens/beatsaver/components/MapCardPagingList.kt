@@ -4,8 +4,18 @@ package io.ktlab.bshelper.ui.screens.beatsaver.components
 // import io.ktlab.bshelper.paging.LazyPagingItems
 // import io.ktlab.bshelper.paging.itemKey
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
@@ -15,6 +25,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,8 +36,8 @@ import app.cash.paging.compose.itemKey
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.vo.BSMapVO
-import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
+import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.viewmodel.LocalState
 
 // import io.ktkt.bshelper.utils.DownloadInfo
@@ -86,6 +97,7 @@ fun MapCardPagingList(
                                     localState.targetPlaylist != null &&
                                         localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID())
                                 }
+                            val selectablePlaylists = localState.selectableLocalPlaylistFlow.collectAsState(emptyList())
                             BSMapCard(
                                 modifier = Modifier.fillMaxSize(),
                                 selectedBSMap = selectedBSMap,
@@ -93,7 +105,7 @@ fun MapCardPagingList(
                                 checked = mapMultiSelected.contains(map),
                                 multiSelectedMode = mapMultiSelectedMode,
                                 local = local,
-                                selectableIPlaylists = localState.selectableLocalPlaylists,
+                                selectableIPlaylists = selectablePlaylists.value,
                                 downloadInfo = downloadingTask[map.getID() + localState.targetPlaylist?.id],
                                 onDownloadMap = { targetMap -> onUIEvent(BeatSaverUIEvent.DownloadMap(targetMap)) },
                                 onPlayPreviewMusicSegment = {

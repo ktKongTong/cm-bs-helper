@@ -21,7 +21,8 @@ import okio.buffer
 import okio.source
 
 fun newFSPlaylist(
-    name: String = "",
+    name: String,
+    manageDirId:Long,
     customTags: String? = null,
     description: String? = null,
 ): FSPlaylist {
@@ -35,10 +36,12 @@ fun newFSPlaylist(
         syncTimestamp = Clock.System.now().epochSeconds,
         customTags = customTags,
         topPlaylist = false,
+        manageDirId = manageDirId,
     )
 }
 fun newFSPlaylist(
     basePath: String,
+    manageDirId:Long,
     name: String = "",
     bsPlaylistId: Int? = null,
     description: String? = null,
@@ -55,6 +58,7 @@ fun newFSPlaylist(
         syncTimestamp = Clock.System.now().epochSeconds,
         customTags = customTags,
         topPlaylist = topPlaylist,
+        manageDirId = manageDirId,
     )
 }
 

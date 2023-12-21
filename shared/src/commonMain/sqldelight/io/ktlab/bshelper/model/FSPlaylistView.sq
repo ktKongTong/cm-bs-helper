@@ -7,6 +7,7 @@ SELECT
     p.topPlaylist AS playlist_topPlaylist,
     p.customTags AS playlist_customTags,
     p.bsPlaylistId AS playlist_bsPlaylistId,
+    p.manageDirId,
     p.sync,
     p.syncTimestamp AS playlist_syncTimestamp,
     AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,
@@ -94,6 +95,17 @@ SELECT
 FSPlaylistView.*
 FROM FSPlaylistView
 WHERE sync = "SYNCED" OR sync = "SYNCING";
+
+fSMapViewSelectAllPlaylistByManageDirId:
+SELECT
+FSPlaylistView.*
+FROM FSPlaylistView
+WHERE (sync = "SYNCED" OR sync = "SYNCING") AND manageDirId = ?;
+fSMapViewSelectByIdsAndManageDirId:
+SELECT
+FSPlaylistView.*
+FROM FSPlaylistView
+WHERE playlist_id IN ? AND manageDirId = ?;
 
 fSMapViewSelectByIds:
 SELECT

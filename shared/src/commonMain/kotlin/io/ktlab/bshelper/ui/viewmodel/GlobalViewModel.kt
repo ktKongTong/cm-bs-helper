@@ -9,8 +9,11 @@ import io.ktlab.bshelper.BuildConfig
 import io.ktlab.bshelper.data.Event
 import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.api.ToolAPI
+import io.ktlab.bshelper.data.repository.ManageFolderRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
+import io.ktlab.bshelper.model.Result
+import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.model.UserPreferenceV2
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.platform.IBSClipBoardManager
@@ -65,6 +68,7 @@ data class GlobalViewModelState(
     val currentMediaState: CurrentMediaState,
     val errorDialogState: ErrorDialogState? = null,
     val userPreference: UserPreferenceV2,
+    val manageDirs: List<SManageFolder>
 ) {
     fun toUiState(): GlobalUiState {
 
@@ -76,6 +80,7 @@ data class GlobalViewModelState(
             currentMediaState = currentMediaState,
             userPreference = userPreference,
             errorDialogState = errorDialogState,
+            manageDirs = manageDirs,
         )
     }
 }
@@ -111,6 +116,7 @@ data class GlobalUiState(
     val currentMediaState: CurrentMediaState = CurrentMediaState.Stopped,
     val errorDialogState: ErrorDialogState? = null,
     val userPreference: UserPreferenceV2,
+    val manageDirs: List<SManageFolder>
 )
 
 private val logger = KotlinLogging.logger {}
@@ -121,6 +127,7 @@ class GlobalViewModel(
     private val clipboardManager: IBSClipBoardManager,
     private val playlistRepository: PlaylistRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
+    private val manageFolderRepository: ManageFolderRepository,
     private val toolAPI: ToolAPI,
 ) : ViewModel() {
 
@@ -132,6 +139,7 @@ class GlobalViewModel(
                 currentMedia = IMedia.None,
                 currentMediaState = CurrentMediaState.Stopped,
                 userPreference = UserPreferenceV2.getDefaultUserPreference(),
+                manageDirs = emptyList(),
             ),
         )
     val uiState =
@@ -154,6 +162,23 @@ class GlobalViewModel(
         viewModelScope.launch {
             EventBus.subscribe<GlobalUIEvent> { dispatchUiEvents(it) }
         }
+
+        viewModelScope.launch {
+            playlistRepository.getAllManageFolder().collect {
+                viewModelState.update { vmState ->
+                    when(it) {
+                        is Result.Success -> {
+                            vmState.copy(manageDirs = it.data)
+                        }
+                        is Result.Error -> {
+                            showSnackBar("获取管理目录失败, ${it.exception.message}")
+                            vmState.copy(manageDirs = emptyList())
+                        }
+                    }
+                }
+            }
+        }
+
         viewModelScope.launch {
             userPreferenceRepository.getUserPreference().collect {
                 logger.debug { "userPreference Update" }
@@ -222,6 +247,23 @@ class GlobalViewModel(
                     viewModelScope.launch(exceptionHandler) {
                         playlistRepository.createNewPlaylist(it.name, it.bsPlaylistId, it.description, it.customTags)
                     }
+                }
+            }
+            is GlobalUIEvent.UpdateManageFolder -> {
+                viewModelScope.launch(exceptionHandler) {
+                    userPreferenceRepository.updateCurrentManageFolder(event.manageFolder)
+                }
+            }
+            is GlobalUIEvent.DeleteManageFolder -> {
+                viewModelScope.launch(exceptionHandler) {
+                    val first = viewModelState.value.manageDirs.firstOrNull { it.id != event.manageFolder.id }
+                    userPreferenceRepository.updateCurrentManageFolder(first)
+                    manageFolderRepository.deleteManageFolder(event.manageFolder)
+                }
+            }
+            is GlobalUIEvent.ClearAllData -> {
+                viewModelScope.launch(exceptionHandler) {
+                    manageFolderRepository.clearAllData()
                 }
             }
         }
