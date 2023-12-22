@@ -2,7 +2,7 @@
   <artifact type="jar" name="desktopApp-jvm">
     <output-path>$PROJECT_DIR$/desktopApp/build/libs</output-path>
     <root id="archive" name="desktopApp-jvm.jar">
-      <element id="module-output" name="cm-bs-helper.desktopApp.jvmMain" />
+      <element id="module-output" name="code.cm-bs-helper.desktopApp.jvmMain" />
     </root>
   </artifact>
 </component>

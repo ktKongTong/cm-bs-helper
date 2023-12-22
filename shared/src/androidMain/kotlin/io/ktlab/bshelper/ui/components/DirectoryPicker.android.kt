@@ -20,6 +20,7 @@ actual fun BSDirectoryPicker(
             var path = uri.path
 
             path = path?.replace("/tree/primary:", "/storage/emulated/0/")
+                ?.replace("/tree/raw:","")
             onFileSelected(path)
         }
     LaunchedEffect(show) {

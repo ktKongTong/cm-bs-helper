@@ -59,4 +59,6 @@ dependencies {
     implementation(project(":shared"))
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.kotlin.logging)
+    implementation(libs.androidx.activity.ktx)
 }

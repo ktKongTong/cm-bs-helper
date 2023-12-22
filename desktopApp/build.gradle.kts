@@ -23,7 +23,7 @@ compose.desktop {
         mainClass = "MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Msi, TargetFormat.Exe)
             packageName = rootProject.name
             packageVersion = "1.0.0"
             // see https://github.com/cashapp/sqldelight/issues/2151
