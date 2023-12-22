@@ -3,6 +3,7 @@ package io.ktlab.bshelper.data.repository
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import io.ktlab.bshelper.data.PlaylistScannerV2
+import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.api.BeatSaverAPI
 import io.ktlab.bshelper.data.api.ToolAPI
 import io.ktlab.bshelper.model.BSHelperDatabase
@@ -46,9 +47,10 @@ class PlaylistRepository(
     bsAPI: BeatSaverAPI,
     private val toolAPI: ToolAPI,
     private val bsAPIRepository: BSAPIRepository,
+    private val runtimeEventFlow: RuntimeEventFlow,
 ) {
 
-    private val playlistScanner = PlaylistScannerV2(bsHelperDAO, bsAPI)
+    private val playlistScanner = PlaylistScannerV2(bsHelperDAO, bsAPI,runtimeEventFlow)
 
     fun isPlaylistExist(playlistName: String): Boolean {
         val manageDir = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.path!!.toPath()

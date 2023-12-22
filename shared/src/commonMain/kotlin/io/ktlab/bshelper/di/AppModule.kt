@@ -33,7 +33,7 @@ object AppModule {
                 BSAPIRepository(get())
             }
             single {
-                PlaylistRepository(get(), get(),get(), get(), get())
+                PlaylistRepository(get(), get(),get(), get(), get(),get())
             }
             single {
                 FSMapRepository(get(),get(), get())

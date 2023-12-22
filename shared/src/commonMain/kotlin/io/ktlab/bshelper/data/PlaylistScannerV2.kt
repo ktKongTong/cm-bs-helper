@@ -36,6 +36,7 @@ private val logger = KotlinLogging.logger {  }
 class PlaylistScannerV2(
     private val bsHelperDAO: BSHelperDatabase,
     private val bsAPI: BeatSaverAPI,
+    private val runtimeEventFlow: RuntimeEventFlow,
 ) {
     private val scannerJob = Job()
     private val scannerScope = CoroutineScope(Dispatchers.IO + scannerJob)
@@ -219,75 +220,83 @@ class PlaylistScannerV2(
 
     fun scanPlaylist(basePath: String, manageDirId:Long): Flow<ScanStateV2> =
         flow {
+            try {
             // createManageDirIdFirst
-            val manageDir = basePath.toPath()
-            val playlistDirs = FileSystem.SYSTEM.list(manageDir)
-            scanStateV2.update { it.copy(state = ScanStateEventEnum.SCANNING, totalDirCount = playlistDirs.size) }
-            emit(scanStateV2.value)
-            // create a custom playlist if not exist
-            val playlist = MutableStateFlow(newFSPlaylist(manageDir.toString(), name = manageDir.name, manageDirId = manageDirId, topPlaylist = true))
-            val customMapInfos = mutableListOf<IExtractedMapInfo>()
-            playlistDirs.map { path ->
-                scanStateV2.update { it.copy(scannedDirCount = it.scannedDirCount + 1, currentPlaylistDir = path.name) }
+                val manageDir = basePath.toPath()
+                val playlistDirs = FileSystem.SYSTEM.list(manageDir)
+                scanStateV2.update { it.copy(state = ScanStateEventEnum.SCANNING, totalDirCount = playlistDirs.size) }
                 emit(scanStateV2.value)
-                if (!FileSystem.SYSTEM.metadata(path).isDirectory) {
-                    return@map
-                }
-                if (BSMapUtils.checkIfBSMap(path)) {
-                    logger.debug { "scanPlaylist: ${path.name} is a map" }
-                    scanStateV2.update { it.copy(scannedMapCount = it.scannedMapCount + 1, currentMapDir = path.name) }
+                // create a custom playlist if not exist
+                val playlist = MutableStateFlow(newFSPlaylist(manageDir.toString(), name = manageDir.name, manageDirId = manageDirId, topPlaylist = true))
+                val customMapInfos = mutableListOf<IExtractedMapInfo>()
+                playlistDirs.map { path ->
+                    scanStateV2.update { it.copy(scannedDirCount = it.scannedDirCount + 1, currentPlaylistDir = path.name) }
                     emit(scanStateV2.value)
-                    val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(path)
-                    customMapInfos.add(extractedMapInfo)
-                    return@map
-                }
+                    if (!FileSystem.SYSTEM.metadata(path).isDirectory) {
+                        return@map
+                    }
+                    if (BSMapUtils.checkIfBSMap(path)) {
+                        logger.debug { "scanPlaylist: ${path.name} is a map" }
+                        scanStateV2.update { it.copy(scannedMapCount = it.scannedMapCount + 1, currentMapDir = path.name) }
+                        emit(scanStateV2.value)
+                        val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(path)
+                        customMapInfos.add(extractedMapInfo)
+                        return@map
+                    }
 
-                logger.debug { "scanPlaylist: ${path.name} is a playlist" }
-                val subPlaylistPath = basePath.toPath().resolve(path.name)
+                    logger.debug { "scanPlaylist: ${path.name} is a playlist" }
+                    val subPlaylistPath = basePath.toPath().resolve(path.name)
 
-                val fsPlaylist = MutableStateFlow(newFSPlaylist(subPlaylistPath.toString(),manageDirId, name = path.name))
-                val files = FileSystem.SYSTEM.listOrNull(path)
-                val playlistScanStateV2 = MutableStateFlow(
-                        PlaylistScanStateV2(
-                            playlistName = subPlaylistPath.name,
-                            playlistPath = subPlaylistPath.toString(),
-                            currentMapDir = "",
-                            fileAmount = files?.size ?: 0,
-                            errorStates = listOf(),
-                        ),
-                    )
-                scanStateV2.update { it.copy(playlistScanList = it.playlistScanList + playlistScanStateV2) }
-                files?.forEach { mapDir ->
-                    scanStateV2.update {
-                        it.copy(
-                            scannedMapCount = it.scannedMapCount + 1,
-                            currentMapDir = mapDir.name,
+                    val fsPlaylist = MutableStateFlow(newFSPlaylist(subPlaylistPath.toString(),manageDirId, name = path.name))
+                    val files = FileSystem.SYSTEM.listOrNull(path)
+                    val playlistScanStateV2 = MutableStateFlow(
+                            PlaylistScanStateV2(
+                                playlistName = subPlaylistPath.name,
+                                playlistPath = subPlaylistPath.toString(),
+                                currentMapDir = "",
+                                fileAmount = files?.size ?: 0,
+                                errorStates = listOf(),
+                            ),
                         )
-                    }
-                    playlistScanStateV2.update {
-                        it.copy(
-                            currentMapDir = mapDir.name,
-                            scannedFileAmount = it.scannedFileAmount + 1,
-                        )
-                    }
-                    emit(scanStateV2.value)
-                    if (!BSMapUtils.checkIfBSMap(mapDir)) {
-                        return@forEach
-                    }
-                    val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(mapDir)
-                    handleExtractMapInfoAndInsertToDB(extractedMapInfo, fsPlaylist) { emit(scanStateV2.value) }
+                    scanStateV2.update { it.copy(playlistScanList = it.playlistScanList + playlistScanStateV2) }
+                    logger.debug { "scanningPlaylist: ${path.name}" }
+
+                        files?.forEach { mapDir ->
+                            scanStateV2.update {
+                                it.copy(
+                                    scannedMapCount = it.scannedMapCount + 1,
+                                    currentMapDir = mapDir.name,
+                                )
+                            }
+                            playlistScanStateV2.update {
+                                it.copy(
+                                    currentMapDir = mapDir.name,
+                                    scannedFileAmount = it.scannedFileAmount + 1,
+                                )
+                            }
+                            emit(scanStateV2.value)
+                            if (!BSMapUtils.checkIfBSMap(mapDir)) {
+                                return@forEach
+                            }
+                            val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(mapDir)
+                            handleExtractMapInfoAndInsertToDB(extractedMapInfo, fsPlaylist) { emit(scanStateV2.value) }
+                        }
+
+                    logger.debug { "scanningPlaylist: ${path.name} Over" }
+                    bsHelperDAO.fSPlaylistQueries.insertAnyway(fsPlaylist.value)
                 }
-                bsHelperDAO.fSPlaylistQueries.insertAnyway(fsPlaylist.value)
-            }
-            for (mapInfo in customMapInfos) {
-                handleExtractMapInfoAndInsertToDB(mapInfo, playlist) {
-                    emit(scanStateV2.value)
+                for (mapInfo in customMapInfos) {
+                    handleExtractMapInfoAndInsertToDB(mapInfo, playlist) {
+                        emit(scanStateV2.value)
+                    }
                 }
+                bsHelperDAO.fSPlaylistQueries.insertAnyway(playlist.value)
+                scanStateV2.update { it.copy(state = ScanStateEventEnum.SCAN_COMPLETE) }
+                emit(scanStateV2.value)
+                scanStateV2.update { ScanStateV2.getDefaultInstance() }
+            }catch (e:Exception) {
+                runtimeEventFlow.sendEvent(Event.ExceptionEvent(e,""))
             }
-            bsHelperDAO.fSPlaylistQueries.insertAnyway(playlist.value)
-            scanStateV2.update { it.copy(state = ScanStateEventEnum.SCAN_COMPLETE) }
-            emit(scanStateV2.value)
-            scanStateV2.update { ScanStateV2.getDefaultInstance() }
         }
 
     private suspend inline fun handleExtractMapInfoAndInsertToDB(
