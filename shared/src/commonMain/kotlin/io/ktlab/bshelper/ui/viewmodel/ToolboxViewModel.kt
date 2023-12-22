@@ -23,6 +23,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -245,6 +246,9 @@ class ToolboxViewModel(
                     logger.debug { "createManageDir success" }
                     playlistRepository.scanPlaylist(dirPath,res.data.id)
                         .flowOn(Dispatchers.IO)
+                        .catch {
+                            EventBus.publish(GlobalUIEvent.ReportError(it, "scan error"))
+                        }
                         .collect {
                             if (it.state == ScanStateEventEnum.SCAN_COMPLETE) {
                                 playlistRepository.updateActiveManageDirById(true,res.data.id)
