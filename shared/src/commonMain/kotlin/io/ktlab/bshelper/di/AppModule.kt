@@ -51,7 +51,7 @@ object AppModule {
     private val viewModelModule =
         module {
             single<GlobalViewModel> { GlobalViewModel(get(), get(), get(), get(), get(),get(),get(),get()) }
-            single<HomeViewModel> { HomeViewModel( get(), get(), get(), get()) }
+            single<HomeViewModel> { HomeViewModel( get(), get(), get(), get(), get()) }
             single<ToolboxViewModel> { ToolboxViewModel( get(), get(), get(), get()) }
             single<BeatSaverViewModel> { BeatSaverViewModel(get(), get(), get(), get()) }
         }
