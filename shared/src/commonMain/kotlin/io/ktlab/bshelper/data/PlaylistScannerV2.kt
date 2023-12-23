@@ -228,8 +228,11 @@ class PlaylistScannerV2(
                 emit(scanStateV2.value)
                 // create a custom playlist if not exist
                 val playlist = MutableStateFlow(newFSPlaylist(manageDir.toString(), name = manageDir.name, manageDirId = manageDirId, topPlaylist = true))
-                val customMapInfos = mutableListOf<IExtractedMapInfo>()
+                var customMapInfos = mutableListOf<IExtractedMapInfo>()
                 playlistDirs.map { path ->
+                    //
+                    // RECORD CURRENT MEM SIZE
+
                     scanStateV2.update { it.copy(scannedDirCount = it.scannedDirCount + 1, currentPlaylistDir = path.name) }
                     emit(scanStateV2.value)
                     if (!FileSystem.SYSTEM.metadata(path).isDirectory) {
@@ -241,6 +244,15 @@ class PlaylistScannerV2(
                         emit(scanStateV2.value)
                         val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(path)
                         customMapInfos.add(extractedMapInfo)
+                        logger.debug { "add to customMapInfos: ${path.name},size ${customMapInfos.size}" }
+                        if (customMapInfos.size > 5) {
+                            for (mapInfo in customMapInfos) {
+                                handleExtractMapInfoAndInsertToDB(mapInfo, playlist) {
+                                    emit(scanStateV2.value)
+                                }
+                            }
+                            customMapInfos = mutableListOf()
+                        }
                         return@map
                     }
 
@@ -278,8 +290,12 @@ class PlaylistScannerV2(
                             if (!BSMapUtils.checkIfBSMap(mapDir)) {
                                 return@forEach
                             }
+                            logger.debug { "try extract mapinfo:${mapDir}" }
                             val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(mapDir)
+                            logger.debug { "extract mapinfo:${mapDir},over" }
                             handleExtractMapInfoAndInsertToDB(extractedMapInfo, fsPlaylist) { emit(scanStateV2.value) }
+                            logger.debug { "insert mapinfo:${mapDir},over" }
+
                         }
 
                     logger.debug { "scanningPlaylist: ${path.name} Over" }
@@ -295,14 +311,17 @@ class PlaylistScannerV2(
                 emit(scanStateV2.value)
                 scanStateV2.update { ScanStateV2.getDefaultInstance() }
             }catch (e:Exception) {
-                runtimeEventFlow.sendEvent(Event.ExceptionEvent(e,""))
+                //UNEXPECT OOM
+                scanStateV2.update { it.copy(state = ScanStateEventEnum.SCAN_ERROR) }
+                logger.error { e.stackTraceToString() }
+
             }
         }
 
     private suspend inline fun handleExtractMapInfoAndInsertToDB(
         extractedMapInfo: IExtractedMapInfo,
         fsPlaylist: MutableStateFlow<FSPlaylist>,
-        crossinline updateCallback: suspend (ScanStateV2) -> Unit,
+        updateCallback: (ScanStateV2) -> Unit,
     ) {
         when (extractedMapInfo) {
             is IExtractedMapInfo.LocalMapInfo -> {

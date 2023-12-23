@@ -3,6 +3,7 @@ package io.ktlab.bshelper.utils
 // import io.ktlab.bsmg.FSMapInfo
 import io.beatmaps.common.beatsaber.BSDifficulty
 import io.beatmaps.common.beatsaber.BSDifficultyV3
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.bsmg.FSMapInfo
 import io.ktlab.bshelper.model.enums.SyncStateEnum
@@ -19,6 +20,7 @@ import okio.Path
 import okio.blackholeSink
 import okio.buffer
 import okio.source
+import kotlin.math.log
 
 fun newFSPlaylist(
     name: String,
@@ -61,7 +63,7 @@ fun newFSPlaylist(
         manageDirId = manageDirId,
     )
 }
-
+private val logger = KotlinLogging.logger {  }
 class BSMapUtils {
     companion object {
         private val json =
@@ -127,6 +129,7 @@ class BSMapUtils {
                     null
                 }
             val (hash, err) = mapDigest(mapPath)
+            logger.debug { "hash computed：${mapPath}" }
             if (err != null) {
                 return IExtractedMapInfo.ErrorMapInfo(hash, mapId, mapPath, null, err)
             }
@@ -135,7 +138,6 @@ class BSMapUtils {
             val infoFilePath = files.find { it.name.lowercase() == "info.dat" }!!
             val infoContent = FileSystem.SYSTEM.read(infoFilePath) { this.readUtf8() }
             val info = json.decodeFromString<FSMapInfo>(infoContent)
-
             val paths =
                 info.difficultyBeatmapSets.flatMap { bms ->
                     bms.difficultyBeatmaps.map { df ->
@@ -144,7 +146,6 @@ class BSMapUtils {
                 }
             val v2DifficultyMap = mutableMapOf<String, BSDifficulty>()
             val v3DifficultyMap = mutableMapOf<String, BSDifficultyV3>()
-
             paths.map { pathInfo ->
                 try {
                     val size = FileSystem.SYSTEM.metadata(pathInfo.first).size
@@ -156,19 +157,16 @@ class BSMapUtils {
                     // some chroma maps larger than 10MB, even 30MB
                     // in android, it will cause oom
                     val stream1 = f.inputStream()
+                    val stream2 = f.inputStream()
                     try {
                         val v2 = json.decodeFromStream<BSDifficulty>(stream1)
                         v2DifficultyMap[pathInfo.second] = v2
                     } catch (e: Exception) {
-                        val stream2 = f.inputStream()
-                        try {
-                            val v3 = json.decodeFromStream<BSDifficultyV3>(stream2)
-                            v3DifficultyMap[pathInfo.second] = v3
-                        } finally {
-                            stream2.close()
-                        }
+                        val v3 = json.decodeFromStream<BSDifficultyV3>(stream2)
+                        v3DifficultyMap[pathInfo.second] = v3
                     } finally {
                         stream1.close()
+                        stream2.close()
                     }
                 } catch (e: ScannerException.JSONFileTooLargeException) {
                     return IExtractedMapInfo.ErrorMapInfo(hash, mapId, mapPath, info, e)
@@ -186,6 +184,7 @@ class BSMapUtils {
                     )
                 }
             }
+            logger.debug { "try close" }
             return if (mapId != null) {
                 IExtractedMapInfo.BSMapInfo(
                     hash = hash,

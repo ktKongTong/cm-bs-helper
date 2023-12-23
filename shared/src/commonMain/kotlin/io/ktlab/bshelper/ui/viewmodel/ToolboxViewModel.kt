@@ -248,6 +248,7 @@ class ToolboxViewModel(
                         .flowOn(Dispatchers.IO)
                         .catch {
                             EventBus.publish(GlobalUIEvent.ReportError(it, "scan error"))
+                            manageFolderRepository.deleteManageFolder(res.data)
                         }
                         .collect {
                             if (it.state == ScanStateEventEnum.SCAN_COMPLETE) {

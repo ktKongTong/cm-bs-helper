@@ -61,4 +61,5 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.kotlin.logging)
     implementation(libs.androidx.activity.ktx)
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
 }
