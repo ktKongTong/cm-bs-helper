@@ -240,7 +240,7 @@ class ToolboxViewModel(
         }
 
         viewModelScope.launch {
-            val res = playlistRepository.createManageDir(dirPath,gameType)
+            val res = manageFolderRepository.createManageDir(dirPath,gameType)
             when(res) {
                 is Result.Success -> {
                     logger.debug { "createManageDir success" }
@@ -252,7 +252,7 @@ class ToolboxViewModel(
                         }
                         .collect {
                             if (it.state == ScanStateEventEnum.SCAN_COMPLETE) {
-                                playlistRepository.updateActiveManageDirById(true,res.data.id)
+                                manageFolderRepository.updateActiveManageFolderById(true,res.data.id)
                                 viewModelState.update { state -> state.copy(scanState = it) }
                                 if (userPreferenceRepository.getCurrentUserPreference().currentManageFolder == null) {
                                     userPreferenceRepository.updateCurrentManageFolder(res.data.copy(active = true))

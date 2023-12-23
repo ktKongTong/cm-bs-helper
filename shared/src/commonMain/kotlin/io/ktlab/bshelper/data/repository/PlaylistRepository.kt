@@ -72,36 +72,6 @@ class PlaylistRepository(
         val oldDir = manageDir.resolve(playlist.name)
     }
 
-    fun createManageDir(manageDir: String,gameType: GameType):Result<SManageFolder>{
-        bsHelperDAO.manageFolderQueries.selectByPath(manageDir).executeAsOneOrNull()?.let {
-            if (it.active) {
-                return Result.Error(Exception("manage dir has been added"))
-            }
-        }
-        val id = UUID.randomUUID().getMostSignificantBits() and Long.MAX_VALUE
-        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val manageDirPath = manageDir.toPath()
-        val dbo = ManageFolder(
-            id = id,
-            name = manageDirPath.name,
-            path = manageDirPath.toString(),
-            gameType = gameType,
-            active = false,
-            createdAt = now,
-            updatedAt = now,
-        )
-        try {
-            bsHelperDAO.manageFolderQueries.insertAnyWay(dbo)
-        }catch (e:Exception){
-            return Result.Error(e)
-        }
-        return Result.Success(dbo.toSManageFolder())
-    }
-
-    fun updateActiveManageDirById(active:Boolean,id:Long){
-        bsHelperDAO.manageFolderQueries.updateActiveById(active,id)
-    }
-
     fun createNewPlaylist(
         playlistName: String,
         bsPlaylistId: Int? = null,

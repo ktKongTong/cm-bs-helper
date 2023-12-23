@@ -175,7 +175,7 @@ class GlobalViewModel(
     init {
 
         logger.debug { "init GlobalViewModel" }
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             EventBus.subscribe<GlobalUIEvent> { dispatchUiEvents(it) }
         }
 

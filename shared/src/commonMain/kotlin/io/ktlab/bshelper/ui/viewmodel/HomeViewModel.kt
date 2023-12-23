@@ -2,6 +2,8 @@ package io.ktlab.bshelper.ui.viewmodel
 
 import androidx.compose.material3.SnackbarDuration
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktlab.bshelper.data.Event
+import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.FSMapRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
@@ -19,6 +21,7 @@ import io.ktlab.bshelper.ui.event.EventBus
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.HomeUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -91,6 +94,7 @@ sealed interface HomeUiState {
 }
 private val logger = KotlinLogging.logger {}
 class HomeViewModel(
+    private val runtimeEventFlow: RuntimeEventFlow,
     private val playlistRepository: PlaylistRepository,
     private val mapRepository: FSMapRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
@@ -122,9 +126,14 @@ class HomeViewModel(
                 SharingStarted.Eagerly,
                 viewModelState.value.toUiState(),
             )
-
+    private val exceptionHandler =
+        CoroutineExceptionHandler { coroutineContext, throwable ->
+            runtimeEventFlow.sendEvent(Event.ExceptionEvent(throwable))
+        }
     init {
-        viewModelScope.launch { EventBus.subscribe<HomeUIEvent> { dispatchUiEvents(it) } }
+        viewModelScope.launch(exceptionHandler) {
+            EventBus.subscribe<HomeUIEvent> { dispatchUiEvents(it) }
+        }
 
         viewModelScope.launch {
             userPreferenceRepository.getUserPreference().flowOn(Dispatchers.IO).collect {
@@ -347,7 +356,11 @@ class HomeViewModel(
 
     private fun deletePlaylist(playlist: IPlaylist) {
         viewModelScope.launch {
-            playlistRepository.deletePlaylistById(playlist.id)
+            try {
+                playlistRepository.deletePlaylistById(playlist.id)
+            }catch (e:Exception) {
+                EventBus.publish(GlobalUIEvent.ReportError(e, "delete playlist error"))
+            }
         }
     }
 
