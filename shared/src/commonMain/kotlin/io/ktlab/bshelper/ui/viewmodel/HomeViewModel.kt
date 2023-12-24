@@ -126,12 +126,9 @@ class HomeViewModel(
                 SharingStarted.Eagerly,
                 viewModelState.value.toUiState(),
             )
-    private val exceptionHandler =
-        CoroutineExceptionHandler { coroutineContext, throwable ->
-            runtimeEventFlow.sendEvent(Event.ExceptionEvent(throwable))
-        }
+
     init {
-        viewModelScope.launch(exceptionHandler) {
+        viewModelScope.launch {
             EventBus.subscribe<HomeUIEvent> { dispatchUiEvents(it) }
         }
 

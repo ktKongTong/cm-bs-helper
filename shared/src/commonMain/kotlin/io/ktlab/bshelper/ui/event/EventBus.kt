@@ -23,8 +23,13 @@ object EventBus {
     suspend inline fun <reified T> subscribe(crossinline onEvent: (T) -> Unit) {
         events.filterIsInstance<T>()
             .collectLatest { event ->
-                coroutineContext.ensureActive()
-                onEvent(event)
+                try {
+                    coroutineContext.ensureActive()
+                    onEvent(event)
+                }catch (e:Exception) {
+                    publish(GlobalUIEvent.ReportError(e,"global error"))
+                }
+
             }
     }
 }

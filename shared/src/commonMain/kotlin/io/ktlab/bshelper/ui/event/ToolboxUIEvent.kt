@@ -12,6 +12,7 @@ sealed class ToolboxUIEvent : UIEvent() {
     data object ClearScanState : ToolboxUIEvent()
 
     data object ClearLocalData : ToolboxUIEvent()
+    data object HealthyCheck : ToolboxUIEvent()
 
     data object DeleteAllDownloadTasks : ToolboxUIEvent()
 

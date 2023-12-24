@@ -111,4 +111,8 @@ class BSAPIRepository(
     suspend fun getBSMapReviewsById(mapId: String): APIRespResult<List<BSMapReviewDTO>> {
         return bsAPI.getMapReview(mapId)
     }
+
+    suspend fun getRecommendPlaylist(mapId: String): APIRespResult<List<BSMapReviewDTO>> {
+        return bsAPI.getMapReview(mapId)
+    }
 }

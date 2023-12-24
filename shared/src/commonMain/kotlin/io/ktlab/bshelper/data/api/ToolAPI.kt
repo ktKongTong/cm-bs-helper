@@ -27,6 +27,7 @@ class ToolAPI(private val httpClient: HttpClient) {
     init {
         logger.info { "init ToolAPI, basePath = $basePath" }
     }
+
     suspend fun setKV(setRequest: KVSetRequest<ExportPlaylist>): APIRespResult<String> {
         val url = "$basePath/key"
         return try {
@@ -102,6 +103,22 @@ class ToolAPI(private val httpClient: HttpClient) {
         val url = "$basePath/release/changelog"
         return try {
             logger.debug { "getRecentVersionChangeLog: url:$url" }
+            val response = httpClient.get(url)
+            val resp = response.body<ToolAPIResp<List<AppVersionChangeLog>>>()
+            if (resp.code != 200) {
+                return APIRespResult.Error(Exception(resp.message))
+            }
+            APIRespResult.Success(resp.data!!)
+        } catch (e: Exception) {
+            logger.error { "getRecentVersionChangeLog: error, url:$url, error:${e.message}" }
+            APIRespResult.Error(e)
+        }
+    }
+
+    suspend fun getRecommendPlaylist() : APIRespResult<List<AppVersionChangeLog>> {
+        val url = "$basePath/recommend/playlist"
+        return try {
+            logger.debug { "getRecommendPlaylist: url:$url" }
             val response = httpClient.get(url)
             val resp = response.body<ToolAPIResp<List<AppVersionChangeLog>>>()
             if (resp.code != 200) {

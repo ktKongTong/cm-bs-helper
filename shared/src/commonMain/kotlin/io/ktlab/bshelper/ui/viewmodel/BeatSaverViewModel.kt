@@ -317,9 +317,6 @@ class BeatSaverViewModel(
 
     init {
         viewModelScope.launch { EventBus.subscribe<BeatSaverUIEvent> { dispatchUiEvents(it) } }
-        userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.id?.let {
-//            localMapIdJob = viewModelScope.listenLocalMapFlow(it)
-        }
 
         viewModelScope.launch {
             userPreferenceRepository.getUserPreference()

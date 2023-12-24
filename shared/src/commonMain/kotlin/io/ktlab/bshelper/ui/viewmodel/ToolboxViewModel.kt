@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
+import kotlin.time.Duration
 
 data class ToolboxUiState(
     val isLoading: Boolean,
@@ -42,6 +43,28 @@ data class ToolboxUiState(
     val backups: List<ManageFolderBackup>,
 )
 
+enum class HealthyStatusEnum {
+    ToolAPI,
+    BS_API,
+    IMAGE_SOURCE,
+    PROXIED_IMG_SOURCE
+}
+
+data class ConnectionHealthyStatus(
+    val type: HealthyStatusEnum,
+    val connectionDuration: Duration,
+    val ping: Long,
+)
+enum class HealthyCheckStatusEnum {
+    NOT_START,
+    CHECKING,
+    OVER,
+}
+data class HealthyCheckStatus(
+    val status: HealthyCheckStatusEnum = HealthyCheckStatusEnum.NOT_START,
+    val itemStatuses: List<ConnectionHealthyStatus> = emptyList()
+)
+
 data class ToolboxViewModelState(
     val isLoading: Boolean = false,
     val scanState: ScanStateV2 = ScanStateV2(),
@@ -50,6 +73,7 @@ data class ToolboxViewModelState(
     val userPreference: UserPreferenceV2,
     val manageDirs: List<SManageFolder>,
     val backups: List<ManageFolderBackup> = emptyList(),
+    val healthyStatus : HealthyCheckStatus = HealthyCheckStatus()
 ) {
     fun toUiState(): ToolboxUiState =
         ToolboxUiState(
@@ -138,14 +162,23 @@ class ToolboxViewModel(
 
     private fun dispatchUiEvents(event: UIEvent) {
         when (event) {
-            is ToolboxUIEvent.ClearScanState -> {
-                viewModelState.update { state ->
-                    state.copy(scanState = ScanStateV2.getDefaultInstance())
-                }
-            }
             is ToolboxUIEvent.ClearLocalData -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     playlistRepository.clear()
+                }
+            }
+
+
+            is ToolboxUIEvent.HealthyCheck -> {
+                viewModelScope.launch {
+                    // todo: do healthy check, and update it,
+                    // after leave page,clear status
+                }
+            }
+
+            is ToolboxUIEvent.ClearScanState -> {
+                viewModelState.update { state ->
+                    state.copy(scanState = ScanStateV2.getDefaultInstance())
                 }
             }
             is ToolboxUIEvent.ScanPlaylist -> {
@@ -268,7 +301,6 @@ class ToolboxViewModel(
                     viewModelScope.launch { EventBus.publish(GlobalUIEvent.ReportError(res.exception,"创建管理目录失败")) }
                 }
             }
-
         }
     }
 }
