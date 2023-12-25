@@ -1,6 +1,17 @@
 package io.ktlab.bshelper.ui.screens.toolbox.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Verified
@@ -21,12 +32,21 @@ import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.model.enums.MapTag
 import io.ktlab.bshelper.model.vo.BSMapVO
-import io.ktlab.bshelper.ui.components.*
+import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
+import io.ktlab.bshelper.ui.components.DurationIconWIthText
+import io.ktlab.bshelper.ui.components.MapTag
+import io.ktlab.bshelper.ui.components.MapperIconWIthText
+import io.ktlab.bshelper.ui.components.NPSIconWIthText
+import io.ktlab.bshelper.ui.components.ThumbDownIconWIthText
+import io.ktlab.bshelper.ui.components.ThumbUpIconWIthText
 import io.ktlab.bshelper.ui.components.labels.MapDiffLabel
-import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.event.ToolboxUIEvent
+import io.ktlab.bshelper.ui.event.UIEvent
+import io.ktlab.bshelper.utils.format
 import io.ktlab.kown.model.KownTaskStatus
 import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 fun Long.toMB(): String {
     // remain 2 decimal
@@ -109,7 +129,8 @@ fun MapDownloadTaskCard(
                     modifier = Modifier.padding(bottom = 4.dp),
                     style = MaterialTheme.typography.bodyMedium,
                 )
-                Text(text = "creatAt：${Instant.fromEpochMilliseconds(map.downloadTaskModel.createdAt)}")
+                Text(text = "creatAt：${Instant.fromEpochMilliseconds(map.downloadTaskModel.createdAt).toLocalDateTime(
+                    TimeZone.currentSystemDefault()).format("yyyy-MM-dd HH:mm:ss")}")
                 Row(
                     modifier =
                         Modifier

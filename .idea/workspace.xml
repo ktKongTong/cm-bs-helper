@@ -1,0 +1,1220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0e843cb6-7c80-4991-bee4-eded6e73c618" name="更改" comment=":art: apply spotless">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/desktopApp_jvm.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/migrations.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/Readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/ui/screens/toolbox/components/MapDownloadTaskCard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/ui/screens/toolbox/components/MapDownloadTaskCard.kt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PA811CMGGB190179G]" />
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/model">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/platformService">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/desktopApp">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/androidApp">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/bsmg">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/utils">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/repository">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/common">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/shared">
+          <activation />
+        </task>
+        <projects_view>
+          <option name="groupTasks" value="false" />
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="cm-bs-helper" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="cm-bs-helper" type="f1a62948:ProjectNode" />
+                <item name="运行配置" type="7b0102dc:RunConfigurationsNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="cm-bs-helper" type="f1a62948:ProjectNode" />
+                <item name="desktopApp" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="cm-bs-helper" type="f1a62948:ProjectNode" />
+                <item name="desktopApp" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="SqlDelight Table" />
+        <option value="AnnotationType" />
+        <option value="Kotlin Annotation" />
+        <option value="Kotlin Class" />
+        <option value="JUnit4 Test Class" />
+        <option value="SqlDelight File" />
+        <option value="Kotlin Interface" />
+        <option value="Kotlin File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--follow-tags" />
+        <option name="title" value="Current Branch" />
+      </GitPushTagMode>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="rename-module" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ktKongTong&quot;
+  }
+}</component>
+  <component name="GitRewordedCommitMessages">
+    <option name="commitMessagesMapping">
+      <RewordedCommitMessageMapping>
+        <option name="originalMessage" value=":fire: remove init.gradle.kts" />
+        <option name="rewordedMessage" value=":fire: remove init.gradle.kts" />
+      </RewordedCommitMessageMapping>
+    </option>
+    <option name="currentCommit" value="1" />
+    <option name="onto" value="242702f3a6ab3fdaf859bed20633a8830dbeb575" />
+  </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="141a2dd5-b9d0-42ef-a5b9-aff6debcc343" />
+        <option name="url" value="git@github.com:ktKongTong/cm-bs-helper.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$USER_HOME$/Library/Caches/JetBrains/IntelliJIdea2023.3/device-explorer/Pico A8110/_/sdcard/Android/data/io.ktlab.bshelper/files/logs/2023-1225-20_54_35.log" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="KotlinCodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="l8s7stcx" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2Vuqj0Ul0kX0F9Xm1km1KL5TONW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Android 应用.androidApp.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.BSMapUtilsTest.testMapDigest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.FileUtilKtTest.asValidFilename.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.FileUtilKtTest.asValidFilenameTest2.executor&quot;: &quot;Coverage&quot;,
+    &quot;Gradle.FileUtilKtTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.FileUtilKtTests.asValidFilename.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.FileUtilKtTests.asValidFilenameTest2.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.FileUtilKtTests.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Main [jvm].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Preview: io.ktlab.bshelper.ui.PreviewKt.MapOnlinePreviewPreview.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Preview: io.ktlab.bshelper.ui.components.MapOnlinePreview_jvmKt.MapOnlinePreviewPreview.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Preview: io.ktlab.bshelper.ui.components.SortButtonKt.SortButtonPreview.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Preview: io.ktlab.bshelper.ui.screens.beatsaver.components.MapFilterPanelKt.MapOnlinePreviewPreview.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Preview: io.ktlab.bshelper.ui.screens.home.bsmap.MapCardKt.PreviewMapCard.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Preview: io.ktlab.bshelper.ui.screens.toolbox.PrewviewKt.Preview.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [assembleDebug].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [assembleRelease].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [copySpotlessPreCommitHook].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [desktopRun].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [lintAnalyzeDebug].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [lintFix].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [lint].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [packageMsi].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [spotlessApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [spotlessCheck].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [spotlessDiagnose].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [spotlessKotlinApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper [spotlessKotlin].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:androidApp [assembleDebug].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:androidApp [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:androidApp [spotlessApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:bsmg [spotlessApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:common [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:common [lintAnalyzeDebug].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:common [lint].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:common [spotlessApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:common [spotlessCheck].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:common [spotlessKotlinApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:common [spotlessKotlinGradle].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:common [spotlessKotlin].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:desktopApp [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:desktopApp [run].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:desktopApp [spotlessApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:desktopApp [spotlessCheck].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:desktopApp [spotlessKotlinApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:desktopApp [spotlessKotlin].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:model [resolveIdeDependencies].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:model [spotlessApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:platformService [spotlessApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:platformService [spotlessDiagnose].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:platformService [spotlessJava].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:platformService [spotlessKotlin].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:repository [spotlessApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:shared [spotlessApply].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:shared [spotlessKotlin].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.cm-bs-helper:utils [spotlessApply].executor&quot;: &quot;Run&quot;,
+    &quot;PROJECT_TRUSTED_KEY&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;com.github.patou.gitmoji.display-icon&quot;: &quot;emoji&quot;,
+    &quot;com.github.patou.gitmoji.text-after-unicode&quot;: &quot; &quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit4&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4&quot;: &quot;&quot;,
+    &quot;external.system.has.shared.sources&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_directory_selection&quot;: &quot;/Users/sisyphus/code/cm-bs-helper/shared/src/commonTest/kotlin/io/ktlab/bshelper/utils&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/sisyphus/code/cm-bs-helper&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.57816094&quot;,
+    &quot;recommended.upgrade.do.not.ask.for.project&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;stored_options&quot;: &quot;{\&quot;dialectConnections\&quot;:{\&quot;app.cash.sqldelight.dialects.sqlite_3_18.SqliteDialect\&quot;:{\&quot;orderedOptions\&quot;:[],\&quot;serializedProperties\&quot;:{}}}}&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;com.android.tools.idea.sqlite.queryhistory&quot;: [
+      &quot;SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    m.name\nFROM FSPlaylist p\n\n\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\n\nWHERE p.id = '/storage/emulated/0/Download'&quot;,
+      &quot;SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp\nFROM FSPlaylist p\n\n\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\n\nWHERE p.id = '/storage/emulated/0/Download'&quot;,
+      &quot;SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,\n    MAX(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS max_nps,\n    MIN(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS min_nps,\n    AVG(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS avg_njs,\n    MAX(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS max_njs,\n    MIN(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS min_njs,\n    AVG(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS avg_notes,\n    MAX(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS max_notes,\n    MIN(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS min_notes,\n    AVG(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS avg_bombs,\n    MAX(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS max_bombs,\n    MIN(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS min_bombs,\n    AVG(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS avg_obstacles,\n    MAX(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS max_obstacles,\n    MIN(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS min_obstacles\nFROM FSPlaylist p\n\n\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\nLEFT JOIN MapDifficulty md ON m.hash = md.hash AND m.mapId = md.mapId\nWHERE p.id = '/storage/emulated/0/Download'&quot;,
+      &quot;SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,\n    MAX(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS max_nps,\n    MIN(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS min_nps,\n    AVG(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS avg_njs,\n    MAX(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS max_njs,\n    MIN(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS min_njs,\n    AVG(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS avg_notes,\n    MAX(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS max_notes,\n    MIN(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS min_notes,\n    AVG(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS avg_bombs,\n    MAX(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS max_bombs,\n    MIN(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS min_bombs,\n    AVG(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS avg_obstacles,\n    MAX(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS max_obstacles,\n    MIN(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS min_obstacles,\n    map_summary.map_count AS map_count,\n    map_summary.avg_duration AS avg_duration,\n    map_summary.max_duration AS max_duration,\n    map_summary.min_duration AS min_duration,\n    map_summary.sum_duration AS sum_duration\nFROM FSPlaylist p\n\nLEFT JOIN (\n    SELECT\n        m.playlistBasePath,\n        m.playlistId,\n        COUNT(m.hash) AS map_count,\n        AVG(m.duration) AS avg_duration,\n        MAX(m.duration) AS max_duration,\n        MIN(m.duration) AS min_duration,\n        SUM(m.duration) AS sum_duration\n    FROM FSMap m\n    GROUP BY m.playlistBasePath, m.playlistId\n) map_summary ON p.basePath = map_summary.playlistBasePath AND p.id = map_summary.playlistId\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\nLEFT JOIN MapDifficulty md ON m.hash = md.hash AND m.mapId = md.mapId\nWHERE p.id = '/storage/emulated/0/Download'&quot;,
+      &quot;SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,\n    MAX(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS max_nps,\n    MIN(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS min_nps,\n    AVG(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS avg_njs,\n    MAX(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS max_njs,\n    MIN(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS min_njs,\n    AVG(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS avg_notes,\n    MAX(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS max_notes,\n    MIN(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS min_notes,\n    AVG(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS avg_bombs,\n    MAX(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS max_bombs,\n    MIN(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS min_bombs,\n    AVG(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS avg_obstacles,\n    MAX(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS max_obstacles,\n    MIN(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS min_obstacles,\n    map_summary.map_count AS map_count,\n    map_summary.avg_duration AS avg_duration,\n    map_summary.max_duration AS max_duration,\n    map_summary.min_duration AS min_duration,\n    map_summary.sum_duration AS sum_duration,\n    BSPlaylist.id AS bsPlaylist_id,\n    BSPlaylist.name AS bsPlaylist_name,\n    BSPlaylist.description AS bsPlaylist_description,\n    BSPlaylist.ownerId  AS bsPlaylist_ownerId,\n    BSPlaylist.curatorId AS bsPlaylist_curatorId,\n    BSPlaylist.downloadURL AS bsPlaylist_downloadURL,\n    BSPlaylist.playlistImage AS bsPlaylist_playlistImage,\n    BSPlaylist.playlistImage512 AS bsPlaylist_playlistImage512,\n    BSPlaylist.songsChangedAt AS bsPlaylist_songsChangedAt,\n    BSPlaylist.updatedAt AS bsPlaylist_updatedAt,\n    BSPlaylist.createdAt AS bsPlaylist_createdAt,\n    BSPlaylist.type AS bsPlaylist_type,\n    BSPlaylist.avgScore AS bsPlaylist_avgScore,\n    BSPlaylist.upVotes AS bsPlaylist_upVotes,\n    BSPlaylist.downVotes AS bsPlaylist_downVotes,\n    BSPlaylist.mapperCount AS bsPlaylist_mapperCount,\n    BSPlaylist.maxNps AS bsPlaylist_maxNps,\n    BSPlaylist.minNps AS bsPlaylist_minNps,\n    BSPlaylist.totalDuration AS bsPlaylist_totalDuration\nFROM FSPlaylist p\n\nLEFT JOIN (\n    SELECT\n        m.playlistBasePath,\n        m.playlistId,\n        COUNT(m.hash) AS map_count,\n        AVG(m.duration) AS avg_duration,\n        MAX(m.duration) AS max_duration,\n        MIN(m.duration) AS min_duration,\n        SUM(m.duration) AS sum_duration\n    FROM FSMap m\n    GROUP BY m.playlistBasePath, m.playlistId\n) map_summary ON p.basePath = map_summary.playlistBasePath AND p.id = map_summary.playlistId\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\nLEFT JOIN MapDifficulty md ON m.hash = md.hash AND m.mapId = md.mapId\nLEFT JOIN BSPlaylist ON p.bsPlaylistId = BSPlaylist.id\nWHERE p.id = '/storage/emulated/0/Download'&quot;
+    ]
+  }
+}</component>
+  <component name="QodanaCloudProjectLink">
+    <option name="lastReportId" value="71dKb" />
+    <option name="linkedProjectId" value="zZbv8" />
+    <option name="linkedProjectName" value="cm-bs-helper" />
+    <option name="organizationId" value="3Prjw" />
+    <option name="userId" value="AGE0w" />
+  </component>
+  <component name="QodanaHighlightedReportService">
+    <option name="cloudReportPersistedInfo">
+      <CloudReportPersistedInfo>
+        <option name="projectId" value="zZbv8" />
+        <option name="reportId" value="71dKb" />
+      </CloudReportPersistedInfo>
+    </option>
+  </component>
+  <component name="QodanaIsSelectedPersistenceService">
+    <option name="selectedOrLoading" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/model/scanner" />
+      <recent name="$PROJECT_DIR$/model/src/commonMain/kotlin/io/ktlab/bshelper/model/bsmg" />
+      <recent name="$PROJECT_DIR$/androidApp/src/main/assets" />
+      <recent name="$PROJECT_DIR$/androidApp/src/main/res" />
+      <recent name="$PROJECT_DIR$/androidApp" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/ui/screens/toolbox/components" />
+      <recent name="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/model/scanner" />
+      <recent name="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/ui/components" />
+      <recent name="$PROJECT_DIR$/shared/src/jvmMain/kotlin/io/ktlab/bshelper/ui/composables" />
+      <recent name="$PROJECT_DIR$/shared/src/androidMain/kotlin/io/ktlab/bshelper/ui/composables" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="io.ktlab.bshelper.ui.event" />
+      <recent name="io.ktlab.kown.model" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="io.ktlab.bshelper.utils" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Android 应用.androidApp">
+    <configuration name="androidApp" type="AndroidRunConfigurationType" factoryName="Android App">
+      <module name="cm-bs-helper.androidApp.main" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ALL_USERS" value="false" />
+      <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
+      <option name="CLEAR_APP_STORAGE" value="false" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="INSPECTION_WITHOUT_ACTIVITY_RESTART" value="false" />
+      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="DEBUGGER_TYPE" value="Java" />
+      <Java>
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Java>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Java/Kotlin Method Sample (legacy)" />
+        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
+        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
+      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="androidApp" type="AndroidRunConfigurationType" factoryName="Android App">
+      <module name="cm-bs-helper.androidApp.main" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ALL_USERS" value="false" />
+      <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
+      <option name="CLEAR_APP_STORAGE" value="false" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="INSPECTION_WITHOUT_ACTIVITY_RESTART" value="false" />
+      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="DEBUGGER_TYPE" value="Java" />
+      <Java>
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Java>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Java/Kotlin Method Sample (legacy)" />
+        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
+        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
+      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cm-bs-helper [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="cm-bs-helper [spotlessDiagnose]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="spotlessDiagnose" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="cm-bs-helper:desktopApp [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/desktopApp" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="cm-bs-helper:desktopApp [spotlessKotlin]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/desktopApp" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="spotlessKotlin" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="cm-bs-helper:shared [spotlessApply]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/shared" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="spotlessApply" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.cm-bs-helper:desktopApp [run]" />
+        <item itemvalue="Gradle.cm-bs-helper [clean]" />
+        <item itemvalue="Gradle.cm-bs-helper:shared [spotlessApply]" />
+        <item itemvalue="Gradle.cm-bs-helper:desktopApp [spotlessKotlin]" />
+        <item itemvalue="Gradle.cm-bs-helper [spotlessDiagnose]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="RustProjectSettings">
+    <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="0e843cb6-7c80-4991-bee4-eded6e73c618" name="更改" comment="" />
+      <created>1695696445438</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1695696445438</updated>
+      <workItem from="1695696447525" duration="1373000" />
+      <workItem from="1695698156666" duration="4383000" />
+      <workItem from="1695735672946" duration="1327000" />
+      <workItem from="1695775396284" duration="599000" />
+      <workItem from="1695876232458" duration="1359000" />
+      <workItem from="1695984582545" duration="623000" />
+      <workItem from="1695994340343" duration="3383000" />
+      <workItem from="1696005315037" duration="45000" />
+      <workItem from="1696163396082" duration="1038000" />
+      <workItem from="1696306657348" duration="3730000" />
+      <workItem from="1696338359747" duration="603000" />
+      <workItem from="1696346358201" duration="1686000" />
+      <workItem from="1696382540346" duration="12000" />
+      <workItem from="1696383298543" duration="1935000" />
+      <workItem from="1697549630709" duration="1971000" />
+      <workItem from="1697625948856" duration="1513000" />
+      <workItem from="1697681956446" duration="1300000" />
+      <workItem from="1698242604848" duration="8901000" />
+      <workItem from="1698293750029" duration="1708000" />
+      <workItem from="1698491626351" duration="6111000" />
+      <workItem from="1698574107678" duration="1297000" />
+      <workItem from="1698586397978" duration="1000" />
+      <workItem from="1698591966075" duration="31000" />
+      <workItem from="1698628585999" duration="169000" />
+      <workItem from="1698749490960" duration="9927000" />
+      <workItem from="1698805643506" duration="1021000" />
+      <workItem from="1698847414059" duration="6513000" />
+      <workItem from="1698925470299" duration="1372000" />
+      <workItem from="1698978590494" duration="6748000" />
+      <workItem from="1699071038016" duration="5040000" />
+      <workItem from="1699180760766" duration="11568000" />
+      <workItem from="1699336821415" duration="5136000" />
+      <workItem from="1699409489686" duration="1196000" />
+      <workItem from="1699504240042" duration="4152000" />
+      <workItem from="1699526577362" duration="9059000" />
+      <workItem from="1699588888235" duration="21577000" />
+      <workItem from="1699685577419" duration="9509000" />
+      <workItem from="1699795963974" duration="436000" />
+      <workItem from="1699796416882" duration="13170000" />
+      <workItem from="1699860933091" duration="13822000" />
+      <workItem from="1699927956744" duration="13491000" />
+      <workItem from="1699945593888" duration="30479000" />
+      <workItem from="1699990108536" duration="5241000" />
+      <workItem from="1699997375020" duration="3378000" />
+      <workItem from="1700030583211" duration="22369000" />
+      <workItem from="1700058310938" duration="182000" />
+      <workItem from="1700058516093" duration="4363000" />
+      <workItem from="1700063036184" duration="1587000" />
+      <workItem from="1700100723670" duration="15475000" />
+      <workItem from="1700120270081" duration="17180000" />
+      <workItem from="1700142219476" duration="1328000" />
+      <workItem from="1700143669623" duration="17308000" />
+      <workItem from="1700165737337" duration="4676000" />
+      <workItem from="1700199798240" duration="13283000" />
+      <workItem from="1700214202848" duration="21482000" />
+      <workItem from="1700290979042" duration="10784000" />
+      <workItem from="1700302147561" duration="1248000" />
+      <workItem from="1700305532258" duration="3652000" />
+      <workItem from="1700309586059" duration="10281000" />
+      <workItem from="1700321764922" duration="6680000" />
+      <workItem from="1700332919877" duration="628000" />
+      <workItem from="1700371394794" duration="13091000" />
+      <workItem from="1700710469874" duration="97000" />
+      <workItem from="1700710582069" duration="9673000" />
+      <workItem from="1700806335284" duration="623000" />
+      <workItem from="1700813990943" duration="901000" />
+      <workItem from="1700854216423" duration="451000" />
+      <workItem from="1700855984381" duration="171000" />
+      <workItem from="1700893693507" duration="3295000" />
+      <workItem from="1700930532629" duration="207000" />
+      <workItem from="1701237571922" duration="12181000" />
+      <workItem from="1701249865725" duration="9900000" />
+      <workItem from="1701263249483" duration="25000" />
+      <workItem from="1701263388224" duration="1687000" />
+      <workItem from="1701266010808" duration="865000" />
+      <workItem from="1701267744311" duration="289000" />
+      <workItem from="1701268096777" duration="1638000" />
+      <workItem from="1701270007424" duration="1848000" />
+      <workItem from="1701309016513" duration="4514000" />
+      <workItem from="1701603914552" duration="4577000" />
+      <workItem from="1701664138783" duration="2253000" />
+      <workItem from="1701667396101" duration="14714000" />
+      <workItem from="1701682163051" duration="6179000" />
+      <workItem from="1701751047059" duration="2593000" />
+      <workItem from="1701753659679" duration="441000" />
+      <workItem from="1701754223940" duration="33225000" />
+      <workItem from="1701824901861" duration="24000" />
+      <workItem from="1701825118692" duration="5753000" />
+      <workItem from="1701830895824" duration="19310000" />
+      <workItem from="1701931100743" duration="3923000" />
+      <workItem from="1702023338069" duration="7837000" />
+      <workItem from="1702032446104" duration="13848000" />
+      <workItem from="1702055280763" duration="672000" />
+      <workItem from="1702097759182" duration="4297000" />
+      <workItem from="1702103894813" duration="10000" />
+      <workItem from="1702103951272" duration="3000" />
+      <workItem from="1702103993160" duration="48000" />
+      <workItem from="1702104043043" duration="16185000" />
+      <workItem from="1702174683794" duration="10533000" />
+      <workItem from="1702278374118" duration="16766000" />
+      <workItem from="1702365518398" duration="15289000" />
+      <workItem from="1702399139939" duration="26000" />
+      <workItem from="1702409125384" duration="19493000" />
+      <workItem from="1702462760709" duration="89000" />
+      <workItem from="1702462863529" duration="79000" />
+      <workItem from="1702462951144" duration="279000" />
+      <workItem from="1702463866180" duration="256000" />
+      <workItem from="1702464134214" duration="35873000" />
+      <workItem from="1702509291697" duration="120000" />
+      <workItem from="1702509427367" duration="29000" />
+      <workItem from="1702509662317" duration="9494000" />
+      <workItem from="1702522210229" duration="32496000" />
+      <workItem from="1702556001030" duration="2805000" />
+      <workItem from="1702559230613" duration="11592000" />
+      <workItem from="1702573137945" duration="242000" />
+      <workItem from="1702573391687" duration="4440000" />
+      <workItem from="1702634479737" duration="20875000" />
+      <workItem from="1702656325667" duration="21107000" />
+      <workItem from="1702683928145" duration="4656000" />
+      <workItem from="1702688612167" duration="13674000" />
+      <workItem from="1702704837477" duration="87000" />
+      <workItem from="1702704934058" duration="6661000" />
+      <workItem from="1702751864110" duration="24199000" />
+      <workItem from="1702780908236" duration="5802000" />
+      <workItem from="1702787600599" duration="12796000" />
+      <workItem from="1702801470024" duration="60000" />
+      <workItem from="1702848061367" duration="17595000" />
+      <workItem from="1702867326346" duration="11074000" />
+      <workItem from="1702878435957" duration="12464000" />
+      <workItem from="1702893090331" duration="35000" />
+      <workItem from="1702893561409" duration="8476000" />
+      <workItem from="1702902970323" duration="103000" />
+      <workItem from="1702908702936" duration="10552000" />
+      <workItem from="1702959752360" duration="26558000" />
+      <workItem from="1703004342743" duration="7561000" />
+      <workItem from="1703037888095" duration="20948000" />
+      <workItem from="1703099159450" duration="15926000" />
+      <workItem from="1703116307926" duration="12275000" />
+      <workItem from="1703153679156" duration="7260000" />
+      <workItem from="1703161718815" duration="33000" />
+      <workItem from="1703161760321" duration="902000" />
+      <workItem from="1703162683181" duration="30270000" />
+      <workItem from="1703195011541" duration="90000" />
+      <workItem from="1703195119377" duration="3931000" />
+      <workItem from="1703207994345" duration="129000" />
+      <workItem from="1703417084220" duration="718000" />
+      <workItem from="1703418051595" duration="153000" />
+      <workItem from="1703418208472" duration="935000" />
+      <workItem from="1703421014793" duration="1978000" />
+      <workItem from="1703438187660" duration="609000" />
+      <workItem from="1703468872445" duration="599000" />
+      <workItem from="1703479400438" duration="19000" />
+      <workItem from="1703507482203" duration="1193000" />
+    </task>
+    <task id="LOCAL-00025" summary=":sparkles: table update">
+      <option name="closed" value="true" />
+      <created>1702504948851</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1702504948851</updated>
+    </task>
+    <task id="LOCAL-00026" summary=":sparkles: ui update">
+      <option name="closed" value="true" />
+      <created>1702504956470</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1702504956470</updated>
+    </task>
+    <task id="LOCAL-00027" summary=":sparkles: ui update">
+      <option name="closed" value="true" />
+      <created>1702514627555</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1702514627555</updated>
+    </task>
+    <task id="LOCAL-00028" summary=":sparkles: ui update">
+      <option name="closed" value="true" />
+      <created>1702520890660</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1702520890660</updated>
+    </task>
+    <task id="LOCAL-00029" summary="update">
+      <option name="closed" value="true" />
+      <created>1702564566147</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1702564566147</updated>
+    </task>
+    <task id="LOCAL-00030" summary="update">
+      <option name="closed" value="true" />
+      <created>1702634619156</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1702634619156</updated>
+    </task>
+    <task id="LOCAL-00031" summary="update">
+      <option name="closed" value="true" />
+      <created>1702637485860</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1702637485860</updated>
+    </task>
+    <task id="LOCAL-00032" summary="add tmp chiptextfield support, a copy of https://github.com/dokar3/ChipTextField, cause its still not support kmp">
+      <option name="closed" value="true" />
+      <created>1702776193379</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1702776193380</updated>
+    </task>
+    <task id="LOCAL-00033" summary="add tmp chiptextfield support, a copy of https://github.com/dokar3/ChipTextField, cause its still not support kmp">
+      <option name="closed" value="true" />
+      <created>1702776247873</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1702776247873</updated>
+    </task>
+    <task id="LOCAL-00034" summary="some improve">
+      <option name="closed" value="true" />
+      <created>1702776269704</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1702776269704</updated>
+    </task>
+    <task id="LOCAL-00035" summary="some improve">
+      <option name="closed" value="true" />
+      <created>1702776293570</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1702776293570</updated>
+    </task>
+    <task id="LOCAL-00036" summary="some improve">
+      <option name="closed" value="true" />
+      <created>1702786232297</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1702786232297</updated>
+    </task>
+    <task id="LOCAL-00037" summary="add spotless &amp; ktlint">
+      <option name="closed" value="true" />
+      <created>1702794047170</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1702794047170</updated>
+    </task>
+    <task id="LOCAL-00038" summary="update">
+      <option name="closed" value="true" />
+      <created>1702798974674</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1702798974674</updated>
+    </task>
+    <task id="LOCAL-00039" summary="update">
+      <option name="closed" value="true" />
+      <created>1702801517258</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1702801517258</updated>
+    </task>
+    <task id="LOCAL-00040" summary="update">
+      <option name="closed" value="true" />
+      <created>1702862647569</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1702862647569</updated>
+    </task>
+    <task id="LOCAL-00041" summary="update">
+      <option name="closed" value="true" />
+      <created>1702865916717</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1702865916717</updated>
+    </task>
+    <task id="LOCAL-00042" summary="module refactor">
+      <option name="closed" value="true" />
+      <created>1702869865862</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1702869865862</updated>
+    </task>
+    <task id="LOCAL-00043" summary="about page &amp; mediaplayer in desktop">
+      <option name="closed" value="true" />
+      <created>1702887756735</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1702887756735</updated>
+    </task>
+    <task id="LOCAL-00044" summary=":bug: downloadtask">
+      <option name="closed" value="true" />
+      <created>1702899318008</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1702899318008</updated>
+    </task>
+    <task id="LOCAL-00045" summary=":bug: downloadtask">
+      <option name="closed" value="true" />
+      <created>1702901294419</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1702901294419</updated>
+    </task>
+    <task id="LOCAL-00046" summary=":sparkles: semver support">
+      <option name="closed" value="true" />
+      <created>1702902691789</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1702902691789</updated>
+    </task>
+    <task id="LOCAL-00047" summary=":construction: ci update">
+      <option name="closed" value="true" />
+      <created>1702913039234</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1702913039234</updated>
+    </task>
+    <task id="LOCAL-00048" summary=":bug: fix downloaded filename">
+      <option name="closed" value="true" />
+      <created>1702918003606</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1702918003606</updated>
+    </task>
+    <task id="LOCAL-00049" summary=":construction: ci update">
+      <option name="closed" value="true" />
+      <created>1702918316460</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1702918316460</updated>
+    </task>
+    <task id="LOCAL-00050" summary=":memo: add Readme.md">
+      <option name="closed" value="true" />
+      <created>1702922061446</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1702922061447</updated>
+    </task>
+    <task id="LOCAL-00051" summary=":sparkles: add settings">
+      <option name="closed" value="true" />
+      <created>1702980224580</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1702980224580</updated>
+    </task>
+    <task id="LOCAL-00052" summary=":bug: import&amp;export playlist error">
+      <option name="closed" value="true" />
+      <created>1702983281398</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1702983281398</updated>
+    </task>
+    <task id="LOCAL-00053" summary=":bug: top playlistId">
+      <option name="closed" value="true" />
+      <created>1702983710628</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1702983710628</updated>
+    </task>
+    <task id="LOCAL-00054" summary=":sparkles: img source">
+      <option name="closed" value="true" />
+      <created>1702985222926</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1702985222926</updated>
+    </task>
+    <task id="LOCAL-00055" summary=":bug: fix snackbar msg">
+      <option name="closed" value="true" />
+      <created>1702988078700</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1702988078701</updated>
+    </task>
+    <task id="LOCAL-00056" summary=":bug: fix snackbar msg">
+      <option name="closed" value="true" />
+      <created>1702988152840</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1702988152841</updated>
+    </task>
+    <task id="LOCAL-00057" summary="ui update">
+      <option name="closed" value="true" />
+      <created>1703009014596</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1703009014596</updated>
+    </task>
+    <task id="LOCAL-00058" summary=":recycle: some refactor">
+      <option name="closed" value="true" />
+      <created>1703107040321</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1703107040322</updated>
+    </task>
+    <task id="LOCAL-00059" summary=":memo: update Readme.md">
+      <option name="closed" value="true" />
+      <created>1703107368812</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1703107368812</updated>
+    </task>
+    <task id="LOCAL-00060" summary=":necktie: add feedback component">
+      <option name="closed" value="true" />
+      <created>1703113758356</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1703113758356</updated>
+    </task>
+    <task id="LOCAL-00061" summary=":art: update UI">
+      <option name="closed" value="true" />
+      <created>1703165638099</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1703165638100</updated>
+    </task>
+    <task id="LOCAL-00062" summary=":art: multi folder support">
+      <option name="closed" value="true" />
+      <created>1703170233628</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1703170233628</updated>
+    </task>
+    <task id="LOCAL-00063" summary=":art: multi folder support">
+      <option name="closed" value="true" />
+      <created>1703170237628</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1703170237628</updated>
+    </task>
+    <task id="LOCAL-00064" summary=":art: multi folder support">
+      <option name="closed" value="true" />
+      <created>1703170262608</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1703170262608</updated>
+    </task>
+    <task id="LOCAL-00065" summary=":art: multi folder support">
+      <option name="closed" value="true" />
+      <created>1703174116868</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1703174116868</updated>
+    </task>
+    <task id="LOCAL-00066" summary=":art: multi folder support">
+      <option name="closed" value="true" />
+      <created>1703174866329</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1703174866329</updated>
+    </task>
+    <task id="LOCAL-00067" summary=":art: multi folder support">
+      <option name="closed" value="true" />
+      <created>1703174915728</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1703174915728</updated>
+    </task>
+    <task id="LOCAL-00068" summary=":art: multi folder support">
+      <option name="closed" value="true" />
+      <created>1703179337743</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1703179337743</updated>
+    </task>
+    <task id="LOCAL-00069" summary=":art: multi folder support">
+      <option name="closed" value="true" />
+      <created>1703179697306</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1703179697306</updated>
+    </task>
+    <task id="LOCAL-00070" summary=":sparkles: temp backup &amp; restore support">
+      <option name="closed" value="true" />
+      <created>1703191128322</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1703191128323</updated>
+    </task>
+    <task id="LOCAL-00071" summary=":sparkles: check app update">
+      <option name="closed" value="true" />
+      <created>1703194708050</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1703194708050</updated>
+    </task>
+    <task id="LOCAL-00072" summary=":bookmark: v0.0.2-alpha01">
+      <option name="closed" value="true" />
+      <created>1703201419298</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1703201419298</updated>
+    </task>
+    <task id="LOCAL-00073" summary=":art: apply spotless">
+      <option name="closed" value="true" />
+      <created>1703202531905</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1703202531905</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.sq" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="master" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="some improve" />
+    <MESSAGE value="add spotless &amp; ktlint" />
+    <MESSAGE value="update" />
+    <MESSAGE value="module refactor" />
+    <MESSAGE value="about page &amp; mediaplayer in desktop" />
+    <MESSAGE value=":bug: downloadtask" />
+    <MESSAGE value=":sparkles: semver support" />
+    <MESSAGE value=":bug: fix downloaded filename" />
+    <MESSAGE value=":construction: ci update" />
+    <MESSAGE value=":memo: add Readme.md" />
+    <MESSAGE value=":sparkles: add settings" />
+    <MESSAGE value=":bug: import&amp;export playlist error" />
+    <MESSAGE value=":bug: top playlistId" />
+    <MESSAGE value=":sparkles: img source" />
+    <MESSAGE value=":bug: fix snackbar msg" />
+    <MESSAGE value="ui update" />
+    <MESSAGE value=":recycle: some refactor" />
+    <MESSAGE value=":memo: update Readme.md" />
+    <MESSAGE value=":necktie: add feedback component" />
+    <MESSAGE value=":art: update UI" />
+    <MESSAGE value=":art: multi folder support" />
+    <MESSAGE value=":sparkles: temp backup &amp; restore support" />
+    <MESSAGE value=":sparkles: check app update" />
+    <MESSAGE value=":bookmark: v0.0.2-alpha01" />
+    <MESSAGE value=":art: apply spotless" />
+    <option name="LAST_COMMIT_MESSAGE" value=":art: apply spotless" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$USER_HOME$/Library/Java/JavaVirtualMachines/jbr-17.0.9/Contents/Home/lib/src.zip!/java.base/java/io/IOException.java</url>
+          <line>36</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.lingala.zip4j/zip4j/2.11.5/34a780b1f60230af0578bdb024709b17c94bdc67/zip4j-2.11.5-sources.jar!/net/lingala/zip4j/ZipFile.java</url>
+          <line>440</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/utils/src/commonTest/kotlin/io/ktlab/bshelper/utils/BSMapUtilsTest.kt</url>
+          <line>13</line>
+          <option name="timeStamp" value="114" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/model/mapper/GetAllMapByPlaylistIdMapper.kt</url>
+          <line>146</line>
+          <option name="timeStamp" value="196" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/ui/screens/beatsaver/components/filters/NPSRangeSlider.kt</url>
+          <line>54</line>
+          <option name="timeStamp" value="308" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/ui/components/ResizeHeightRow.kt</url>
+          <line>26</line>
+          <option name="timeStamp" value="393" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/ui/components/ResizeHeightRow.kt</url>
+          <line>25</line>
+          <option name="timeStamp" value="394" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/ui/components/ResizeHeightRow.kt</url>
+          <line>28</line>
+          <option name="timeStamp" value="395" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="io.ktlab.kown.DownloadTaskQueue" memberName="client" />
+        <PinnedItemInfo parentTag="java.io.EOFException" memberName="cause" />
+        <PinnedItemInfo parentTag="io.ktlab.bshelper.viewmodel.BeatSaverViewModelState" memberName="multiSelectedBSMap" />
+        <PinnedItemInfo parentTag="io.beatmaps.common.beatsaber.BSDifficulty" memberName="version" />
+        <PinnedItemInfo parentTag="io.ktlab.bshelper.viewmodel.BeatSaverViewModel" memberName="viewModelState" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/cm_bs_helper$FileUtilKtTest_asValidFilenameTest2.ic" NAME="FileUtilKtTest.asValidFilenameTest2 覆盖结果" MODIFIED="1703012263629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>
