@@ -9,21 +9,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e843cb6-7c80-4991-bee4-eded6e73c618" name="更改" comment=":art: apply spotless">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/desktopApp_jvm.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/migrations.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/Readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/ui/screens/toolbox/components/MapDownloadTaskCard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/ui/screens/toolbox/components/MapDownloadTaskCard.kt" afterDir="false" />
+    <list default="true" id="0e843cb6-7c80-4991-bee4-eded6e73c618" name="更改" comment="update">
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -397,12 +384,6 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="cm-bs-helper [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -687,14 +668,7 @@
       <workItem from="1703468872445" duration="599000" />
       <workItem from="1703479400438" duration="19000" />
       <workItem from="1703507482203" duration="1193000" />
-    </task>
-    <task id="LOCAL-00025" summary=":sparkles: table update">
-      <option name="closed" value="true" />
-      <created>1702504948851</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1702504948851</updated>
+      <workItem from="1703510118318" duration="144000" />
     </task>
     <task id="LOCAL-00026" summary=":sparkles: ui update">
       <option name="closed" value="true" />
@@ -1080,7 +1054,15 @@
       <option name="project" value="LOCAL" />
       <updated>1703202531905</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="update">
+      <option name="closed" value="true" />
+      <created>1703510241330</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1703510241330</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1130,7 +1112,6 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="some improve" />
     <MESSAGE value="add spotless &amp; ktlint" />
-    <MESSAGE value="update" />
     <MESSAGE value="module refactor" />
     <MESSAGE value="about page &amp; mediaplayer in desktop" />
     <MESSAGE value=":bug: downloadtask" />
@@ -1153,7 +1134,8 @@
     <MESSAGE value=":sparkles: check app update" />
     <MESSAGE value=":bookmark: v0.0.2-alpha01" />
     <MESSAGE value=":art: apply spotless" />
-    <option name="LAST_COMMIT_MESSAGE" value=":art: apply spotless" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
