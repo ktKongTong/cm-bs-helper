@@ -20,7 +20,6 @@ import okio.Path
 import okio.blackholeSink
 import okio.buffer
 import okio.source
-import kotlin.math.log
 
 fun newFSPlaylist(
     name: String,
@@ -129,7 +128,7 @@ class BSMapUtils {
                     null
                 }
             val (hash, err) = mapDigest(mapPath)
-            logger.debug { "hash computed：${mapPath}" }
+            logger.trace { "hash computed：${mapPath}" }
             if (err != null) {
                 return IExtractedMapInfo.ErrorMapInfo(hash, mapId, mapPath, null, err)
             }
@@ -184,7 +183,6 @@ class BSMapUtils {
                     )
                 }
             }
-            logger.debug { "try close" }
             return if (mapId != null) {
                 IExtractedMapInfo.BSMapInfo(
                     hash = hash,

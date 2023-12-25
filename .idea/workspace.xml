@@ -9,15 +9,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e843cb6-7c80-4991-bee4-eded6e73c618" name="更改" comment="update">
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+    <list default="true" id="0e843cb6-7c80-4991-bee4-eded6e73c618" name="更改" comment=":bookmark: v0.0.2-alpha05">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/desktopApp_jvm.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/desktopApp_jvm.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/shared_jvm.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/shared_jvm.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/data/PlaylistScannerV2.kt" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/data/PlaylistScannerV2.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/utils/BSMapUtil.kt" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/commonMain/kotlin/io/ktlab/bshelper/utils/BSMapUtil.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PA811CMGGB190179G]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/sisyphus/.android/avd/Pixel_C_API_29.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -167,102 +172,101 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Android 应用.androidApp.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.BSMapUtilsTest.testMapDigest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.FileUtilKtTest.asValidFilename.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.FileUtilKtTest.asValidFilenameTest2.executor&quot;: &quot;Coverage&quot;,
-    &quot;Gradle.FileUtilKtTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.FileUtilKtTests.asValidFilename.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.FileUtilKtTests.asValidFilenameTest2.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.FileUtilKtTests.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Main [jvm].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Preview: io.ktlab.bshelper.ui.PreviewKt.MapOnlinePreviewPreview.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Preview: io.ktlab.bshelper.ui.components.MapOnlinePreview_jvmKt.MapOnlinePreviewPreview.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Preview: io.ktlab.bshelper.ui.components.SortButtonKt.SortButtonPreview.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Preview: io.ktlab.bshelper.ui.screens.beatsaver.components.MapFilterPanelKt.MapOnlinePreviewPreview.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Preview: io.ktlab.bshelper.ui.screens.home.bsmap.MapCardKt.PreviewMapCard.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Preview: io.ktlab.bshelper.ui.screens.toolbox.PrewviewKt.Preview.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [assembleDebug].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [assembleRelease].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [copySpotlessPreCommitHook].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [desktopRun].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [lintAnalyzeDebug].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [lintFix].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [lint].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [packageMsi].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [spotlessApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [spotlessCheck].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [spotlessDiagnose].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [spotlessKotlinApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper [spotlessKotlin].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:androidApp [assembleDebug].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:androidApp [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:androidApp [spotlessApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:bsmg [spotlessApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:common [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:common [lintAnalyzeDebug].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:common [lint].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:common [spotlessApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:common [spotlessCheck].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:common [spotlessKotlinApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:common [spotlessKotlinGradle].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:common [spotlessKotlin].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:desktopApp [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:desktopApp [run].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:desktopApp [spotlessApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:desktopApp [spotlessCheck].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:desktopApp [spotlessKotlinApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:desktopApp [spotlessKotlin].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:model [resolveIdeDependencies].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:model [spotlessApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:platformService [spotlessApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:platformService [spotlessDiagnose].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:platformService [spotlessJava].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:platformService [spotlessKotlin].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:repository [spotlessApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:shared [spotlessApply].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:shared [spotlessKotlin].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.cm-bs-helper:utils [spotlessApply].executor&quot;: &quot;Run&quot;,
-    &quot;PROJECT_TRUSTED_KEY&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;com.github.patou.gitmoji.display-icon&quot;: &quot;emoji&quot;,
-    &quot;com.github.patou.gitmoji.text-after-unicode&quot;: &quot; &quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit4&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4&quot;: &quot;&quot;,
-    &quot;external.system.has.shared.sources&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_directory_selection&quot;: &quot;/Users/sisyphus/code/cm-bs-helper/shared/src/commonTest/kotlin/io/ktlab/bshelper/utils&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/sisyphus/code/cm-bs-helper&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.57816094&quot;,
-    &quot;recommended.upgrade.do.not.ask.for.project&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
-    &quot;stored_options&quot;: &quot;{\&quot;dialectConnections\&quot;:{\&quot;app.cash.sqldelight.dialects.sqlite_3_18.SqliteDialect\&quot;:{\&quot;orderedOptions\&quot;:[],\&quot;serializedProperties\&quot;:{}}}}&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Android 应用.androidApp.executor": "Run",
+    "Gradle.BSMapUtilsTest.testMapDigest.executor": "Run",
+    "Gradle.FileUtilKtTest.asValidFilename.executor": "Run",
+    "Gradle.FileUtilKtTest.asValidFilenameTest2.executor": "Coverage",
+    "Gradle.FileUtilKtTest.executor": "Run",
+    "Gradle.FileUtilKtTests.asValidFilename.executor": "Run",
+    "Gradle.FileUtilKtTests.asValidFilenameTest2.executor": "Run",
+    "Gradle.FileUtilKtTests.executor": "Run",
+    "Gradle.Main [jvm].executor": "Run",
+    "Gradle.Preview: io.ktlab.bshelper.ui.PreviewKt.MapOnlinePreviewPreview.executor": "Run",
+    "Gradle.Preview: io.ktlab.bshelper.ui.components.MapOnlinePreview_jvmKt.MapOnlinePreviewPreview.executor": "Run",
+    "Gradle.Preview: io.ktlab.bshelper.ui.components.SortButtonKt.SortButtonPreview.executor": "Run",
+    "Gradle.Preview: io.ktlab.bshelper.ui.screens.beatsaver.components.MapFilterPanelKt.MapOnlinePreviewPreview.executor": "Run",
+    "Gradle.Preview: io.ktlab.bshelper.ui.screens.home.bsmap.MapCardKt.PreviewMapCard.executor": "Run",
+    "Gradle.Preview: io.ktlab.bshelper.ui.screens.toolbox.PrewviewKt.Preview.executor": "Run",
+    "Gradle.cm-bs-helper [assembleDebug].executor": "Run",
+    "Gradle.cm-bs-helper [assembleRelease].executor": "Run",
+    "Gradle.cm-bs-helper [clean].executor": "Run",
+    "Gradle.cm-bs-helper [copySpotlessPreCommitHook].executor": "Run",
+    "Gradle.cm-bs-helper [desktopRun].executor": "Run",
+    "Gradle.cm-bs-helper [lintAnalyzeDebug].executor": "Run",
+    "Gradle.cm-bs-helper [lintFix].executor": "Run",
+    "Gradle.cm-bs-helper [lint].executor": "Run",
+    "Gradle.cm-bs-helper [packageMsi].executor": "Run",
+    "Gradle.cm-bs-helper [spotlessApply].executor": "Run",
+    "Gradle.cm-bs-helper [spotlessCheck].executor": "Run",
+    "Gradle.cm-bs-helper [spotlessDiagnose].executor": "Run",
+    "Gradle.cm-bs-helper [spotlessKotlinApply].executor": "Run",
+    "Gradle.cm-bs-helper [spotlessKotlin].executor": "Run",
+    "Gradle.cm-bs-helper:androidApp [assembleDebug].executor": "Run",
+    "Gradle.cm-bs-helper:androidApp [clean].executor": "Run",
+    "Gradle.cm-bs-helper:androidApp [spotlessApply].executor": "Run",
+    "Gradle.cm-bs-helper:bsmg [spotlessApply].executor": "Run",
+    "Gradle.cm-bs-helper:common [clean].executor": "Run",
+    "Gradle.cm-bs-helper:common [lintAnalyzeDebug].executor": "Run",
+    "Gradle.cm-bs-helper:common [lint].executor": "Run",
+    "Gradle.cm-bs-helper:common [spotlessApply].executor": "Run",
+    "Gradle.cm-bs-helper:common [spotlessCheck].executor": "Run",
+    "Gradle.cm-bs-helper:common [spotlessKotlinApply].executor": "Run",
+    "Gradle.cm-bs-helper:common [spotlessKotlinGradle].executor": "Run",
+    "Gradle.cm-bs-helper:common [spotlessKotlin].executor": "Run",
+    "Gradle.cm-bs-helper:desktopApp [clean].executor": "Run",
+    "Gradle.cm-bs-helper:desktopApp [run].executor": "Run",
+    "Gradle.cm-bs-helper:desktopApp [spotlessApply].executor": "Run",
+    "Gradle.cm-bs-helper:desktopApp [spotlessCheck].executor": "Run",
+    "Gradle.cm-bs-helper:desktopApp [spotlessKotlinApply].executor": "Run",
+    "Gradle.cm-bs-helper:desktopApp [spotlessKotlin].executor": "Run",
+    "Gradle.cm-bs-helper:model [resolveIdeDependencies].executor": "Run",
+    "Gradle.cm-bs-helper:model [spotlessApply].executor": "Run",
+    "Gradle.cm-bs-helper:platformService [spotlessApply].executor": "Run",
+    "Gradle.cm-bs-helper:platformService [spotlessDiagnose].executor": "Run",
+    "Gradle.cm-bs-helper:platformService [spotlessJava].executor": "Run",
+    "Gradle.cm-bs-helper:platformService [spotlessKotlin].executor": "Run",
+    "Gradle.cm-bs-helper:repository [spotlessApply].executor": "Run",
+    "Gradle.cm-bs-helper:shared [spotlessApply].executor": "Run",
+    "Gradle.cm-bs-helper:shared [spotlessKotlin].executor": "Run",
+    "Gradle.cm-bs-helper:utils [spotlessApply].executor": "Run",
+    "PROJECT_TRUSTED_KEY": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "com.github.patou.gitmoji.display-icon": "emoji",
+    "com.github.patou.gitmoji.text-after-unicode": " ",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit4",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4": "",
+    "external.system.has.shared.sources": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_directory_selection": "/Users/sisyphus/code/cm-bs-helper/shared/src/commonTest/kotlin/io/ktlab/bshelper/utils",
+    "last_opened_file_path": "/Users/sisyphus/code/cm-bs-helper",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.57816094",
+    "recommended.upgrade.do.not.ask.for.project": "true",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "stored_options": "{\"dialectConnections\":{\"app.cash.sqldelight.dialects.sqlite_3_18.SqliteDialect\":{\"orderedOptions\":[],\"serializedProperties\":{}}}}",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.android.tools.idea.sqlite.queryhistory&quot;: [
-      &quot;SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    m.name\nFROM FSPlaylist p\n\n\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\n\nWHERE p.id = '/storage/emulated/0/Download'&quot;,
-      &quot;SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp\nFROM FSPlaylist p\n\n\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\n\nWHERE p.id = '/storage/emulated/0/Download'&quot;,
-      &quot;SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,\n    MAX(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS max_nps,\n    MIN(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS min_nps,\n    AVG(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS avg_njs,\n    MAX(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS max_njs,\n    MIN(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS min_njs,\n    AVG(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS avg_notes,\n    MAX(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS max_notes,\n    MIN(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS min_notes,\n    AVG(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS avg_bombs,\n    MAX(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS max_bombs,\n    MIN(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS min_bombs,\n    AVG(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS avg_obstacles,\n    MAX(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS max_obstacles,\n    MIN(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS min_obstacles\nFROM FSPlaylist p\n\n\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\nLEFT JOIN MapDifficulty md ON m.hash = md.hash AND m.mapId = md.mapId\nWHERE p.id = '/storage/emulated/0/Download'&quot;,
-      &quot;SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,\n    MAX(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS max_nps,\n    MIN(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS min_nps,\n    AVG(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS avg_njs,\n    MAX(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS max_njs,\n    MIN(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS min_njs,\n    AVG(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS avg_notes,\n    MAX(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS max_notes,\n    MIN(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS min_notes,\n    AVG(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS avg_bombs,\n    MAX(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS max_bombs,\n    MIN(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS min_bombs,\n    AVG(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS avg_obstacles,\n    MAX(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS max_obstacles,\n    MIN(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS min_obstacles,\n    map_summary.map_count AS map_count,\n    map_summary.avg_duration AS avg_duration,\n    map_summary.max_duration AS max_duration,\n    map_summary.min_duration AS min_duration,\n    map_summary.sum_duration AS sum_duration\nFROM FSPlaylist p\n\nLEFT JOIN (\n    SELECT\n        m.playlistBasePath,\n        m.playlistId,\n        COUNT(m.hash) AS map_count,\n        AVG(m.duration) AS avg_duration,\n        MAX(m.duration) AS max_duration,\n        MIN(m.duration) AS min_duration,\n        SUM(m.duration) AS sum_duration\n    FROM FSMap m\n    GROUP BY m.playlistBasePath, m.playlistId\n) map_summary ON p.basePath = map_summary.playlistBasePath AND p.id = map_summary.playlistId\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\nLEFT JOIN MapDifficulty md ON m.hash = md.hash AND m.mapId = md.mapId\nWHERE p.id = '/storage/emulated/0/Download'&quot;,
-      &quot;SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,\n    MAX(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS max_nps,\n    MIN(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS min_nps,\n    AVG(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS avg_njs,\n    MAX(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS max_njs,\n    MIN(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS min_njs,\n    AVG(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS avg_notes,\n    MAX(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS max_notes,\n    MIN(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS min_notes,\n    AVG(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS avg_bombs,\n    MAX(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS max_bombs,\n    MIN(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS min_bombs,\n    AVG(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS avg_obstacles,\n    MAX(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS max_obstacles,\n    MIN(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS min_obstacles,\n    map_summary.map_count AS map_count,\n    map_summary.avg_duration AS avg_duration,\n    map_summary.max_duration AS max_duration,\n    map_summary.min_duration AS min_duration,\n    map_summary.sum_duration AS sum_duration,\n    BSPlaylist.id AS bsPlaylist_id,\n    BSPlaylist.name AS bsPlaylist_name,\n    BSPlaylist.description AS bsPlaylist_description,\n    BSPlaylist.ownerId  AS bsPlaylist_ownerId,\n    BSPlaylist.curatorId AS bsPlaylist_curatorId,\n    BSPlaylist.downloadURL AS bsPlaylist_downloadURL,\n    BSPlaylist.playlistImage AS bsPlaylist_playlistImage,\n    BSPlaylist.playlistImage512 AS bsPlaylist_playlistImage512,\n    BSPlaylist.songsChangedAt AS bsPlaylist_songsChangedAt,\n    BSPlaylist.updatedAt AS bsPlaylist_updatedAt,\n    BSPlaylist.createdAt AS bsPlaylist_createdAt,\n    BSPlaylist.type AS bsPlaylist_type,\n    BSPlaylist.avgScore AS bsPlaylist_avgScore,\n    BSPlaylist.upVotes AS bsPlaylist_upVotes,\n    BSPlaylist.downVotes AS bsPlaylist_downVotes,\n    BSPlaylist.mapperCount AS bsPlaylist_mapperCount,\n    BSPlaylist.maxNps AS bsPlaylist_maxNps,\n    BSPlaylist.minNps AS bsPlaylist_minNps,\n    BSPlaylist.totalDuration AS bsPlaylist_totalDuration\nFROM FSPlaylist p\n\nLEFT JOIN (\n    SELECT\n        m.playlistBasePath,\n        m.playlistId,\n        COUNT(m.hash) AS map_count,\n        AVG(m.duration) AS avg_duration,\n        MAX(m.duration) AS max_duration,\n        MIN(m.duration) AS min_duration,\n        SUM(m.duration) AS sum_duration\n    FROM FSMap m\n    GROUP BY m.playlistBasePath, m.playlistId\n) map_summary ON p.basePath = map_summary.playlistBasePath AND p.id = map_summary.playlistId\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\nLEFT JOIN MapDifficulty md ON m.hash = md.hash AND m.mapId = md.mapId\nLEFT JOIN BSPlaylist ON p.bsPlaylistId = BSPlaylist.id\nWHERE p.id = '/storage/emulated/0/Download'&quot;
+  "keyToStringList": {
+    "com.android.tools.idea.sqlite.queryhistory": [
+      "SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    m.name\nFROM FSPlaylist p\n\n\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\n\nWHERE p.id = '/storage/emulated/0/Download'",
+      "SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp\nFROM FSPlaylist p\n\n\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\n\nWHERE p.id = '/storage/emulated/0/Download'",
+      "SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,\n    MAX(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS max_nps,\n    MIN(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS min_nps,\n    AVG(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS avg_njs,\n    MAX(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS max_njs,\n    MIN(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS min_njs,\n    AVG(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS avg_notes,\n    MAX(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS max_notes,\n    MIN(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS min_notes,\n    AVG(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS avg_bombs,\n    MAX(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS max_bombs,\n    MIN(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS min_bombs,\n    AVG(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS avg_obstacles,\n    MAX(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS max_obstacles,\n    MIN(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS min_obstacles\nFROM FSPlaylist p\n\n\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\nLEFT JOIN MapDifficulty md ON m.hash = md.hash AND m.mapId = md.mapId\nWHERE p.id = '/storage/emulated/0/Download'",
+      "SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,\n    MAX(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS max_nps,\n    MIN(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS min_nps,\n    AVG(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS avg_njs,\n    MAX(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS max_njs,\n    MIN(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS min_njs,\n    AVG(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS avg_notes,\n    MAX(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS max_notes,\n    MIN(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS min_notes,\n    AVG(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS avg_bombs,\n    MAX(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS max_bombs,\n    MIN(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS min_bombs,\n    AVG(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS avg_obstacles,\n    MAX(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS max_obstacles,\n    MIN(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS min_obstacles,\n    map_summary.map_count AS map_count,\n    map_summary.avg_duration AS avg_duration,\n    map_summary.max_duration AS max_duration,\n    map_summary.min_duration AS min_duration,\n    map_summary.sum_duration AS sum_duration\nFROM FSPlaylist p\n\nLEFT JOIN (\n    SELECT\n        m.playlistBasePath,\n        m.playlistId,\n        COUNT(m.hash) AS map_count,\n        AVG(m.duration) AS avg_duration,\n        MAX(m.duration) AS max_duration,\n        MIN(m.duration) AS min_duration,\n        SUM(m.duration) AS sum_duration\n    FROM FSMap m\n    GROUP BY m.playlistBasePath, m.playlistId\n) map_summary ON p.basePath = map_summary.playlistBasePath AND p.id = map_summary.playlistId\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\nLEFT JOIN MapDifficulty md ON m.hash = md.hash AND m.mapId = md.mapId\nWHERE p.id = '/storage/emulated/0/Download'",
+      "SELECT\n    p.id AS playlist_id,\n    p.basePath AS playlist_basePath,\n    p.name AS playlist_name,\n    p.description AS playlist_description,\n    p.topPlaylist AS playlist_topPlaylist,\n    p.customTags AS playlist_customTags,\n    p.bsPlaylistId AS playlist_bsPlaylistId,\n    p.sync,\n    p.syncTimestamp AS playlist_syncTimestamp,\n    AVG(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS avg_nps,\n    MAX(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS max_nps,\n    MIN(CASE WHEN md.nps IS NOT NULL THEN md.nps END) AS min_nps,\n    AVG(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS avg_njs,\n    MAX(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS max_njs,\n    MIN(CASE WHEN md.njs IS NOT NULL THEN md.njs END) AS min_njs,\n    AVG(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS avg_notes,\n    MAX(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS max_notes,\n    MIN(CASE WHEN md.notes IS NOT NULL THEN md.notes END) AS min_notes,\n    AVG(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS avg_bombs,\n    MAX(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS max_bombs,\n    MIN(CASE WHEN md.bombs IS NOT NULL THEN md.bombs END) AS min_bombs,\n    AVG(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS avg_obstacles,\n    MAX(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS max_obstacles,\n    MIN(CASE WHEN md.obstacles IS NOT NULL THEN md.obstacles END) AS min_obstacles,\n    map_summary.map_count AS map_count,\n    map_summary.avg_duration AS avg_duration,\n    map_summary.max_duration AS max_duration,\n    map_summary.min_duration AS min_duration,\n    map_summary.sum_duration AS sum_duration,\n    BSPlaylist.id AS bsPlaylist_id,\n    BSPlaylist.name AS bsPlaylist_name,\n    BSPlaylist.description AS bsPlaylist_description,\n    BSPlaylist.ownerId  AS bsPlaylist_ownerId,\n    BSPlaylist.curatorId AS bsPlaylist_curatorId,\n    BSPlaylist.downloadURL AS bsPlaylist_downloadURL,\n    BSPlaylist.playlistImage AS bsPlaylist_playlistImage,\n    BSPlaylist.playlistImage512 AS bsPlaylist_playlistImage512,\n    BSPlaylist.songsChangedAt AS bsPlaylist_songsChangedAt,\n    BSPlaylist.updatedAt AS bsPlaylist_updatedAt,\n    BSPlaylist.createdAt AS bsPlaylist_createdAt,\n    BSPlaylist.type AS bsPlaylist_type,\n    BSPlaylist.avgScore AS bsPlaylist_avgScore,\n    BSPlaylist.upVotes AS bsPlaylist_upVotes,\n    BSPlaylist.downVotes AS bsPlaylist_downVotes,\n    BSPlaylist.mapperCount AS bsPlaylist_mapperCount,\n    BSPlaylist.maxNps AS bsPlaylist_maxNps,\n    BSPlaylist.minNps AS bsPlaylist_minNps,\n    BSPlaylist.totalDuration AS bsPlaylist_totalDuration\nFROM FSPlaylist p\n\nLEFT JOIN (\n    SELECT\n        m.playlistBasePath,\n        m.playlistId,\n        COUNT(m.hash) AS map_count,\n        AVG(m.duration) AS avg_duration,\n        MAX(m.duration) AS max_duration,\n        MIN(m.duration) AS min_duration,\n        SUM(m.duration) AS sum_duration\n    FROM FSMap m\n    GROUP BY m.playlistBasePath, m.playlistId\n) map_summary ON p.basePath = map_summary.playlistBasePath AND p.id = map_summary.playlistId\n\nLEFT JOIN FSMap m ON p.basePath = m.playlistBasePath AND p.id = m.playlistId\nLEFT JOIN MapDifficulty md ON m.hash = md.hash AND m.mapId = md.mapId\nLEFT JOIN BSPlaylist ON p.bsPlaylistId = BSPlaylist.id\nWHERE p.id = '/storage/emulated/0/Download'"
     ]
   }
-}</component>
+}]]></component>
   <component name="QodanaCloudProjectLink">
     <option name="lastReportId" value="71dKb" />
     <option name="linkedProjectId" value="zZbv8" />
@@ -668,15 +672,7 @@
       <workItem from="1703468872445" duration="599000" />
       <workItem from="1703479400438" duration="19000" />
       <workItem from="1703507482203" duration="1193000" />
-      <workItem from="1703510118318" duration="144000" />
-    </task>
-    <task id="LOCAL-00026" summary=":sparkles: ui update">
-      <option name="closed" value="true" />
-      <created>1702504956470</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1702504956470</updated>
+      <workItem from="1703510118318" duration="481000" />
     </task>
     <task id="LOCAL-00027" summary=":sparkles: ui update">
       <option name="closed" value="true" />
@@ -1062,7 +1058,15 @@
       <option name="project" value="LOCAL" />
       <updated>1703510241330</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary=":bookmark: v0.0.2-alpha05">
+      <option name="closed" value="true" />
+      <created>1703510295265</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1703510295265</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1110,7 +1114,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="some improve" />
     <MESSAGE value="add spotless &amp; ktlint" />
     <MESSAGE value="module refactor" />
     <MESSAGE value="about page &amp; mediaplayer in desktop" />
@@ -1135,7 +1138,8 @@
     <MESSAGE value=":bookmark: v0.0.2-alpha01" />
     <MESSAGE value=":art: apply spotless" />
     <MESSAGE value="update" />
-    <option name="LAST_COMMIT_MESSAGE" value="update" />
+    <MESSAGE value=":bookmark: v0.0.2-alpha05" />
+    <option name="LAST_COMMIT_MESSAGE" value=":bookmark: v0.0.2-alpha05" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

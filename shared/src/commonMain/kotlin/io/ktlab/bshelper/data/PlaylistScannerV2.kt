@@ -271,7 +271,7 @@ class PlaylistScannerV2(
                             ),
                         )
                     scanStateV2.update { it.copy(playlistScanList = it.playlistScanList + playlistScanStateV2) }
-                    logger.debug { "scanningPlaylist: ${path.name}" }
+                    logger.trace { "scanningPlaylist: ${path.name}" }
 
                         files?.forEach { mapDir ->
                             scanStateV2.update {
@@ -290,11 +290,11 @@ class PlaylistScannerV2(
                             if (!BSMapUtils.checkIfBSMap(mapDir)) {
                                 return@forEach
                             }
-                            logger.debug { "try extract mapinfo:${mapDir}" }
+                            logger.trace { "try extract mapinfo:${mapDir}" }
                             val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(mapDir)
-                            logger.debug { "extract mapinfo:${mapDir},over" }
+                            logger.trace { "extract mapinfo:${mapDir},over" }
                             handleExtractMapInfoAndInsertToDB(extractedMapInfo, fsPlaylist) { emit(scanStateV2.value) }
-                            logger.debug { "insert mapinfo:${mapDir},over" }
+                            logger.trace { "insert mapinfo:${mapDir},over" }
 
                         }
 
