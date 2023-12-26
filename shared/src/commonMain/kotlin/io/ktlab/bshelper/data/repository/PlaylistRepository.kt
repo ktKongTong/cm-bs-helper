@@ -9,7 +9,6 @@ import io.ktlab.bshelper.data.api.ToolAPI
 import io.ktlab.bshelper.model.BSHelperDatabase
 import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.model.IPlaylist
-import io.ktlab.bshelper.model.ManageFolder
 import io.ktlab.bshelper.model.Result
 import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.model.bsmg.BPList
@@ -19,7 +18,6 @@ import io.ktlab.bshelper.model.dto.MapItem
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
-import io.ktlab.bshelper.model.enums.GameType
 import io.ktlab.bshelper.model.enums.SyncStateEnum
 import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.scanner.ScanStateV2
@@ -33,13 +31,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
-import java.util.*
 
 class PlaylistRepository(
     private val userPreferenceRepository: UserPreferenceRepository,
@@ -64,7 +59,9 @@ class PlaylistRepository(
     // todo: EditPlaylist
     fun editPlaylist(playlist: FSPlaylist) {
         // if name changed, rename dir?
-
+        // 1. update playlist db
+        // 2. update playlist dir
+        // 3. update playlist item
         val manageDir = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.path!!.toPath()
         if (!FileSystem.SYSTEM.exists(manageDir)) {
             return

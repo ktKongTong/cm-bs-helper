@@ -101,5 +101,6 @@ fun PlaylistCardMenu(
     FSPlaylistFormV2(
         fsPlaylist = fsPlaylist,
         openState = playlistFormOpenState,
+        onSubmitFSPlaylist = { onEdit(it!!) },
     )
 }

@@ -114,7 +114,6 @@ class PlaylistScannerV2(
     suspend fun scanSinglePlaylist(
         basePath: String,
         manageDirId: Long,
-        topPlaylist: Boolean = false,
     ) { //    : Flow<ScanStateV2> = flow
         val playlist = bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectByIds(listOf(basePath)).executeAsOneOrNull()
         if (playlist == null) {
@@ -135,7 +134,7 @@ class PlaylistScannerV2(
             }
         }
 
-        val topPlaylist = playlist.playlist_name == "Custom Top Playlist"
+        val topPlaylist = playlist.playlist_topPlaylist
         bsHelperDAO.fSPlaylistQueries.updateSyncState(SyncStateEnum.SYNCING, Clock.System.now().epochSeconds, basePath)
 
         val oldMaps = bsHelperDAO.fSMapQueries.getAllFSMapByPlaylistId(basePath).executeAsList()
@@ -205,8 +204,7 @@ class PlaylistScannerV2(
             if (changedDir.contains(mapDir)) {
                 val extractedMapInfo = BSMapUtils.extractMapInfoFromDirV2(mapDir)
                 existMap.add(extractedMapInfo)
-                handleExtractMapInfoAndInsertToDB(extractedMapInfo, fsPlaylist) {
-                }
+                handleExtractMapInfoAndInsertToDB(extractedMapInfo, fsPlaylist) {}
             } else {
                 val fsMap = oldMaps.firstOrNull { it.playlistBasePath.toPath().resolve(it.dirName) == mapDir }
                 if (fsMap != null) {

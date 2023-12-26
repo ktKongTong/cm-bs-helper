@@ -2,7 +2,6 @@ package io.ktlab.bshelper.ui.viewmodel
 
 import androidx.compose.material3.SnackbarDuration
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktlab.bshelper.data.Event
 import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.FSMapRepository
@@ -21,7 +20,6 @@ import io.ktlab.bshelper.ui.event.EventBus
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.HomeUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -151,9 +149,9 @@ class HomeViewModel(
                 deletePlaylist(event.targetPlaylist)
             }
             is HomeUIEvent.EditPlaylist -> {
-//                viewModelScope.launch {
-//                    playlistRepository.updatePlaylist(event.resPlaylist)
-//                }
+                viewModelScope.launch {
+                    playlistRepository.editPlaylist(event.resPlaylist)
+                }
             }
             is HomeUIEvent.SyncPlaylist -> {
                 val id = userPreferenceRepository.getCurrentUserPreference().currentManageFolder?.id

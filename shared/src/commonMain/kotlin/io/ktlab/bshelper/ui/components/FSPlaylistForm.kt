@@ -36,6 +36,20 @@ import io.ktlab.bshelper.utils.isValidFilename
 import io.ktlab.bshelper.utils.newFSPlaylist
 
 
+private fun validateFilename(name:String): String {
+    if (!name.isValidFilename()) {
+        return "歌单名中不应包含字符： \\/:*?\"<>|"
+    } else if (name.isEmpty()) {
+        return "歌单名不能为空"
+    } else if (name.length > 255) {
+        return "歌单名过长，应少于 255 个字符"
+    } else if (name.startsWith(".")) {
+        return "歌单名不应以.开头"
+    }
+    return ""
+}
+
+
 @Composable
 fun FSPlaylistFormV2(
     fsPlaylist: FSPlaylist? = null,
@@ -74,19 +88,20 @@ fun FSPlaylistFormV2(
                     value = name,
                     onValueChange = { name = it },
                     supportingText = {
-                        // only show when edit
-                        if (!name.isValidFilename()) {
-                            Text(text = "歌单名不合法")
-                        } else if (name.isEmpty()) {
-                            Text(text = "歌单名不能为空")
-                        } else if (name.length > 255) {
-                            Text(text = "歌单名过长")
-                        } else if (name.startsWith(".")) {
-                            Text(text = "歌单名不能以.开头")
-                        } else if (name.matches(Regex("[^\\\\/:*?\"<>|]+"))) {
-                            Text(text = "歌单名不能包含以下字符: \\/:*?\"<>|")
-                        } else if (checkIfExist(name)) {
-                            Text(text = "歌单名已存在")
+                        if (fsPlaylist == null) {
+                            validateFilename(name)
+                                .takeIf { it.isNotEmpty() }
+                                ?.let { Text(text = it) }
+                            if (checkIfExist(name)) {
+                                Text(text = "歌单名已存在，会自动以 `name (1)` 的模式进行重命名")
+                            }
+                        }else if (fsPlaylist.name != name) {
+                            validateFilename(name)
+                                .takeIf { it.isNotEmpty() }
+                                ?.let { Text(text = it) }
+                            if (checkIfExist(name)) {
+                                Text(text = "歌单名已存在，会自动以 `name (1)` 的模式进行重命名")
+                            }
                         }
                     },
                     label = { Text(text = "名称") },

@@ -43,3 +43,5 @@ bin/
 
 .gitignore
 .idea/gradle.xml
+
+.idea
