@@ -544,13 +544,32 @@ class BeatSaverViewModel(
     }
 
     private fun onSearchMapWithFilter(filterState: MapFilterParam) {
-        viewModelState.update {
-            it.copy(
-                mapFilterPanelState = filterState,
-                mapFlow = mapRepository.getPagingBSMap(filterState).cachedIn(viewModelScope),
-                multiSelectedBSMap = emptySet(),
-                multiSelectMode = false,
-            )
+        if (filterState.queryKey.matches(Regex("^![0-9a-fA-F]{1,5}$"))) {
+            // search mapdetail
+            viewModelScope.launch {
+                viewModelState.update {
+                    it.copy(isLoading = true)
+                }
+                val res = mapRepository.getBSMapById(filterState.queryKey.substring(1))
+                    .successOr(null)
+                if (res != null) {
+                    showMapDetail(res)
+                } else {
+                    EventBus.publish(GlobalUIEvent.ShowSnackBar("未找到对应的map id: ${filterState.queryKey.substring(1)}"))
+                }
+                viewModelState.update {
+                    it.copy(isLoading = false)
+                }
+            }
+        }else {
+            viewModelState.update {
+                it.copy(
+                    mapFilterPanelState = filterState,
+                    mapFlow = mapRepository.getPagingBSMap(filterState).cachedIn(viewModelScope),
+                    multiSelectedBSMap = emptySet(),
+                    multiSelectMode = false,
+                )
+            }
         }
     }
 

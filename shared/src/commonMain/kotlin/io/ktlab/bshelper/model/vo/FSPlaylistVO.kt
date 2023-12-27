@@ -13,6 +13,7 @@ import kotlin.time.toDuration
 
 data class FSPlaylistVO(
     val _name: String,
+    val alias: String?,
     val description: String?,
     val _mapAmount: Int,
     val totalDuration: Long?,
@@ -39,6 +40,7 @@ data class FSPlaylistVO(
         return FSPlaylist(
             id = id,
             name = _name,
+            alias = alias,
             description = description,
             customTags = customTags,
             sync = sync,
@@ -127,6 +129,7 @@ data class FSPlaylistVO(
         fun convertDBOToVO(dbo: FSPlaylistView): FSPlaylistVO {
             return FSPlaylistVO(
                 id = dbo.playlist_id,
+                alias = dbo.playlist_alias,
                 title = dbo.playlist_name,
                 _name = dbo.playlist_name,
                 description = dbo.playlist_description,

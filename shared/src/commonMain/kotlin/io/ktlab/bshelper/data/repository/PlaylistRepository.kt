@@ -26,6 +26,7 @@ import io.ktlab.bshelper.model.vo.BSPlaylistVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
 import io.ktlab.bshelper.utils.asValidFilename
 import io.ktlab.bshelper.utils.newDirEvenIfDirExist
+import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -52,7 +53,7 @@ class PlaylistRepository(
         if (!FileSystem.SYSTEM.exists(manageDir)) {
             return false
         }
-        return bsHelperDAO.fSPlaylistQueries.selectByIds(listOf(manageDir.resolve(playlistName).toString()))
+        return bsHelperDAO.fSPlaylistQueries.selectAllByBasePath(manageDir.resolve(playlistName).toString())
             .executeAsList().firstOrNull()?.let { true } ?: false
     }
 
@@ -92,14 +93,15 @@ class PlaylistRepository(
         val basePath = path.toString()
         val fSPlaylist =
             FSPlaylist(
-                id = basePath,
+                id = UUID.randomUUID().toString(),
                 name = safePlaylistName,
+                alias = playlistName,
                 description = description ?: "custom create playlist",
                 bsPlaylistId = bsPlaylistId,
                 basePath = basePath,
                 manageDirId = manageDirId,
                 sync = SyncStateEnum.SYNCED,
-                syncTimestamp = Clock.System.now().toEpochMilliseconds(),
+                syncTimestamp = Clock.System.now().epochSeconds,
                 customTags = customTags,
                 topPlaylist = false,
             )
@@ -117,16 +119,14 @@ class PlaylistRepository(
         }
     }
 
-    fun deletePlaylistById(id: String) {
+    fun deletePlaylistByBasePath(basePath: String) {
         bsHelperDAO.transaction {
-            FileSystem.SYSTEM.delete(id.toPath())
-            bsHelperDAO.fSPlaylistQueries.deleteById(id)
-            bsHelperDAO.fSMapQueries.deleteFSMapByPlaylistId(id)
+            FileSystem.SYSTEM.deleteRecursively(basePath.toPath(),true)
+            bsHelperDAO.fSPlaylistQueries.deleteByBasePath(basePath)
+            bsHelperDAO.fSMapQueries.deleteFSMapByPlaylistPath(basePath)
         }
     }
-    fun deleteTopPlaylist(id: String) {
-        // todo : delete top playlist
-    }
+
     fun clear() {
         bsHelperDAO.transaction {
             bsHelperDAO.fSMapQueries.deleteAllFSMap()
@@ -189,7 +189,7 @@ class PlaylistRepository(
             }
 
     // fs scan
-    suspend fun scanSinglePlaylist(basePath: String,manageDirId:Long) = playlistScanner.scanSinglePlaylist(basePath,manageDirId)
+    suspend fun scanSinglePlaylist(playlistId: String, basePath: String, manageDirId:Long) = playlistScanner.scanSinglePlaylist(playlistId,basePath,manageDirId)
 
     fun scanPlaylist(basePath: String,manageDirId:Long): Flow<ScanStateV2> = playlistScanner.scanPlaylist(basePath,manageDirId)
 

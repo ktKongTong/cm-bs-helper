@@ -13,6 +13,9 @@ import io.ktlab.bshelper.model.dto.request.MapFilterParam
 import io.ktlab.bshelper.model.mapper.mapToVO
 import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.model.vo.FSPlaylistVO
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -20,9 +23,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import kotlin.time.Duration
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 private val logger = KotlinLogging.logger{}
 
@@ -64,7 +64,7 @@ class FSMapRepository(
                     fsMaps.forEach {
                         bsHelperDAO.fSMapQueries.moveFSMapToPlaylist(
                             targetPlaylist.id,
-                            targetPlaylist.id,
+                            targetPlaylist.basePath,
                             it.mapId,
                             it.playlistId,
                         )
@@ -159,13 +159,13 @@ class FSMapRepository(
         fsMaps: List<FSMap>,
     ): Result<String> {
         try {
+            logger.trace { "deleteFSMapsByPath: playlistId: $playlistId, path: ${fsMaps.firstOrNull()?.playlistBasePath}, ids:${fsMaps.map { it.mapId }}" }
 //            批量删除
             fsMaps.forEach {
                 FileSystem.SYSTEM.deleteRecursively(it.playlistBasePath.toPath().resolve(it.dirName), mustExist = true)
             }
             val mapIds = fsMaps.map { it.mapId }
             bsHelperDAO.fSMapQueries.deleteFSMapByMapIdsAndPlaylistId(mapIds, playlistId)
-//            bsHelperDAO.fSPlaylistQueries.adjustPlaylistMapCntByPlaylistId((-mapIds.count()),playlistId)
         } catch (e: Exception) {
             return Result.Error(e)
         }
@@ -205,7 +205,11 @@ class FSMapRepository(
             .catch {
                 emit(setOf())
             }
-
+    suspend fun getBSMapById(id: String):  Result<BSMapVO> {
+        bsAPIRepository.getBSMap(id)?.let {
+            return Result.Success(it)
+        }?:return Result.Error(Exception("not found"))
+    }
     suspend fun getBSMapByIds(ids: List<String>): Map<String, BSMapVO> {
         val localMap =
             bsHelperDAO.bSMapQueries.selectAllByMapIds(ids).executeAsList().mapToVO().map {

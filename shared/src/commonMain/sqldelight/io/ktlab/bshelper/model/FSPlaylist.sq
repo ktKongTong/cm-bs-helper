@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `FSPlaylist` (
     id TEXT NOT NULL,
     basePath TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
+    alias TEXT DEFAULT NULL,
     description TEXT DEFAULT NULL,
     manageDirId INTEGER NOT NULL,
     topPlaylist INTEGER AS Boolean NOT NULL DEFAULT 0,

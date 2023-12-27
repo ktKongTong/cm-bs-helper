@@ -112,6 +112,9 @@ DELETE FROM FSMap WHERE manageFolderId = ?;
 deleteFSMapByPlaylistId:
 DELETE FROM FSMap WHERE playlistId = ?;
 
+deleteFSMapByPlaylistPath:
+DELETE FROM FSMap WHERE playlistBasePath = ?;
+
 deleteFSMapByPlaylistIds:
 DELETE FROM FSMap WHERE playlistId IN ?;
 

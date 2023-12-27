@@ -16,6 +16,7 @@ import io.ktlab.bshelper.model.enums.SortType
 import io.ktlab.bshelper.model.errorMsg
 import io.ktlab.bshelper.model.successOr
 import io.ktlab.bshelper.model.vo.FSMapVO
+import io.ktlab.bshelper.model.vo.FSPlaylistVO
 import io.ktlab.bshelper.ui.event.EventBus
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.HomeUIEvent
@@ -162,7 +163,7 @@ class HomeViewModel(
                     return
                 }
                 viewModelScope.launch(Dispatchers.IO) {
-                    playlistRepository.scanSinglePlaylist(event.targetPlaylist.getTargetPath(),id)
+                    playlistRepository.scanSinglePlaylist(event.targetPlaylist.id,event.targetPlaylist.getTargetPath(),id)
                 }
             }
             is HomeUIEvent.PlaylistTapped -> {
@@ -351,8 +352,13 @@ class HomeViewModel(
 
     private fun deletePlaylist(playlist: IPlaylist) {
         viewModelScope.launch {
+
+            if ((playlist as FSPlaylistVO).topPlaylist) {
+                EventBus.publish(GlobalUIEvent.ShowSnackBar("无法删除首级歌单，应在setting > 目录管理中删除"))
+                return@launch
+            }
             try {
-                playlistRepository.deletePlaylistById(playlist.id)
+                playlistRepository.deletePlaylistByBasePath(playlist.basePath)
             }catch (e:Exception) {
                 EventBus.publish(GlobalUIEvent.ReportError(e, "delete playlist error"))
             }

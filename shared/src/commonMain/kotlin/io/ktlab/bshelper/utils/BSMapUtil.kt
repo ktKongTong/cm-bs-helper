@@ -9,6 +9,7 @@ import io.ktlab.bshelper.model.bsmg.FSMapInfo
 import io.ktlab.bshelper.model.enums.SyncStateEnum
 import io.ktlab.bshelper.model.scanner.IExtractedMapInfo
 import io.ktlab.bshelper.model.scanner.ScannerException
+import java.util.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -30,6 +31,7 @@ fun newFSPlaylist(
     return FSPlaylist(
         id = "",
         name = name,
+        alias = name,
         description = description,
         sync = SyncStateEnum.SYNCED,
         bsPlaylistId = null,
@@ -50,8 +52,9 @@ fun newFSPlaylist(
     customTags: String? = null,
 ): FSPlaylist {
     return FSPlaylist(
-        id = basePath,
+        id = UUID.randomUUID().toString(),
         name = name,
+        alias = name,
         description = description,
         sync = SyncStateEnum.SYNCED,
         bsPlaylistId = bsPlaylistId,

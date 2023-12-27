@@ -21,12 +21,12 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.request
 import io.ktor.http.URLBuilder
+import kotlin.reflect.full.findAnnotation
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
-import kotlin.reflect.full.findAnnotation
 
 private val logger = KotlinLogging.logger {}
 
@@ -112,6 +112,19 @@ class BeatSaverAPI(private val httpClient: HttpClient) {
             mapOf(map.id to map)
         } else {
             json.decodeFromJsonElement<MapQueryByIdsDTO>(res)
+        }
+    }
+
+    suspend fun getMapsById(id: String): BSMapDTO? {
+        logger.info { "getMapsById: $id" }
+        val res = httpClient.request("$basePath/maps/id/$id").body<JsonElement>()
+        return if (res.jsonObject.containsKey("error")) {
+            val errorMsg = res.jsonObject["error"]
+            logger.error { "getMapsById: error: $errorMsg" }
+            null
+        } else {
+            val map = json.decodeFromJsonElement<BSMapDTO>(res)
+            map
         }
     }
 

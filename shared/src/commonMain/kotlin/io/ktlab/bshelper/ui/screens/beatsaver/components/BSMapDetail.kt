@@ -1,13 +1,27 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.HeartBroken
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -24,10 +38,15 @@ import io.ktlab.bshelper.model.vo.BSMapVO
 import io.ktlab.bshelper.ui.components.AsyncImageWithFallback
 import io.ktlab.bshelper.ui.components.MapTags
 import io.ktlab.bshelper.ui.components.ResizeTwoColumnHeightRow
-import io.ktlab.bshelper.ui.components.labels.*
+import io.ktlab.bshelper.ui.components.labels.BSBPMLabel
+import io.ktlab.bshelper.ui.components.labels.BSDurationLabel
+import io.ktlab.bshelper.ui.components.labels.BSRatingLabel
+import io.ktlab.bshelper.ui.components.labels.BSThumbDownLabel
+import io.ktlab.bshelper.ui.components.labels.BSThumbUpLabel
+import io.ktlab.bshelper.ui.components.labels.DateLabel
 import io.ktlab.bshelper.ui.components.labels.MapperLabel
-import io.ktlab.bshelper.utils.prettyFormat
 import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
+import io.ktlab.bshelper.utils.prettyFormat
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -39,19 +58,42 @@ fun BSMapDetail(
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            TextButton(
-                onClick = { onUIEvent(BeatSaverUIEvent.OnExitSelectedBSMap) },
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(
+                    onClick = { onUIEvent(BeatSaverUIEvent.OnExitSelectedBSMap) },
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                ) {
+                    Text(text = "Back")
+                }
+                Text(
+                    text = "(${map.getID()})",
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(
+                    text = map.getSongName(),
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f,false))
+            IconButton(
+                onClick = { BeatSaverUIEvent.DownloadMap(map) },
                 modifier = Modifier.padding(horizontal = 16.dp),
             ) {
-                Text(text = "Back")
+                Icon(
+                    imageVector = Icons.Rounded.Download,
+                    contentDescription = "Download Icon",
+                    modifier = Modifier.size(24.dp),
+                )
             }
-            Text(
-                text = map.getSongName(),
-                modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.titleLarge,
-            )
+
+
         }
         ResizeTwoColumnHeightRow {
             Column(

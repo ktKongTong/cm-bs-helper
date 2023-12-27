@@ -112,10 +112,11 @@ class PlaylistScannerV2(
     private val scanStateV2 = MutableStateFlow(ScanStateV2())
 
     suspend fun scanSinglePlaylist(
+        playlistId: String,
         basePath: String,
         manageDirId: Long,
     ) { //    : Flow<ScanStateV2> = flow
-        val playlist = bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectByIds(listOf(basePath)).executeAsOneOrNull()
+        val playlist = bsHelperDAO.fSPlaylistViewQueries.fSMapViewSelectByIds(listOf(playlistId)).executeAsOneOrNull()
         if (playlist == null) {
             scanStateV2.update { it.copy(state = ScanStateEventEnum.SCAN_ERROR, totalDirCount = 1, message = "No Such Playlist") }
             return
@@ -125,7 +126,7 @@ class PlaylistScannerV2(
             // if not exist, delete playlist
             if (!it) {
                 // send runtime event to notify playlist deleted
-                bsHelperDAO.fSPlaylistQueries.deleteById(basePath)
+                bsHelperDAO.fSPlaylistQueries.deleteById(playlistId)
                 bsHelperDAO.fSMapQueries.deleteFSMapByPlaylistId(basePath)
 //                if (topPlaylist) {
                 // todo delete all sub playlist
@@ -133,22 +134,27 @@ class PlaylistScannerV2(
                 return
             }
         }
-
+//
         val topPlaylist = playlist.playlist_topPlaylist
         bsHelperDAO.fSPlaylistQueries.updateSyncState(SyncStateEnum.SYNCING, Clock.System.now().epochSeconds, basePath)
 
-        val oldMaps = bsHelperDAO.fSMapQueries.getAllFSMapByPlaylistId(basePath).executeAsList()
+        val oldMaps = bsHelperDAO.fSMapQueries.getAllFSMapByPlaylistId(playlistId).executeAsList()
         val playlistPath = basePath.toPath()
         val allDirs = FileSystem.SYSTEM.list(playlistPath)
         val changedDir =
             allDirs
                 .filter {
+                    // todo, bug fix
+                    //  last modified will not change in such case:
+                    //  dir rename
+                    //  change sub content
+                    //  change permission
                     FileSystem.SYSTEM.metadata(it).lastModifiedAtMillis?.let { lastModifiedAtMillis ->
                         Instant.fromEpochMilliseconds(lastModifiedAtMillis).epochSeconds > playlist.playlist_syncTimestamp
                     } ?: false
                 }
         if (topPlaylist) {
-            val oldPlaylists = bsHelperDAO.fSPlaylistQueries.selectByIds(listOf(basePath)).executeAsList()
+            val oldPlaylists = bsHelperDAO.fSPlaylistQueries.selectByIds(listOf(playlistId)).executeAsList()
             val deletedPlaylist = oldPlaylists.filter { !changedDir.map { it.name }.contains(it.name) }
             bsHelperDAO.fSPlaylistQueries.deleteByIds(deletedPlaylist.map { it.id })
             bsHelperDAO.fSMapQueries.deleteFSMapByPlaylistIds(deletedPlaylist.map { it.id })
@@ -157,9 +163,9 @@ class PlaylistScannerV2(
                     .filter { !BSMapUtils.checkIfBSMap(it) }
             addedPlaylist.forEach {
                 val fsPlaylist =
-                    MutableStateFlow(newFSPlaylist(basePath, manageDirId, name = it.name).copy(sync = SyncStateEnum.SYNCING, syncTimestamp = 0L))
+                    MutableStateFlow(newFSPlaylist(it.toString(), manageDirId, name = it.name).copy(sync = SyncStateEnum.SYNCING, syncTimestamp = 0L))
                 bsHelperDAO.fSPlaylistQueries.insertAnyway(fsPlaylist.value)
-                scanSinglePlaylist(fsPlaylist.value.basePath, manageDirId)
+                scanSinglePlaylist(fsPlaylist.value.id,fsPlaylist.value.basePath, manageDirId)
             }
         }
         // remove not exist map

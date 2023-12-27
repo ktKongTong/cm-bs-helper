@@ -18,6 +18,7 @@ import io.ktlab.bshelper.model.dto.request.PlaylistFilterParam
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.dto.response.BSMapReviewDTO
 import io.ktlab.bshelper.model.dto.response.BSMapperDetailDTO
+import io.ktlab.bshelper.model.vo.BSMapVO
 import kotlinx.coroutines.flow.Flow
 
 class BSAPIRepository(
@@ -39,6 +40,10 @@ class BSAPIRepository(
                 BSMapPagingSource(bsAPI, mapFilterParam)
             },
         ).flow
+    }
+
+    suspend fun getBSMap(id:String): BSMapVO? {
+        return bsAPI.getMapsById(id)?.convertToVO()
     }
 
     fun getPagingBSMapByBSUserId(id: Int): Flow<PagingData<IMap>> {
