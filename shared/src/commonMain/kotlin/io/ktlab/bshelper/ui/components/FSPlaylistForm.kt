@@ -88,14 +88,7 @@ fun FSPlaylistFormV2(
                     value = name,
                     onValueChange = { name = it },
                     supportingText = {
-                        if (fsPlaylist == null) {
-                            validateFilename(name)
-                                .takeIf { it.isNotEmpty() }
-                                ?.let { Text(text = it) }
-                            if (checkIfExist(name)) {
-                                Text(text = "歌单名已存在，会自动以 `name (1)` 的模式进行重命名")
-                            }
-                        }else if (fsPlaylist.name != name) {
+                        if (fsPlaylist == null || fsPlaylist.name != name) {
                             validateFilename(name)
                                 .takeIf { it.isNotEmpty() }
                                 ?.let { Text(text = it) }

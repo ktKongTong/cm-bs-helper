@@ -1,12 +1,30 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDateRangePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,18 +38,18 @@ import io.ktlab.bshelper.ui.components.BSSearchBar
 import io.ktlab.bshelper.ui.components.ChipDropDownSelector
 import io.ktlab.bshelper.ui.components.buttons.ClearTextButton
 import io.ktlab.bshelper.ui.components.buttons.QueryTextButton
+import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
 import io.ktlab.bshelper.ui.screens.beatsaver.components.filters.DateRangeSelector
 import io.ktlab.bshelper.ui.screens.beatsaver.components.filters.DurationRangeSlider
 import io.ktlab.bshelper.ui.screens.beatsaver.components.filters.NPSRangeSlider
 import io.ktlab.bshelper.ui.screens.beatsaver.components.filters.RatingRangeSlider
-import io.ktlab.bshelper.ui.event.BeatSaverUIEvent
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
-import java.text.SimpleDateFormat
-import java.util.*
 
 fun millisToDateFormatString(millis: Long?): String? {
     return if (millis == null) {
@@ -39,15 +57,6 @@ fun millisToDateFormatString(millis: Long?): String? {
     } else {
         val sdf = SimpleDateFormat("yyyy-MM-dd")
         sdf.format(Date(millis))
-    }
-}
-
-fun dateStringToLong(dateString: String?): Long? {
-    return if ((dateString == null) or (dateString == "Start Date") or (dateString == "End Date")) {
-        null
-    } else {
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
-        sdf.parse(dateString)!!.time
     }
 }
 
@@ -68,6 +77,24 @@ fun findMapTagByString(
     return null
 }
 
+fun extractMapTagByString(
+    tag: String?,
+    type: MapTagType,
+): List<MapTag> {
+    if (tag == null) {
+        return emptyList()
+    }
+    val tagItem = tag.split(",")
+    val result = mutableListOf<MapTag>()
+    for (item in tagItem) {
+        val genreMapTag = MapTag.allMapTags.find { it.slug == item && it.type == type }
+        if (genreMapTag != null) {
+            result.add(genreMapTag)
+        }
+    }
+    return result
+}
+
 // a bullshit component but useful, maybe improve it later
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -81,11 +108,22 @@ fun MapFilterPanel(
             initialSelectedEndDateMillis = mapFilterPanelState.to?.atStartOfDayIn(TimeZone.currentSystemDefault())?.toEpochMilliseconds(),
             initialDisplayMode = DisplayMode.Picker,
         )
-
     var selectedStyleTagState by remember { mutableStateOf(findMapTagByString(mapFilterPanelState.tags, MapTagType.Style)) }
+    var selectedStyleTagStates by remember { mutableStateOf(extractMapTagByString(mapFilterPanelState.tags,MapTagType.Style)) }
     var selectedGenreTagState by remember { mutableStateOf(findMapTagByString(mapFilterPanelState.tags, MapTagType.Genre)) }
+    var selectedGenreTagStates by remember { mutableStateOf(extractMapTagByString(mapFilterPanelState.tags, MapTagType.Genre)) }
     var featureSelectedState by remember { mutableStateOf(mapFilterPanelState.mapFeatureTagsMap()) }
-
+    var generateTag = {
+        selectedGenreTagState = findMapTagByString(mapFilterPanelState.tags, MapTagType.Genre)
+        val styleTag = selectedStyleTagStates.joinToString(",") { it.slug }
+        val genreTag = selectedGenreTagStates.joinToString(",") { it.slug }
+        val tag = if (styleTag.isNotEmpty() && genreTag.isNotEmpty()) {
+            "$styleTag,$genreTag"
+        } else {
+            styleTag + genreTag
+        }
+        tag
+    }
     val updateFilter = { it: MapFilterParam ->
         onUIEvent(BeatSaverUIEvent.UpdateMapFilterParam(it))
     }
@@ -181,13 +219,25 @@ fun MapFilterPanel(
                                 } else {
                                     featureSelectedState + (it to true)
                                 }
-                            updateFilter(mapFilterPanelState)
+                            updateFilter(mapFilterPanelState.copy(
+                                chroma = featureSelectedState[MapFeatureTag.Chroma],
+                                cinema = featureSelectedState[MapFeatureTag.Cinema],
+                                noodle = featureSelectedState[MapFeatureTag.Noodle],
+                                me = featureSelectedState[MapFeatureTag.MappingExtensions],
+                                ranked = featureSelectedState[MapFeatureTag.Ranked],
+                                curated = featureSelectedState[MapFeatureTag.Curated],
+                                verified = featureSelectedState[MapFeatureTag.VerifiedMapper],
+                                fullSpread = featureSelectedState[MapFeatureTag.FullSpread],
+                                automapper = featureSelectedState[MapFeatureTag.AI],
+                            ))
                         },
                         leadingIcon =
                             if (featureSelectedState[it] == true) {
-                                {
-                                    Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
-                                }
+//                                {
+//                                    Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
+//                                }
+
+                                null
                             } else {
                                 null
                             },
@@ -205,21 +255,23 @@ fun MapFilterPanel(
                     FilterChip(
                         elevation = null,
                         modifier = Modifier.padding(horizontal = 4.dp),
-                        selected = it == selectedStyleTagState,
+                        selected = selectedStyleTagStates.contains(it),
                         onClick = {
-                            selectedStyleTagState =
-                                if (it == selectedStyleTagState) {
-                                    null
-                                } else {
-                                    it
-                                }
-                            updateFilter(mapFilterPanelState)
+                            selectedStyleTagStates = if (selectedStyleTagStates.contains(it)) {
+                                selectedStyleTagStates - it
+                            } else {
+                                selectedStyleTagStates + it
+                            }
+                            updateFilter(mapFilterPanelState.copy(
+                                tags = generateTag(),
+                            ))
                         },
                         leadingIcon =
-                            if (selectedStyleTagState == it) {
-                                {
-                                    Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
-                                }
+                            if (selectedStyleTagStates.contains(it)) {
+//                                {
+//                                    Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
+//                                }
+                                null
                             } else {
                                 null
                             },
@@ -236,18 +288,19 @@ fun MapFilterPanel(
                     FilterChip(
                         elevation = null,
                         modifier = Modifier.padding(horizontal = 4.dp),
-                        selected = it == selectedGenreTagState,
+                        selected = selectedGenreTagStates.contains(it),
                         onClick = {
-                            selectedGenreTagState =
-                                if (it == selectedGenreTagState) {
-                                    null
-                                } else {
-                                    it
-                                }
-                            updateFilter(mapFilterPanelState)
+                            selectedGenreTagStates = if (selectedGenreTagStates.contains(it)) {
+                                selectedGenreTagStates - it
+                            } else {
+                                selectedGenreTagStates + it
+                            }
+                            updateFilter(mapFilterPanelState.copy(
+                                tags = generateTag(),
+                            ))
                         },
                         leadingIcon =
-                            if (selectedGenreTagState == it) {
+                            if (selectedGenreTagStates.contains(it)) {
                                 {
                                     Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
                                 }
