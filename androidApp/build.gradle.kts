@@ -31,7 +31,7 @@ android {
     defaultConfig {
 //        compileSdkPreview = "UpsideDownCake"
         minSdk = 29
-        versionCode = 2
+        versionCode = 3
         versionName = rootProject.version.toString()
         setProperty("archivesBaseName", "${rootProject.name}_v${versionName}_$commitShortId")
     }
