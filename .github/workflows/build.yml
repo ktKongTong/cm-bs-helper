@@ -11,7 +11,7 @@ jobs:
   desktop:
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ windows-latest ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -31,12 +31,13 @@ jobs:
           name: cm-bs-helper-${{ runner.os }}
           path: |
             desktopApp/build/compose/binaries/main-release/msi/*.msi
-            desktopApp/build/compose/binaries/main-release/deb/*.deb
-            desktopApp/build/compose/binaries/main-release/dmg/*.dmg
+            desktopApp/build/compose/binaries/main-release/exe/*.exe
+#            desktopApp/build/compose/binaries/main-release/deb/*.deb
+#            desktopApp/build/compose/binaries/main-release/dmg/*.dmg
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "desktopApp/build/compose/binaries/main-release/msi/*.msi,desktopApp/build/compose/binaries/main-release/deb/*.deb,desktopApp/build/compose/binaries/main-release/dmg/*.dmg"
+          artifacts: "desktopApp/build/compose/binaries/main-release/msi/*.msi,desktopApp/build/compose/binaries/main-release/deb/*.deb,desktopApp/build/compose/binaries/main-release/dmg/*.dmg,desktopApp/build/compose/binaries/main-release/exe/*.exe"
 
   android:
     runs-on: ubuntu-latest
@@ -52,6 +53,15 @@ jobs:
           gradle-version: 8.2
       - name: Build APK
         run: bash ./gradlew assembleDebug --stacktrace
+      - uses: r0adkll/sign-android-release@v1
+        name: Sign app APK
+        id: sign_app
+        with:
+          releaseDirectory: androidApp/build/outputs/apk/debug
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
       - name: Upload Build APK
         uses: actions/upload-artifact@v3
         with:
