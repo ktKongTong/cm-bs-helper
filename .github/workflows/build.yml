@@ -53,15 +53,22 @@ jobs:
           gradle-version: 8.2
       - name: Build APK
         run: bash ./gradlew assembleDebug --stacktrace
-      - uses: r0adkll/sign-android-release@v1
+      - uses: Tlaster/android-sign@v1
         name: Sign app APK
         id: sign_app
         with:
           releaseDirectory: androidApp/build/outputs/apk/debug
+          buildDirectory: androidApp/build
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - name: remove unsigned APK
+        id: remove-unsigned-apk
+        run: find androidApp/build/outputs/apk/debug/ -type f -name '*.apk' ! -name '*-signed.apk' -delete
+      - name: rename APK
+        id: rename-signed-apk
+        run: for file in androidApp/build/outputs/apk/debug/*-signed.apk; do mv "$file" "${file%-signed.apk}.apk"; done
       - name: Upload Build APK
         uses: actions/upload-artifact@v3
         with:
