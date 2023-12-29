@@ -1,4 +1,4 @@
-package io.ktlab.bshelper.ui.screens.toolbox.components
+package io.ktlab.bshelper.ui.screens.toolbox.components.settings
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable

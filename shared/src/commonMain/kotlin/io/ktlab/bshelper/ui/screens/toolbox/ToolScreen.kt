@@ -16,10 +16,10 @@ import io.ktlab.bshelper.model.ManageFolderBackup
 import io.ktlab.bshelper.model.SManageFolder
 import io.ktlab.bshelper.model.scanner.ScanStateV2
 import io.ktlab.bshelper.ui.event.UIEvent
-import io.ktlab.bshelper.ui.screens.toolbox.components.DocPage
 import io.ktlab.bshelper.ui.screens.toolbox.components.settings.BackUp
 import io.ktlab.bshelper.ui.screens.toolbox.components.settings.ClearAllData
 import io.ktlab.bshelper.ui.screens.toolbox.components.settings.ColorPickerRow
+import io.ktlab.bshelper.ui.screens.toolbox.components.settings.DocPage
 import io.ktlab.bshelper.ui.screens.toolbox.components.settings.Feedback
 import io.ktlab.bshelper.ui.screens.toolbox.components.settings.ImageSourceSetup
 import io.ktlab.bshelper.ui.screens.toolbox.components.settings.ManageFolderSetup

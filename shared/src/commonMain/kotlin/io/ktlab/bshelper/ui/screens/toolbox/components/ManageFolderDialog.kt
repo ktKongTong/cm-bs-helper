@@ -3,7 +3,6 @@ package io.ktlab.bshelper.ui.screens.toolbox.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -67,12 +66,11 @@ fun ManageFolderItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column {
+        Column(modifier = Modifier.weight(1f, false)) {
             Text(manageFolder.name, style = MaterialTheme.typography.titleMedium)
             Text(manageFolder.path, style = MaterialTheme.typography.bodySmall)
         }
         var confirmOpenState by remember { mutableStateOf(false) }
-        Spacer(Modifier.weight(1f, false))
         IconButton(
             onClick = { confirmOpenState = true }
         ) {

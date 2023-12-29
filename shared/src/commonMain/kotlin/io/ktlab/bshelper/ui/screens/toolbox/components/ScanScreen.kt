@@ -47,7 +47,7 @@ fun StepContent(
                 Text(text = "扫描错误数：${scanState.playlistScanList.map { it.value.errorStates.count() }.sum()}")
             } else {
                 Text(text = "扫描中，请稍后 ${scanState.scannedDirCount}/${scanState.totalDirCount}")
-                Text(text = "已扫描铺面：${scanState.scannedMapCount}")
+                Text(text = "已扫描谱面：${scanState.scannedMapCount}")
                 Text(text = "当前歌单：${scanState.currentPlaylistDir}")
                 Text(text = "当前谱面：${scanState.currentMapDir}", maxLines = 1)
             }
