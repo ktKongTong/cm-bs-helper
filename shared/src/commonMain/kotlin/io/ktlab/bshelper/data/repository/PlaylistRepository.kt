@@ -94,7 +94,7 @@ class PlaylistRepository(
         val fSPlaylist =
             FSPlaylist(
                 id = UUID.randomUUID().toString(),
-                name = safePlaylistName,
+                name = path.name,
                 alias = playlistName,
                 description = description ?: "custom create playlist",
                 bsPlaylistId = bsPlaylistId,

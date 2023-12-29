@@ -1,18 +1,17 @@
 package io.ktlab.bshelper.utils
 
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
 import okio.source
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 fun String.asValidFilename(): String  = this.replace(Regex("[\\\\/:*?\"<>|]"), "_")
 
 fun String.isValidFilename(): Boolean {
-    return this.isNotEmpty() && this.isNotBlank() && this.length < 255 &&
-            !this.matches(Regex("[^\\\\/:*?\"<>|]+")) && !this.startsWith(".")
+    return this.matches(Regex("[^\\\\/:*?\"<>|]+"))
 }
 
 @OptIn(ExperimentalEncodingApi::class)

@@ -24,6 +24,7 @@ import io.ktlab.bshelper.platform.MediaPlayer
 import io.ktlab.bshelper.ui.event.EventBus
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.UIEvent
+import java.util.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -35,7 +36,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
-import java.util.*
 
 sealed class IMedia {
     data class MapAudioPreview(
@@ -300,7 +300,15 @@ class GlobalViewModel(
             is GlobalUIEvent.CreatePlaylist -> {
                 event.playlist?.let {
                     viewModelScope.launch(exceptionHandler) {
-                        playlistRepository.createNewPlaylist(it.name, it.bsPlaylistId, it.description, it.customTags)
+                        val res = playlistRepository.createNewPlaylist(it.name, it.bsPlaylistId, it.description, it.customTags)
+                        when(res) {
+                            is Result.Success -> {
+                                showSnackBar("创建歌单 ${res.data.name} 成功")
+                            }
+                            is Result.Error -> {
+                                showSnackBar("创建歌单失败, ${res.exception.message}")
+                            }
+                        }
                     }
                 }
             }

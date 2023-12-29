@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,14 +36,14 @@ import io.ktlab.bshelper.utils.newFSPlaylist
 
 
 private fun validateFilename(name:String): String {
-    if (!name.isValidFilename()) {
-        return "歌单名中不应包含字符： \\/:*?\"<>|"
-    } else if (name.isEmpty()) {
+    if (name.isEmpty()) {
         return "歌单名不能为空"
     } else if (name.length > 255) {
         return "歌单名过长，应少于 255 个字符"
     } else if (name.startsWith(".")) {
         return "歌单名不应以.开头"
+    } else if (!name.isValidFilename()) {
+        return "歌单名中不应包含字符： \\/:*?\"<>|"
     }
     return ""
 }
@@ -57,9 +56,9 @@ fun FSPlaylistFormV2(
     onSubmitFSPlaylist: (FSPlaylist?) -> Unit = {},
     openState: MutableState<Boolean>,
 ) {
-    var description by remember { mutableStateOf(fsPlaylist?.description ?: "") }
-    var customTags by remember { mutableStateOf(fsPlaylist?.customTags?.split(",")?.toSet() ?: setOf()) }
-    var name by remember { mutableStateOf(fsPlaylist?.name ?: "") }
+    var description by mutableStateOf(fsPlaylist?.description ?: "")
+    var customTags by mutableStateOf(fsPlaylist?.customTags?.split(",")?.toSet() ?: setOf())
+    var name by mutableStateOf(fsPlaylist?.name ?: "")
     val userPreference = LocalUserPreference.current
     AppDialog(
         title = fsPlaylist?.let { "编辑歌单信息" } ?: "新建歌单",
@@ -90,7 +89,7 @@ fun FSPlaylistFormV2(
                     supportingText = {
                         if (fsPlaylist == null || fsPlaylist.name != name) {
                             validateFilename(name)
-                                .takeIf { it.isNotEmpty() }
+                                .takeIf { it.isNotBlank() }
                                 ?.let { Text(text = it) }
                             if (checkIfExist(name)) {
                                 Text(text = "歌单名已存在，会自动以 `name (1)` 的模式进行重命名")

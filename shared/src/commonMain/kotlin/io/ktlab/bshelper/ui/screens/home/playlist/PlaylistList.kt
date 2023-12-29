@@ -27,9 +27,9 @@ import io.ktlab.bshelper.ui.components.BSSearchBar
 import io.ktlab.bshelper.ui.components.EmptyContent
 import io.ktlab.bshelper.ui.components.FSPlaylistFormV2
 import io.ktlab.bshelper.ui.components.FSPlaylistImportFormV2
-import io.ktlab.bshelper.ui.screens.beatsaver.components.IconExposedDropDownMenu
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.HomeUIEvent
+import io.ktlab.bshelper.ui.screens.beatsaver.components.IconExposedDropDownMenu
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -94,7 +94,9 @@ fun PlaylistList(
                         FSPlaylistFormV2(
                             openState = playlistFormOpenState,
                             onSubmitFSPlaylist = { onUIEvent(GlobalUIEvent.CreatePlaylist(it)) },
-                            checkIfExist = { false },
+                            checkIfExist = {
+                                playlists.any { playlist -> playlist.getName() == it }
+                            },
                         )
                     }
                 }
