@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class ToolAPIResponse<T>(
     val message: String,
     val data: T? = null,
-    val status: Int
+    val code: Int
 )

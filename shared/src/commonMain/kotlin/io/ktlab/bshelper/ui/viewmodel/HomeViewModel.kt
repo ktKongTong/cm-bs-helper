@@ -294,7 +294,7 @@ class HomeViewModel(
             if (res is Result.Success) {
                 EventBus.publish(
                     GlobalUIEvent.ShowSnackBar(
-                        message = "export playlist as key succeed",
+                        message = "export playlist as key succeed ${res.data}",
                         actionLabel = "copy",
                         action = {
                             viewModelScope.launch { EventBus.publish(GlobalUIEvent.WriteToClipboard(res.data)) }

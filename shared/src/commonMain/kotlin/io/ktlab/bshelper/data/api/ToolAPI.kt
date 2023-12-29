@@ -6,7 +6,6 @@ import io.ktlab.bshelper.model.AppVersionChangeLog
 import io.ktlab.bshelper.model.dto.ExportPlaylist
 import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.response.APIRespResult
-import io.ktlab.bshelper.model.dto.response.ToolAPIResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -37,8 +36,7 @@ class ToolAPI(private val httpClient: HttpClient) {
                     contentType(ContentType.Application.Json)
                     setBody(setRequest)
                 }
-            val resp = response.body<ToolAPIResponse<String>>()
-
+            val resp = response.body<ToolAPIResp<String>>()
             if (resp.data == null) {
                 return APIRespResult.Error(Exception(resp.message))
             }
@@ -55,7 +53,7 @@ class ToolAPI(private val httpClient: HttpClient) {
         return try {
             logger.debug { "getKV: key:$key, url:$url" }
             val response = httpClient.get(url)
-            val resp = response.body<ToolAPIResponse<KVSetRequest<ExportPlaylist>>>()
+            val resp = response.body<ToolAPIResp<KVSetRequest<ExportPlaylist>>>()
             if (resp.data == null) {
                 return APIRespResult.Error(Exception(resp.message))
             }

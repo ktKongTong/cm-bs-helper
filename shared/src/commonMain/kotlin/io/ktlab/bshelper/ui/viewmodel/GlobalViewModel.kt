@@ -263,7 +263,7 @@ class GlobalViewModel(
                 onCheckVersion()
             }
             is GlobalUIEvent.ShowSnackBar -> {
-                showSnackBar(msg = event.message)
+                showSnackBar(msg = event.message, actionLabel = event.actionLabel, action = event.action, duration = event.duration)
             }
             is GlobalUIEvent.SnackBarShown -> {
                 snackBarShown(snackBarId = event.msgId)
