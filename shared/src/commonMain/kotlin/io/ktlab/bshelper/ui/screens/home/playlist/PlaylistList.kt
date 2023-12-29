@@ -85,6 +85,13 @@ fun PlaylistList(
                                     playlistFormOpenState.value = true
                                 },
                             )
+                            DropdownMenuItem(
+                                text = { Text(text = "刷新") },
+                                onClick = {
+                                    onTrigger()
+                                    onUIEvent(HomeUIEvent.RefreshPlaylist)
+                                },
+                            )
                         }
                         FSPlaylistImportFormV2(
                             onUIEvent = onUIEvent,

@@ -7,6 +7,7 @@ import io.ktlab.bshelper.model.enums.SortKey
 import io.ktlab.bshelper.model.enums.SortType
 
 sealed class HomeUIEvent : UIEvent() {
+    data object RefreshPlaylist : HomeUIEvent()
     data class PlaylistTapped(val playlistId: String) : HomeUIEvent()
 
     data class MapTapped(val mapId: String) : HomeUIEvent()

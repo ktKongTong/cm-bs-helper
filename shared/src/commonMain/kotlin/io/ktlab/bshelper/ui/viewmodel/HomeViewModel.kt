@@ -146,6 +146,10 @@ class HomeViewModel(
 
     fun dispatchUiEvents(event: UIEvent) {
         when (event) {
+            is HomeUIEvent.RefreshPlaylist -> {
+
+                refreshPlayLists()
+            }
             is HomeUIEvent.DeletePlaylist -> {
                 deletePlaylist(event.targetPlaylist)
             }
