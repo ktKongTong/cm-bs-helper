@@ -19,7 +19,7 @@ export default defineConfig({
           text: 'Release',
           items: [
             { text: '更新日志', link: '/release/' },
-            { text: 'v0.0.4-alpha01', link: '/release/v0.0.4-alpha01' },
+            { text: 'v0.0.4', link: '/release/v0.0.4' },
           ]
         }
       ],

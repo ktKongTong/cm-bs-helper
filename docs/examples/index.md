@@ -3,10 +3,6 @@ title: 新手上路
 ---
 # 新手上路
 
-## 安装
-在 [release](/release/) 页选中合适的版本进行下载安装。
+目前为飞书链接，后期同步到此处
 
-## 歌曲扫描
-
-进入设置页面
-![](./images/scan-1.png)
+[新手上路 | 飞书](https://dwm0dunivaj.feishu.cn/wiki/WQfuwnAKPicV2Nkud8ycQstSnGe)
