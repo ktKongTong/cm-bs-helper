@@ -7,3 +7,6 @@ title: 新手上路
 在 [release](/release/) 页选中合适的版本进行下载安装。
 
 ## 歌曲扫描
+
+进入设置页面
+![](./images/scan-1.png)
