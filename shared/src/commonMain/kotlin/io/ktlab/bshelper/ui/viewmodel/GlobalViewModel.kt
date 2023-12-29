@@ -9,6 +9,7 @@ import io.ktlab.bshelper.BuildConfig
 import io.ktlab.bshelper.data.Event
 import io.ktlab.bshelper.data.RuntimeEventFlow
 import io.ktlab.bshelper.data.api.ToolAPI
+import io.ktlab.bshelper.data.repository.BSAPIRepository
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.ManageFolderRepository
 import io.ktlab.bshelper.data.repository.PlaylistRepository
@@ -143,6 +144,7 @@ class GlobalViewModel(
     private val userPreferenceRepository: UserPreferenceRepository,
     private val manageFolderRepository: ManageFolderRepository,
     private val downloaderRepository: DownloaderRepository,
+    private val bsAPIRepository: BSAPIRepository,
     private val toolAPI: ToolAPI,
 ) : ViewModel() {
 
@@ -261,6 +263,21 @@ class GlobalViewModel(
         when (event) {
             is GlobalUIEvent.CheckVersion -> {
                 onCheckVersion()
+            }
+            is GlobalUIEvent.CheckToolAPIHealth -> {
+                viewModelScope.launch {
+                    val res = toolAPI.checkHealthy()
+//                    bsAPIRepository.checkAPIHealth()
+//                    bsAPIRepository.checkImageSourceHealth()
+                    when(res) {
+                        is APIRespResult.Success -> {
+                            showSnackBar("工具 API 健康检查成功, 耗时: ${res.data.inWholeMilliseconds} ms")
+                        }
+                        is APIRespResult.Error -> {
+                            showSnackBar("工具 API 健康检查失败, ${res.exception.message}")
+                        }
+                    }
+                }
             }
             is GlobalUIEvent.ShowSnackBar -> {
                 showSnackBar(msg = event.message, actionLabel = event.actionLabel, action = event.action, duration = event.duration)

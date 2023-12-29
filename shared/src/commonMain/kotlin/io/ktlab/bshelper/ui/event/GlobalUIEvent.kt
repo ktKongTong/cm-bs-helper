@@ -15,7 +15,7 @@ sealed class GlobalUIEvent : UIEvent() {
     ) : GlobalUIEvent()
 
     data class SnackBarShown(val msgId: Long) : GlobalUIEvent()
-
+    data object CheckToolAPIHealth : GlobalUIEvent()
     data object CheckVersion : GlobalUIEvent()
 
     data class WriteToClipboard(val text: String) : GlobalUIEvent()

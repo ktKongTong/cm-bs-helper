@@ -8,11 +8,16 @@ import io.ktlab.bshelper.model.dto.request.KVSetRequest
 import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.timeout
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -81,16 +86,21 @@ class ToolAPI(private val httpClient: HttpClient) {
         }
     }
 
-    suspend fun checkHealthy() : APIRespResult<String> {
+    suspend fun checkHealthy() : APIRespResult<Duration> {
+        val startTime = Clock.System.now().toEpochMilliseconds()
         val url = "$basePath/healthy"
         return try {
             logger.debug { "checkHealthy: url:$url" }
-            val response = httpClient.get(url)
-            val resp = response.body<ToolAPIResp<ExportPlaylist>>()
-            if (resp.code != 200) {
-                return APIRespResult.Error(Exception(resp.message))
+            val response = httpClient.get(url) {
+                timeout {
+                    requestTimeoutMillis = 3000
+                    connectTimeoutMillis = 3000
+                    socketTimeoutMillis = 3000
+                }
             }
-            APIRespResult.Success(resp.message)
+            response.body<ToolAPIResp<String>>()
+            val duration = (Clock.System.now().toEpochMilliseconds() - startTime).toDuration(DurationUnit.MILLISECONDS)
+            APIRespResult.Success(duration)
         } catch (e: Exception) {
             logger.error { "checkHealthy: error, url:$url, error:${e.message}" }
             APIRespResult.Error(e)

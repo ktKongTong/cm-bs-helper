@@ -19,11 +19,26 @@ import io.ktlab.bshelper.model.dto.response.APIRespResult
 import io.ktlab.bshelper.model.dto.response.BSMapReviewDTO
 import io.ktlab.bshelper.model.dto.response.BSMapperDetailDTO
 import io.ktlab.bshelper.model.vo.BSMapVO
+import kotlin.time.Duration
 import kotlinx.coroutines.flow.Flow
 
 class BSAPIRepository(
     private val bsAPI: BeatSaverAPI,
 ) {
+    fun checkAPIHealth(): APIRespResult<Duration> {
+//        return try {
+////            val response = bsAPI.checkAPIHealth()
+//            APIRespResult.Success(response)
+//        } catch (e: Exception) {
+//            APIRespResult.Error(e)
+//        }
+        TODO()
+    }
+
+    fun checkImageSourceHealth(): APIRespResult<String> {
+        TODO()
+    }
+
     fun getPagingBSMapByPlaylistId(playlistId: String): Flow<PagingData<IMap>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
