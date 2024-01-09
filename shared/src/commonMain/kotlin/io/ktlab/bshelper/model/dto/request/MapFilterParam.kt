@@ -23,7 +23,7 @@ data class MapFilterParam(
     @QueryParam("from") val from: LocalDate? = null,
     @Serializable(with = DateAsStringSerializer::class)
     @QueryParam("to") val to: LocalDate? = null,
-    @QueryParam("tags") val mapper: String? = null,
+    @QueryParam("mapper") val mapper: String? = null,
     @BSMapFeatTag(MapFeatureTag.AI)
     @QueryParam("automapper") val automapper: Boolean? = null,
     @BSMapFeatTag(MapFeatureTag.Chroma)
