@@ -62,13 +62,15 @@
 
 它的使用场景也很狭窄。用户数能不能突破 10 位也是个问题。
 
-它的 web 功能也很受限，跟网络条件强相关，不巧的是 Beatsaver 的 API 在国内的网络条件下会出问题。
+~~它的 web 功能也很受限，跟网络条件强相关，不巧的是 Beatsaver 的 API 在国内的网络条件下会出问题。~~
 
-而且某游戏的官方应该也在完善类似的功能。 所以它的未来大概率是不可期的，还能有几次更新也不知道。
+~~而且某游戏的官方应该也在完善类似的功能。 所以它的未来大概率是不可期的，还能有几次更新也不知道。~~
 
-所以大概是没有未来的😢。
+~~所以大概是没有未来的😢。~~
 
-但如果精力允许，且有稳定的小部分用户，我想我会积极进行维护的。
+~~但如果精力允许，且有稳定的小部分用户，我想我会积极进行维护的。~~
+
+说不定呢
 
 ## TODO
 - [x] feedback page
@@ -80,10 +82,7 @@
 - [ ] 曲包同步
 - [ ] 优化 UI
 - [ ] more
-## 🫓 TODO
-- [ ] (ohShape)墙来了适配
-- [ ] (synth rider)幻音骑士适配
-- [ ] 曲包推荐机制
+
 ## 大饼时间
 当然，我大可以畅想一下，可能会加的功能(现在是幻想（画饼）时间.jpg)
 - 曲包分类，通过规则配置，对某些曲包进行划分，比如按速度划分，按 Tag 划分
@@ -92,3 +91,9 @@
 
 ## contribute
 如果你有空闲时间，正好专业对口，同时也愿意来一起掏这个💩山。欢迎 PR。不合理的地方也请各位大神指正。
+
+cm-bs-helper is an open source project and built on the top of open-source projects. 
+
+Thanks for [JetBrains](https://www.jetbrains.com/?from=cm-bs-helper) for the wonderful IDE.
+
+![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
