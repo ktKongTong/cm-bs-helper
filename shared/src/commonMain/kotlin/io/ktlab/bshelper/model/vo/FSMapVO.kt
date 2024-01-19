@@ -10,6 +10,8 @@ import io.ktlab.bshelper.model.enums.EMapDifficulty
 import okio.Path.Companion.toPath
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 data class BsMapWithUploader(
     val bsMap: BSMap,
@@ -114,7 +116,7 @@ class FSMapVO(
     override fun getBPM(): String {
         try {
             if (bsMapWithUploader != null) {
-                return bsMapWithUploader.bsMap.bpm.toString()
+                return bsMapWithUploader.bsMap.bpm.toInt().toString()
             }
             return "0"
         } catch (e: Exception) {
@@ -165,5 +167,12 @@ class FSMapVO(
 
     override fun isRelateWithBSMap(): Boolean {
         return bsMapWithUploader != null
+    }
+
+    override fun getMapDate(): LocalDateTime? {
+        if (bsMapWithUploader != null) {
+            return bsMapWithUploader.version?.createdAt
+        }
+        return null
     }
 }

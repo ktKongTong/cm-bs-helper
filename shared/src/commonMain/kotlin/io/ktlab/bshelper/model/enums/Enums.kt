@@ -36,7 +36,7 @@ enum class ECharacteristic(val short: String, val human: String, val slug: Strin
     OneSaber("1", "One Saber", "OneSaber"),
     NoArrows("NA", "No Arrows", "NoArrows"),
     _90_DEGREE("90", "90 Degree", "90Degree"),
-    _360_DEGRE("360", "360 Degree", "360Degree"),
+    _360_DEGREE("360", "360 Degree", "360Degree"),
     Lawless("L", "Lawless", "Lawless"),
     Lightshow("LS", "Lightshow", "Lightshow"),
     Legacy("L", "Legacy", "Legacy"),

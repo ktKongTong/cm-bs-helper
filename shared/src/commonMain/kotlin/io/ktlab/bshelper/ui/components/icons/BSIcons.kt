@@ -10,6 +10,132 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
 import io.ktlab.bshelper.MR
+import io.ktlab.bshelper.model.enums.ECharacteristic
+import io.ktlab.bshelper.model.enums.ECharacteristic.*
+
+@Composable
+fun BSCharIcon(
+    characteristic:ECharacteristic,
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    when (characteristic) {
+        Lawless -> BSCharLawlessIcon(modifier, tint)
+        OneSaber -> BSCharOneSaberIcon(modifier, tint)
+        NoArrows -> BSCharNoArrowsIcon(modifier, tint)
+        _90_DEGREE -> BSChar90DegreeIcon(modifier, tint)
+        _360_DEGREE -> BSChar360DegreeIcon(modifier, tint)
+        Lightshow -> BSCharLightshowIcon(modifier, tint)
+        Standard -> BSCharStandardIcon(modifier, tint)
+        Legacy -> BSCharLegacyIcon(modifier, tint)
+    }
+}
+
+
+@Composable
+fun BSCharLegacyIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    Icon(
+        painter = painterResource(MR.images.bs_char_legacy),
+        modifier = modifier.size(20.dp),
+        contentDescription = "bs bpm icon",
+        tint = tint,
+    )
+}
+
+@Composable
+fun BSCharStandardIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    Icon(
+        painter = painterResource(MR.images.bs_char_standard),
+        modifier = modifier.size(20.dp),
+        contentDescription = "bs bpm icon",
+        tint = tint,
+    )
+}
+
+@Composable
+fun BSCharLawlessIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    Icon(
+        painter = painterResource(MR.images.bs_char_lawless),
+        modifier = modifier.size(20.dp),
+        contentDescription = "bs bpm icon",
+        tint = tint,
+    )
+}
+@Composable
+fun BSCharOneSaberIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    Icon(
+        painter = painterResource(MR.images.bs_char_onesaber),
+        modifier = modifier.size(20.dp),
+        contentDescription = "bs bpm icon",
+        tint = tint,
+    )
+}
+
+@Composable
+fun BSCharNoArrowsIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    Icon(
+        painter = painterResource(MR.images.bs_char_noarrows),
+        modifier = modifier.size(20.dp),
+        contentDescription = "bs bpm icon",
+        tint = tint,
+    )
+}
+
+@Composable
+fun BSChar90DegreeIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    Icon(
+        painter = painterResource(MR.images.bs_char_90degree),
+        modifier = modifier.size(20.dp),
+        contentDescription = "bs bpm icon",
+        tint = tint,
+    )
+}
+
+@Composable
+fun BSChar360DegreeIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    Icon(
+        painter = painterResource(MR.images.bs_char_360degree),
+        modifier = modifier.size(20.dp),
+        contentDescription = "bs bpm icon",
+        tint = tint,
+    )
+}
+
+@Composable
+fun BSCharLightshowIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    Icon(
+        painter = painterResource(MR.images.bs_char_lightshow),
+        modifier = modifier.size(20.dp),
+        contentDescription = "bs bpm icon",
+        tint = tint,
+    )
+}
+
+
 
 @Composable
 fun BSBPMIcon(
@@ -17,7 +143,7 @@ fun BSBPMIcon(
     tint: Color = androidx.compose.material3.LocalContentColor.current,
 ) {
     Icon(
-        imageVector = Icons.Rounded.HourglassBottom,
+        painter = painterResource(MR.images.bs_bpm_icon),
         modifier = modifier.size(20.dp),
         contentDescription = "bs bpm icon",
         tint = tint,
@@ -36,6 +162,18 @@ fun BSDurationIcon(
         tint = tint,
     )
 }
+@Composable
+fun BSIDIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    Icon(
+        imageVector = Icons.Rounded.Key,
+        modifier = modifier.size(20.dp),
+        contentDescription = "bs id icon",
+        tint = tint,
+    )
+}
 
 @Composable
 fun BSNPSIcon(
@@ -50,6 +188,18 @@ fun BSNPSIcon(
     )
 }
 
+@Composable
+fun BSNJSIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = androidx.compose.material3.LocalContentColor.current,
+) {
+    Icon(
+        Icons.Rounded.Speed,
+        modifier = modifier.size(20.dp),
+        contentDescription = "bs nps icon",
+        tint = tint,
+    )
+}
 @Composable
 fun BSNoteIcon(
     modifier: Modifier = Modifier,

@@ -29,7 +29,7 @@ import io.ktlab.bshelper.ui.components.FSPlaylistFormV2
 import io.ktlab.bshelper.ui.components.FSPlaylistImportFormV2
 import io.ktlab.bshelper.ui.event.GlobalUIEvent
 import io.ktlab.bshelper.ui.event.HomeUIEvent
-import io.ktlab.bshelper.ui.screens.beatsaver.components.IconExposedDropDownMenu
+import io.ktlab.bshelper.ui.components.IconExposedDropDownMenu
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

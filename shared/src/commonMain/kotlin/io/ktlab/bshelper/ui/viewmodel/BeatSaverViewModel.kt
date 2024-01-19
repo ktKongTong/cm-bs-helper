@@ -5,6 +5,7 @@ import app.cash.paging.cachedIn
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktlab.bshelper.data.repository.DownloaderRepository
 import io.ktlab.bshelper.data.repository.FSMapRepository
+import io.ktlab.bshelper.data.repository.LocalMapInfo
 import io.ktlab.bshelper.data.repository.PlaylistRepository
 import io.ktlab.bshelper.data.repository.UserPreferenceRepository
 import io.ktlab.bshelper.model.IMap
@@ -44,8 +45,7 @@ import moe.tlaster.precompose.viewmodel.viewModelScope
 
 private val logger = KotlinLogging.logger {}
 data class LocalState(
-    val localMapIdSet: Set<Pair<String, String>> = emptySet(),
-    val localMapIdFlow: Flow<Set<Pair<String, String>>>,
+    val localMapIdMap: Map<String, LocalMapInfo> = mapOf(),
     val selectableLocalPlaylistFlow: Flow<List<IPlaylist>> = emptyFlow(),
     val targetPlaylist: IPlaylist? = null,
 )
@@ -95,80 +95,14 @@ data class BeatSaverUiState(
     val playlistFlow: Flow<PagingData<IPlaylist>>,
     val selectedBSPlaylist: IPlaylist?,
     val selectedBSPlaylistDetailMapFlow: Flow<PagingData<IMap>>,
-//    data class MapQuery(
-//        override val tabType: TabType = TabType.Map,
-//        override val isLoading: Boolean = false,
-//
-//        override val localState: LocalState = LocalState(),
-//
-//        override val selectedBSMap: IMap?,
-//        override val selectedBSMapReview: List<BSMapReviewDTO>,
-//        override val selectedBSMapper: BSMapperDetailDTO?,
-//        override val selectedBSMapperMapFlow: Flow<PagingData<IMap>>,
-//
-//        override val downloadTaskFlow: Flow<List<IDownloadTask>>,
-//
-//        override val multiSelectMode: Boolean = false,
-//        override val multiSelectedBSMap: Set<IMap> = emptySet(),
-//        val mapFilterPanelState: MapFilterParam = MapFilterParam(),
-//        val mapFlow: Flow<PagingData<IMap>>,
-//        ): BeatSaverUiState
-//    data class PlaylistQuery(
-//        override val tabType: TabType = TabType.Playlist,
-//        override val isLoading: Boolean = false,
-//        override val localState: LocalState,
-//
-//        override val selectedBSMap: IMap?,
-//        override val selectedBSMapReview: List<BSMapReviewDTO>,
-//        override val selectedBSMapper: BSMapperDetailDTO?,
-//        override val selectedBSMapperMapFlow: Flow<PagingData<IMap>>,
-//
-//        override val downloadTaskFlow: Flow<List<IDownloadTask>>,
-//
-//        override val multiSelectMode: Boolean = false,
-//        override val multiSelectedBSMap: Set<IMap> = emptySet(),
-//
-//        val playlistFilterPanelState: PlaylistFilterParam,
-//        val mapFlow: Flow<PagingData<IMap>>,
-//        val playlistFlow: Flow<PagingData<IPlaylist>>,
-//        val selectedBSPlaylist: IPlaylist?,
-//    ): BeatSaverUiState
     val mapperFlow: Flow<PagingData<BSUserWithStatsDTO>>,
-//    data class MapperQuery(
-//        override val tabType: TabType = TabType.Mapper,
-//        override val isLoading: Boolean = false,
-//        override val localState: LocalState = LocalState(),
-//
-//        override val selectedBSMap: IMap?,
-//        override val selectedBSMapReview: List<BSMapReviewDTO>,
-//        override val selectedBSMapper: BSMapperDetailDTO?,
-//        override val selectedBSMapperMapFlow: Flow<PagingData<IMap>>,
-//        val selectedBSPlaylist: IPlaylist?,
-//
-//        override val downloadTaskFlow: Flow<List<IDownloadTask>>,
-//
-//        override val multiSelectMode: Boolean = false,
-//        override val multiSelectedBSMap: Set<IMap> = emptySet(),
-//        // maybe current mapper map / playlist detail map / custom search map
-//
-//        val mapFlow: Flow<PagingData<IMap>>,
-//        // todo: current mapper playlist
-//        // custom search playlist
-//        val playlistFlow: Flow<PagingData<IPlaylist>>,
-//
-//        val mapperFlow: Flow<PagingData<BSUserWithStatsDTO>>,
-//
-//    ): BeatSaverUiState
 )
 
 data class BeatSaverViewModelState(
     //
     val tabType: TabType = TabType.Map,
     val isLoading: Boolean = false,
-    // 本地MapID
-    val localMapIdSet: Set<Pair<String, String>> = emptySet(),
-    val localMapIdFlow: Flow<Set<Pair<String, String>>>,
-    //
+    val localMapIdMap: Map<String,LocalMapInfo> = mapOf(),
     val mapFilterPanelState: MapFilterParam = MapFilterParam(),
     val playlistFilterPanelState: PlaylistFilterParam = PlaylistFilterParam(),
     val mapFlow: Flow<PagingData<IMap>>? = null,
@@ -201,8 +135,7 @@ data class BeatSaverViewModelState(
             mapFlow = mapFlow ?: emptyFlow(),
             localState =
                 LocalState(
-                    localMapIdSet = localMapIdSet,
-                    localMapIdFlow = localMapIdFlow,
+                    localMapIdMap = localMapIdMap,
                     selectableLocalPlaylistFlow = selectableLocalPlaylistFlow,
                     targetPlaylist = selectedFSPlaylist,
                 ),
@@ -219,68 +152,6 @@ data class BeatSaverViewModelState(
             selectedBSPlaylistDetailMapFlow = playlistDetailMapFlow ?: emptyFlow(),
             mapperFlow = mapperFlow,
         )
-//         TabType.Map -> {
-//             BeatSaverUiState.MapQuery(
-//                 isLoading = isLoading,
-//                 mapFilterPanelState = mapFilterPanelState,
-//                 mapFlow = mapFlow ?: emptyFlow(),
-//                 localState = LocalState(
-//                     localMapIdSet = localMapIdSet,
-//                     selectableLocalPlaylists = selectableLocalPlaylists,
-//                     targetPlaylist = selectedFSPlaylist,
-//                 ),
-//                 downloadTaskFlow = downloadTaskFlow ?: emptyFlow(),
-//                 multiSelectMode = multiSelectMode,
-//                 multiSelectedBSMap = multiSelectedBSMap,
-//                 selectedBSMap = selectedBSMap,
-//                 selectedBSMapper = selectedBSMapper,
-//                 selectedBSMapReview = selectedBSMapReview,
-//                selectedBSMapperMapFlow = mapperMapFlow ?: emptyFlow(),
-//             )
-//         }
-//        TabType.Playlist -> {
-//            BeatSaverUiState.PlaylistQuery(
-//                isLoading = isLoading,
-//                playlistFilterPanelState = playlistFilterPanelState,
-//                mapFlow = playlistDetailMapFlow ?: emptyFlow(),
-//                localState = LocalState(
-//                    localMapIdSet = localMapIdSet,
-//                    selectableLocalPlaylists = selectableLocalPlaylists,
-//                    targetPlaylist = selectedFSPlaylist,
-//                ),
-//                downloadTaskFlow = downloadTaskFlow ?: emptyFlow(),
-//                selectedBSPlaylist = selectedBSPlaylist,
-//                selectedBSMap = selectedBSMap,
-//                playlistFlow = playlistFlow ?: emptyFlow(),
-//                multiSelectMode = multiSelectMode,
-//                multiSelectedBSMap = multiSelectedBSMap,
-//                selectedBSMapReview =   selectedBSMapReview,
-//                selectedBSMapper = selectedBSMapper,
-//                selectedBSMapperMapFlow = mapperMapFlow ?: emptyFlow(),
-//            )
-//        }
-//        TabType.Mapper -> {
-//            BeatSaverUiState.MapperQuery(
-//                isLoading = isLoading,
-//                mapFlow = mapFlow ?: emptyFlow(),
-//                downloadTaskFlow = downloadTaskFlow ?: emptyFlow(),
-//                playlistFlow = playlistFlow ?: emptyFlow(),
-//                mapperFlow = mapperFlow,
-//                localState = LocalState(
-//                    localMapIdSet = localMapIdSet,
-//                    selectableLocalPlaylists = selectableLocalPlaylists,
-//                    targetPlaylist = selectedFSPlaylist,
-//                ),
-//                multiSelectMode = multiSelectMode,
-//                multiSelectedBSMap = multiSelectedBSMap,
-//                selectedBSMap = selectedBSMap,
-//                selectedBSPlaylist = selectedBSPlaylist,
-//                selectedBSMapReview = selectedBSMapReview,
-//                selectedBSMapper = selectedBSMapper,
-//                selectedBSMapperMapFlow = mapperMapFlow ?: emptyFlow(),
-//            )
-//        }
-//    }
 }
 
 class BeatSaverViewModel(
@@ -297,7 +168,6 @@ class BeatSaverViewModel(
                 playlistFlow = playlistRepository.getPagingBSPlaylist(PlaylistFilterParam()).cachedIn(viewModelScope),
                 mapperFlow = playlistRepository.getPagingBSUser().cachedIn(viewModelScope),
                 downloadTaskFlow = downloaderRepository.getDownloadTaskFlow().flowOn(Dispatchers.IO),
-                localMapIdFlow = emptyFlow(),
                 selectableLocalPlaylistFlow = emptyFlow(),
             ),
         )
@@ -310,8 +180,6 @@ class BeatSaverViewModel(
                 viewModelState.value.toUiState(),
             )
     private var manageFolder :SManageFolder? = null
-//    private
-    private var localMapIdSetFlow = emptySet<Pair<String, String>>()
 
     private lateinit var localMapIdJob: Job
 
@@ -334,7 +202,6 @@ class BeatSaverViewModel(
                 viewModelState.update {
                     it.copy(
                         selectedFSPlaylist = null,
-                        localMapIdFlow = emptyFlow(),
                         selectableLocalPlaylistFlow = playlistRepository.getAllPlaylistByManageDirId(prefer.currentManageFolder.id).map { it.successOr(emptyList()) }.flowOn(Dispatchers.IO),
                     )
                 }
@@ -351,7 +218,7 @@ class BeatSaverViewModel(
             .flowOn(Dispatchers.IO)
             .collect { res ->
                 viewModelState.update {
-                    it.copy(localMapIdSet = it.localMapIdSet.plus(res))
+                    it.copy(localMapIdMap = it.localMapIdMap + res)
                 }
             }
     }
@@ -596,8 +463,6 @@ class BeatSaverViewModel(
     private fun onMapMultiSelected(bsMap: IMap) {
         if (viewModelState.value.selectedFSPlaylist == null) {
             viewModelScope.launch { EventBus.publish(GlobalUIEvent.ShowSnackBar("请先选择目标歌单")) }
-            return
-        } else if (viewModelState.value.localMapIdSet.contains(viewModelState.value.selectedFSPlaylist!!.id to bsMap.getID())) {
             return
         }
         viewModelState.update {

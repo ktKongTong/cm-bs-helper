@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import io.ktlab.bshelper.model.download.DownloadTaskType
 import io.ktlab.bshelper.model.download.IDownloadTask
 import io.ktlab.bshelper.ui.event.UIEvent
+import io.ktlab.bshelper.ui.screens.beatsaver.components.DownloadIconButton
 
 @Composable
 fun DownloadTaskCard(

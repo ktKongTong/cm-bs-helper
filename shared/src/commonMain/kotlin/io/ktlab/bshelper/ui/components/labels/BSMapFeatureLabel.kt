@@ -62,28 +62,29 @@ fun IMap.isAutoMapper(): Boolean {
 fun BSMapFeatureLabel(
     map: IMap,
     modifier: Modifier = Modifier,
+    tint: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.Unspecified,
 ) {
     Row(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         if (map.isRanked()) {
-            BSRankedIcon()
+            BSRankedIcon(tint = tint)
         }
         if (map.isAutoMapper()) {
-            BSAIIcon()
+            BSAIIcon(tint = tint)
         }
         if (map.hasNoodleExtensions()) {
-            BSNEIcon()
+            BSNEIcon(tint = tint)
         }
         if (map.hasMappingExtensions()) {
-            BSMEIcon()
+            BSMEIcon(tint = tint)
         }
         if (map.hasCinema()) {
-            BSCinemaIcon()
+            BSCinemaIcon(tint = tint)
         }
         if (map.hasChroma()) {
-            BSChromaIcon()
+            BSChromaIcon(tint = tint)
         }
     }
 }

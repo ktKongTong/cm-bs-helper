@@ -16,7 +16,7 @@ import io.ktlab.bshelper.model.FSPlaylist
 import io.ktlab.bshelper.ui.components.AppDialog
 import io.ktlab.bshelper.ui.components.DirectoryChooserV2
 import io.ktlab.bshelper.ui.components.FSPlaylistFormV2
-import io.ktlab.bshelper.ui.screens.beatsaver.components.IconExposedDropDownMenu
+import io.ktlab.bshelper.ui.components.IconExposedDropDownMenu
 
 @Composable
 fun PlaylistCardMenu(

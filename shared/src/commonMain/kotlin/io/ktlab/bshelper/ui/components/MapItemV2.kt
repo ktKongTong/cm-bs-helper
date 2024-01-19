@@ -25,7 +25,6 @@ import io.ktlab.bshelper.ui.components.labels.*
 fun MapItemV2(
     map: IMap,
     modifier: Modifier = Modifier,
-//    onAvatarClick: (IMap) -> Unit = {},
     onLongClick: (IMap) -> Unit = {},
     onClick: (IMap) -> Unit = {},
     onAuthorClick: ((IMap) -> Unit)? = null,
@@ -51,7 +50,7 @@ fun MapItemV2(
                 Modifier
                     .align(Alignment.CenterEnd)
                     .widthIn(max = imageMaxWidth)
-                    .heightIn(max = imageMaxHeight),
+                    .height(imageMaxHeight),
 //                .fillMaxHeight()
             ) {
                 AsyncImageWithFallback(

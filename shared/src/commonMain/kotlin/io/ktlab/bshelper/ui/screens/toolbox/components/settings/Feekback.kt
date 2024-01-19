@@ -19,13 +19,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import io.ktlab.bshelper.ui.components.WebFeedBack
+import io.ktlab.bshelper.BuildConfig
+import io.ktlab.bshelper.ui.composables.OpenInBrowser
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Feedback() {
     val openFeedback = remember { mutableStateOf(false) }
-    WebFeedBack(openFeedback.value)
+    if (openFeedback.value) {
+        OpenInBrowser(BuildConfig.FEEDBACK_URL)
+    }
     Row (
         modifier = Modifier
             .padding(16.dp,8.dp)

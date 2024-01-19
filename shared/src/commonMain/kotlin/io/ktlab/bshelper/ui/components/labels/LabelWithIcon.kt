@@ -27,7 +27,7 @@ fun BSBPMLabel(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
         modifier = modifier.padding(horizontal = 2.dp),
     ) {
-        BSDurationIcon(modifier, tint)
+        BSBPMIcon(modifier, tint)
         Text(
             text = bpm,
             modifier = Modifier.padding(start = 2.dp),
@@ -55,7 +55,26 @@ fun BSDurationLabel(
         )
     }
 }
-
+@Composable
+fun BSIDLabel(
+    id: String,
+    modifier: Modifier = Modifier,
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+) {
+    Row(
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        modifier = modifier.padding(horizontal = 2.dp),
+    ) {
+        BSIDIcon(modifier, tint)
+        Text(
+            text = id,
+            modifier = Modifier.padding(start = 2.dp),
+            color = tint,
+            style = textStyle,
+        )
+    }
+}
 @Composable
 fun BSNPSRangeLabel(
     npsRange: String,
@@ -95,7 +114,25 @@ fun BSNPSLabel(
         )
     }
 }
-
+@Composable
+fun BSNJSLabel(
+    njs: Double,
+    modifier: Modifier = Modifier,
+    tint: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
+) {
+    Row(
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        modifier = modifier.padding(horizontal = 2.dp),
+    ) {
+        BSNJSIcon(modifier, tint)
+        Text(
+            text = njs.fixedStr(2),
+            modifier = Modifier.padding(start = 2.dp),
+            style = textStyle,
+        )
+    }
+}
 @Composable
 fun BSLightEventLabel(
     event: Long,

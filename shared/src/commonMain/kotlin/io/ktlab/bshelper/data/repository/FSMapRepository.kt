@@ -26,6 +26,13 @@ import okio.Path.Companion.toPath
 
 private val logger = KotlinLogging.logger{}
 
+
+data class LocalMapInfo(
+    val mapId: String,
+    val playlists: Map<String,Int>,
+    val totalCount: Int,
+)
+
 class FSMapRepository(
     private val bsHelperDAO: BSHelperDatabase,
     private val bsAPI: BeatSaverAPI,
@@ -172,27 +179,25 @@ class FSMapRepository(
         return Result.Success("")
     }
 
-    fun getLocalMapIdSet(): Flow<Set<Pair<String, String>>> =
-        bsHelperDAO.fSMapQueries
-            .getAllFSMapId()
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-            .map {
-                it.map { item -> Pair(item.playlistId, item.mapId) }.toSet()
-            }
-            .catch {
-                emit(setOf())
-            }
-    fun getLocalMapIdSetByManageFolderId(manageFolderId:Long): Flow<Set<Pair<String, String>>> =
+    fun getLocalMapIdSetByManageFolderId(manageFolderId:Long): Flow<Map<String,LocalMapInfo>> =
         bsHelperDAO.fSMapQueries
             .getAllFSMapIdByManageFolderId(manageFolderId)
             .asFlow()
             .mapToList(Dispatchers.IO)
             .map {
-                it.map { item -> Pair(item.playlistId, item.mapId) }.toSet()
+//                LocalMapInfo
+//                it.groupBy { it.playlistId }.map { it.value.first() }.map { item -> Pair(item.playlistId, item.mapId) }.toSet()
+                it.groupBy { it.mapId }.map { item ->
+                   item.key to LocalMapInfo(
+                        item.key,
+                        item.value.groupBy { it.playlistId }.map { it.key to it.value.count() }.toMap(),
+                        item.value.size,
+                    )
+                }.toMap()
+//                it.map { item -> Pair(item.playlistId, item.mapId) }.toSet()
             }
             .catch {
-                emit(setOf())
+                emit(mapOf())
             }
     fun getLocalMapIdSetByPlaylist(playlistId: String): Flow<Set<Pair<String, String>>> =
         bsHelperDAO.fSMapQueries

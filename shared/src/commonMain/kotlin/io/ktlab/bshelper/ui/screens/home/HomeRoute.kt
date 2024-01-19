@@ -18,26 +18,11 @@ fun HomeRoute(
     homeViewModel: HomeViewModel = koinViewModel<HomeViewModel>(),
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
-//    val uiState = homeViewModel.uiState.collectAsState(homeViewModel.viewModelState.value.toUiState()).value
-//    val homeListLazyListState = rememberLazyListState()
-//    val playlistDetailLazyListStates = when (uiState) {
-// //        is HomeUiState.Empty ->  emptyList<Pair<String,String>>()
-//        else ->emptyList<Pair<String,String>>()
-//    }.associate { playlist ->
-//        key(playlist.first) {
-//            playlist.first to rememberLazyListState()
-//        }
-//    }
-//    when (getHomeScreenType(isExpandedScreen, uiState)) {
-//        HomeScreenType.PlaylistWithPlaylistDetails -> {
     HomeScreen(
         uiState = uiState,
         showTopAppBar = isExpandedScreen,
         snackbarHost = snackbarHost,
     )
-//        }
-//        else -> {}
-//    }
 }
 
 private enum class HomeScreenType {

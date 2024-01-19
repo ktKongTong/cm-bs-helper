@@ -22,14 +22,9 @@ import io.ktlab.kown.model.isProcessing
 fun DownloadIconButton(
     downloadInfo: IDownloadTask.MapDownloadTask?,
     onClick: () -> Unit,
-    localExist: Boolean = false,
     modifier: Modifier = Modifier.size(24.dp),
 ) {
-    if (localExist) {
-        IconButton({}, enabled = false, modifier = modifier) {
-            Icon(Icons.Rounded.Check, contentDescription = "local icon")
-        }
-    } else if (downloadInfo != null) {
+    if(downloadInfo != null && !downloadInfo.downloadTaskModel.status.isProcessing()) {
         when (downloadInfo.downloadTaskModel.status) {
             is KownTaskStatus.Running, is KownTaskStatus.Queued, is KownTaskStatus.PostProcessing -> {
                 val animatedProgress by animateFloatAsState(
@@ -42,14 +37,6 @@ fun DownloadIconButton(
                     strokeCap = StrokeCap.Round,
                     modifier = modifier,
                 )
-            }
-            is KownTaskStatus.Completed -> {
-                IconButton({}, enabled = false, modifier = modifier) {
-                    Icon(
-                        Icons.Rounded.Check,
-                        contentDescription = "local icon",
-                    )
-                }
             }
         }
     } else {

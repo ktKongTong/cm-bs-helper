@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS FSMap (
     active INTEGER AS Boolean NOT NULL DEFAULT 0,
 --     beatsaver
     mapId TEXT NOT NULL,
-    PRIMARY KEY(mapId, hash, playlistId)
+    PRIMARY KEY(mapId, hash, playlistId,dirName)
 );
 
 
@@ -95,7 +95,14 @@ getAllFSMapId:
 SELECT mapId,playlistId FROM FSMap WHERE active = 1;
 
 getAllFSMapIdByManageFolderId:
-SELECT mapId,playlistId FROM FSMap WHERE active = 1 AND manageFolderId = ?;
+-- SELECT mapId,playlistId FROM FSMap WHERE active = 1 AND manageFolderId = ?;
+SELECT
+    FSPlaylist.name AS playlistName,
+    FSMap.mapId,
+    FSMap.playlistId
+FROM FSMap
+LEFT JOIN FSPlaylist ON FSMap.playlistId = FSPlaylist.id
+WHERE active = 1 AND manageFolderId = ?;
 
 moveFSMapToPlaylist:
 UPDATE FSMap

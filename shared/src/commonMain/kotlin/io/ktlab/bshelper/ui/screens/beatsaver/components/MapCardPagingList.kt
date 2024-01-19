@@ -90,9 +90,6 @@ fun MapCardPagingList(
                         val map = mapPagingItems[index]
 //                    require(map != null){ "map should not be null" }
                         if (map != null) {
-                            val local = localState.targetPlaylist != null &&
-                                    localState.localMapIdSet.contains(localState.targetPlaylist.id to map.getID())
-
                             val selectablePlaylists = localState.selectableLocalPlaylistFlow.collectAsState(emptyList())
                             BSMapCard(
                                 modifier = Modifier.fillMaxSize(),
@@ -100,7 +97,7 @@ fun MapCardPagingList(
                                 map = map,
                                 checked = mapMultiSelected.contains(map),
                                 multiSelectedMode = mapMultiSelectedMode,
-                                local = local,
+                                localInfo = localState.localMapIdMap[map.getID()],
                                 selectableIPlaylists = selectablePlaylists.value,
                                 downloadInfo = downloadingTask[map.getID() + localState.targetPlaylist?.id],
                                 onDownloadMap = { targetMap -> onUIEvent(BeatSaverUIEvent.DownloadMap(targetMap)) },

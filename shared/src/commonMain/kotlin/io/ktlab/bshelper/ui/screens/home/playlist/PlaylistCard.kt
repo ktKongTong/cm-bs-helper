@@ -39,14 +39,14 @@ fun PlaylistCard(
         Row(
             modifier = Modifier.fillMaxWidth().clickable(onClick = { onClick(playlist.id) }),
         ) {
-            AsyncImageWithFallback(
-                modifier =
-                    Modifier
-                        .width(48.dp)
-                        .height(48.dp)
-                        .padding(end = 16.dp),
-                source = playlist.getImage(),
-            )
+//            AsyncImageWithFallback(
+//                modifier =
+//                    Modifier
+//                        .width(48.dp)
+//                        .height(48.dp)
+//                        .padding(end = 16.dp),
+//                source = playlist.getImage(),
+//            )
             Column(
                 Modifier.weight(1f, fill = false),
             ) {
@@ -56,7 +56,7 @@ fun PlaylistCard(
                 ) {
                     Text(
                         text = playlist.title,
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,
                         softWrap = false,
                         overflow = TextOverflow.Ellipsis,
@@ -70,6 +70,7 @@ fun PlaylistCard(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     MapAmountIconWIthText(text = playlist.getMapAmount().toString())
+
                 }
             }
             Column {

@@ -60,23 +60,6 @@ fun millisToDateFormatString(millis: Long?): String? {
     }
 }
 
-fun findMapTagByString(
-    tag: String?,
-    type: MapTagType,
-): MapTag? {
-    if (tag == null) {
-        return null
-    }
-    val tagItem = tag.split(",")
-    for (item in tagItem) {
-        val genreMapTag = MapTag.allMapTags.find { it.slug == item && it.type == type }
-        if (genreMapTag != null) {
-            return genreMapTag
-        }
-    }
-    return null
-}
-
 fun extractMapTagByString(
     tag: String?,
     type: MapTagType,
@@ -108,13 +91,10 @@ fun MapFilterPanel(
             initialSelectedEndDateMillis = mapFilterPanelState.to?.atStartOfDayIn(TimeZone.currentSystemDefault())?.toEpochMilliseconds(),
             initialDisplayMode = DisplayMode.Picker,
         )
-    var selectedStyleTagState by remember { mutableStateOf(findMapTagByString(mapFilterPanelState.tags, MapTagType.Style)) }
     var selectedStyleTagStates by remember { mutableStateOf(extractMapTagByString(mapFilterPanelState.tags,MapTagType.Style)) }
-    var selectedGenreTagState by remember { mutableStateOf(findMapTagByString(mapFilterPanelState.tags, MapTagType.Genre)) }
     var selectedGenreTagStates by remember { mutableStateOf(extractMapTagByString(mapFilterPanelState.tags, MapTagType.Genre)) }
     var featureSelectedState by remember { mutableStateOf(mapFilterPanelState.mapFeatureTagsMap()) }
-    var generateTag = {
-        selectedGenreTagState = findMapTagByString(mapFilterPanelState.tags, MapTagType.Genre)
+    val generateTag = {
         val styleTag = selectedStyleTagStates.joinToString(",") { it.slug }
         val genreTag = selectedGenreTagStates.joinToString(",") { it.slug }
         val tag = if (styleTag.isNotEmpty() && genreTag.isNotEmpty()) {
@@ -124,21 +104,15 @@ fun MapFilterPanel(
         }
         tag
     }
-    val updateFilter = { it: MapFilterParam ->
-        onUIEvent(BeatSaverUIEvent.UpdateMapFilterParam(it))
-    }
+    val updateFilter = { it: MapFilterParam -> onUIEvent(BeatSaverUIEvent.UpdateMapFilterParam(it)) }
     val clearFilter = {
         dateRangePickerState.setSelection(null, null)
-        selectedStyleTagState = null
-        selectedGenreTagState = null
         featureSelectedState = mapFilterPanelState.mapFeatureTagsMap()
         updateFilter(MapFilterParam.default)
     }
 
     Column(
-        modifier =
-            Modifier
-                .wrapContentSize(),
+        modifier = Modifier.wrapContentSize(),
     ) {
         Column(
             modifier =
@@ -213,12 +187,7 @@ fun MapFilterPanel(
                         modifier = Modifier.padding(horizontal = 4.dp),
                         selected = featureSelectedState[it] ?: false,
                         onClick = {
-                            featureSelectedState =
-                                if (featureSelectedState[it] == true) {
-                                    featureSelectedState - it
-                                } else {
-                                    featureSelectedState + (it to true)
-                                }
+                            featureSelectedState = if (featureSelectedState[it] == true) { featureSelectedState - it } else { featureSelectedState + (it to true) }
                             updateFilter(mapFilterPanelState.copy(
                                 chroma = featureSelectedState[MapFeatureTag.Chroma],
                                 cinema = featureSelectedState[MapFeatureTag.Cinema],
@@ -231,16 +200,6 @@ fun MapFilterPanel(
                                 automapper = featureSelectedState[MapFeatureTag.AI],
                             ))
                         },
-                        leadingIcon =
-                            if (featureSelectedState[it] == true) {
-//                                {
-//                                    Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
-//                                }
-
-                                null
-                            } else {
-                                null
-                            },
                         label = { Text(it.human) },
                     )
                 }
@@ -266,15 +225,6 @@ fun MapFilterPanel(
                                 tags = generateTag(),
                             ))
                         },
-                        leadingIcon =
-                            if (selectedStyleTagStates.contains(it)) {
-//                                {
-//                                    Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
-//                                }
-                                null
-                            } else {
-                                null
-                            },
                         label = { Text(it.human) },
                     )
                 }
@@ -299,14 +249,6 @@ fun MapFilterPanel(
                                 tags = generateTag(),
                             ))
                         },
-                        leadingIcon =
-                            if (selectedGenreTagStates.contains(it)) {
-                                {
-                                    Icon(Icons.Filled.Check, stringResource(MR.strings.clear))
-                                }
-                            } else {
-                                null
-                            },
                         label = { Text(it.human) },
                     )
                 }
@@ -323,20 +265,6 @@ fun MapFilterPanel(
             ClearTextButton { clearFilter() }
             QueryTextButton { onUIEvent(BeatSaverUIEvent.SearchMapWithFilter(mapFilterPanelState)) }
         }
-    }
-}
-
-@Composable
-fun DividerWithTitle(title: String) {
-    Column {
-//        Divider(modifier = Modifier.padding(horizontal = 4.dp))
-        Text(
-            modifier =
-                Modifier
-                    .padding(4.dp),
-            text = title,
-            style = MaterialTheme.typography.labelMedium,
-        )
     }
 }
 

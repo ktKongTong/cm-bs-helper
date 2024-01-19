@@ -2,6 +2,7 @@ package io.ktlab.bshelper.model
 
 import io.ktlab.bshelper.model.enums.EMapDifficulty
 import io.ktlab.bshelper.model.vo.MapDiff
+import kotlinx.datetime.LocalDateTime
 
 interface IMap {
     fun getSongName(): String
@@ -35,4 +36,6 @@ interface IMap {
     fun getMapVersion(): String
 
     fun isRelateWithBSMap(): Boolean
+
+    fun getMapDate(): LocalDateTime?
 }

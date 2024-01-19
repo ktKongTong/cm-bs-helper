@@ -1,5 +1,8 @@
 package io.ktlab.bshelper.ui.components.labels
 
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
@@ -8,7 +11,10 @@ import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,8 +31,12 @@ fun MapperLabel(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
     Row(
-        modifier = modifier.padding(horizontal = 4.dp),
+        modifier = modifier
+            .padding(horizontal = 4.dp)
+            .hoverable(interactionSource = interactionSource),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box {
@@ -59,11 +69,9 @@ fun MapperLabel(
             }
         }
         Spacer(modifier = Modifier.width(2.dp))
-        ClickableText(
-            text = buildAnnotatedString { append(mapperName) },
+        Text(
+            text = mapperName,
             modifier = Modifier.padding(start = 2.dp),
-            style = MaterialTheme.typography.labelMedium,
-            onClick = { onClick() },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

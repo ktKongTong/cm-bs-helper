@@ -8,6 +8,7 @@ import io.ktlab.bshelper.model.MapDifficulty
 import io.ktlab.bshelper.model.enums.EMapDifficulty
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+import kotlinx.datetime.LocalDateTime
 
 data class VersionWithDiffList(
     val version: BSMapVersion,
@@ -64,7 +65,7 @@ data class BSMapVO(
     }
 
     override fun getBPM(): String {
-        return String.format("%.2f", map.bpm)
+        return map.bpm.toInt().toString()
     }
 
     override fun getNotes(): Map<EMapDifficulty, String> {
@@ -95,5 +96,10 @@ data class BSMapVO(
         return "${getID()} (${map.songName} - ${map.levelAuthorName})".replace(
             "[\\\\/:*?\"<>|]".toRegex(),
             "_")
+    }
+
+    override fun getMapDate(): LocalDateTime? {
+        if (versions.isEmpty()) return null
+        return versions.first().version.createdAt
     }
 }
