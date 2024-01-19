@@ -10,7 +10,8 @@ export default defineConfig({
     nav: [
       { text: '用例手册', link: '/examples/' },
       { text: '版本更新日志', link: '/release/' },
-      { text: '反馈', link: 'https://bs-helper.api.ktlab.io/feedback' }
+      { text: '反馈', link: 'https://bs-helper.api.ktlab.io/feedback' },
+      { text:'abs', link: 'https://abs.ktlab.io'}
     ],
 
     sidebar: {
@@ -19,7 +20,7 @@ export default defineConfig({
           text: 'Release',
           items: [
             { text: '更新日志', link: '/release/' },
-            { text: 'v0.0.4', link: '/release/v0.0.4-alpha03' },
+            { text: 'v0.0.4', link: '/release/v0.0.4-alpha01' },
           ]
         }
       ],

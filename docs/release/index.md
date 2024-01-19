@@ -2,7 +2,9 @@
 outline: deep
 ---
 # changelog
-## [v0.0.4](./v0.0.4-alpha03)
+## [v0.0.5](./v0.0.5-alpha01)
+- 重构 beatmap UI
+## v0.0.4
 - 新增文档页
 - 同名歌单创建时添加提示
 ## v0.0.3
