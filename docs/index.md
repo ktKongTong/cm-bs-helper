@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: 查看示例
-      link: /examples
+      link: /examples/
     - theme: alt
       text: 更新日志
       link: /release/
