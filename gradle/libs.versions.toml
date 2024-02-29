@@ -21,7 +21,7 @@ okio = "3.7.0"
 kotlin-logging = "5.1.0"
 slf4j = "2.0.9"
 # db
-sqldelight = "2.0.0"
+sqldelight = "2.0.1"
 # web client
 ktor = "2.3.7"
 # multiplatform resources access
