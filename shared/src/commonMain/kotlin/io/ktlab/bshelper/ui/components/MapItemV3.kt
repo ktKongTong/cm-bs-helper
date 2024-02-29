@@ -1,5 +1,6 @@
 package io.ktlab.bshelper.ui.components
 
+import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
@@ -28,23 +30,27 @@ import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.RichTooltipBox
-import androidx.compose.material3.RichTooltipState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.rememberPopupPositionProviderAtPosition
 import io.ktlab.bshelper.model.BSUser
 import io.ktlab.bshelper.model.IMap
 import io.ktlab.bshelper.model.MapDifficulty
@@ -89,7 +95,7 @@ fun DiffCard(diff: MapDifficulty) {
             Text(text = diff.difficulty.human)
         }
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.wrapContentSize(),
             columns = GridCells.Fixed(3),
         ) {
             item { BSNPSLabel(diff.nps?:0.0) }
@@ -102,7 +108,7 @@ fun DiffCard(diff: MapDifficulty) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun MapDiffTag(
     diff: MapDifficulty
@@ -110,11 +116,12 @@ fun MapDiffTag(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
     val color = if (isHovered) Color.Red.copy(alpha = 1f) else Color.White
-    val tooltipState = remember {  RichTooltipState() }
+    val tooltipState = rememberTooltipState(isPersistent = true)
     LaunchedEffect(isHovered) {
         if (isHovered) {
             tooltipState.show()
-        }else {
+        }
+        else {
             tooltipState.dismiss()
         }
     }
@@ -123,12 +130,11 @@ fun MapDiffTag(
         .padding(4.dp)
         .border(1.dp, color, MaterialTheme.shapes.extraLarge)
         .padding(4.dp)
-    RichTooltipBox(
-        text = {DiffCard(diff)},
-        tooltipState = tooltipState,
-        // todo: after compose multiplatform upgrade to 1.6, material3 will be updated to 1.2
-        //  can set persistent to true, and remove this line
-        action = {}
+    val positionProvider = rememberPopupPositionProviderAtPosition(Offset(50F,-180F))
+    TooltipBox(
+        positionProvider = positionProvider,
+        tooltip = {PlainTooltip { DiffCard(diff) }},
+        state = tooltipState
     ) {
         Row (
             modifier = modifier,

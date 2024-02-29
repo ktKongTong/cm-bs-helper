@@ -1,10 +1,9 @@
 package io.ktlab.bshelper.ui.screens.beatsaver.components.filters
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,8 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.ktlab.bshelper.ui.screens.beatsaver.components.TitleLabel
-
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RatingRangeSlider(
     ratingSliderValues: Pair<Double?, Double?>,
@@ -24,11 +22,14 @@ fun RatingRangeSlider(
     val ratingSliderValue = (ratingSliderValues.first ?: limit.first).toFloat()..(ratingSliderValues.second ?: limit.second).toFloat()
     Column {
         Row {
-            PlainTooltipBox(
-                tooltip = { Text("Rating of the map.") },
-            ) {
-                TitleLabel("Rating", modifier = Modifier.tooltipAnchor())
-            }
+//            PlainTooltipBox(
+//                tooltip = { Text("Rating of the map.") },
+//            ){
+                TitleLabel(
+                    "Rating",
+//                    modifier = Modifier.tooltipAnchor()
+                    )
+//            }
             val text = """${ratingSliderValue.start.takeIf { it > limit.first }?.times(100)?.toInt() ?: 0}% - ${
                 ratingSliderValue.endInclusive.takeIf { it < limit.second }?.times(100)?.toInt() ?: 100}%"""
             Text(

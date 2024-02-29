@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Square
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.WidthNormal
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DateRangePickerState
@@ -29,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -58,10 +60,11 @@ fun BSDateRangePicker(
         onDismissRequest = onDismissRequest,
         modifier = modifier.background(Color.Red),
     ) {
+        val formatter = remember { DatePickerDefaults.dateFormatter() }
         Column {
             DateRangePicker(
                 state = state,
-                dateFormatter = DatePickerFormatter("yyyy-MM-dd"),
+                dateFormatter = formatter,
                 title = {
                 },
                 modifier = Modifier,

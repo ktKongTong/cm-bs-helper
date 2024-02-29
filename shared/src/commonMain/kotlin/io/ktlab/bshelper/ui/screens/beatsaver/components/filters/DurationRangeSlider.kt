@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,11 +24,14 @@ fun DurationRangeSlider(
     val durationSliderValue = (durationSliderValues.first ?: limit.first).toFloat()..(durationSliderValues.second ?: limit.second).toFloat()
     Column {
         Row {
-            PlainTooltipBox(
-                tooltip = { Text("Duration of the song.") },
-            ) {
-                TitleLabel("Duration", modifier = Modifier.tooltipAnchor())
-            }
+//            PlainTooltipBox(
+//                tooltip = { Text("Duration of the song.") },
+//            ) {
+                TitleLabel(
+                    "Duration",
+//                    modifier = Modifier.tooltipAnchor()
+                )
+//            }
             val text = """${durationSliderValue.start.takeIf { it > limit.first }?.formatTime() ?: 0.0f.formatTime()} - ${
                 durationSliderValue.endInclusive.takeIf { it < limit.second }?.formatTime() ?: "∞"}"""
             Text(
