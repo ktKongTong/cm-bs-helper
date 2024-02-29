@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "io.ktlab"
-version = "0.0.5-alpha02"
+version = "0.0.5-alpha03"
 
 allprojects {
     repositories {

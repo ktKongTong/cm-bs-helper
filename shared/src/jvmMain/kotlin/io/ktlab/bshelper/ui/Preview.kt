@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Square
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.WidthNormal
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.DateRangePicker
@@ -41,12 +42,6 @@ import io.ktlab.bshelper.BuildConfig
 import io.ktlab.bshelper.model.enums.SortKey
 import io.ktlab.bshelper.ui.theme.BSHelperTheme
 
-// fun dateStringToLong(dateString: String?): Long? {
-//    return if ((dateString == null) or (dateString == "Start Date") or (dateString == "End Date")) { null } else {
-//        val sdf = SimpleDateFormat("yyyy-MM-dd")
-//        sdf.parse(dateString)!!.time
-//    }
-// }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BSDateRangePicker(
@@ -56,7 +51,7 @@ fun BSDateRangePicker(
     onDismissRequest: () -> Unit = {},
     onConfirm: () -> Unit = {},
 ) {
-    AlertDialog(
+    BasicAlertDialog(
         onDismissRequest = onDismissRequest,
         modifier = modifier.background(Color.Red),
     ) {
